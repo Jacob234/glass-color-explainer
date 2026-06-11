@@ -1,0 +1,35 @@
+<figure class="alx">
+  <div class="alx-buttons">
+    <button data-id="daylight">daylight</button>
+    <button data-id="incandescent">incandescent</button>
+  </div>
+  <div class="alx-stage">
+    <svg viewBox="0 0 360 90" class="alx-svg" role="img" aria-label="illuminant spectrum vs neodymium absorption">
+      <polyline class="alx-abs" fill="none" stroke="#7d6a9e" stroke-width="2.5" points=""/>
+      <polyline class="alx-spd" fill="none" stroke="#d09a2a" stroke-width="2" stroke-dasharray="5 4" points=""/>
+    </svg>
+    <div class="alx-swatch" title="neodymium glass under this light"></div>
+  </div>
+  <figcaption>Solid: neodymium's picket-fence absorption. Dashed: the light source. The glass color is what survives both.</figcaption>
+  <p class="island-footnote">Illuminant curves approximate D65 and incandescent A; the swatch is a coarse RGB rendering.</p>
+</figure>
+<script>
+  import optics from '../../data/optics.json';
+  import { initAlexandriteToggle } from '../../scripts/islands/alexandrite.js';
+  for (const el of document.querySelectorAll('.alx')) initAlexandriteToggle(el, optics);
+</script>
+<style>
+  .alx { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
+  .alx-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; }
+  .alx-buttons button { font-size: 0.78rem; padding: 0.25rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--edge); background: var(--node); color: var(--muted); cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s; }
+  .alx-buttons button:hover { color: var(--text); border-color: var(--faint); }
+  .alx-buttons button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .alx-stage { display: flex; gap: 0.8rem; align-items: center; }
+  .alx-svg { flex: 1; border: 1px solid var(--edge); border-radius: 8px; }
+  .alx-swatch { width: 3.4rem; height: 3.4rem; border-radius: 10px; border: 2px solid var(--edge);
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.35); }
+  figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+</style>
