@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Locator from '../../components/Locator.astro';
 import map from '../../data/map.json';
+import SpectrumExplorer from '../../components/islands/SpectrumExplorer.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('concepts');
@@ -11,6 +12,15 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Island routing table (extended by later tasks).
+// Empty string = show all colorants; non-empty = comma-separated colorant ids to filter.
+const islandColorants: Record<string, string> = {
+  'color-in-glass': '',
+  'transition-metal-colorants': 'cobalt,chromium,manganese,iron-ferrous,iron-ferric,copper',
+  'colloidal-color': 'gold-colloid,silver-colloid',
+  'selenium-ruby': 'cds,cdsse,cdse',
+};
 
 const order = [
   map.anchorSlug,
@@ -29,6 +39,7 @@ const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
     <h1>{entry.data.title}</h1>
     <p class="summary">{entry.data.summary}</p>
     <Content />
+    {entry.id in islandColorants && <SpectrumExplorer colorants={islandColorants[entry.id]} />}
     {entry.data.sources && entry.data.sources.length > 0 && (
       <section class="sources">
         <h2>Further reading</h2>
