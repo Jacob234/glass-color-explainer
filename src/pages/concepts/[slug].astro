@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Locator from '../../components/Locator.astro';
+import map from '../../data/map.json';
 
 export async function getStaticPaths() {
   const entries = await getCollection('concepts');
@@ -9,9 +11,20 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const order = [
+  map.anchorSlug,
+  ...map.mechanisms.flatMap((m) => m.slugs),
+  map.crosscutting.slug,
+  map.craft.slug,
+];
+const idx = order.indexOf(entry.id);
+const prev = idx > 0 ? order[idx - 1] : null;
+const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
 ---
 <Base title={entry.data.title} description={entry.data.summary}>
   <article class="concept">
+    <Locator slug={entry.id} mechanism={entry.data.mechanism} />
     <p class="detail-type">{entry.data.mechanism}</p>
     <h1>{entry.data.title}</h1>
     <p class="summary">{entry.data.summary}</p>
@@ -26,6 +39,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </ul>
       </section>
     )}
+    <nav class="prevnext">
+      {prev && <a href={`${base}/concepts/${prev}/`}>← {prev.replace(/-/g, ' ')}</a>}
+      {next && <a href={`${base}/concepts/${next}/`} class="next">{next.replace(/-/g, ' ')} →</a>}
+    </nav>
     <p class="back"><a href={`${base}/`}>← back to the map</a></p>
   </article>
 </Base>
+<style>
+  .prevnext { display: flex; justify-content: space-between; margin-top: 2rem; font-size: 0.85rem; }
+  .prevnext .next { margin-left: auto; }
+</style>

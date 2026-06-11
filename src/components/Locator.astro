@@ -1,0 +1,31 @@
+---
+// "Where am I" strip: highlights the current page's mechanism, links the others.
+import map from '../data/map.json';
+const { slug, mechanism } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const nodes = [
+  ...map.mechanisms.map((m) => ({
+    id: m.id,
+    label: m.label,
+    href: m.slugs[0]
+      ? `${base}/concepts/${m.slugs[0]}/`
+      : `${base}/concepts/${m.anchorTarget.targetSlug}/#${m.anchorTarget.anchor}`,
+  })),
+  { id: 'crosscutting', label: 'redox', href: `${base}/concepts/${map.crosscutting.slug}/` },
+  { id: 'craft', label: 'the craft', href: `${base}/concepts/${map.craft.slug}/` },
+];
+---
+<nav class="locator" aria-label="mechanism locator">
+  <a href={`${base}/`} class="locator-map">map</a>
+  {nodes.map((n) => (
+    <a href={n.href} class={`locator-node${n.id === mechanism ? ' active' : ''}`}>{n.label}</a>
+  ))}
+</nav>
+<style>
+  .locator { display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.8rem; margin-bottom: 1.5rem; }
+  .locator a { padding: 0.15rem 0.6rem; border: 1px solid var(--edge); border-radius: 999px;
+    text-decoration: none; color: var(--muted); transition: color .15s, border-color .15s; }
+  .locator a:hover { color: var(--text); border-color: var(--faint); }
+  .locator a.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+  .locator-map { font-weight: 600; color: var(--text) !important; }
+</style>
