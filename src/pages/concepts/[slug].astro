@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('concepts');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title={`${entry.data.title} — Why Glass Has Color`} description={entry.data.summary}>
+  <article class="concept">
+    <p class="detail-type">{entry.data.mechanism}</p>
+    <h1>{entry.data.title}</h1>
+    <p class="summary">{entry.data.summary}</p>
+    <Content />
+    {entry.data.sources && entry.data.sources.length > 0 && (
+      <section class="sources">
+        <h2>Further reading</h2>
+        <ul>
+          {entry.data.sources.map((s) => (
+            <li><a href={s.url} target="_blank" rel="noopener">{s.label}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+    <p class="back"><a href={`${base}/`}>← back to the map</a></p>
+  </article>
+</Base>
