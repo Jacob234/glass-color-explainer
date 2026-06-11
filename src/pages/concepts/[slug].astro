@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Locator from '../../components/Locator.astro';
 import map from '../../data/map.json';
 import SpectrumExplorer from '../../components/islands/SpectrumExplorer.astro';
+import StrikingSlider from '../../components/islands/StrikingSlider.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('concepts');
@@ -40,6 +41,8 @@ const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
     <p class="summary">{entry.data.summary}</p>
     <Content />
     {entry.id in islandColorants && <SpectrumExplorer colorants={islandColorants[entry.id]} />}
+    {entry.id === 'colloidal-color' && <StrikingSlider sequence="gold" />}
+    {entry.id === 'selenium-ruby' && <StrikingSlider sequence="selenium" />}
     {entry.data.sources && entry.data.sources.length > 0 && (
       <section class="sources">
         <h2>Further reading</h2>
