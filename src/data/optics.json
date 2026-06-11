@@ -2,7 +2,7 @@
   "wavelengths": [380, 405, 430, 455, 480, 505, 530, 555, 580, 605, 630, 655, 680, 705, 730, 755, 780],
   "colorants": [
     { "id": "cobalt", "label": "Cobalt Co²⁺", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs across the orange and red — a fraction of a percent gives a deep blue.",
-      "absorbance": [0.10, 0.08, 0.08, 0.10, 0.15, 0.30, 0.60, 0.85, 0.95, 0.90, 0.75, 0.50, 0.30, 0.20, 0.15, 0.12, 0.10] },
+      "absorbance": [0.05, 0.04, 0.04, 0.05, 0.40, 0.80, 0.85, 0.92, 0.95, 0.90, 0.75, 0.50, 0.60, 0.55, 0.50, 0.45, 0.40] },
     { "id": "chromium", "label": "Chromium Cr³⁺", "group": "ions", "why": "Two ligand-field bands — violet-blue and orange-red — leave a green transmission window.",
       "absorbance": [0.70, 0.85, 0.90, 0.75, 0.45, 0.20, 0.15, 0.20, 0.45, 0.75, 0.85, 0.80, 0.60, 0.40, 0.30, 0.25, 0.20] },
     { "id": "manganese", "label": "Manganese Mn³⁺", "group": "ions", "why": "A broad absorption centered in the green leaves purple — the amethyst of decolorized glass gone purple.",

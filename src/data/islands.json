@@ -1,0 +1,11 @@
+{
+  "spectrum": {
+    "color-in-glass": "",
+    "transition-metal-colorants": "cobalt,chromium,manganese,iron-ferrous,iron-ferric,copper",
+    "colloidal-color": "gold-colloid,silver-colloid",
+    "selenium-ruby": "cds,cdsse,cdse"
+  },
+  "striking": { "colloidal-color": "gold", "selenium-ruby": "selenium" },
+  "alexandrite": ["rare-earth-colorants"],
+  "lycurgus": ["colloidal-color"]
+}

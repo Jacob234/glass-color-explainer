@@ -3,10 +3,15 @@
 // Note: the SVG gradient uses id="vis". If two SpectrumExplorer instances ever
 // appeared on the same page they would collide; in this site each concept page
 // gets at most one instance, so this is acceptable.
+import optics from '../../data/optics.json';
 const { colorants = '' } = Astro.props;
+const ids = colorants ? colorants.split(',').filter(Boolean) : [];
+const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id) : true));
 ---
 <figure class="spx" data-colorants={colorants}>
-  <div class="spx-buttons"></div>
+  <div class="spx-buttons">
+    {selected.map((c) => <button data-id={c.id}>{c.label}</button>)}
+  </div>
   <div class="spx-stage">
     <svg viewBox="0 0 360 90" class="spx-svg" role="img" aria-label="absorption curve over the visible spectrum">
       <defs>

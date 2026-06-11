@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export function validate(map, optics, contentDir) {
+export function validate(map, optics, contentDir, islands) {
   const errors = [];
 
   // --- content inventory: slugs + anchor ids per page ---
@@ -56,6 +56,46 @@ export function validate(map, optics, contentDir) {
     }
   }
 
+  // --- islands.json (optional 4th param) ---
+  if (islands) {
+    const colorantIds = new Set(optics.colorants.map((c) => c.id));
+    const strikingKeys = new Set(Object.keys(optics.striking));
+
+    // spectrum: each key must be a content page; each comma-sep id must exist in optics.colorants
+    for (const [slug, ids] of Object.entries(islands.spectrum || {})) {
+      if (!pages.has(slug)) {
+        errors.push(`islands.spectrum: slug "${slug}" does not resolve to a content page`);
+      }
+      for (const id of (ids ? ids.split(',').filter(Boolean) : [])) {
+        if (!colorantIds.has(id)) {
+          errors.push(`islands.spectrum["${slug}"]: colorant id "${id}" not found in optics.colorants`);
+        }
+      }
+    }
+
+    // striking: each key must be a content page; each value must be a key in optics.striking
+    for (const [slug, seq] of Object.entries(islands.striking || {})) {
+      if (!pages.has(slug)) {
+        errors.push(`islands.striking: slug "${slug}" does not resolve to a content page`);
+      }
+      if (!strikingKeys.has(seq)) {
+        errors.push(`islands.striking["${slug}"]: sequence "${seq}" not found in optics.striking`);
+      }
+    }
+
+    // alexandrite / lycurgus: each slug must be a content page
+    for (const slug of (islands.alexandrite || [])) {
+      if (!pages.has(slug)) {
+        errors.push(`islands.alexandrite: slug "${slug}" does not resolve to a content page`);
+      }
+    }
+    for (const slug of (islands.lycurgus || [])) {
+      if (!pages.has(slug)) {
+        errors.push(`islands.lycurgus: slug "${slug}" does not resolve to a content page`);
+      }
+    }
+  }
+
   return { errors };
 }
 
@@ -65,7 +105,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const root = join(here, '..');
   const map = JSON.parse(readFileSync(join(root, 'src/data/map.json'), 'utf8'));
   const optics = JSON.parse(readFileSync(join(root, 'src/data/optics.json'), 'utf8'));
-  const { errors } = validate(map, optics, join(root, 'src/content/concepts'));
+  const islands = JSON.parse(readFileSync(join(root, 'src/data/islands.json'), 'utf8'));
+  const { errors } = validate(map, optics, join(root, 'src/content/concepts'), islands);
   if (errors.length) {
     console.error('check_data: FAIL');
     for (const e of errors) console.error('  -', e);

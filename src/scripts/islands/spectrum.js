@@ -17,12 +17,19 @@ export function wavelengthToRgb(w) {
 }
 
 // Integrate illuminant x transmission x rgb(lambda) over the sample points.
+// Each wavelength is additionally weighted by an approximate photopic luminosity
+// factor (Gaussian centred at 555 nm, sigma=80 nm) so that the human eye's
+// sensitivity peak is respected and colours read more true to life.
 export function transmittedColor(wavelengths, absorbance, spd) {
   let r = 0, g = 0, b = 0, norm = 0;
   for (let i = 0; i < wavelengths.length; i++) {
-    const t = spd[i] * (1 - absorbance[i]);
-    const [cr, cg, cb] = wavelengthToRgb(wavelengths[i]);
-    r += t * cr; g += t * cg; b += t * cb; norm += spd[i];
+    const w = wavelengths[i];
+    // Approximate photopic luminosity: Gaussian centred at 555 nm, sigma=100 nm
+    const lum = Math.exp(-((w - 555) ** 2) / (2 * 100 ** 2));
+    const weight = spd[i] * lum;
+    const t = weight * (1 - absorbance[i]);
+    const [cr, cg, cb] = wavelengthToRgb(w);
+    r += t * cr; g += t * cg; b += t * cb; norm += weight;
   }
   const scale = 255 / (norm * 0.55); // headroom so saturated colors don't clip to white
   const clamp = (v) => Math.max(0, Math.min(255, Math.round(v * scale)));
@@ -30,14 +37,15 @@ export function transmittedColor(wavelengths, absorbance, spd) {
 }
 
 export function initSpectrumExplorer(root, optics) {
-  const ids = (root.dataset.colorants || '').split(',').filter(Boolean);
-  const colorants = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id) : true));
   const daylight = optics.illuminants.find((i) => i.id === 'daylight');
-  const buttons = root.querySelector('.spx-buttons');
   const curve = root.querySelector('.spx-curve');
   const swatch = root.querySelector('.spx-swatch');
   const why = root.querySelector('.spx-why');
   const W = 360, H = 90;
+
+  // Buttons are server-rendered by SpectrumExplorer.astro (so Astro scoped-CSS applies).
+  // We attach click listeners and look up colorant data by data-id.
+  const buttons = root.querySelectorAll('.spx-buttons button');
 
   function select(c) {
     const pts = c.absorbance
@@ -46,15 +54,20 @@ export function initSpectrumExplorer(root, optics) {
     curve.setAttribute('points', pts);
     swatch.style.background = transmittedColor(optics.wavelengths, c.absorbance, daylight.spd);
     why.textContent = c.why;
-    for (const b of buttons.children) b.classList.toggle('active', b.dataset.id === c.id);
+    for (const b of buttons) b.classList.toggle('active', b.dataset.id === c.id);
   }
 
-  for (const c of colorants) {
-    const b = document.createElement('button');
-    b.dataset.id = c.id;
-    b.textContent = c.label;
-    b.addEventListener('click', () => select(c));
-    buttons.appendChild(b);
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      const c = optics.colorants.find((x) => x.id === b.dataset.id);
+      if (c) select(c);
+    });
   }
-  select(colorants[0]);
+
+  // Auto-select the first button's colorant on init.
+  if (buttons.length > 0) {
+    const firstId = buttons[0].dataset.id;
+    const first = optics.colorants.find((c) => c.id === firstId);
+    if (first) select(first);
+  }
 }

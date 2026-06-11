@@ -79,3 +79,27 @@ test('null anchor is allowed (links to page top)', () => {
   const { errors } = validate(m, goodOptics, dir);
   assert.deepEqual(errors, []);
 });
+
+test('valid islands object produces no errors', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const goodIslands = {
+    spectrum: { 'page-a': 'cobalt' },
+    striking: { 'page-a': 'gold' },
+    alexandrite: [],
+    lycurgus: [],
+  };
+  const { errors } = validate(goodMap, goodOptics, dir, goodIslands);
+  assert.deepEqual(errors, []);
+});
+
+test('typo in islands spectrum colorant id is an error', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const badIslands = {
+    spectrum: { 'page-a': 'cobalt,TYPO-ID' },
+    striking: {},
+    alexandrite: [],
+    lycurgus: [],
+  };
+  const { errors } = validate(goodMap, goodOptics, dir, badIslands);
+  assert.ok(errors.some((e) => e.includes('TYPO-ID')));
+});
