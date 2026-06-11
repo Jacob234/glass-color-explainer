@@ -21,7 +21,7 @@ A transition metal ion — cobalt, chromium, iron, manganese, copper — arrives
 
 Three levers control the outcome:
 
-**Oxidation state.** Different redox states of the same element are effectively different colorants entirely. Manganese as Mn³⁺ is purple; as Mn²⁺ it is nearly colorless. Iron as Fe²⁺ is blue-green; as Fe³⁺ a pale yellow-brown. Chromium as Cr³⁺ is green; as Cr⁶⁺ yellow. Copper as Cu²⁺ is turquoise; reduced all the way to metallic copper it becomes a ruby colloid by a completely different mechanism (see [colloidal color](../colloidal-color/)). Which oxidation state the melt lands in is decided in the furnace — see [redox in glassmaking](../redox/).
+**Oxidation state.** Different redox states of the same element are effectively different colorants entirely. Manganese as Mn³⁺ is purple; as Mn²⁺ it is nearly colorless. Iron as Fe²⁺ is blue-green; as Fe³⁺ a pale yellow-brown. Chromium as Cr³⁺ is green; as Cr⁶⁺ yellow. Copper as Cu²⁺ is turquoise; reduced all the way to metallic copper it becomes a ruby colloid by a completely different mechanism (see [colloidal color](../colloidal-color/)). Which oxidation state the melt lands in is decided in the furnace — see [redox in the furnace](../redox/).
 
 **Coordination geometry.** Tetrahedral and octahedral sites split the energy levels differently, changing both the wavelength absorbed and the intensity. Cobalt's legendarily intense blue comes from Co²⁺ sitting in tetrahedral sites in silicate glass, a geometry that makes the transitions far stronger than usual. The practical consequence: you need only 0.025–0.1% cobalt oxide to achieve a deep blue, whereas iron or manganese require larger doses for comparable depth.
 
@@ -40,13 +40,13 @@ Three levers control the outcome:
 | Ni²⁺ | violet (potassium glass) / brown (soda glass) | the classic host-sensitivity demonstration |
 | V³⁺/V⁵⁺ | green / yellow | minor industrial colorant |
 
-Iron deserves a footnote as the unwanted member of the family: commercial sand always carries iron impurities, and the faint green you see looking edge-on at a pane of float glass is Fe²⁺. Much of the practice of [redox in glassmaking](../redox/) exists to neutralize it.
+Iron deserves a footnote as the unwanted member of the family: commercial sand always carries iron impurities, and the faint green you see looking edge-on at a pane of float glass is Fe²⁺. Much of the practice of [redox in the furnace](../redox/) exists to neutralize it.
 
 ## Artifact stories
 
 ### Chartres blue
 
-The deep, saturated cobalt blue of Chartres Cathedral's 12th-century windows — the so-called *bleu de Chartres* — is Co²⁺ in tetrahedral silicate sites, and it has never quite been replicated. Medieval glassmakers used smalt (a cobalt-bearing potash glass, ground and added to the melt) sourced from Central European cobalt ores; the specific manganese and arsenic impurities in those ores, and the potash-heavy composition, conspire to give a color that modern cobalt glass at similar concentrations does not precisely match. The glass is also visibly heterogeneous — streaks and bubbles that scatter light in ways flat modern sheet glass does not. The result is a window that reads differently at different angles and light levels, something that photographs have trouble conveying.
+The deep, saturated cobalt blue of Chartres Cathedral's 12th- and 13th-century windows — the so-called *bleu de Chartres* — is Co²⁺ in tetrahedral silicate sites, and it has never quite been replicated. Medieval glassmakers used cobalt-bearing materials (the ancestor of what later glassmakers called smalt) sourced from Central European cobalt ores; the specific manganese and arsenic impurities in those ores, and the potash-heavy composition, conspire to give a color that modern cobalt glass at similar concentrations does not precisely match. The glass is also visibly heterogeneous — streaks and bubbles that scatter light in ways flat modern sheet glass does not. The result is a window that reads differently at different angles and light levels, something that photographs have trouble conveying.
 
 ### Beer-bottle amber
 

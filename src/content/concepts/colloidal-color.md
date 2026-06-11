@@ -29,7 +29,7 @@ On the reheat — typically 500–700 °C — reduced metal atoms nucleate and a
 
 ### Gold ruby
 
-Gold ruby glass contains actual gold — roughly 0.01–0.1% by weight — and this cost means it is typically used as **flashed glass**, a thin ruby layer fused over a clear gather, rather than solid body color. In the dilute form known as **cranberry glass**, the gold loading is lower still, producing a warm pink rather than a deep red. Cranberry became a popular Victorian tableware color: the delicate pink reads jewel-like in thin-blown pieces, and the dilution kept costs manageable.
+Gold ruby glass contains actual gold — roughly 0.01–0.1% by weight — and this cost means it is often used as **flashed glass** for sheet and window applications, a thin ruby layer fused over a clear gather. Solid body color is used for vessels and tableware, where the thin walls keep gold content manageable. In the dilute form known as **cranberry glass**, the gold loading is lower still, producing a warm pink rather than a deep red. Cranberry became a popular Victorian tableware color: the delicate pink reads jewel-like in thin-blown pieces, and the dilution kept costs manageable.
 
 The tradition of ruby glass stretches back to ancient Rome, but Kunckel's 17th-century Potsdam workshop established the chemical principles that made production reliable. The ware he made — now held in museum collections across Europe — shows the full range from pale cranberry pink to deep garnet, the variation arising from different striking schedules on the same base composition.
 

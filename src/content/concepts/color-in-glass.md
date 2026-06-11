@@ -73,4 +73,4 @@ All four mechanisms depend — directly or indirectly — on the oxidation state
 
 Redox control is therefore not one mechanism among four but the variable that governs which mechanism is operating and how efficiently. It is also the tool for decolorizing glass: when the iron in cheap raw sand would otherwise tint the melt green, glassmakers add oxidizing or reducing agents — or small amounts of complementary colorants like selenium or manganese — to cancel the tint and restore transparency.
 
-→ [Redox in glassmaking](../redox/)
+→ [Redox in the furnace](../redox/)

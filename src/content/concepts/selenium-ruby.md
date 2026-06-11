@@ -15,7 +15,7 @@ The mechanism that makes these colors exceptional is different from both dissolv
 
 ## How it works
 
-**Band-gap absorption.** A semiconductor has a characteristic energy threshold — the band gap — below which photons pass through and above which they are absorbed (promoting an electron from the lower valence band to the upper conduction band). Cadmium sulfide (CdS) has a band gap of roughly 2.4 electron volts, which places its absorption edge in the violet. It absorbs violet through green and transmits a brilliant yellow. Cadmium selenide (CdSe) has a smaller gap near 1.7 eV — its edge sits in the near-infrared, meaning it absorbs nearly the entire visible spectrum, producing deep red to near-black.
+**Band-gap absorption.** A semiconductor has a characteristic energy threshold — the band gap — below which photons pass through and above which they are absorbed (promoting an electron from the lower valence band to the upper conduction band). Cadmium sulfide (CdS) has a band gap of roughly 2.4 electron volts, which places its absorption edge in the green, near 515 nm. It absorbs violet through green and transmits a brilliant yellow. Cadmium selenide (CdSe) has a smaller gap near 1.7 eV — its edge sits in the deep red, at the edge of the near-infrared (~730 nm), meaning it absorbs nearly the entire visible spectrum, producing deep red to near-black.
 
 The two compounds form a continuous solid solution, CdS₁₋ₓSeₓ: by adjusting the ratio of sulfur to selenium, you slide the band gap — and therefore the absorption edge — smoothly across the warm side of the visible spectrum. A single chemical system covers the full range from yellow through orange to signal red.
 

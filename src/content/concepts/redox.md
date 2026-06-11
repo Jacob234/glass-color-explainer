@@ -22,7 +22,7 @@ The ferri-sulfide amber of beer bottles is a special case: in a strongly reduced
 
 The oldest practical application of glass redox chemistry is making cheap, iron-bearing glass read as colorless. Two approaches:
 
-**Chemical decolorizing** relies on manganese — "glassmaker's soap," used since Roman times. Added as manganese oxide, it oxidizes the strong-tinting Fe²⁺ to weak-tinting Fe³⁺, and the resulting Mn³⁺ carries a faint purple that is roughly complementary to the residual yellow-green of Fe³⁺ — the two tints partially cancel to produce a near-neutral glass. This is color subtraction in a melt.
+**Chemical decolorizing** relies on manganese — "glassmaker's soap," used since Roman times. Added as manganese oxide, it oxidizes the strong-tinting Fe²⁺ to weak-tinting Fe³⁺, and the residual (unreacted) Mn³⁺ carries a faint purple that is roughly complementary to the residual yellow-green of Fe³⁺ — the two tints partially cancel to produce a near-neutral glass. This is color subtraction in a melt.
 
 **Physical decolorizing** takes a different approach: add small amounts of absorbers whose colors are complementary to iron's green. Selenium (pink) plus a trace of cobalt (blue) can neutralize iron's green tint, resulting in glass that transmits *less* light overall but transmits it neutrally — colorlessness bought at the price of slight grayness. The same selenium that produces brilliant reds in [selenium ruby](../selenium-ruby/) glass is here a decolorizer; which role it plays is a matter of concentration and redox state.
 
