@@ -1,7 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import GlassMap from '../components/GlassMap.astro';
 ---
-<Base title="The four mechanisms" description="The four mechanisms of color in glass.">
-  <h1>Why Glass Has Color</h1>
-  <p>Map coming in Task 8.</p>
+<Base title="the four mechanisms" description="The four physical mechanisms that color glass — dissolved ions, metal colloids, band-gap crystals, and structure — with the real objects they explain.">
+  <GlassMap />
+  <p class="map-footnote">Every swatch is a real object. Click it to find out why it's that color.</p>
 </Base>
+<style>
+  .map-footnote { text-align: center; font-size: 0.85rem; opacity: 0.7; margin-top: 1rem; }
+</style>
