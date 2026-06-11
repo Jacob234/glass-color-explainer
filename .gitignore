@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.astro/
+# Local working context (handoffs reference private vault paths) — not for the public repo
+.claude/
