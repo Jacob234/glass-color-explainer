@@ -21,7 +21,7 @@ The oldest and most common mechanism is metal ions dissolved directly in the gla
 
 The physics is called *d–d* electronic transitions for transition metals: the outer electrons of ions like Co²⁺, Cr³⁺, or Fe²⁺ are split into energy levels by the surrounding oxygen atoms, and they absorb photons whose energy matches the gap between those levels. Because the energy levels depend on the ion's oxidation state and the exact geometry of the surrounding oxygen coordination, the same element can give different colors in different glasses — or in the same glass under different furnace conditions.
 
-Rare-earth ions work by a related but distinct mechanism: their absorbing electrons are shielded inside the ion's electron shell, so their transitions are sharper and less sensitive to the glass host. Neodymium gives a characteristic violet-pink; erbium gives pink; erbium-doped fiber amplifiers exploit the same transition in the near-infrared.
+Rare-earth ions work by a related but distinct mechanism: their absorbing electrons are shielded inside the ion's electron shell, so their transitions are sharper and less sensitive to the glass host. Neodymium gives a characteristic violet-pink; erbium gives pink; erbium-doped fiber amplifiers exploit the same ion's sharp 4f transitions at a different wavelength (~1.5 µm in the near-infrared) to amplify telecommunications signals.
 
 → [Transition metal colorants](../transition-metal-colorants/) · [Rare-earth colorants](../rare-earth-colorants/)
 
@@ -39,7 +39,7 @@ Silver behaves differently in this family: rather than deep-body ruby color, it 
 
 The third mechanism produces the most saturated colors glass can make. Cadmium sulfoselenide (a mixture of CdS and CdSe) can be precipitated as tiny crystals inside the glass. These crystals are semiconductors, and like all semiconductors they have a band gap: photons with energy above the gap are absorbed; photons below it pass through. Because the gap sits in the visible range, this creates a razor-sharp absorption edge — everything above the cut-off frequency absorbed, everything below transmitted.
 
-By adjusting the sulfur-to-selenium ratio, glassmakers can tune the cut-off across the yellows, oranges, and reds, producing the saturated signal colors used in traffic lights and railway semaphores. At very small crystal sizes — below about 10 nm — quantum confinement effects shift the edge further, and the color becomes size-dependent rather than composition-dependent. This is the physical system in which quantum dots were first experimentally demonstrated.
+By adjusting the sulfur-to-selenium ratio, glassmakers can tune the cut-off across the yellows, oranges, and reds, producing the saturated signal colors used in traffic lights and railway semaphores. At very small crystal sizes — below about 10 nm — quantum confinement effects shift the edge further, and the color becomes size-dependent rather than composition-dependent. Glass was, in fact, the medium in which quantum dots were first experimentally demonstrated: Ekimov's 1981 work used copper chloride (CuCl) nanocrystals in glass, with cadmium-based systems following shortly after.
 
 → [Selenium ruby glass](../selenium-ruby/)
 
