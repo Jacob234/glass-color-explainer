@@ -1,0 +1,56 @@
+{
+  "title": "Why is glass colored?",
+  "anchorSlug": "color-in-glass",
+  "crosscutting": { "slug": "redox", "label": "redox — the furnace decides which ion you get" },
+  "craft": { "slug": "stained-glass", "label": "stained glass — all four mechanisms in one window" },
+  "mechanisms": [
+    {
+      "id": "ions",
+      "label": "dissolved ions",
+      "blurb": "Metal ions dissolved like dye — broad, host-sensitive absorption.",
+      "slugs": ["transition-metal-colorants", "rare-earth-colorants"],
+      "theme": "#5b6ee1",
+      "artifacts": [
+        { "id": "chartres-blue", "label": "Chartres cobalt blue", "colorCss": "radial-gradient(circle at 40% 30%, #3a6bff, #0a1f7a)", "targetSlug": "transition-metal-colorants", "anchor": "chartres-blue" },
+        { "id": "beer-bottle", "label": "Beer-bottle amber", "colorCss": "radial-gradient(circle at 50% 40%, #b96a12, #5a3000)", "targetSlug": "transition-metal-colorants", "anchor": "beer-bottle-amber" },
+        { "id": "wine-bottle", "label": "Wine-bottle green", "colorCss": "radial-gradient(circle at 50% 40%, #2e7d4f, #0d3a20)", "targetSlug": "transition-metal-colorants", "anchor": "wine-bottle-green" },
+        { "id": "alexandrite", "label": "Neodymium 'alexandrite' glass", "colorCss": "radial-gradient(circle at 50% 40%, #c7b6e0, #7d6a9e)", "targetSlug": "rare-earth-colorants", "anchor": "the-alexandrite-effect" }
+      ]
+    },
+    {
+      "id": "colloids",
+      "label": "metal colloids",
+      "blurb": "Gold, copper, or silver nanoparticles — plasmon resonance, struck by reheat.",
+      "slugs": ["colloidal-color", "silver-stain"],
+      "theme": "#c1486b",
+      "artifacts": [
+        { "id": "cranberry", "label": "Cranberry / gold-ruby glass", "colorCss": "radial-gradient(circle at 50% 40%, #ff5a7a, #8a0f33)", "targetSlug": "colloidal-color", "anchor": "gold-ruby" },
+        { "id": "lycurgus", "label": "The Lycurgus Cup", "colorCss": "linear-gradient(110deg, #3f7d4e 50%, #a3262e 50%)", "targetSlug": "colloidal-color", "anchor": "the-lycurgus-cup" },
+        { "id": "silver-stain-yellow", "label": "Silver-stain yellow", "colorCss": "radial-gradient(circle at 50% 40%, #f2c14e, #9a6a00)", "targetSlug": "silver-stain", "anchor": null }
+      ]
+    },
+    {
+      "id": "bandgap",
+      "label": "band-gap crystals",
+      "blurb": "Semiconductor microcrystals — a razor absorption edge, the purest warm colors.",
+      "slugs": ["selenium-ruby"],
+      "theme": "#d07a2a",
+      "artifacts": [
+        { "id": "traffic-light", "label": "Traffic-light red", "colorCss": "radial-gradient(circle at 50% 40%, #ff2a00, #7d0000)", "targetSlug": "selenium-ruby", "anchor": "traffic-light-red" },
+        { "id": "filter-glass", "label": "Sharp-cut filter glass", "colorCss": "radial-gradient(circle at 50% 40%, #ffb300, #8a5a00)", "targetSlug": "selenium-ruby", "anchor": "sharp-cut-filters" }
+      ]
+    },
+    {
+      "id": "structure",
+      "label": "structure & scattering",
+      "blurb": "No chromophore at all — second phases scatter, films interfere.",
+      "slugs": [],
+      "anchorTarget": { "targetSlug": "color-in-glass", "anchor": "structure-and-scattering" },
+      "theme": "#7d8a96",
+      "artifacts": [
+        { "id": "opal", "label": "Opal glass", "colorCss": "radial-gradient(circle at 40% 30%, #ffffff, #cfd8e3)", "targetSlug": "color-in-glass", "anchor": "opal-glass" },
+        { "id": "dichroic", "label": "Dichroic glass", "colorCss": "linear-gradient(120deg, #7be3d0, #c77bf2, #f2d27b)", "targetSlug": "color-in-glass", "anchor": "dichroic-glass" }
+      ]
+    }
+  ]
+}
