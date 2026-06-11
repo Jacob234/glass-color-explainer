@@ -1,0 +1,51 @@
+{
+  "wavelengths": [380, 405, 430, 455, 480, 505, 530, 555, 580, 605, 630, 655, 680, 705, 730, 755, 780],
+  "colorants": [
+    { "id": "cobalt", "label": "Cobalt Co²⁺", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs across the orange and red — a fraction of a percent gives a deep blue.",
+      "absorbance": [0.10, 0.08, 0.08, 0.10, 0.15, 0.30, 0.60, 0.85, 0.95, 0.90, 0.75, 0.50, 0.30, 0.20, 0.15, 0.12, 0.10] },
+    { "id": "chromium", "label": "Chromium Cr³⁺", "group": "ions", "why": "Two ligand-field bands — violet-blue and orange-red — leave a green transmission window.",
+      "absorbance": [0.70, 0.85, 0.90, 0.75, 0.45, 0.20, 0.15, 0.20, 0.45, 0.75, 0.85, 0.80, 0.60, 0.40, 0.30, 0.25, 0.20] },
+    { "id": "manganese", "label": "Manganese Mn³⁺", "group": "ions", "why": "A broad absorption centered in the green leaves purple — the amethyst of decolorized glass gone purple.",
+      "absorbance": [0.30, 0.25, 0.30, 0.45, 0.70, 0.90, 0.85, 0.65, 0.45, 0.35, 0.30, 0.25, 0.20, 0.18, 0.15, 0.12, 0.10] },
+    { "id": "iron-ferrous", "label": "Iron Fe²⁺", "group": "ions", "why": "A strong absorption rising into the red and near-IR gives the blue-green edge tint of ordinary window glass.",
+      "absorbance": [0.25, 0.20, 0.15, 0.12, 0.10, 0.12, 0.18, 0.28, 0.40, 0.55, 0.68, 0.78, 0.85, 0.90, 0.92, 0.94, 0.95] },
+    { "id": "iron-ferric", "label": "Iron Fe³⁺", "group": "ions", "why": "Weak absorption confined to the violet edge — a pale straw yellow. Same element as Fe²⁺, different color: that's redox.",
+      "absorbance": [0.85, 0.70, 0.50, 0.32, 0.18, 0.10, 0.06, 0.05, 0.04, 0.04, 0.03, 0.03, 0.03, 0.02, 0.02, 0.02, 0.02] },
+    { "id": "copper", "label": "Copper Cu²⁺", "group": "ions", "why": "Strong red absorption leaves turquoise — the Egyptian-faience lineage.",
+      "absorbance": [0.20, 0.15, 0.10, 0.08, 0.06, 0.06, 0.08, 0.15, 0.30, 0.50, 0.70, 0.85, 0.92, 0.95, 0.96, 0.97, 0.97] },
+    { "id": "gold-colloid", "label": "Gold colloid", "group": "colloids", "why": "Surface plasmon resonance near 530 nm devours the green — the transmitted remainder is gold-ruby red.",
+      "absorbance": [0.20, 0.18, 0.20, 0.25, 0.40, 0.75, 0.95, 0.85, 0.55, 0.30, 0.18, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05] },
+    { "id": "silver-colloid", "label": "Silver colloid", "group": "colloids", "why": "Silver's plasmon sits near 415 nm, in the blue — transmitting the yellow of silver stain.",
+      "absorbance": [0.55, 0.90, 0.95, 0.70, 0.40, 0.20, 0.12, 0.08, 0.06, 0.05, 0.04, 0.04, 0.03, 0.03, 0.02, 0.02, 0.02] },
+    { "id": "cds", "label": "CdS crystals", "group": "bandgap", "why": "A 2.4 eV band gap absorbs everything bluer than ~515 nm with a razor edge — brilliant yellow.",
+      "absorbance": [0.98, 0.98, 0.97, 0.95, 0.90, 0.55, 0.12, 0.05, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
+    { "id": "cdsse", "label": "CdS–Se crystals", "group": "bandgap", "why": "Swap sulfur for selenium and the edge slides — the same chemistry tuned to orange.",
+      "absorbance": [0.98, 0.98, 0.98, 0.97, 0.96, 0.94, 0.90, 0.75, 0.35, 0.08, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
+    { "id": "cdse", "label": "CdSe-rich crystals", "group": "bandgap", "why": "Selenium-rich crystals push the edge to ~640 nm — the saturated signal red of the selenium ruby.",
+      "absorbance": [0.98, 0.98, 0.98, 0.98, 0.97, 0.96, 0.95, 0.92, 0.88, 0.75, 0.40, 0.10, 0.04, 0.03, 0.02, 0.02, 0.02] },
+    { "id": "neodymium", "label": "Neodymium Nd³⁺", "group": "ions", "why": "Shielded 4f electrons absorb in narrow pickets (green, yellow, near-IR) — a lilac that changes with the light source.",
+      "absorbance": [0.10, 0.08, 0.10, 0.12, 0.15, 0.30, 0.70, 0.25, 0.90, 0.30, 0.12, 0.10, 0.15, 0.25, 0.75, 0.30, 0.10] }
+  ],
+  "illuminants": [
+    { "id": "daylight", "label": "Daylight (≈D65)",
+      "spd": [0.50, 0.85, 0.95, 1.00, 0.98, 0.95, 0.92, 0.90, 0.87, 0.84, 0.80, 0.76, 0.72, 0.68, 0.62, 0.55, 0.50] },
+    { "id": "incandescent", "label": "Incandescent (≈A)",
+      "spd": [0.05, 0.08, 0.12, 0.17, 0.24, 0.31, 0.38, 0.46, 0.54, 0.62, 0.70, 0.78, 0.85, 0.91, 0.96, 0.98, 1.00] }
+  ],
+  "striking": {
+    "gold": [
+      { "t": 0.0, "label": "dissolved gold — colorless", "color": "#f2f0ec" },
+      { "t": 0.25, "label": "nucleation — first faint blush", "color": "#eed7d4" },
+      { "t": 0.5, "label": "growth — the ruby strikes", "color": "#9b1b3c" },
+      { "t": 0.75, "label": "peak ruby", "color": "#7a1530" },
+      { "t": 1.0, "label": "over-struck — coarsened, livery gray-purple", "color": "#5b4350" }
+    ],
+    "selenium": [
+      { "t": 0.0, "label": "dissolved — colorless", "color": "#f2f0ec" },
+      { "t": 0.25, "label": "first crystals — pale straw", "color": "#ecd9a0" },
+      { "t": 0.5, "label": "edge sliding — orange", "color": "#d97a1f" },
+      { "t": 0.75, "label": "signal red", "color": "#b3121b" },
+      { "t": 1.0, "label": "over-struck — dull brick", "color": "#6e2f23" }
+    ]
+  }
+}
