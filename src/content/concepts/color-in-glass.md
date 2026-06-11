@@ -31,7 +31,7 @@ The second mechanism requires no ions: it uses metallic particles — gold, copp
 
 Gold nanoparticles absorb green and blue light and transmit red — producing the deep wine-red of gold ruby glass. Copper nanoparticles give a similar but warmer red. The striking thing about both is that the color does not exist in the melt: gold ruby glass is colorless when it comes out of the furnace. The particles only form during a controlled reheat called striking, and the glassmaker's skill lies in reading the color as it blooms.
 
-Silver behaves differently in this family: rather than deep-body ruby color, it produces a yellow surface stain when silver ions migrate into the glass and reduce to nanoparticles near the surface — the basis of silver stain in medieval windows.
+Silver behaves differently in this family: rather than deep-body ruby color, it produces a yellow surface stain when silver ions migrate into the glass and reduce to nanoparticles near the surface — the basis of silver stain in the medieval [stained glass](../stained-glass/) tradition.
 
 → [Colloidal color](../colloidal-color/) · [Silver stain](../silver-stain/)
 
@@ -43,7 +43,7 @@ By adjusting the sulfur-to-selenium ratio, glassmakers can tune the cut-off acro
 
 → [Selenium ruby glass](../selenium-ruby/)
 
-### Structure and scattering
+### Structure and scattering: color without a chromophore
 
 The fourth mechanism produces color — or white opacity — without any chromophore at all. The source of the optical effect is physical structure rather than chemistry: particles or layers that redirect light rather than absorbing it.
 
