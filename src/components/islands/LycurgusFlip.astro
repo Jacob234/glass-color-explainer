@@ -1,0 +1,28 @@
+<figure class="lyc">
+  <div class="lyc-buttons">
+    <button data-id="front">front-lit</button>
+    <button data-id="back">back-lit</button>
+  </div>
+  <div class="lyc-stage">
+    <div class="lyc-cup" role="img" aria-label="stylized Lycurgus Cup"></div>
+  </div>
+  <figcaption class="lyc-caption"></figcaption>
+  <p class="island-footnote">A stylized rendering — the real cup is in the British Museum, and its dichroism comes from gold-silver alloy nanoparticles.</p>
+</figure>
+<script>
+  import { initLycurgusFlip } from '../../scripts/islands/lycurgus.js';
+  for (const el of document.querySelectorAll('.lyc')) initLycurgusFlip(el);
+</script>
+<style>
+  .lyc { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
+  .lyc-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; }
+  .lyc-buttons button { font-size: 0.78rem; padding: 0.25rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--edge); background: var(--node); color: var(--muted); cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s; }
+  .lyc-buttons button:hover { color: var(--text); border-color: var(--faint); }
+  .lyc-buttons button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .lyc-stage { display: flex; justify-content: center; padding: 1.2rem; border-radius: 10px; transition: background 0.4s; }
+  .lyc-cup { width: 5.5rem; height: 7rem; border-radius: 0 0 2.6rem 2.6rem; border: 2px solid rgba(0,0,0,0.35); transition: background 0.4s; }
+  .lyc-caption { font-size: 0.8rem; color: var(--muted); margin-top: 0.6rem; }
+  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+</style>
