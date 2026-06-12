@@ -43,8 +43,9 @@
     activeRecipeId = null;
   }
 
-  function setC(i, value) {
-    melt[i].c = value / 100;
+  function setC(id, value) {
+    const m = melt.find((x) => x.id === id);
+    if (m) m.c = value / 100;
     activeRecipeId = null; // a recipe is a starting point, not a mode
   }
 
@@ -58,7 +59,7 @@
   <div class="lab-recipes">
     <span class="lab-label">recipes</span>
     {#each recipes as r (r.id)}
-      <button class="recipe" class:active={activeRecipeId === r.id} onclick={() => applyRecipe(r)}>
+      <button class="recipe" class:active={activeRecipeId === r.id} aria-pressed={activeRecipeId === r.id} onclick={() => applyRecipe(r)}>
         ⚗ {r.label}
       </button>
     {/each}
@@ -90,7 +91,7 @@
 
   <div class="lab-melt">
     <span class="lab-label">in the melt</span>
-    {#each melt as m, i (m.id)}
+    {#each melt as m (m.id)}
       {@const c = byId.get(m.id)}
       <div class="row">
         <span class="dot" style:background={chipColor[m.id]}></span>
@@ -99,7 +100,7 @@
         <input
           type="range" min="0" max="100"
           value={Math.round(m.c * 100)}
-          oninput={(e) => setC(i, e.currentTarget.valueAsNumber)}
+          oninput={(e) => setC(m.id, e.currentTarget.valueAsNumber)}
           aria-label={`${c.label} concentration`}
           aria-valuetext={`${Math.round(m.c * 100)} percent`} />
         <span class="pct">{Math.round(m.c * 100)}%</span>
@@ -125,7 +126,7 @@
       {/each}
       <polyline fill="none" stroke="#111" stroke-width="2.5" points={toPoints(mixCurve)} />
     </svg>
-    <div class="lab-swatch" style:background={swatch} title="transmitted color"></div>
+    <div class="lab-swatch" role="img" style:background={swatch} aria-label="transmitted color" title="transmitted color"></div>
   </div>
 
   <figcaption>{caption}</figcaption>
