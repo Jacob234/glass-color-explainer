@@ -1,0 +1,163 @@
+{
+  "supplier": "Reichenbach",
+  "coe": 104,
+  "productCount": 7,
+  "products": [
+    {
+      "name": "Deep Black",
+      "code": "446203",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "black",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/stiff-white-glass-rod-copy",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/DeepBlack.png?v=1761859097",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Iris Orange Raku",
+      "code": "446208",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "striking/silver-glass formulation — proprietary mixed metals; colorant not determinable from name",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/iris-orange-raku-reichenbach-g",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/446208_iris_orange_on_black_36b91c2a-d564-48c7-be94-5f7f72673c47.jpg?v=1736389557",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Multi",
+      "code": "446209",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/multi-reichenbach-glass-rod",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/446209_20multi_20opaque_4ae10a5a-b189-4ef4-8fe1-19c000668e7a.jpg?v=1736388661",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Multi Dark",
+      "code": "446209-D",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/multi-reichenbach-glass-rod-copy",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/446209_20multi_20opaque_4ae10a5a-b189-4ef4-8fe1-19c000668e7a.jpg?v=1736388661",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Magic",
+      "code": "446210",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/magic-reichenbach-glass-rod",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/446210magicoverblack_2.jpg?v=1736388660",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Opal Orange",
+      "code": "446214",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "white/opal",
+      "colorant": [],
+      "mechanism": "structure",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/reichenbach-opal-orange-glass-rod",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/OpalOrange.png?v=1761859271",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Opal Raspberry",
+      "code": "446219",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "white/opal",
+      "colorant": [
+        "gold-colloid"
+      ],
+      "mechanism": "colloids",
+      "colorantConfidence": "medium",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule gold-pink",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/opal-raspberry-reichenbach-gla",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/446219_1a13d9e2-baab-44d5-8591-3abf853a050d.jpg?v=1736389556",
+      "sourceRetailer": "Frantz Art Glass"
+    }
+  ]
+}

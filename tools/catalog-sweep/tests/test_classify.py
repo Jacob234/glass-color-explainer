@@ -28,6 +28,14 @@ class TestColorant(unittest.TestCase):
     def test_turquoise_is_copper(self):
         self.assertEqual(self._c("Caribbean Turquoise").colorant, ("copper",))
 
+    def test_egyptian_blue_is_copper_but_bare_egyptian_is_not(self):
+        # "Egyptian Blue" is a real copper pigment -> copper. But the bare "egyptian"
+        # token must NOT hijack an unrelated color (e.g. Northstar's white/sand boro).
+        self.assertEqual(self._c("Egyptian Blue Opalescent").colorant, ("copper",))
+        r = self._c("Egyptian White Sand")
+        self.assertEqual(r.colorant, ())
+        self.assertEqual(r.confidence, "unknown")
+
     def test_gold_ruby_and_cranberry_are_gold_colloid(self):
         self.assertEqual(self._c("Gold Ruby").colorant, ("gold-colloid",))
         self.assertEqual(self._c("Cranberry Pink").colorant, ("gold-colloid",))

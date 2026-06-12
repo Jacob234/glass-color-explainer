@@ -36,6 +36,28 @@
       "colorantKnown": 79
     },
     {
+      "id": "cim",
+      "file": "cim.json",
+      "supplier": "CiM",
+      "coe": 104,
+      "productCount": 216,
+      "swatchSourceCounts": {
+        "none": 216
+      },
+      "colorantKnown": 15
+    },
+    {
+      "id": "double-helix",
+      "file": "double-helix.json",
+      "supplier": "Double Helix",
+      "coe": 104,
+      "productCount": 29,
+      "swatchSourceCounts": {
+        "none": 29
+      },
+      "colorantKnown": 0
+    },
+    {
       "id": "effetre",
       "file": "effetre.json",
       "supplier": "Effetre",
@@ -57,11 +79,55 @@
         "image-sample": 154
       },
       "colorantKnown": 18
+    },
+    {
+      "id": "northstar",
+      "file": "northstar.json",
+      "supplier": "Northstar",
+      "coe": 33,
+      "productCount": 62,
+      "swatchSourceCounts": {
+        "none": 62
+      },
+      "colorantKnown": 6
+    },
+    {
+      "id": "reichenbach",
+      "file": "reichenbach.json",
+      "supplier": "Reichenbach",
+      "coe": 104,
+      "productCount": 7,
+      "swatchSourceCounts": {
+        "none": 7
+      },
+      "colorantKnown": 1
+    },
+    {
+      "id": "tag",
+      "file": "tag.json",
+      "supplier": "TAG",
+      "coe": 33,
+      "productCount": 48,
+      "swatchSourceCounts": {
+        "none": 48
+      },
+      "colorantKnown": 4
+    },
+    {
+      "id": "vetrofond",
+      "file": "vetrofond.json",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "productCount": 49,
+      "swatchSourceCounts": {
+        "none": 49
+      },
+      "colorantKnown": 10
     }
   ],
   "totals": {
-    "products": 765,
-    "withColorant": 162,
+    "products": 1176,
+    "withColorant": 198,
     "withSwatch": 740
   }
 }

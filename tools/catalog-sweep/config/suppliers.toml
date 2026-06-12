@@ -55,3 +55,108 @@ default_form = ["rod"]
 default_opacity = "unknown"
 crawl_delay_s = 3.0
 firecrawl_budget = 0
+
+# --- Frantz-hosted rod brands (phase 2) -------------------------------------------------
+# Frantz Art Glass (frantzartglass.com) re-sells many lampwork rod brands as Shopify
+# collections. Each is the Effetre pattern: point at the brand's own collection handle and
+# filter by `vendor` (Frantz collections co-mingle brands — e.g. double-helix-1 also lists 7
+# TAG products that vendor_filter drops). Handles + vendor strings + COE were verified against
+# the live products.json before being written here (the suggested handles in the handoff were
+# partly wrong: `vetrofond` not `vetrofond-glass` (dichroic), `double-helix-1` not
+# `double-helix` (Effetre millefiori)). Northstar + TAG are borosilicate (COE 33), not soft glass.
+
+[reichenbach]
+brand = "Reichenbach"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 104                          # soft glass (lampwork rods)
+collections = ["reichenbach"]
+vendor_filter = ["reichenbach"]
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\breichenbach\b', '\bglass\s+rods?\b', '\b104\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[cim]
+brand = "CiM"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 104                          # soft glass (Creation is Messy)
+collections = ["cim-creation-is-messy"]   # the rods (251); `cim-creations-is-messy` is frit/powder
+vendor_filter = ["cim", "creation is messy"]
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\bltd\s+run\b', '\bcreation\s+is\s+messy\b', '\bglass\s+rods?\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[vetrofond]
+brand = "Vetrofond"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 104                          # soft glass (Italian)
+collections = ["vetrofond"]        # the rods (56); `vetrofond-glass` is a dichroic-strips collection
+vendor_filter = ["vetrofond"]
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\bvetrofond\b', '\bglass\s+rods?\b', '\b\d+\s*-\s*\d+\s*mm\b', '\bodd\b', '\bpastel\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[double-helix]
+brand = "Double Helix"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 104                          # soft glass (silver/reactive lampwork)
+collections = ["double-helix-1"]   # the Double Helix rods (39); `double-helix` is Effetre millefiori
+vendor_filter = ["double helix"]   # collection co-mingles 7 TAG products — exclude them
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\bdouble\s+helix\b', '\bglass\s+rods?\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[northstar]
+brand = "Northstar"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 33                           # borosilicate (Northstar Glassworks)
+collections = ["northstar"]
+vendor_filter = ["northstar"]
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\bnorthstar\b', '\bglass\s+(rods?|frit)\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[tag]
+brand = "TAG"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 33                           # borosilicate (Trautman Art Glass)
+collections = ["tag-trautman-art-glass"]
+vendor_filter = ["trautman"]
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"
+name_strategy = "strip-suffix"
+title_strip = ['\bcoe\s*33\b', '\btrautman\s+art\s+glass\b', '\btag\b', '\bglass\s+(rods?|frit)\b', '\brods?\b']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0

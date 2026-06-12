@@ -98,7 +98,7 @@ _RULES: tuple[_Rule, ...] = (
     _r("chromium-explicit", r"\b(chromium|chrome|emerald|viridian)\b", "chromium", "high"),
     _r("manganese-explicit", r"\b(manganese|amethyst)\b", "manganese", "medium"),
     _r("neodymium-explicit", r"\b(neodymium|alexandrite|didymium)\b", "neodymium", "high"),
-    _r("copper-turquoise", r"\b(turquoise|teal|aqua|aquamarine|peacock|caribbean|egyptian)\b", "copper", "high"),
+    _r("copper-turquoise", r"\b(turquoise|teal|aqua|aquamarine|peacock|caribbean|egyptian[ -]?blue)\b", "copper", "high"),
     _r("copper-aventurine", r"\b(aventurine|goldstone)\b", "copper", "high"),
     # --- colloids: gold pinks/reds, copper ruby, silver stain ---
     _r("gold-ruby", r"\b(gold[ -]?ruby|cranberry|cranberry[ -]?ruby)\b", "gold-colloid", "high"),

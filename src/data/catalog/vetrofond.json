@@ -1,0 +1,1105 @@
+{
+  "supplier": "Vetrofond",
+  "coe": 104,
+  "productCount": 49,
+  "products": [
+    {
+      "name": "Clear Transparent",
+      "code": "791004",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "neutral/clear",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule clear — no chromophore (structure/clear)",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/clear-transparent-4-6mm-vetrof",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791004_12-5-17_f16372a2-0181-4e26-8bf7-409ae6b1f86d.jpg?v=1736396615",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Transparent",
+      "code": "791008",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "yellow",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/yellow-transparent-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791008_actual_bf17291f-fe9d-44cf-94b4-867393cbb915.jpg?v=1736396615",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Topaz Light Transparent",
+      "code": "791012",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/topaz-light-transparent-vetrof",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791012_actual_485c7c3a-2d97-4a48-a06a-2f34ee452dfa.jpg?v=1736396614",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Grass Green Light Transparent",
+      "code": "791020",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [
+        "chromium"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule chromium-greenish",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/grass-green-light-transparent",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791020_20actual.jpg?v=1736396423",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Grass Green Medium Transparent",
+      "code": "791022",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [
+        "chromium"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule chromium-greenish",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/grass-green-medium-transparent",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791022_actual_5593de20-c7f4-4bfe-92b3-42a380740b86.jpg?v=1736396613",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Grass Green Dark Transparent",
+      "code": "791024-08",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [
+        "chromium"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule chromium-greenish",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/grass-green-dark-transparent-v",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791024_actual_49d01a98-4cf7-4b78-8acf-fe0c195c7aa4.jpg?v=1736396507",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Emerald Green Light Transparent",
+      "code": "791028",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [
+        "chromium"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule chromium-explicit",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/emerald-green-light-transparen",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791028_actual_541e0673-6b94-41e7-a3d4-bd5acdc046ec.jpg?v=1736396612",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Emerald Green Dark Transparent",
+      "code": "791030",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [
+        "chromium"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule chromium-explicit",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/emerald-green-dark-transparent",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791030_actual_aced0a02-7ac5-49c9-ae34-3bb26a9a4b50.jpg?v=1736396612",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Purple Light Transparent",
+      "code": "791040",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "purple",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/purple-light-transparent-vetro",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791040_actual_544d64d5-250d-4ce8-bf5b-18799c1ec672.jpg?v=1736396611",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Gray Transparent",
+      "code": "791048",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "gray",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/gray-transparent-vetrofond-4-7",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791048_actual_944592ff-1501-4814-8d83-c7989f3264af.jpg?v=1736396610",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Blue Light Transparent",
+      "code": "791052",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "blue",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/blue-light-transparent-vetrofo",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791052_actual_9e78b99f-b797-419a-ba55-cc29d6b69952.jpg?v=1736396610",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Electric Yellow (striking) Transparent",
+      "code": "791069",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "yellow",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "striking/silver-glass formulation — proprietary mixed metals; colorant not determinable from name",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/electric-yellow-striking-tra",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791069_actual_2a7a81e9-2925-4424-a8e8-bbd4c624448b.jpg?v=1736396608",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Orange (striking) Transparent",
+      "code": "791072",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "striking/silver-glass formulation — proprietary mixed metals; colorant not determinable from name",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/orange-striking-transparent",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791072_actual_c514bb9b-ba11-40b5-b044-8fd6c9cc7aea.jpg?v=1736396607",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Lavender Pale Transparent",
+      "code": "791080",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "purple",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/lavender-pale-transparent-vetr",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791080_3-19-20_29ad4042-b201-48bf-96f2-67e8bf517537.jpg?v=1736396607",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Lavender Blue Transparent",
+      "code": "791082",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "purple",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/lavender-blue-transparent-vetr",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791082_3-19-20_e043356e-e7b2-4fc1-9af7-35460bfe48fd.jpg?v=1736396606",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Brown Light Transparent",
+      "code": "791084",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "brown",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/brown-light-transparent-vetrof",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/591084_actual_7a571e21-aa75-44f9-9cbb-334654002c60.jpg?v=1736396605",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Lapis Cobalt",
+      "code": "791246",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "blue",
+      "colorant": [
+        "cobalt"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule cobalt-explicit",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/lapis-cobalt-5-6mm-vetrofond-glass-rods-copy",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791246_actual_69059cb0-f522-4495-931a-68ca349c8679.jpg?v=1735419361",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Gray Medium Opaque",
+      "code": "791250",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "gray",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/gray-medium-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791250_actual_507c17c6-727d-4cea-9b95-a8534744806d.jpg?v=1736396604",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Pink Flower Opaque",
+      "code": "791255",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "pink",
+      "colorant": [
+        "gold-colloid"
+      ],
+      "mechanism": "colloids",
+      "colorantConfidence": "medium",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule gold-pink",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/pink-flower-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791255_actual_dcdc3f55-9383-482d-8a48-a52ac50305e8.jpg?v=1736396604",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Pink Light Opaque",
+      "code": "791260",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "pink",
+      "colorant": [
+        "gold-colloid"
+      ],
+      "mechanism": "colloids",
+      "colorantConfidence": "medium",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule gold-pink",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/pink-light-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791260actual_538cbad5-6094-4c87-bb5a-9ae78f5c3dda.jpg?v=1736396603",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Violet Opaque",
+      "code": "791272",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "purple",
+      "colorant": [
+        "manganese"
+      ],
+      "mechanism": "ions",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule manganese-purple",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/violet-opaque-vetrofond-4-7mm",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791272_actual_e9803089-5a97-42d8-83c3-1c6b9c6390de.jpg?v=1736396602",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Lemon Light",
+      "code": "791404",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "white/opal",
+      "colorant": [],
+      "mechanism": "structure",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/yellow-lemon-light-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791404-4-12-12_81022e2e-8d3d-4a9c-ae01-a4fb5591c98a.jpg?v=1736396601",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Lemon Medium",
+      "code": "791408",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "yellow",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/orange-dark-5-6mm-vetrofond-glass-rods-copy-1",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791404-4-12-12_81022e2e-8d3d-4a9c-ae01-a4fb5591c98a.jpg?v=1736396601",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Dark Opaque",
+      "code": "791412",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "yellow",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/yellow-dark-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791412_actual_abb4d376-cf74-45ea-bcf7-5e2ae3994026.jpg?v=1736396601",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Coral Red Opaque",
+      "code": "791420",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "red is ambiguous (selenium / gold / copper) — needs supplier data",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/coral-red-opaque-vetrofond-4-7",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791420actual_2cd62574-a30c-4b7d-a287-b54ef7ee640d.jpg?v=1736396600",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Red Medium Opaque",
+      "code": "791432",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "red",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "red is ambiguous (selenium / gold / copper) — needs supplier data",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/red-medium-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791432actual_a968d5c1-5b24-404f-8e2c-19ad543c8b91.jpg?v=1736396599",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Red Dark Opaque",
+      "code": "791436",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "red",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "red is ambiguous (selenium / gold / copper) — needs supplier data",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/red-dark-opaque-vetrofond-4-7m",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791436actual_f094e6bf-a530-4235-9097-1ba71e2f03c9.jpg?v=1736396598",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Red Purple Opaque",
+      "code": "791438",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "purple",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "low",
+      "colorantSource": "name-rule",
+      "colorantNote": "red is ambiguous (selenium / gold / copper) — needs supplier data",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/red-purple-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791438actual_6b91abcc-1bd6-4c09-ab47-a014c350924f.jpg?v=1736396597",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Brown Light",
+      "code": "791444",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "brown",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/lapis-cobalt-5-6mm-vetrofond-glass-rods-copy-1",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/591444_actual_9e35c355-763b-4a3a-80bf-decd0c0ce652.jpg?v=1736396513",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Brown Dark Opaque",
+      "code": "791448",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "brown",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/brown-dark-opaque-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791448actual_542d6aee-a04b-4aa5-876d-31b3c5293832.jpg?v=1736396597",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Apricot Jam",
+      "code": "791802",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/apricot-jam-odd-vetrofond-4-7m",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791802_4-23-18_83ff9f47-715d-44d0-88e6-6c1c9fc52a96.jpg?v=1736396596",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Candy Corn",
+      "code": "791803",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/candy-corn-odd-vetrofond-4-7mm",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791803_4-23-18_5c722f76-5a2d-4c6f-8a31-fc82c88cbf99.jpg?v=1736396595",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Tomato Soup",
+      "code": "791804",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "red",
+      "colorant": [
+        "cdse"
+      ],
+      "mechanism": "bandgap",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule selenium-red",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/tomato-soup-odd-vetrofond-4-7m",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/7918044-18-18.jpg?v=1736396422",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Orange Dreamsicle",
+      "code": "791805",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/orange-dreamsicle-odd-vetrofon",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791805_4-23-18_173fe5fc-e930-45b4-91e1-8cb8de2858a8.jpg?v=1736396594",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Swamp Moss",
+      "code": "791808",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "green",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/swamp-moss-odd-vetrofond-4-7mm",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791808-2018-a_da019a4e-8dbb-4886-b129-093820b2f647.jpg?v=1736396421",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "ELO Extremely Light Olive",
+      "code": "791817",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "green",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/elo-extremely-light-olive-odd",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791817_0f549103-f496-4d32-ada8-4a3c53fa8b37.jpg?v=1736396593",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Biscotti",
+      "code": "791819",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/biscotti-odd-vetrofond-4-7mm-g",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791819_2_6aab958d-50e2-4503-8536-67b370c3a30c.jpg?v=1736396420",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Pale Pesto",
+      "code": "791820",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/pale-pesto-odd-vetrofond-4-7mm",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791820_2_03c602f0-9fe6-462c-8699-013c3dda5774.jpg?v=1736396419",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Cream",
+      "code": "791822",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/cream-odd-vetrofond-4-7mm-glas",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791822_df633102-7001-47bd-a156-c4ace6b5d183.jpg?v=1736396593",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Mauvelous",
+      "code": "791823",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/mauvelous-odd-vetrofond-4-7mm",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791823_b365fa33-ac81-4c1c-a873-5277e747f0b1.jpg?v=1736396418",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Translucent",
+      "code": "791910",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "white/opal",
+      "colorant": [],
+      "mechanism": "structure",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/yellow-translucent-odd-vetrofo",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791910-d_actual_1f2c5280-eeb4-484d-9d87-a5e9fc214d2c.jpg?v=1736396592",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Blue Pale Transparent",
+      "code": "791925",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "blue",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/blue-pale-transparent-vetrofon",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791925_actual_f5ecab99-9938-4d40-9ee5-66aad77161d3.jpg?v=1736396591",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Arancio Perfecto (Orange Perfecto)",
+      "code": "791937",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "orange",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/arancio-perfecto-orange-perfe",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791937_actual_9d5ccbec-db43-448b-afd2-d4515ed4e046.jpg?v=1736396590",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Intense Tangarine",
+      "code": "791939",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "multi/streaky",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/intense-tagarine-5-6mm-vetrofond-glass-rods",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791072_actual_c514bb9b-ba11-40b5-b044-8fd6c9cc7aea.jpg?v=1736396607",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Gray Quartz",
+      "code": "791967",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "gray",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/gray-quartz-odd-vetrofond-4-7m",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791967_7-30-13_b743d1f3-05d6-427a-801e-6d5cf0cdddca.jpg?v=1736396588",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Pearl Gray Light",
+      "code": "791969",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "white/opal",
+      "colorant": [],
+      "mechanism": "structure",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/pearl-gray-light-odd-vetrofond",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791969actual_2c1241d3-548b-43af-9cdf-463eaee53766.jpg?v=1736396587",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Moss Agate ODDLY",
+      "code": "791984",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "unknown",
+      "family": "green",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/moss-agate-oddly-odd-vetrofond",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791984_10-28-13_dec4fcc5-d153-4933-8571-b3749ebcda52.jpg?v=1736396586",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Crystal Green Pale",
+      "code": "791988",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "transparent",
+      "family": "green",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "high",
+      "colorantSource": "name-rule",
+      "colorantNote": "rule clear — no chromophore (structure/clear)",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": true,
+      "url": "https://www.frantzartglass.com/products/crystal-green-pale-odd-vetrofo",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791988_actual_efc8120e-0770-4e9e-8752-2ba3beb00dda.jpg?v=1736396585",
+      "sourceRetailer": "Frantz Art Glass"
+    },
+    {
+      "name": "Yellow Banana",
+      "code": "791992",
+      "supplier": "Vetrofond",
+      "coe": 104,
+      "form": [
+        "rod"
+      ],
+      "opacity": "opal",
+      "family": "yellow",
+      "colorant": [],
+      "mechanism": "unknown",
+      "colorantConfidence": "unknown",
+      "colorantSource": "name-rule",
+      "colorantNote": "no name-rule matched",
+      "swatchHex": null,
+      "swatchSource": "none",
+      "swatchCaveat": false,
+      "url": "https://www.frantzartglass.com/products/yellow-banana-odd-vetrofond-4",
+      "imageUrl": "https://cdn.shopify.com/s/files/1/0688/6388/5502/files/791992_6-28-13_6baaf764-0b3c-47bb-84cc-96431f7f88d7.jpg?v=1736396584",
+      "sourceRetailer": "Frantz Art Glass"
+    }
+  ]
+}
