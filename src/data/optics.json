@@ -54,8 +54,8 @@
       "label": "Decolorize",
       "story": "Manganese's purple absorbs where iron's green transmits — they cancel toward gray, the old glassmaker's trick. (The real trick also involves redox chemistry this model can't show.)",
       "melt": [
-        { "colorant": "iron-ferrous", "c": 0.5 },
-        { "colorant": "manganese", "c": 0.35 }
+        { "colorant": "iron-ferrous", "c": 1 },
+        { "colorant": "manganese", "c": 1 }
       ]
     },
     {
@@ -63,8 +63,8 @@
       "label": "Deep teal",
       "story": "Cobalt devours the orange and red; chromium devours the violet and red — stack them and only a blue-green window survives.",
       "melt": [
-        { "colorant": "cobalt", "c": 0.4 },
-        { "colorant": "chromium", "c": 0.5 }
+        { "colorant": "cobalt", "c": 0.9 },
+        { "colorant": "chromium", "c": 0.35 }
       ]
     },
     {
@@ -73,7 +73,7 @@
       "story": "Ferric iron's violet edge plus manganese's green dip leave a warm straw-amber. Real beer-bottle amber needs the ferri-sulfide chromophore — this is only the spectral half of the story.",
       "melt": [
         { "colorant": "iron-ferric", "c": 0.8 },
-        { "colorant": "manganese", "c": 0.3 }
+        { "colorant": "manganese", "c": 0.7 }
       ]
     }
   ]
