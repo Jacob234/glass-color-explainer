@@ -56,6 +56,28 @@ export function validate(map, optics, contentDir, islands) {
     }
   }
 
+  // --- recipes (optional) ---
+  const recipeColorantIds = new Set(optics.colorants.map((c) => c.id));
+  const recipeIds = new Set();
+  for (const r of optics.recipes || []) {
+    if (recipeIds.has(r.id)) errors.push(`recipe ${r.id}: duplicate id`);
+    recipeIds.add(r.id);
+    if (!r.label) errors.push(`recipe ${r.id}: label must be non-empty`);
+    if (!r.story) errors.push(`recipe ${r.id}: story must be non-empty`);
+    if (!Array.isArray(r.melt) || r.melt.length < 1 || r.melt.length > 4) {
+      errors.push(`recipe ${r.id}: melt must contain 1-4 components`);
+    } else {
+      for (const m of r.melt) {
+        if (!recipeColorantIds.has(m.colorant)) {
+          errors.push(`recipe ${r.id}: colorant "${m.colorant}" not found in optics.colorants`);
+        }
+        if (!(m.c > 0 && m.c <= 1)) {
+          errors.push(`recipe ${r.id}: c must be in (0,1], got ${m.c}`);
+        }
+      }
+    }
+  }
+
   // --- islands.json (optional 4th param) ---
   if (islands) {
     const colorantIds = new Set(optics.colorants.map((c) => c.id));

@@ -103,3 +103,66 @@ test('typo in islands spectrum colorant id is an error', () => {
   const { errors } = validate(goodMap, goodOptics, dir, badIslands);
   assert.ok(errors.some((e) => e.includes('TYPO-ID')));
 });
+
+const goodRecipe = {
+  id: 'r1', label: 'L', story: 'S',
+  melt: [{ colorant: 'cobalt', c: 0.5 }],
+};
+
+function opticsWithRecipes(recipes) {
+  return { ...structuredClone(goodOptics), recipes };
+}
+
+test('valid recipes produce no errors', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const { errors } = validate(goodMap, opticsWithRecipes([goodRecipe]), dir);
+  assert.deepEqual(errors, []);
+});
+
+test('recipe referencing unknown colorant is an error', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const r = structuredClone(goodRecipe);
+  r.melt[0].colorant = 'unobtainium';
+  const { errors } = validate(goodMap, opticsWithRecipes([r]), dir);
+  assert.ok(errors.some((e) => e.includes('unobtainium')));
+});
+
+test('recipe concentration must be in (0,1]', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  for (const bad of [0, -0.1, 1.5]) {
+    const r = structuredClone(goodRecipe);
+    r.melt[0].c = bad;
+    const { errors } = validate(goodMap, opticsWithRecipes([r]), dir);
+    assert.ok(errors.some((e) => e.includes('r1')), `c=${bad} should be rejected`);
+  }
+});
+
+test('recipe melt must contain 1-4 components', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const empty = structuredClone(goodRecipe);
+  empty.melt = [];
+  const five = structuredClone(goodRecipe);
+  five.melt = Array.from({ length: 5 }, () => ({ colorant: 'cobalt', c: 0.5 }));
+  for (const r of [empty, five]) {
+    const { errors } = validate(goodMap, opticsWithRecipes([r]), dir);
+    assert.ok(errors.some((e) => e.includes('1-4')));
+  }
+});
+
+test('duplicate recipe ids are an error', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const { errors } = validate(goodMap, opticsWithRecipes([goodRecipe, structuredClone(goodRecipe)]), dir);
+  assert.ok(errors.some((e) => e.includes('duplicate')));
+});
+
+test('recipe label and story must be non-empty', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  const noLabel = structuredClone(goodRecipe);
+  noLabel.label = '';
+  const noStory = structuredClone(goodRecipe);
+  noStory.story = '';
+  for (const r of [noLabel, noStory]) {
+    const { errors } = validate(goodMap, opticsWithRecipes([r]), dir);
+    assert.ok(errors.some((e) => e.includes('r1')));
+  }
+});
