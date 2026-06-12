@@ -55,3 +55,5 @@ Amber glass — the color of a beer bottle — is one of the most technically co
 ### Wine-bottle green
 
 The classic wine-bottle green comes from chromium (Cr³⁺) and iron working together in a soda-lime silicate base. Chromium is a powerful green colorant — used at 0.1–0.3% — but the specific shade of wine-bottle green, and its commercial production from recycled cullet (broken glass), relies on the iron already present in the cullet accepting whatever redox state the furnace delivers and contributing its own blue-green component. The result is a composite color that can be reproduced economically from mixed recycled glass, which is why wine bottles are one of the largest-volume glass products made with intentional transition-metal color. The green provides meaningful UV protection for wines sensitive to light exposure.
+
+Want to see what these ions do together? Open the [mixing lab](../../mixing-lab/) and melt them in combination — cobalt plus chromium, or the old iron-and-manganese decolorizing trick.
