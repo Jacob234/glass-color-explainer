@@ -1,0 +1,67 @@
+{
+  "catalogVersion": "0.1.0",
+  "vocabSnapshot": {
+    "colorants": [
+      "cds",
+      "cdse",
+      "cdsse",
+      "chromium",
+      "cobalt",
+      "copper",
+      "gold-colloid",
+      "iron-ferric",
+      "iron-ferrous",
+      "manganese",
+      "neodymium",
+      "silver-colloid"
+    ],
+    "mechanisms": [
+      "ions",
+      "colloids",
+      "bandgap",
+      "structure"
+    ]
+  },
+  "suppliers": [
+    {
+      "id": "bullseye",
+      "file": "bullseye.json",
+      "supplier": "Bullseye Glass",
+      "coe": 90,
+      "productCount": 328,
+      "swatchSourceCounts": {
+        "image-sample": 307,
+        "none": 21
+      },
+      "colorantKnown": 79
+    },
+    {
+      "id": "effetre",
+      "file": "effetre.json",
+      "supplier": "Effetre",
+      "coe": 104,
+      "productCount": 283,
+      "swatchSourceCounts": {
+        "image-sample": 279,
+        "none": 4
+      },
+      "colorantKnown": 65
+    },
+    {
+      "id": "glass-alchemy",
+      "file": "glass-alchemy.json",
+      "supplier": "Glass Alchemy",
+      "coe": 33,
+      "productCount": 154,
+      "swatchSourceCounts": {
+        "image-sample": 154
+      },
+      "colorantKnown": 18
+    }
+  ],
+  "totals": {
+    "products": 765,
+    "withColorant": 162,
+    "withSwatch": 740
+  }
+}

@@ -1,6 +1,11 @@
 node_modules/
 dist/
 .astro/
+# Catalog-sweep scraper caches (re-derivable; only src/data/catalog/*.json is committed)
+tools/catalog-sweep/raw/
+tools/catalog-sweep/.venv/
+__pycache__/
+*.pyc
 # Local working context (handoffs reference private vault paths) — not for the public repo
 .claude/
 .superpowers/

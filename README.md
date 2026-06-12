@@ -18,8 +18,8 @@ npm run dev      # http://localhost:4321/glass-color-explainer/
 
 ```sh
 npm run build    # static build; unresolved slugs/anchors fail it
-npm run check    # data validator (map.json + optics.json + islands.json referential integrity)
-npm test         # fixture tests for the validator
+npm run check    # data validators (map/optics/islands + catalog referential integrity)
+npm test         # fixture tests for both validators
 ```
 
 ## Architecture
@@ -29,6 +29,16 @@ npm test         # fixture tests for the validator
 - Map data: `src/data/map.json`; island routing: `src/data/islands.json`;
   island science data: `src/data/optics.json` (illustrative absorption curves —
   visually faithful, not measured spectra)
+
+## Color catalog (reference dataset)
+
+`src/data/catalog/` is a standalone, versioned sweep of real glass-art supplier colors
+(Bullseye, Effetre, Glass Alchemy…), each linking back to the `optics.json` colorant that
+explains it. It is **decoupled from the live site** — a reference dataset for future features,
+not yet wired into the explainer. The sweeper lives in
+[`tools/catalog-sweep/`](tools/catalog-sweep/) (Python, kept out of `package.json`); colorant
+mappings and swatch hexes are honest approximations (inferred from names, sampled from photos),
+validated by `scripts/check_catalog.mjs`.
 
 ## Provenance
 

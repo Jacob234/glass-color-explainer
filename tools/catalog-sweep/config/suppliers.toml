@@ -1,0 +1,57 @@
+# suppliers.toml — per-supplier adapter config (the "small adapter" for each source).
+#
+# Phase-1 trio: all three sources expose Shopify products.json, so method = "shopify-collections"
+# for every one. Each entry says WHICH collections hold the colors, how to derive the stable
+# color code (the identity that collapses per-form SKUs into one color), how to clean the
+# display name, and sensible defaults. A hand-written adapters/<id>.py is only needed later for
+# non-Shopify manufacturers (Wissmach PDF charts, etc.).
+#
+# code_strategy:  sku | sku-prefix6 | handle
+# name_strategy:  as-is | before-comma | strip-suffix (uses title_strip regexes)
+
+[bullseye]
+brand = "Bullseye Glass"
+base = "https://shop.bullseyeglass.com"
+method = "shopify-collections"
+coe = 90
+# Form collections are the clean color axis; the same color recurs across them and is collapsed
+# by its 6-digit code. (dichroic / paints-enamels deferred — different SKU shape.)
+collections = ["be-sheet-glass", "frit-powder", "rod-stringer", "billet", "tekta"]
+code_strategy = "sku-prefix6"      # SKU "000843-0065-F-EACH" -> color code "000843"
+name_strategy = "before-comma"     # "Opaline Casting Tint, Billet, Fusible" -> "Opaline Casting Tint"
+default_form = ["sheet"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[glass-alchemy]
+brand = "Glass Alchemy"
+base = "https://glassalchemy.com"
+method = "shopify-collections"
+coe = 33                            # borosilicate
+collections = ["all"]
+# `all` includes a little non-color merch / scrap; drop it by title keyword.
+exclude = ["t-shirt", "tshirt", "hoodie", "apparel", "bundle", "gift card", "sticker",
+           "mystery", "sample pack", "tool", "marble", "kit", "bag of bits"]
+code_strategy = "handle"           # GA SKUs are warehouse codes; the handle is the stable color id
+name_strategy = "before-comma"     # "Cobalt-1, 511" -> "Cobalt-1" (the trailing number is the code)
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0
+
+[effetre]
+brand = "Effetre"
+base = "https://www.frantzartglass.com"
+method = "shopify-collections"
+coe = 104                          # soft glass
+collections = ["effetre-rods"]
+vendor_filter = ["effetre", "moretti"]   # Frantz is multi-brand; keep only Effetre/Moretti
+source_retailer = "Frantz Art Glass"
+code_strategy = "sku"              # Frantz carries the numeric Effetre/Moretti catalog code
+name_strategy = "strip-suffix"
+title_strip = ['\s+effetre.*$', '\s+moretti.*$', '\s+glass\s+rod.*$', '\s+rod\b.*$']
+default_form = ["rod"]
+default_opacity = "unknown"
+crawl_delay_s = 3.0
+firecrawl_budget = 0

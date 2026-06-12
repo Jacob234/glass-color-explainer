@@ -1,0 +1,21 @@
+[project]
+name = "catalog-sweep"
+version = "0.1.0"
+description = "Polite, free-first sweep of glass-art supplier color catalogs into src/data/catalog/*.json"
+requires-python = ">=3.11"
+# Phase-1 suppliers are all Shopify (products.json), so only httpx + Pillow are needed.
+# crawl4ai/beautifulsoup4 are added later, ONLY for non-Shopify manufacturers (e.g. Wissmach
+# PDF charts). TOML config is read with the stdlib `tomllib` (3.11+), no dependency required.
+dependencies = [
+    "httpx>=0.27",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# Rung 2/3 of the ladder, installed on demand when a supplier defeats the structured-feed rung.
+html = ["crawl4ai>=0.4", "beautifulsoup4>=4.12"]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["catalog_sweep*"]

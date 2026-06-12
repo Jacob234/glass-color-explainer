@@ -1,0 +1,3 @@
+{
+  "_doc": "Manual corrections keyed by 'supplier:code'. Each value may set any of: colorant (array), colorantConfidence, colorantNote, swatchHex, swatchSource, family, opacity. Survives re-sweeps (applied last in normalize). Use to fix low-confidence auto-inferences without re-scraping."
+}
