@@ -34,3 +34,16 @@ export function transmittedColor(wavelengths, absorbance, spd) {
   const clamp = (v) => Math.max(0, Math.min(255, Math.round(v * scale)));
   return `rgb(${clamp(r)}, ${clamp(g)}, ${clamp(b)})`;
 }
+
+// Multiplicative-transmittance mixing (Beer–Lambert in spirit, linearized in c).
+// melts: [{ colorant: { absorbance: [...] }, c: 0..1 }]; n: number of wavelength points.
+// Per point j: A_eff[j] = 1 - product_i(1 - c_i * A_i[j]).
+export function mixedAbsorbance(melts, n) {
+  const out = new Array(n).fill(0);
+  for (let j = 0; j < n; j++) {
+    let t = 1;
+    for (const { colorant, c } of melts) t *= 1 - c * colorant.absorbance[j];
+    out[j] = 1 - t;
+  }
+  return out;
+}
