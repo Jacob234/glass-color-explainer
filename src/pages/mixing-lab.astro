@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import MixingLab from '../components/islands/MixingLab.svelte';
+import optics from '../data/optics.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Mixing Lab" description="Melt up to four glass colorants at adjustable concentrations and watch the absorption curve and transmitted color respond.">
+  <article class="concept">
+    <h1>Mixing Lab</h1>
+    <p class="summary">
+      Every concept page shows one colorant at a time. Real glass is a melt: pick up to four
+      colorants, set their concentrations, and watch the combined absorption curve and the
+      transmitted color respond. The recipes set up classic combinations worth understanding.
+    </p>
+    <MixingLab client:load optics={optics} recipes={optics.recipes} />
+    <p class="back"><a href={`${base}/`}>← back to the map</a></p>
+  </article>
+</Base>
