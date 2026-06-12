@@ -1,11 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import GlassMap from '../components/GlassMap.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Base title="the four mechanisms" description="The four physical mechanisms that color glass — dissolved ions, metal colloids, band-gap crystals, and structure — with the real objects they explain.">
   <GlassMap />
   <p class="map-footnote">Every swatch is a real object. Click it to find out why it's that color.</p>
+  <p class="lab-link"><a href={`${base}/mixing-lab/`}>open the mixing lab ⚗</a></p>
 </Base>
 <style>
   .map-footnote { text-align: center; font-size: 0.85rem; opacity: 0.7; margin-top: 1rem; }
+  .lab-link { text-align: center; font-size: 0.85rem; margin-top: 0.4rem; }
 </style>
