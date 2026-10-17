@@ -29,6 +29,9 @@ npm test         # fixture tests for both validators
 - Map data: `src/data/map.json`; island routing: `src/data/islands.json`;
   island science data: `src/data/optics.json` (illustrative absorption curves —
   visually faithful, not measured spectra)
+- Color science: `src/scripts/optics-core.js` — Beer–Lambert mixing (optical densities add,
+  scaled by concentration and thickness), integrated against the CIE 1931 2° observer
+  (Wyman–Sloan–Shirley analytic fit), Bradford-adapted to D65, encoded as sRGB
 
 ## Color catalog (reference dataset)
 

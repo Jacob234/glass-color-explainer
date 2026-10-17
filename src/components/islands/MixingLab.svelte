@@ -18,10 +18,12 @@
   );
 
   let melt = $state([]); // [{ id, c }]
+  let logThickness = $state(0); // path length is 2^logThickness × the reference sample
   let activeRecipeId = $state(null);
 
+  let thickness = $derived(2 ** logThickness);
   let mixCurve = $derived(
-    mixedAbsorbance(melt.map((m) => ({ colorant: byId.get(m.id), c: m.c })), optics.wavelengths.length)
+    mixedAbsorbance(melt.map((m) => ({ colorant: byId.get(m.id), c: m.c })), optics.wavelengths.length, thickness)
   );
   let swatch = $derived(transmittedColor(optics.wavelengths, mixCurve, daylight.spd));
   let caption = $derived(
@@ -30,11 +32,15 @@
     : ''
   );
 
-  function toPoints(absorbance, scale = 1) {
+  function toPoints(absorbance) {
     return absorbance
-      .map((a, i) => `${(i / (absorbance.length - 1)) * W},${H - a * scale * H}`)
+      .map((a, i) => `${(i / (absorbance.length - 1)) * W},${H - a * H}`)
       .join(' ');
   }
+
+  // One colorant's own contribution at its concentration and the current thickness.
+  const componentCurve = (m) =>
+    mixedAbsorbance([{ colorant: byId.get(m.id), c: m.c }], optics.wavelengths.length, thickness);
 
   function toggle(id) {
     const i = melt.findIndex((m) => m.id === id);
@@ -49,8 +55,14 @@
     activeRecipeId = null; // a recipe is a starting point, not a mode
   }
 
+  function setThickness(value) {
+    logThickness = value;
+    activeRecipeId = null;
+  }
+
   function applyRecipe(r) {
     melt = r.melt.map((m) => ({ id: m.colorant, c: m.c }));
+    logThickness = Math.log2(r.thickness ?? 1);
     activeRecipeId = r.id;
   }
 </script>
@@ -106,6 +118,16 @@
         <span class="pct">{Math.round(m.c * 100)}%</span>
       </div>
     {/each}
+    <div class="row thickness">
+      <span class="name">thickness</span>
+      <input
+        type="range" min="-2" max="2" step="0.05"
+        value={logThickness}
+        oninput={(e) => setThickness(e.currentTarget.valueAsNumber)}
+        aria-label="glass thickness"
+        aria-valuetext={`${thickness.toFixed(2)} times the reference thickness`} />
+      <span class="pct">×{thickness < 1 ? thickness.toFixed(2) : thickness.toFixed(1)}</span>
+    </div>
   </div>
 
   <div class="lab-stage">
@@ -122,7 +144,7 @@
       <rect x="0" y="0" width="360" height="90" fill="url(#vis-mix)" opacity="0.85"/>
       {#each melt as m (m.id)}
         <polyline fill="none" stroke="#111" stroke-width="1" opacity="0.35"
-          points={toPoints(byId.get(m.id).absorbance, m.c)} />
+          points={toPoints(componentCurve(m))} />
       {/each}
       <polyline fill="none" stroke="#111" stroke-width="2.5" points={toPoints(mixCurve)} />
     </svg>
@@ -131,9 +153,10 @@
 
   <figcaption>{caption}</figcaption>
   <p class="island-footnote">
-    Curves are illustrative approximations; the swatch is a coarse RGB rendering, not a full
-    CIE pipeline. Mixing multiplies per-colorant transmittance with linear concentration
-    scaling — real melts involve redox interactions between colorants that this model ignores.
+    Curves are illustrative approximations, not measured spectra. The swatch integrates them
+    against the CIE 1931 observer under daylight. Mixing follows Beer–Lambert: optical densities
+    add, scaled by concentration and thickness. Real melts also involve redox interactions
+    between colorants that this model ignores.
   </p>
 </figure>
 
@@ -166,6 +189,8 @@
   .row .remove { border: none; background: none; color: var(--faint); cursor: pointer; font-size: 0.8rem; padding: 0 0.2rem; }
   .row .remove:hover { color: var(--text); }
   .row input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .row.thickness { border-top: 1px dashed var(--edge); padding-top: 0.45rem; margin-top: 0.5rem; }
+  .row.thickness .name { color: var(--muted); padding-left: 1.2rem; }
   .row .pct { font-size: 0.78rem; color: var(--muted); width: 2.6rem; text-align: right; font-family: var(--mono); }
 
   .lab-stage { display: flex; gap: 0.8rem; align-items: center; }

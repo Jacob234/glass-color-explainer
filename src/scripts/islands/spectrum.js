@@ -1,7 +1,7 @@
 // SpectrumExplorer: colorant buttons -> absorption curve over a spectrum gradient
 // -> transmitted-color swatch. Color science lives in ../optics-core.js.
-import { wavelengthToRgb, transmittedColor } from '../optics-core.js';
-export { wavelengthToRgb, transmittedColor };
+import { transmittedColor } from '../optics-core.js';
+export { transmittedColor };
 
 export function initSpectrumExplorer(root, optics) {
   const daylight = optics.illuminants.find((i) => i.id === 'daylight');

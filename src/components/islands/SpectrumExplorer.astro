@@ -28,7 +28,7 @@ const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id)
     <div class="spx-swatch" title="transmitted color"></div>
   </div>
   <figcaption><span class="spx-why"></span></figcaption>
-  <p class="island-footnote">Curves are illustrative approximations and the swatch is a coarse RGB rendering, not a full CIE colorimetric pipeline.</p>
+  <p class="island-footnote">Curves are illustrative approximations, not measured spectra. The swatch integrates them against the CIE 1931 observer under daylight.</p>
 </figure>
 <script>
   import optics from '../../data/optics.json';

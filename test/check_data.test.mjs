@@ -166,3 +166,12 @@ test('recipe label and story must be non-empty', () => {
     assert.ok(errors.some((e) => e.includes('r1')));
   }
 });
+
+test('recipe thickness, when given, must be in the slider range [0.25,4]', () => {
+  const dir = makeContentDir({ 'page-a': goodPage });
+  for (const [t, ok] of [[undefined, true], [0.25, true], [3, true], [0.1, false], [5, false]]) {
+    const r = { ...structuredClone(goodRecipe), thickness: t };
+    const { errors } = validate(goodMap, opticsWithRecipes([r]), dir);
+    assert.equal(errors.some((e) => e.includes('thickness')), !ok, `thickness=${t}`);
+  }
+});
