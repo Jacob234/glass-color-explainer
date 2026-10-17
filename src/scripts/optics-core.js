@@ -100,3 +100,29 @@ export function mixedAbsorbance(melts, n, thickness = 1) {
   }
   return out;
 }
+
+// Incandescence: the color and relative brightness of a blackbody at temperature T (kelvin),
+// which is how hot glass glows. Planck's law integrated against the CIE observer; no white-point
+// adaptation, since a furnace glow is seen against a dark shop, not adapted to.
+const C2 = 1.4388e7; // second radiation constant, nm·K
+function planck(w, T) {
+  return 1 / (w ** 5 * (Math.exp(C2 / (w * T)) - 1));
+}
+export function blackbodyXYZ(T) {
+  const xyz = [0, 0, 0];
+  for (let w = 380; w <= 780; w += STEP) {
+    const p = planck(w, T);
+    const [x, y, z] = cmf(w);
+    xyz[0] += p * x; xyz[1] += p * y; xyz[2] += p * z;
+  }
+  return xyz;
+}
+
+// Glow color normalized to full brightness, plus luminance relative to a reference
+// temperature (default 1150 °C, a soda-lime furnace). Luminance rises steeply with T.
+export function glow(T, Tref = 1423) {
+  const xyz = blackbodyXYZ(T);
+  // scale so the brightest linear sRGB channel is 1: full-brightness chromaticity
+  const peak = Math.max(...mul(XYZ_TO_SRGB, xyz));
+  return { rgb: xyzToRgb(xyz.map((v) => v / peak)), luminance: xyz[1] / blackbodyXYZ(Tref)[1] };
+}

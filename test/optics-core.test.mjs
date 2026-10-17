@@ -86,3 +86,11 @@ test('mixedAbsorbance stays in [0,1] when stacking strong colorants', () => {
   const melts = Array.from({ length: 4 }, () => ({ colorant: strong, c: 1 }));
   for (const v of core.mixedAbsorbance(melts, 3, 4)) assert.ok(v >= 0 && v <= 1);
 });
+
+test('glow: hotter glass is brighter and yellower; luminance is 1 at the reference', () => {
+  const hot = core.glow(1423), warm = core.glow(1073);
+  assert.ok(Math.abs(hot.luminance - 1) < 1e-12);
+  assert.ok(warm.luminance < hot.luminance / 100);
+  assert.ok(hot.rgb[1] > warm.rgb[1], 'more green in the hotter glow');
+  assert.equal(hot.rgb[0], 255);
+});
