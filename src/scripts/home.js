@@ -2,14 +2,14 @@
 // spectra in optics.json through spectra.js; nothing here is a hand-picked colour.
 import optics from '../data/optics.json';
 import {
-  GRID, toGrid, spectrumColor, densityOnGrid, transmission, glow, glowStrength,
+  GRID, toGrid, spectrumColor, colorantDensity, transmission, glow, glowStrength,
   SPECTRAL, bandEdge, dichroicBand, encode, css,
 } from './spectra.js';
 import * as na from './flare.js';
 
 const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
-const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, densityOnGrid(optics.wavelengths, c.absorbance)]));
+const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
 const ONES = GRID.map(() => 1);
 const $ = (id) => document.getElementById(id);
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -83,7 +83,7 @@ function lightTable() {
     { lab: 'chromium', parts: [['chromium', 1.2]], x: 0.60, y: 0.32, s: 0.24, clip: shard('0% 30%, 46% 0%, 100% 22%, 88% 92%, 26% 100%') },
     { lab: 'copper', parts: [['copper', 1]], x: 0.07, y: 0.62, s: 0.20, r: '6px' },
     { lab: 'manganese', parts: [['manganese', 1.3]], x: 0.82, y: 0.10, s: 0.18, r: '50%' },
-    { lab: 'neodymium', parts: [['neodymium', 1.6]], x: 0.38, y: 0.56, s: 0.17, clip: shard('50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%') },
+    { lab: 'neodymium', parts: [['neodymium', 1]], x: 0.38, y: 0.56, s: 0.17, clip: shard('50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%') },
   ];
   let z = 10;
   const els = pieces.map((p) => {
