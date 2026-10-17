@@ -76,6 +76,9 @@ export function validate(map, optics, contentDir, islands) {
         }
       }
     }
+    if (r.thickness !== undefined && !(r.thickness >= 0.25 && r.thickness <= 4)) {
+      errors.push(`recipe ${r.id}: thickness must be in [0.25,4] (the lab slider's range), got ${r.thickness}`);
+    }
   }
 
   // --- islands.json (optional 4th param) ---

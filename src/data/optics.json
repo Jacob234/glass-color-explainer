@@ -14,7 +14,7 @@
     { "id": "copper", "label": "Copper Cu²⁺", "group": "ions", "why": "Strong red absorption leaves turquoise — the Egyptian-faience lineage.",
       "absorbance": [0.20, 0.15, 0.10, 0.08, 0.06, 0.06, 0.08, 0.15, 0.30, 0.50, 0.70, 0.85, 0.92, 0.95, 0.96, 0.97, 0.97] },
     { "id": "gold-colloid", "label": "Gold colloid", "group": "colloids", "why": "Surface plasmon resonance near 530 nm devours the green — the transmitted remainder is gold-ruby red.",
-      "absorbance": [0.20, 0.18, 0.20, 0.25, 0.40, 0.75, 0.95, 0.85, 0.55, 0.30, 0.18, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05] },
+      "absorbance": [0.50, 0.48, 0.47, 0.50, 0.58, 0.80, 0.95, 0.85, 0.55, 0.30, 0.18, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05] },
     { "id": "silver-colloid", "label": "Silver colloid", "group": "colloids", "why": "Silver's plasmon sits near 415 nm, in the blue — transmitting the yellow of silver stain.",
       "absorbance": [0.55, 0.90, 0.95, 0.70, 0.40, 0.20, 0.12, 0.08, 0.06, 0.05, 0.04, 0.04, 0.03, 0.03, 0.02, 0.02, 0.02] },
     { "id": "cds", "label": "CdS crystals", "group": "bandgap", "why": "A 2.4 eV band gap absorbs everything bluer than ~515 nm with a razor edge — brilliant yellow.",
@@ -52,10 +52,10 @@
     {
       "id": "decolorize",
       "label": "Decolorize",
-      "story": "Manganese's purple absorbs where iron's green transmits — they cancel toward gray, the old glassmaker's trick. (The real trick also involves redox chemistry this model can't show.)",
+      "story": "Manganese's purple absorbs where iron's green transmits — they cancel toward gray, the old glassmaker's trick. It only works for the faint tint of trace iron: a pinch of each nearly vanishes, while more of both just makes the glass dark. (The real trick also involves redox chemistry this model can't show.)",
       "melt": [
-        { "colorant": "iron-ferrous", "c": 1 },
-        { "colorant": "manganese", "c": 1 }
+        { "colorant": "iron-ferrous", "c": 0.1 },
+        { "colorant": "manganese", "c": 0.05 }
       ]
     },
     {
@@ -63,18 +63,19 @@
       "label": "Deep teal",
       "story": "Cobalt devours the orange and red; chromium devours the violet and red — stack them and only a blue-green window survives.",
       "melt": [
-        { "colorant": "cobalt", "c": 0.9 },
-        { "colorant": "chromium", "c": 0.35 }
+        { "colorant": "cobalt", "c": 0.6 },
+        { "colorant": "chromium", "c": 1 }
       ]
     },
     {
       "id": "amber-ish",
       "label": "Amber-ish",
-      "story": "Ferric iron's violet edge plus manganese's green dip leave a warm straw-amber. Real beer-bottle amber needs the ferri-sulfide chromophore — this is only the spectral half of the story.",
+      "story": "Ferric iron's violet edge plus a touch of manganese's green dip, through a thick wall, leave a warm straw-amber. Real beer-bottle amber needs the ferri-sulfide chromophore — this is only the spectral half of the story.",
       "melt": [
-        { "colorant": "iron-ferric", "c": 0.8 },
-        { "colorant": "manganese", "c": 0.7 }
-      ]
+        { "colorant": "iron-ferric", "c": 1 },
+        { "colorant": "manganese", "c": 0.12 }
+      ],
+      "thickness": 3
     }
   ]
 }
