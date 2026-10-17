@@ -3,6 +3,7 @@
 // with whole transmission spectra on a 5 nm grid, so instruments can shift, broaden or model
 // spectra (a struck gold band, a band-gap edge, a dichroic reflection band) before rendering.
 import { cmf, toDensity } from './optics-core.js';
+import { BAND_MODELS } from './bands.js';
 
 export const GRID = Array.from({ length: 81 }, (_, i) => 380 + 5 * i); // 380–780 nm
 const CMF = GRID.map(cmf);
@@ -59,6 +60,11 @@ export function radianceColor(L, spd, adapt = 1, scale = 1) {
 
 // Optical density on the grid for a colorant's coarse absorptance curve.
 export const densityOnGrid = (wavelengths, absorbance) => toGrid(wavelengths, absorbance.map(toDensity));
+
+// A colorant's density on the grid: from its band model when it has one (bands.js), since narrow
+// bands fall between the 25 nm samples, otherwise from its sampled curve in optics.json.
+export const colorantDensity = (colorant, wavelengths) =>
+  BAND_MODELS[colorant.id] ? BAND_MODELS[colorant.id](GRID) : densityOnGrid(wavelengths, colorant.absorbance);
 
 // Beer–Lambert on the grid: densities add, scaled by concentration × thickness.
 // parts: [[densityGrid, concentration], ...]
