@@ -53,6 +53,7 @@ test('a two-colorant glass is matched, and it is not the only match', () => {
 test('the headline recipe is the simplest match', () => {
   const r = fitter.fit(f.linToHex(f.referenceLin(optics, [['cobalt', 0.5]])));
   assert.equal(r.best.parts.length, 1);
+  assert.ok(r.best.dE <= f.MATCH);
 });
 
 test('a fit restricted to the label uses only the label, within the concentration bounds', () => {

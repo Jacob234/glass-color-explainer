@@ -119,8 +119,10 @@ const LOG_MIN = Math.log(C_MIN), LOG_MAX = Math.log(C_MAX);
 const clampLog = (x) => Math.min(LOG_MAX, Math.max(LOG_MIN, x));
 
 // makeFitter(optics) → { fit(hex, opts), lin(parts, lamp) }.
-// fit returns { best, alternatives, all }, each recipe being
-// { parts: [[id, c], …], dE, lin, hex, lamp: { lin, hex } } with parts sorted by amount.
+// fit returns { target, best, alternatives, matches, tried }: target is the swatch in Lab,
+// matches and tried count colorant sets, and each recipe is
+// { parts: [[id, c], …], dE, lin, hex, lamp: { lin, hex } } with parts sorted by amount
+// (alternatives also carry gap, their daylight ΔE from best, and split, the same under the lamp).
 export function makeFitter(optics, { lamp = 'incandescent' } = {}) {
   const spdOf = (id) => toGrid(optics.wavelengths, optics.illuminants.find((x) => x.id === id).spd);
   const W = { day: weights(spdOf('daylight')), lamp: weights(spdOf(lamp)) };

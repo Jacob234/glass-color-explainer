@@ -519,11 +519,24 @@ function rack() {
   let pinned = null;
   mosaic.addEventListener('pointerover', (e) => show(e.target));
   mosaic.addEventListener('pointerleave', () => pinned && show(pinned));
-  mosaic.addEventListener('click', (e) => {
-    if (!e.target?.dataset?.i) return;
-    pinned = e.target; show(pinned); bench(items[pinned.dataset.i]);
+  const pick = (el) => {
+    pinned = el; show(pinned); bench(items[pinned.dataset.i]);
     // On a phone the bench sits under the shelves, out of sight.
     if (matchMedia('(max-width: 820px)').matches) $('fit').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+  };
+  mosaic.addEventListener('click', (e) => e.target?.dataset?.i && pick(e.target));
+  // Keyboard: the rack is one tab stop; arrow keys walk the visible rods, Enter puts one on the bench.
+  mosaic.tabIndex = 0;
+  mosaic.setAttribute('aria-label', 'rack of rods: arrow keys to browse, Enter to reverse-engineer');
+  mosaic.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (step) {
+      const vis = [...mosaic.querySelectorAll('.rods div')].filter((d) => d.style.display !== 'none');
+      const at = vis.indexOf(on);
+      show(vis[Math.min(vis.length - 1, Math.max(0, at < 0 ? 0 : at + step))]);
+      on?.scrollIntoView({ block: 'nearest' });
+      e.preventDefault();
+    } else if ((e.key === 'Enter' || e.key === ' ') && on) { pick(on); e.preventDefault(); }
   });
   // Start the bench on a rod whose label names its colorant and whose photo that colorant can
   // match (Bullseye's cadmium yellow), so the first thing it shows is a claim that checks out.
@@ -546,6 +559,7 @@ function rack() {
       for (const x of box.children) x.setAttribute('aria-pressed', String(x === b));
       for (const d of mosaic.querySelectorAll('.rods div')) d.style.display = id === 'all' || items[d.dataset.i].mechanism === id ? '' : 'none';
       if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.replaceChildren(...blank.map((n) => n.cloneNode(true))); }
+      if (pinned && pinned.style.display === 'none') pinned = null; // the bench keeps its last result
       recount();
     });
     box.appendChild(b);
@@ -617,7 +631,7 @@ function fitBench() {
       if (known.length) {
         const l = fitter.fit(it.hex, { only: known }).best;
         const ok = l.dE <= MATCH ? 'matches the photo, so the label and the color agree' : l.dE <= 6 ? 'comes near the photo but not all the way' : 'cannot reach the photo. The photo, the label or the page\'s illustrative curve for it must be off, or the color comes from something the label does not name';
-        $('fitLabel').replaceChildren(h('b', {}, 'The label says ' + names(known.map((c) => [c])) + '. '), `On its own, at its best amount, it reaches ΔE ${l.dE.toFixed(1)}: it ${ok}.`);
+        $('fitLabel').replaceChildren(h('b', {}, 'The label says ' + names(known.map((c) => [c])) + '. '), `${known.length > 1 ? 'Together, at their best amounts, they reach' : 'On its own, at its best amount, it reaches'} ΔE ${l.dE.toFixed(1)}: ${known.length > 1 ? 'the mix' : 'it'} ${ok}.`);
       } else $('fitLabel').replaceChildren(h('b', {}, 'No colorant on the label. '), 'The supplier does not say what is in this one, so the bench has nothing to check its guess against.');
 
       const scatter = ' The photo shows light scattered back from inside the glass, not light passed through it, so a transmission fit is only an analogy.';
