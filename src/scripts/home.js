@@ -40,20 +40,8 @@ function strip(canvas, top, bottom) {
   ctx.stroke();
 }
 
-// An isometric slab: the face shows a thin path through the glass, the edges a long one.
+// Colors an isometric slab (components/Slab.astro): thin path on the face, long path on the edges.
 function slab(svg) {
-  const id = svg.id;
-  svg.innerHTML = `
-    <defs><linearGradient id="${id}-sh" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient>
-    <filter id="${id}-bl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs>
-    <ellipse class="cast" cx="270" cy="250" rx="220" ry="34" filter="url(#${id}-bl)" opacity=".55"/>
-    <polygon class="face" points="40,120 300,40 490,110 230,190"/>
-    <polygon points="40,120 300,40 490,110 230,190" fill="url(#${id}-sh)"/>
-    <polygon class="edge" points="40,120 230,190 230,212 40,142"/>
-    <polygon class="edge" points="230,190 490,110 490,132 230,212" opacity=".82"/>
-    <path d="M40 120 L230 190 L490 110" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.2"/>
-    <text x="200" y="110" fill="rgba(20,20,20,.45)" font-family="IBM Plex Mono, monospace" font-size="12" letter-spacing="1">FACE</text>
-    <text x="300" y="196" fill="rgba(20,20,20,.45)" font-family="IBM Plex Mono, monospace" font-size="12" letter-spacing="1">EDGE</text>`;
   const face = svg.querySelector('.face'), cast = svg.querySelector('.cast'), edges = svg.querySelectorAll('.edge');
   return (faceColor, edgeColor) => {
     face.setAttribute('fill', faceColor); cast.setAttribute('fill', faceColor);
@@ -61,11 +49,22 @@ function slab(svg) {
   };
 }
 
+// Build an element: h('span', { className: 'x', style: { '--c': red } }, 'text', child).
+function h(tag, props = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === 'style') for (const [p, val] of Object.entries(v)) el.style.setProperty(p, val);
+    else if (k in el) el[k] = v;
+    else el.setAttribute(k, v);
+  }
+  el.append(...children);
+  return el;
+}
+
 function chips(box, ids, label, onPick) {
   for (const id of ids) {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.dataset.id = id;
-    b.innerHTML = `<i style="--c:${colorOf([[id, 1]], 1.2).css}"></i>${label(id)}`;
+    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': colorOf([[id, 1]], 1.2).css } }), label(id));
+    b.dataset.id = id;
     b.addEventListener('click', () => onPick(id));
     box.appendChild(b);
   }
@@ -87,10 +86,8 @@ function lightTable() {
   ];
   let z = 10;
   const els = pieces.map((p) => {
-    const el = document.createElement('div');
-    el.className = 'piece' + (p.r === '50%' ? ' round' : '');
-    el.innerHTML = `<div class="g"></div><span class="lab">${p.lab}</span>`;
-    const g = el.firstChild;
+    const g = h('div', { className: 'g' });
+    const el = h('div', { className: 'piece' + (p.r === '50%' ? ' round' : '') }, g, h('span', { className: 'lab' }, p.lab));
     g.style.setProperty('--c', colorOf(p.parts).css);
     if (p.clip) g.style.setProperty('--clip', p.clip);
     if (p.r) g.style.setProperty('--r', p.r);
@@ -201,7 +198,7 @@ function heat() {
     el('g-halo').setAttribute('fill', css(g.rgb)); el('g-halo').setAttribute('opacity', a * 0.85);
     el('g-rim').setAttribute('opacity', 1 - a * 0.9); // hot glass glows from within; the dark rim appears as it cools
     el('g-rig').setAttribute('transform', `translate(${-(1 - t / HOT) * 330} 0)`);
-    $('tempOut').innerHTML = `${Math.round(t)}<small> °C</small>`;
+    $('tempOut').textContent = String(Math.round(t));
     s.setAttribute('aria-valuetext', `${Math.round(t)} degrees Celsius`);
     $('heatRead').textContent = t > 1000 ? 'In the glory hole. The gather is brighter than any color it carries.'
       : t > 800 ? 'Working heat. Still orange: you are reading temperature, not color.'
@@ -315,9 +312,7 @@ function rack() {
 
   const mosaic = $('mosaic'), rows = {};
   for (const n of names) {
-    const row = document.createElement('div');
-    row.className = 'shelf';
-    row.innerHTML = `<span>${n}<b></b></span><div class="rods"></div>`;
+    const row = h('div', { className: 'shelf' }, h('span', {}, n, h('b')), h('div', { className: 'rods' }));
     mosaic.appendChild(row); rows[n] = row;
   }
   items.forEach((it, i) => {
@@ -335,16 +330,17 @@ function rack() {
   };
   recount();
 
-  const tag = $('tag'), blank = tag.innerHTML;
+  const tag = $('tag'), blank = [...tag.childNodes].map((n) => n.cloneNode(true));
   let on = null;
   const show = (el) => {
     if (!el?.dataset?.i) return;
     const it = items[el.dataset.i];
     on?.classList.remove('on'); on = el; el.classList.add('on');
     const colorants = it.colorant.length ? ` · ${it.colorant.join(', ')}` : '';
-    tag.innerHTML = `<i style="--c:${it.hex}"></i><div><strong></strong><span></span></div>`;
-    tag.querySelector('strong').textContent = it.name;
-    tag.querySelector('span').textContent = `${it.supplier} · ${it.code} · ${it.opacity}${colorants} · ${MECH_NOTE[it.mechanism] ?? it.mechanism}`;
+    tag.replaceChildren(
+      h('i', { style: { '--c': it.hex } }),
+      h('div', {}, h('strong', {}, it.name), h('span', {}, `${it.supplier} · ${it.code} · ${it.opacity}${colorants} · ${MECH_NOTE[it.mechanism] ?? it.mechanism}`)),
+    );
   };
   mosaic.addEventListener('pointerover', (e) => show(e.target));
   mosaic.addEventListener('click', (e) => show(e.target));
@@ -352,13 +348,11 @@ function rack() {
   const counts = items.reduce((m, it) => ((m[it.mechanism] = (m[it.mechanism] || 0) + 1), m), { all: items.length });
   const box = $('filters');
   for (const [id, lab] of MECH) {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.setAttribute('aria-pressed', String(id === 'all'));
-    b.innerHTML = `${lab} <span>${counts[id] || 0}</span>`;
+    const b = h('button', { className: 'chip', 'aria-pressed': String(id === 'all') }, `${lab} `, h('span', {}, String(counts[id] || 0)));
     b.addEventListener('click', () => {
       for (const x of box.children) x.setAttribute('aria-pressed', String(x === b));
       for (const d of mosaic.querySelectorAll('.rods div')) d.style.display = id === 'all' || items[d.dataset.i].mechanism === id ? '' : 'none';
-      if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.innerHTML = blank; }
+      if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.replaceChildren(...blank.map((n) => n.cloneNode(true))); }
       recount();
     });
     box.appendChild(b);

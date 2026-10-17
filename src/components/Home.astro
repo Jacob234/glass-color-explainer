@@ -3,6 +3,7 @@
 // studio in seven stages. The instruments live in scripts/home.js.
 import { getCollection } from 'astro:content';
 import map from '../data/map.json';
+import Slab from './Slab.astro';
 import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -47,7 +48,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
       <p>Glass starts as sand, soda and lime, and sand carries a trace of iron. Look through a windowpane face on and you cross a few millimetres of it, too little for the iron to show. Look into the edge and you cross the whole width of the sheet. The same faint absorption, repeated over that distance, turns green.</p>
     </div>
     <div class="bench">
-      <svg class="slab" id="slab1" viewBox="0 0 520 300" aria-hidden="true"></svg>
+      <Slab id="slab1" />
       <div class="controls">
         <div class="ctl"><label class="mono" for="iron">iron in the sand <output id="ironOut"></output></label>
           <input id="iron" type="range" min="0" max="100" value="45" /><div class="ends"><span>low-iron "optic" glass</span><span>bottle glass</span></div></div>
@@ -67,7 +68,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
       <p>The same iron can sit in the melt as Fe²⁺ or Fe³⁺, and the two absorb differently. A furnace starved of oxygen pushes iron toward Fe²⁺, which absorbs red and leaves glass blue-green. Plenty of oxygen favours Fe³⁺, which absorbs violet and blue and leaves it a weak yellow. Nothing was added; only the atmosphere changed.</p>
     </div>
     <div class="bench">
-      <svg class="slab" id="slab2" viewBox="0 0 520 300" aria-hidden="true"></svg>
+      <Slab id="slab2" />
       <div class="controls">
         <div class="ctl"><label class="mono" for="redoxR">furnace atmosphere <output id="redoxOut"></output></label>
           <input id="redoxR" type="range" min="0" max="100" value="70" /><div class="ends"><span>oxidizing</span><span>reducing</span></div></div>
@@ -93,7 +94,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
         <div class="strip-key"><span>380 nm</span><span>top: light in · bottom: light out</span><span>780 nm</span></div>
       </div>
       <div class="controls">
-        <svg class="slab slab-small" id="slab3" viewBox="0 0 520 300" aria-hidden="true"></svg>
+        <Slab id="slab3" class="slab-small" />
         <div class="ctl"><label class="mono" for="conc">amount × thickness <output id="concOut"></output></label>
           <input id="conc" type="range" min="-200" max="200" value="0" /><div class="ends"><span>a trace</span><span>heavy</span></div></div>
       </div>
@@ -137,7 +138,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
       </svg>
       <div class="bench bench-top">
         <div class="controls">
-          <div class="temp" id="tempOut">1150<small> °C</small></div>
+          <div class="temp"><span id="tempOut">1150</span><small> °C</small></div>
           <div class="ctl"><input id="temp" type="range" min="20" max="1150" value="1150" aria-label="gather temperature" />
             <div class="ends"><span>bench</span><span>furnace</span></div></div>
         </div>
