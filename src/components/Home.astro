@@ -55,6 +55,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
       </div>
     </div>
     <p class="aside"><b>Beer–Lambert.</b> Absorption compounds with distance: if 1 mm lets through 99% of some colour, 50 mm lets through 0.99⁵⁰, about 60%. Thickness and concentration play the same role, which is why the edge and a heavily dosed batch look alike.</p>
+    <p class="more"><a href={page(map.anchorSlug)}>Read: color in glass →</a></p>
   </div>
 </section>
 
@@ -241,7 +242,8 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
   </div>
 </section>
 
-<script type="application/json" id="rack-data" set:html={JSON.stringify(rack)} />
+{/* escape "<" so a product name can never close the script element */}
+<script type="application/json" id="rack-data" set:html={JSON.stringify(rack).replace(/</g, '\\u003c')} />
 <script>
   import { initHome } from '../scripts/home.js';
   initHome();

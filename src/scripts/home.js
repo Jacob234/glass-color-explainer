@@ -109,16 +109,24 @@ function lightTable() {
   layout();
   addEventListener('resize', layout);
   for (const { el, p } of els) {
+    let dragging = null; // one pointer drags a piece at a time
     el.addEventListener('pointerdown', (e) => {
+      if (dragging !== null) return;
       e.preventDefault(); el.setPointerCapture(e.pointerId); el.style.zIndex = ++z;
+      dragging = e.pointerId;
       const ox = e.clientX - el.offsetLeft, oy = e.clientY - el.offsetTop;
       const move = (ev) => {
+        if (ev.pointerId !== dragging) return;
         const x = Math.max(-el.offsetWidth * 0.4, Math.min(table.clientWidth - el.offsetWidth * 0.6, ev.clientX - ox));
         const y = Math.max(-el.offsetHeight * 0.4, Math.min(table.clientHeight - el.offsetHeight * 0.6, ev.clientY - oy));
         el.style.left = `${x}px`; el.style.top = `${y}px`;
         p.x = x / table.clientWidth; p.y = y / table.clientHeight;
       };
-      const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
+      const up = (ev) => {
+        if (ev.pointerId !== dragging) return;
+        dragging = null;
+        el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      };
       el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
     });
   }
@@ -327,7 +335,7 @@ function rack() {
   };
   recount();
 
-  const tag = $('tag');
+  const tag = $('tag'), blank = tag.innerHTML;
   let on = null;
   const show = (el) => {
     if (!el?.dataset?.i) return;
@@ -350,6 +358,7 @@ function rack() {
     b.addEventListener('click', () => {
       for (const x of box.children) x.setAttribute('aria-pressed', String(x === b));
       for (const d of mosaic.querySelectorAll('.rods div')) d.style.display = id === 'all' || items[d.dataset.i].mechanism === id ? '' : 'none';
+      if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.innerHTML = blank; }
       recount();
     });
     box.appendChild(b);

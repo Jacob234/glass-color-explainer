@@ -9,6 +9,7 @@ test('GRID spans 380–780 nm in 5 nm steps', () => {
   assert.equal(s.GRID.length, 81);
   assert.equal(s.GRID[0], 380);
   assert.equal(s.GRID.at(-1), 780);
+  for (let i = 1; i < s.GRID.length; i++) assert.equal(s.GRID[i] - s.GRID[i - 1], 5);
 });
 
 test('toGrid interpolates linearly between coarse samples', () => {
