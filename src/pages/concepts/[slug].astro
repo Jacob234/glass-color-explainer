@@ -52,7 +52,7 @@ const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
       {prev && <a href={`${base}/concepts/${prev}/`}>← {prev.replace(/-/g, ' ')}</a>}
       {next && <a href={`${base}/concepts/${next}/`} class="next">{next.replace(/-/g, ' ')} →</a>}
     </nav>
-    <p class="back"><a href={`${base}/`}>← back to the map</a></p>
+    <p class="back"><a href={`${base}/`}>← back to the start</a></p>
   </article>
 </Base>
 <style>
