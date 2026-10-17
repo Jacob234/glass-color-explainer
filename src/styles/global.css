@@ -1,11 +1,11 @@
-/* Why Glass Has Color — "lightbox" theme.
-   A dark gallery where every piece of glass is lit from behind: warm paper-colored
-   serif text, monospace instrument labels, and colored glass that casts its light. */
+/* Why Glass Has Color — "hot shop" theme.
+   A glassblowing studio after dark: soot-warm surfaces, furnace-orange accents, warm serif
+   text, monospace bench labels, and colored glass that casts its light. */
 :root {
-  --bg: #0b0d12; --bg-raise: #10131a; --panel: #12151d; --node: #171b24; --node-hi: #1e2330;
+  --bg: #0e0c0b; --bg-raise: #151210; --panel: #171412; --node: #1d1916; --node-hi: #26201c;
   --edge: rgba(236, 231, 220, 0.09); --edge-hi: rgba(236, 231, 220, 0.18);
   --text: #ece7dc; --muted: #a9a396; --faint: #6f6a60;
-  --accent: #f0b45a; --accent-soft: rgba(240, 180, 90, 0.14);
+  --accent: #ff9a3c; --accent-soft: rgba(255, 154, 60, 0.14);
   --display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -16,17 +16,17 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; min-height: 100vh; color: var(--text);
   background:
-    radial-gradient(60rem 28rem at 50% -8rem, rgba(240, 180, 90, 0.07), transparent 70%),
+    radial-gradient(60rem 30rem at 50% -10rem, rgba(255, 130, 40, 0.09), transparent 70%),
     var(--bg);
   font: 17px/1.65 var(--serif);
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
 }
-a { color: var(--accent); text-decoration-color: rgba(240, 180, 90, 0.4); text-underline-offset: 3px; transition: text-decoration-color .15s, color .15s; }
+a { color: var(--accent); text-decoration-color: rgba(255, 154, 60, 0.4); text-underline-offset: 3px; transition: text-decoration-color .15s, color .15s; }
 a:hover { text-decoration-color: currentColor; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-::selection { background: rgba(240, 180, 90, 0.3); }
+::selection { background: rgba(255, 154, 60, 0.3); }
 
 /* ---- shared label voice: instrument panel ---- */
 .label, .detail-type, .lab-label {
