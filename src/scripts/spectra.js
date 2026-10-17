@@ -55,6 +55,16 @@ export const densityOnGrid = (wavelengths, absorbance) => toGrid(wavelengths, ab
 export const colorantDensity = (colorant, wavelengths) =>
   BAND_MODELS[colorant.id] ? BAND_MODELS[colorant.id](GRID) : densityOnGrid(wavelengths, colorant.absorbance);
 
+// optics.json resampled onto GRID, with band models in place of sampled curves, for the islands
+// built on optics-core (whose functions work on any wavelength grid). Absorptance is what
+// optics-core expects; it caps density at 3, which only clips the core of neodymium's 585 nm band.
+export const fineOptics = (optics) => ({
+  ...optics,
+  wavelengths: GRID,
+  colorants: optics.colorants.map((c) => ({ ...c, absorbance: colorantDensity(c, optics.wavelengths).map((d) => 1 - 10 ** -d) })),
+  illuminants: optics.illuminants.map((i) => ({ ...i, spd: toGrid(optics.wavelengths, i.spd) })),
+});
+
 // Beer–Lambert on the grid: densities add, scaled by concentration × thickness.
 // parts: [[densityGrid, concentration], ...]
 export function transmission(parts, thickness = 1) {

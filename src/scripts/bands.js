@@ -24,9 +24,10 @@ export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 1
 
 // Tetrahedral Co²⁺, the ion in cobalt blue: the spin-allowed ⁴A₂ → ⁴T₁(P) transition, a band spanning
 // about 15,000–19,000 cm⁻¹ and split into a triplet (Taran et al., Am. Mineral. 94, 2009, measured in
-// spinel; the centres used here, near 535, 580 and 630 nm, are approximate values for silicate glass). Above ~680 nm the glass is clear again until the ⁴T₁(F) band near
-// 1500 nm, so cobalt glass passes deep red: the red leak is real, but it sits where the eye is nearly
-// blind, so the glass reads blue rather than violet. Peak density matches the old sampled curve
+// spinel; the centres used here, near 535, 580 and 630 nm, are approximate values for silicate glass).
+// Above ~680 nm the glass is clear again until the ⁴T₁(F) band near 1500 nm, so cobalt glass passes
+// deep red: the red leak is real, but it sits where the eye is nearly blind, so the glass reads blue
+// rather than violet. Peak density matches the old sampled curve
 // (1.3), so concentrations on the page keep their meaning; relative strengths are approximate.
 export const CO_BANDS = [[15900, 1800, 0.95], [17200, 1800, 0.90], [18700, 1800, 0.66]];
 

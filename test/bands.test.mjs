@@ -31,3 +31,14 @@ test('the coarse cobalt curve in optics.json matches its band model', () => {
   const model = BAND_MODELS.cobalt(optics.wavelengths).map((d) => 1 - 10 ** -d);
   colorant('cobalt').absorbance.forEach((a, i) => assert.ok(Math.abs(a - model[i]) < 0.006, `${optics.wavelengths[i]} nm`));
 });
+
+test('islands on optics-core, fed fineOptics, agree with the 5 nm engine', async () => {
+  const core = await import('../src/scripts/optics-core.js');
+  const fine = s.fineOptics(optics), by = (id) => fine.colorants.find((c) => c.id === id);
+  const melt = [{ colorant: by('neodymium'), c: 0.5 }, { colorant: by('cobalt'), c: 0.2 }];
+  const viaCore = core.transmittedColor(fine.wavelengths, core.mixedAbsorbance(melt, fine.wavelengths.length), fine.illuminants[0].spd);
+  const T = s.transmission([['neodymium', 0.5], ['cobalt', 0.2]].map(([id, c]) => [s.colorantDensity(colorant(id), optics.wavelengths), c]));
+  const viaEngine = s.spectrumColor(T, DAY).rgb.map((v) => Math.round(255 * v));
+  const coreRgb = viaCore.match(/\d+/g).map(Number);
+  coreRgb.forEach((v, i) => assert.ok(Math.abs(v - viaEngine[i]) <= 2, `${viaCore} vs ${viaEngine}`));
+});

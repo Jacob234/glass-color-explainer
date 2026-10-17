@@ -15,8 +15,10 @@
 </figure>
 <script>
   import optics from '../../data/optics.json';
+  import { fineOptics } from '../../scripts/spectra.js';
   import { initAlexandriteToggle } from '../../scripts/islands/alexandrite.js';
-  for (const el of document.querySelectorAll('.alx')) initAlexandriteToggle(el, optics);
+  const fine = fineOptics(optics);
+  for (const el of document.querySelectorAll('.alx')) initAlexandriteToggle(el, fine);
 </script>
 <style>
   .alx { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
