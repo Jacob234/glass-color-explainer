@@ -5,6 +5,7 @@ import {
   GRID, toGrid, spectrumColor, densityOnGrid, transmission, glow, glowStrength,
   SPECTRAL, bandEdge, dichroicBand, encode, css,
 } from './spectra.js';
+import * as na from './flare.js';
 
 const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -68,7 +69,7 @@ function chips(box, ids, label, onPick) {
     b.addEventListener('click', () => onPick(id));
     box.appendChild(b);
   }
-  return (cur) => { for (const b of box.children) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
+  return (cur) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
 }
 
 /* ---------- the light table ---------- */
@@ -183,30 +184,40 @@ function ions() {
 
 /* ---------- 04 the glory hole: incandescence hides colour ---------- */
 const HOT = 1150; // °C, soda-lime furnace
+const toLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const lum = (lin) => 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+// The sodium flare's brightness relative to the gather's own glow (illustrative): strong in the
+// glory hole's flame, gone once the gather is out of it and below working heat.
+const flareRatio = (t) => { const x = Math.min(1, Math.max(0, (t - 820) / 180)); return 6 * x * x * (3 - 2 * x); };
+
 function heat() {
   const s = $('temp'), ids = ['cobalt', 'copper', 'chromium', 'manganese'];
   let cur = 'cobalt', body = colorOf([[cur, 1]], 1.4).rgb, raf = 0;
   const press = chips($('heatRods'), ids, (id) => id, (id) => { cur = id; body = colorOf([[id, 1]], 1.4).rgb; render(s.valueAsNumber); });
   const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
   const el = (id) => document.getElementById(id);
+  const lens = glasses();
   function render(t) {
     const g = glow(t + 273.15), a = glowStrength(g.luminance);
     const hot = lerp(g.rgb, [1, 0.82, 0.45], a ** 3 * 0.45); // the hottest glass reads yellow-orange
-    const col = css(lerp(body, hot, a));
+    const col = css(lerp(body, hot, a)), flare = flareRatio(t);
     el('g-body').setAttribute('fill', col);
     el('g-cast').setAttribute('fill', col); el('g-cast').setAttribute('opacity', 0.2 + a * 0.5);
     el('g-halo').setAttribute('fill', css(g.rgb)); el('g-halo').setAttribute('opacity', a * 0.85);
     el('g-rim').setAttribute('opacity', 1 - a * 0.9); // hot glass glows from within; the dark rim appears as it cools
+    for (const id of ['g-flare', 'g-flare2']) el(id).setAttribute('opacity', flare / (1 + flare));
     el('g-rig').setAttribute('transform', `translate(${-(1 - t / HOT) * 330} 0)`);
+    lens.render({ t, a, body, hot, glowRgb: g.rgb, flare });
     $('tempOut').textContent = String(Math.round(t));
     s.setAttribute('aria-valuetext', `${Math.round(t)} degrees Celsius`);
-    $('heatRead').textContent = t > 1000 ? 'In the glory hole. The gather is brighter than any color it carries.'
+    $('heatRead').textContent = t > 1000 ? 'In the glory hole. The gather is brighter than any color it carries, and the sodium flare is brighter still.'
       : t > 800 ? 'Working heat. Still orange: you are reading temperature, not color.'
       : t > 525 ? 'Cooling through cherry red. The glow is dimming and the colorant starts to show.'
       : t > 200 ? 'Past the Draper point. The glow is too faint to see; this is the colorant.'
       : `Cooled: ${COLORANT[cur].label}. This is the color it carried all along.`;
     press(cur);
   }
+  lens.onChange = () => render(s.valueAsNumber);
   s.addEventListener('input', () => { cancelAnimationFrame(raf); render(s.valueAsNumber); });
   render(HOT);
   // Play the cool-down once, when the scene first comes into view.
@@ -225,6 +236,167 @@ function heat() {
     }, { threshold: 0.5 });
     io.observe($('scene'));
   }
+}
+
+/* ---------- 04 the glory hole: the glasses ---------- */
+// A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recoloured by
+// each lens's transmission: the room by the lens under daylight, the glowing parts by the lens
+// against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
+// lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
+const LENS_NOTES = {
+  none: 'Without protection the flare is several times brighter than the glass inside it. The gather is a shape in a yellow blaze.',
+  didymium: 'Neodymium and praseodymium cut a notch across 580–595 nm. The flare drops to about 1% and the gather shows through, slightly pink because a little yellow is gone. The near infrared passes almost untouched.',
+  shade: 'A second, iron-bearing glass behind the didymium. Fe²⁺ absorbs broadly in the near infrared, the same ion that turns a window edge green, so it costs little visible light but stops most of the heat.',
+};
+function glasses() {
+  const svg = $('scene'), view = $('lens-view'), frame = $('lens-frame'), lensG = $('lens'), shape = $('lens-clip').children; // clip paths take shapes, not groups
+  const T5 = (T) => GRID.map((w) => T[na.FINE.indexOf(w)]);
+  const naColor = na.lightColor(na.xyz(na.lineSpectrum()));
+  svg.style.setProperty('--na', css(naColor));
+
+  // Clone the scene into the lens view, suffixing ids so the clones can be addressed.
+  const LUMINOUS = new Set(['g-body', 'g-halo', 'g-cast', 'g-flare', 'g-flare2']);
+  for (const node of svg.children) {
+    if (node.tagName === 'defs' || node === lensG) continue;
+    const c = node.cloneNode(true);
+    view.appendChild(c);
+  }
+  for (const e of view.querySelectorAll('[id]')) e.id += '-L';
+  const lumIn = (e) => [...LUMINOUS].some((id) => e.closest(`#${id}-L`));
+  for (const e of view.querySelectorAll('rect, line, circle, ellipse, path')) {
+    if (lumIn(e)) continue;
+    const fill = e.getAttribute('fill') || '';
+    e.setAttribute('filter', fill === 'url(#g-hole)' || fill === '#ff7a24' ? 'url(#lens-fire)' : 'url(#lens-room)');
+  }
+  const L = (id) => document.getElementById(`${id}-L`);
+
+  // Per-lens constants. Channel multipliers are in linear sRGB, normalised to unit luminance.
+  const norm = (m) => { const y = lum(m) || 1; return m.map((v) => Math.min(3, v / y)); };
+  const linOf = (v) => [[3.2404542, -1.5371385, -0.4985314], [-0.969266, 1.8760108, 0.041556], [0.0556434, -0.2040259, 1.0572252]]
+    .map((r) => Math.max(1e-6, r[0] * v[0] + r[1] * v[1] + r[2] * v[2]));
+  const FLARE = na.lineSpectrum();
+  const lensData = Object.fromEntries(Object.entries(na.LENSES).map(([id, { label, T }]) => {
+    const paper = spectrumColor(T5(T), DAY); // white paper seen through the lens
+    return [id, { id, label, T, room: norm(paper.lin), roomCss: paper.css, flareT: na.xyz(FLARE, T)[1] / na.xyz(FLARE)[1] }];
+  }));
+  const fireCache = new Map();
+  function fire(lensId, tK) { // glow multiplier and luminous transmission for a black body at tK
+    const key = `${lensId}:${Math.round(tK / 10)}`;
+    if (!fireCache.has(key)) {
+      const bb = na.planck(tK), k = 1 / na.xyz(bb)[1], bare = linOf(na.xyz(bb).map((v) => v * k)), thru = linOf(na.xyz(bb, lensData[lensId].T).map((v) => v * k));
+      const lumT = na.luminousT(lensData[lensId].T, bb); // the eye adapts to the overall dimming, not to the hue shift
+      fireCache.set(key, { mul: thru.map((v, i) => Math.min(3, v / bare[i] / lumT)), lumT });
+    }
+    return fireCache.get(key);
+  }
+  const matrix = (m) => `${m[0]} 0 0 0 0 0 ${m[1]} 0 0 0 0 0 ${m[2]} 0 0 0 0 0 1 0`;
+  const apply = (rgb, m) => css(rgb.map((v, i) => encode(toLin(v) * m[i])));
+
+  // Position (scene units). Start with the right lens on the gather at furnace heat.
+  const pos = { x: 680, y: 150 };
+  const place = () => {
+    const tr = `translate(${pos.x} ${pos.y})`;
+    frame.setAttribute('transform', tr); for (const e of shape) e.setAttribute('transform', tr);
+    frame.setAttribute('aria-valuetext', `glasses at ${Math.round((pos.x / 900) * 100)}% across the scene`);
+  };
+  const toScene = (e) => new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+  let drag = null;
+  frame.addEventListener('pointerdown', (e) => {
+    if (drag) return;
+    e.preventDefault(); frame.setPointerCapture(e.pointerId);
+    const p = toScene(e); drag = { id: e.pointerId, dx: pos.x - p.x, dy: pos.y - p.y };
+  });
+  frame.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const p = toScene(e);
+    pos.x = Math.min(900, Math.max(0, p.x + drag.dx)); pos.y = Math.min(260, Math.max(40, p.y + drag.dy)); place();
+  });
+  const end = (e) => { if (drag && e.pointerId === drag.id) drag = null; };
+  frame.addEventListener('pointerup', end); frame.addEventListener('pointercancel', end);
+  frame.addEventListener('keydown', (e) => {
+    const d = { ArrowLeft: [-20, 0], ArrowRight: [20, 0], ArrowUp: [0, -15], ArrowDown: [0, 15] }[e.key];
+    if (!d) return;
+    e.preventDefault(); pos.x = Math.min(900, Math.max(0, pos.x + d[0])); pos.y = Math.min(260, Math.max(40, pos.y + d[1])); place();
+  });
+  place();
+
+  // Lens chips, meters and the spectrum strip.
+  let cur = 'didymium', last = null;
+  const api = { onChange: null, render };
+  const box = $('lensPick');
+  for (const id of Object.keys(lensData)) {
+    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': lensData[id].roomCss } }), lensData[id].label);
+    b.dataset.id = id;
+    b.addEventListener('click', () => { cur = id; api.onChange?.(); });
+    box.appendChild(b);
+  }
+  const meters = $('lensMeters');
+  const meter = (label, v, color) => h('div', {}, h('dt', {}, label), h('dd', {}, v < 0.1 ? `${(v * 100).toFixed(1)}%` : `${Math.round(v * 100)}%`), h('i', { style: { '--v': `${Math.min(100, v * 100)}%`, '--c': color } }));
+
+  function drawStrip(lensT, tK, flare) {
+    const canvas = $('stripNa'), r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), hh = Math.max(1, Math.round(r.height * dpr));
+    if (canvas.width !== w || canvas.height !== hh) { canvas.width = w; canvas.height = hh; }
+    const ctx = canvas.getContext('2d'), n = na.FINE.length, x = (i) => (i / (n - 1)) * w, vis = na.VIS_END;
+    ctx.clearRect(0, 0, w, hh);
+    // colour band: the spectrum through the lens (visible), a dim red wash for the infrared
+    for (let i = 0; i < n; i++) {
+      const g = Math.round(((na.FINE[i] - 380) / 5)), T = lensT[i];
+      ctx.fillStyle = i <= vis ? css(SPECTRAL[Math.min(80, g)].map((v) => encode(v * T))) : `rgba(201, 120, 106, ${0.08 + 0.32 * T})`;
+      ctx.fillRect(Math.floor(x(i)), 0, Math.ceil(w / n) + 1, hh);
+    }
+    // black-body emission at this temperature (shape only), and the lens's transmission
+    const bb = na.planck(tK), peak = Math.max(...bb);
+    ctx.fillStyle = 'rgba(255, 138, 42, .28)'; ctx.beginPath(); ctx.moveTo(0, hh);
+    for (let i = 0; i < n; i++) ctx.lineTo(x(i), hh - (bb[i] / peak) * hh * 0.85);
+    ctx.lineTo(w, hh); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(239, 230, 220, .95)'; ctx.lineWidth = 1.4 * dpr; ctx.beginPath();
+    for (let i = 0; i < n; i++) { const y = 4 * dpr + (1 - lensT[i]) * (hh - 8 * dpr); i ? ctx.lineTo(x(i), y) : ctx.moveTo(x(i), y); }
+    ctx.stroke();
+    // the sodium doublet, as a spike: its height is the flare's share, through the lens
+    const i589 = na.FINE.indexOf(589), fx = x(i589), pass = (lensT[i589] + lensT[i589 + 1]) / 2;
+    const top = hh - Math.max(2 * dpr, (flare > 0 ? 0.3 + 0.7 * Math.min(1, flare / 6) : 0) * pass * (hh - 16 * dpr));
+    ctx.strokeStyle = '#0c0907'; ctx.lineWidth = 5 * dpr; ctx.beginPath(); ctx.moveTo(fx, hh); ctx.lineTo(fx, top); ctx.stroke();
+    ctx.strokeStyle = '#ffe7a0'; ctx.lineWidth = 2.5 * dpr; ctx.beginPath(); ctx.moveTo(fx, hh); ctx.lineTo(fx, top); ctx.stroke();
+    ctx.fillStyle = '#efe6dc'; ctx.font = `${10 * dpr}px "IBM Plex Mono", monospace`; ctx.fillText('Na D', fx + 5 * dpr, Math.max(12 * dpr, Math.min(hh - 4 * dpr, top + 10 * dpr)));
+    ctx.strokeStyle = 'rgba(239, 230, 220, .35)'; ctx.lineWidth = 1 * dpr; ctx.setLineDash([3 * dpr, 4 * dpr]);
+    ctx.beginPath(); ctx.moveTo(x(vis), 0); ctx.lineTo(x(vis), hh); ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  function render({ t, a, body, hot, glowRgb, flare }) {
+    const d = lensData[cur], tK = t + 273.15, f = fire(cur, tK), fHot = fire(cur, HOT + 273.15);
+    lensG.style.display = cur === 'none' ? 'none' : '';
+    $('lens-name').textContent = d.label;
+    $('lens-room-m').setAttribute('values', matrix(d.room));
+    $('lens-fire-m').setAttribute('values', matrix(fHot.mul));
+    if (cur !== 'none') {
+      // through the lens: body lit by the room, glow recoloured by the lens, then mixed as outside
+      const b = body.map((v, i) => encode(toLin(v) * d.room[i])), hh = hot.map((v, i) => encode(toLin(v) * f.mul[i]));
+      const col = css(b.map((v, i) => v + (hh[i] - v) * a));
+      L('g-body').setAttribute('fill', col); L('g-cast').setAttribute('fill', col);
+      L('g-cast').setAttribute('opacity', 0.2 + a * 0.5);
+      L('g-halo').setAttribute('fill', apply(glowRgb, f.mul)); L('g-halo').setAttribute('opacity', a * 0.85);
+      L('g-rim').setAttribute('opacity', 1 - a * 0.9);
+      const r = flare * (d.flareT / Math.max(1e-6, f.lumT));
+      for (const id of ['g-flare', 'g-flare2']) L(id).setAttribute('opacity', r / (1 + r));
+      L('g-rig').setAttribute('transform', $('g-rig').getAttribute('transform'));
+    }
+    const key = `${cur}:${Math.round(t / 10)}`;
+    if (key !== last) {
+      last = key;
+      for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur));
+      const ir = na.power(na.planck(tK), d.T) / na.power(na.planck(tK));
+      meters.replaceChildren(
+        meter('sodium flare reaching you', d.flareT, css(naColor)),
+        meter('light from the glass', f.lumT, '#ff8a2a'),
+        meter('near infrared, 780–1400 nm', ir, '#c9786a'),
+      );
+      $('lensRead').textContent = LENS_NOTES[cur];
+      drawStrip(d.T, tK, flare);
+    }
+  }
+  addEventListener('resize', () => { last = null; api.onChange?.(); });
+  return api;
 }
 
 /* ---------- 05 the reheat: struck gold and band-gap crystals ---------- */

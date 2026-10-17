@@ -120,6 +120,14 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
           <radialGradient id="g-rimfill" cx=".5" cy=".5" r=".5"><stop offset=".55" stop-color="#000" stop-opacity="0" /><stop offset="1" stop-color="#000" stop-opacity=".5" /></radialGradient>
           <filter id="g-bl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="22" /></filter>
           <filter id="g-bl2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9" /></filter>
+          <filter id="g-bl3" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="14" /></filter>
+          <radialGradient id="g-na" cx=".5" cy=".62" r=".55"><stop offset="0" stop-color="#fffbe8" /><stop offset=".3" stop-color="#ffe7a0" /><stop offset=".62" stop-color="var(--na)" stop-opacity=".9" /><stop offset="1" stop-color="var(--na)" stop-opacity="0" /></radialGradient>
+          <radialGradient id="g-na2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff3b4" /><stop offset=".6" stop-color="#ffd468" /><stop offset=".8" stop-color="var(--na)" stop-opacity=".85" /><stop offset="1" stop-color="var(--na)" stop-opacity="0" /></radialGradient>
+          <filter id="g-fl" x="-40%" y="-40%" width="180%" height="180%"><feTurbulence type="fractalNoise" baseFrequency="0.016 0.04" numOctaves="2" seed="4" /><feDisplacementMap in="SourceGraphic" scale="46" xChannelSelector="R" yChannelSelector="G" /><feGaussianBlur stdDeviation="4" /></filter>
+          <!-- the lens view: the same scene again, clipped to the glasses and recoloured by home.js -->
+          <filter id="lens-room" color-interpolation-filters="linearRGB"><feColorMatrix id="lens-room-m" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" /></filter>
+          <filter id="lens-fire" color-interpolation-filters="linearRGB"><feColorMatrix id="lens-fire-m" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" /></filter>
+          <clipPath id="lens-clip"><ellipse cx="-90" cy="0" rx="82" ry="62" /><ellipse cx="90" cy="0" rx="82" ry="62" /></clipPath>
         </defs>
         <rect x="-400" y="262" width="1700" height="30" fill="#070504" />
         <rect x="690" y="10" width="260" height="252" rx="6" fill="#1f1511" />
@@ -130,10 +138,21 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
         <g id="g-rig">
           <ellipse id="g-cast" cx="800" cy="268" rx="90" ry="9" filter="url(#g-bl2)" />
           <circle id="g-halo" cx="800" cy="150" r="100" filter="url(#g-bl)" />
+          <g id="g-flare" class="flare"><ellipse cx="800" cy="150" rx="150" ry="100" fill="url(#g-na)" filter="url(#g-bl3)" /><path d="M690 182 C686 128 724 112 742 52 C770 92 786 76 800 18 C822 70 832 64 860 40 C870 96 912 122 912 172 C912 214 862 232 804 232 C742 232 694 220 690 182Z" fill="url(#g-na)" filter="url(#g-fl)" /></g>
           <rect x="-500" y="144" width="1260" height="11" rx="3" fill="url(#g-pipe)" />
           <path id="g-body" d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" />
           <path id="g-rim" d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" fill="url(#g-rimfill)" />
           <path d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" fill="url(#g-shine)" />
+          <g id="g-flare2" class="flare"><ellipse cx="806" cy="154" rx="94" ry="84" fill="url(#g-na2)" filter="url(#g-bl2)" /><path d="M736 168 C734 132 760 120 774 84 C790 108 800 98 810 66 C824 100 846 112 862 142 C874 178 846 200 806 200 C766 200 738 192 736 168Z" fill="url(#g-na)" filter="url(#g-fl)" /></g>
+        </g>
+        <g id="lens" hidden>
+          <g id="lens-view" clip-path="url(#lens-clip)"><rect x="-400" y="-100" width="1700" height="500" fill="#0c0907" /></g>
+          <g id="lens-frame" class="lens-frame" tabindex="0" role="slider" aria-label="safety glasses: drag across the scene, or use the arrow keys">
+            <path d="M-8 -24 Q0 -34 8 -24" fill="none" stroke-width="7" />
+            <ellipse cx="-90" cy="0" rx="82" ry="62" fill="transparent" stroke-width="7" />
+            <ellipse cx="90" cy="0" rx="82" ry="62" fill="transparent" stroke-width="7" />
+            <text x="-90" y="84" text-anchor="middle" id="lens-name"></text>
+          </g>
         </g>
       </svg>
       <div class="bench bench-top">
@@ -144,10 +163,31 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
         </div>
         <div class="controls">
           <div class="chips" id="heatRods" role="group" aria-label="colorant in the gather"></div>
+          <div class="chips eyes" id="lensPick" role="group" aria-label="eye protection"><span class="mono">eyes</span></div>
           <p class="readout" id="heatRead"></p>
         </div>
       </div>
       <p class="aside"><b>Computed, not painted.</b> The glow colour is Planck's law integrated against the colour-matching functions, and its strength is the black body's luminance on a log scale, so it fades the way the eye sees it fade.</p>
+
+      <div class="glasses" id="glasses">
+        <h3>Put the <i>glasses</i> on</h3>
+        <div class="prose">
+          <p>The yellow blaze around a hot gather is not the glass. Drag the glasses across the scene above. Soda in the glass boils off into the flame, and every sodium atom there emits at two wavelengths, 589.0 and 589.6 nm. Two lines that bright are enough to drown out the glass inside them. Didymium lenses cut a notch exactly there. The flare goes out, the glass reappears, and everything else gets through.</p>
+          <p>Didymium was named in 1841 as one element, the "twin" of lanthanum. In 1885 Carl Auer von Welsbach split it into two, neodymium and praseodymium, and the lens needs both: neodymium's strongest band sits at 585 nm and praseodymium's at 590 nm, so together they cover the doublet.</p>
+        </div>
+        <div class="bench bench-top">
+          <div class="controls">
+            <canvas class="strip tall" id="stripNa" aria-label="spectrum reaching the eye through the chosen lens"></canvas>
+            <div class="strip-key"><span>380 nm</span><span>visible · <b>near infrared</b></span><span>1400 nm</span></div>
+          </div>
+          <div class="controls">
+            <dl class="meters" id="lensMeters"></dl>
+            <p class="readout" id="lensRead"></p>
+          </div>
+        </div>
+        <p class="aside"><b>Not shown, but there.</b> Over 98% of what a 1150 °C gather radiates between 380 and 1400 nm is near infrared, which you cannot see and which reaches the lens of your eye. Years of it cause glassblower's cataract. Didymium does almost nothing about it. Around 1913 William Crookes, working for a Royal Society committee on the problem, made iron-bearing glasses to absorb it, and Coblentz and Emerson (1917) measured sage-green ferrous glass passing about 5% of a furnace's infrared. Furnace and glory-hole work calls for rated IR protection, not didymium alone.</p>
+        <p class="aside"><b>Model.</b> Lens bands are Gaussians at the didymium reference peaks (431, 473, 513, 529, 573, 585, 685, 741, 749, 807, 879 nm) plus praseodymium's 444, 469, 482 and 590 nm, on a 1 nm grid. Strengths are approximate, scaled so a 3 mm lens passes about 1% at 589 nm. The flare's brightness relative to the glass is illustrative; it is strongest at a torch. The view through the lens is shown after your eye has adapted to its overall dimming, so what changes is balance and hue.</p>
+      </div>
     </div>
   </section>
 </div>
