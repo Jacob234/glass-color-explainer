@@ -31,7 +31,7 @@ const navLinks = [
   </nav>
   <slot />
   <footer class="site-footer wrap">
-    <div><p><b>How the colors are made.</b> Absorption curves are illustrative, drawn from the shape of published spectra rather than measured. Each is converted to optical density, scaled by amount and thickness (Beer–Lambert), multiplied against a daylight spectrum, integrated with the CIE 1931 2° observer on a 5 nm grid, adapted to D65 and encoded as sRGB.</p></div>
+    <div><p><b>How the colors are made.</b> Absorption curves are illustrative, drawn from the shape of published spectra rather than measured. Each is converted to optical density, scaled by amount and thickness (Beer–Lambert), multiplied against the lamp's spectrum (CIE D65 daylight unless you change it), integrated with the CIE 1931 2° observer on a 5 nm grid, adapted to D65 and encoded as sRGB.</p></div>
     <div><p>Source and data on <a href="https://github.com/Jacob234/glass-color-explainer">GitHub</a>.</p></div>
   </footer>
 </body>
