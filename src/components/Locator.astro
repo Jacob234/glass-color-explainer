@@ -16,16 +16,15 @@ const nodes = [
 ];
 ---
 <nav class="locator" aria-label="mechanism locator">
-  <a href={`${base}/`} class="locator-map">map</a>
   {nodes.map((n) => (
-    <a href={n.href} class={`locator-node${n.id === mechanism ? ' active' : ''}`}>{n.label}</a>
+    <a href={n.href} class={`locator-node${n.id === mechanism ? ' active' : ''}`} aria-current={n.id === mechanism ? 'true' : undefined}>{n.label}</a>
   ))}
 </nav>
 <style>
-  .locator { display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.8rem; margin-bottom: 1.5rem; }
-  .locator a { padding: 0.15rem 0.6rem; border: 1px solid var(--edge); border-radius: 999px;
-    text-decoration: none; color: var(--muted); transition: color .15s, border-color .15s; }
-  .locator a:hover { color: var(--text); border-color: var(--faint); }
-  .locator a.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
-  .locator-map { font-weight: 600; color: var(--text) !important; }
+  .locator { display: flex; gap: 0.3rem 1.1rem; flex-wrap: wrap; font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 0; }
+  .locator a { color: var(--faint); text-decoration: none; padding: 0.2rem 0; border-bottom: 1px solid transparent;
+    transition: color .15s, border-color .15s; }
+  .locator a:hover { color: var(--text); }
+  .locator a.active { color: var(--theme, var(--accent)); border-bottom-color: currentColor; }
 </style>
