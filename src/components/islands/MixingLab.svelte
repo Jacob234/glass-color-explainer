@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { mixedAbsorbance, transmittedColor } from '../../scripts/optics-core.js';
 
   let { optics, recipes = [] } = $props();
@@ -59,6 +60,18 @@
     logThickness = value;
     activeRecipeId = null;
   }
+
+  // A melt handed over in the URL, as the rack's bench does: ?melt=cobalt:0.4,chromium:0.2&t=2
+  onMount(() => {
+    const q = new URLSearchParams(location.search), given = q.get('melt');
+    if (!given) return;
+    const parsed = given.split(',').map((x) => x.split(':')).filter(([id, c]) => byId.has(id) && Number.isFinite(+c))
+      .slice(0, MAX).map(([id, c]) => ({ id, c: Math.min(1, Math.max(0, +c)) }));
+    if (!parsed.length) return;
+    melt = parsed;
+    const t = +q.get('t');
+    logThickness = Number.isFinite(t) && t > 0 ? Math.min(2, Math.max(-2, Math.log2(t))) : 0;
+  });
 
   function applyRecipe(r) {
     melt = r.melt.map((m) => ({ id: m.colorant, c: m.c }));
