@@ -55,10 +55,14 @@
     },
     {
       "id": "selenium", "short": "Selenium red", "year": 1891, "when": "1891", "title": "Selenium red",
-      "text": "Franz Welz patented selenium, with cadmium, as a red for glass. It was cheaper than gold ruby and went into railway signal lenses by the early 1900s. The source here is a collectors' history, so treat the year as approximate.",
+      "text": "Franz Welz of Klostergrab in Bohemia patented selenium as a glass colorant (German patent 63558, December 1891; US patent 479,689, 1892). Selenium alone gave a rose; with cadmium sulfide it gave orange-red to orange-yellow. The deep cadmium sulfoselenide ruby of signal lamps came later and was described in the Journal of the American Ceramic Society in 1919.",
       "color": { "parts": [["cdsse", 1]], "thickness": 1.2 },
       "stage": "strike",
-      "sources": [["Carnival Glass Worldwide: red glass", "https://www.carnivalglassworldwide.com/red-gold.html"]]
+      "sources": [
+        ["US patent 479,689: Welz, rose or orange stained glass (1892)", "https://patents.google.com/patent/US479689"],
+        ["Yuryeva et al., Materials Research Bulletin (2020), citing DE patent 63558 (6 Dec 1891)", "https://arxiv.org/html/1901.10764v3"],
+        ["Corning Museum of Glass: when was selenium first used?", "https://libanswers.cmog.org/faq/143954"]
+      ]
     },
     {
       "id": "crookes", "short": "Crookes's glass", "year": 1913, "when": "1913", "title": "Crookes's eye-preserving glass",
