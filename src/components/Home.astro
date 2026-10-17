@@ -260,13 +260,38 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
     <h2>Every color on the <i>shelf</i></h2>
     <div class="prose">
       <p>These are <span id="rackN">{rack.length.toLocaleString('en')}</span> real rod and sheet colors from {suppliers} suppliers, shelved by hue. Filter by the mechanism that makes them. Most suppliers do not publish recipes, so the large unclassified group is honest, not a gap in effort.</p>
+      <p>Click a rod and the bench works backwards. It tries every melt of up to three of the page's twelve colorants and keeps the ones whose color through the glass matches the photo. Expect to be surprised by how many do. A color is three numbers and a recipe is a whole spectrum, so one swatch can never tell you what is in the glass. A different lamp can.</p>
     </div>
     <div class="filters chips" id="filters" role="group" aria-label="filter by mechanism"></div>
     <div class="rackbox">
-      <div id="mosaic"></div>
-      <div class="tag" id="tag" aria-live="polite"><i></i><div><strong>Point at a rod</strong><span>supplier, code and colorant appear here</span></div></div>
+      <div class="rack-shelves">
+        <div id="mosaic"></div>
+        <div class="tag" id="tag" aria-live="polite"><i></i><div><strong>Point at a rod</strong><span>supplier, code and colorant appear here</span></div></div>
+      </div>
+      <aside class="fit" id="fit" aria-label="reverse-engineer a rod">
+        <span class="mono fit-head">the bench</span>
+        <p class="fit-empty" id="fitEmpty">Click any rod on the rack to work out a melt that would make it.</p>
+        <div class="fit-body" id="fitBody" hidden>
+          <h3 id="fitName"></h3>
+          <span class="fit-meta" id="fitMeta"></span>
+          <div class="fit-pair">
+            <div class="fit-photo" id="fitPhoto"><b>the photo</b></div>
+            <div class="pane" id="fitGlass"><b>the melt</b></div>
+          </div>
+          <p class="fit-verdict" id="fitVerdict" aria-live="polite"></p>
+          <ol class="fit-recipe" id="fitRecipe" aria-label="recipe"></ol>
+          <canvas class="strip fit-strip" id="fitStrip" aria-label="spectrum of the fitted glass: light in and light out"></canvas>
+          <div class="strip-key"><span>380 nm</span><span>light in · light out</span><span>780 nm</span></div>
+          <h4>Same color, different glass</h4>
+          <p class="fit-note" id="fitSplit"></p>
+          <div class="metamers" id="fitAlts"></div>
+          <p class="fit-note" id="fitLabel"></p>
+          <p class="fit-note" id="fitCaveat"></p>
+          <p class="more"><a id="fitLab" href={`${base}/mixing-lab/`}>Open this melt in the mixing lab →</a></p>
+        </div>
+      </aside>
     </div>
-    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements.</p>
+    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements. The bench fits the photo, not the glass, and its twelve absorption curves are illustrative rather than measured, so its recipes are candidates, never the supplier's formula.</p>
   </div>
 </section>
 

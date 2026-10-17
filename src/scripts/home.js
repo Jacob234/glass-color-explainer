@@ -6,6 +6,7 @@ import {
   SPECTRAL, bandEdge, dichroicBand, encode, css,
 } from './spectra.js';
 import * as na from './flare.js';
+import { makeFitter, MATCH, C_MAX } from './fit.js';
 
 const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -514,8 +515,41 @@ function rack() {
       h('div', {}, h('strong', {}, it.name), h('span', {}, `${it.supplier} · ${it.code} · ${it.opacity}${colorants} · ${MECH_NOTE[it.mechanism] ?? it.mechanism}`)),
     );
   };
+  const bench = fitBench();
+  let pinned = null;
   mosaic.addEventListener('pointerover', (e) => show(e.target));
-  mosaic.addEventListener('click', (e) => show(e.target));
+  mosaic.addEventListener('pointerleave', () => pinned && show(pinned));
+  const pick = (el) => {
+    pinned = el; show(pinned); bench(items[pinned.dataset.i]);
+    // On a phone the bench sits under the shelves, out of sight.
+    if (matchMedia('(max-width: 820px)').matches) $('fit').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+  };
+  mosaic.addEventListener('click', (e) => e.target?.dataset?.i && pick(e.target));
+  // Keyboard: the rack is one tab stop; arrow keys walk the visible rods, Enter puts one on the bench.
+  mosaic.tabIndex = 0;
+  mosaic.setAttribute('aria-label', 'rack of rods: arrow keys to browse, Enter to reverse-engineer');
+  mosaic.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (step) {
+      const vis = [...mosaic.querySelectorAll('.rods div')].filter((d) => d.style.display !== 'none');
+      const at = vis.indexOf(on);
+      show(vis[Math.min(vis.length - 1, Math.max(0, at < 0 ? 0 : at + step))]);
+      on?.scrollIntoView({ block: 'nearest' });
+      e.preventDefault();
+    } else if ((e.key === 'Enter' || e.key === ' ') && on) { pick(on); e.preventDefault(); }
+  });
+  // Start the bench on a rod whose label names its colorant and whose photo that colorant can
+  // match (Bullseye's cadmium yellow), so the first thing it shows is a claim that checks out.
+  // Wait until the rack is near the screen: a fit takes a moment.
+  const first = [...mosaic.querySelectorAll('.rods div')].find((d) => items[d.dataset.i].code === '004220')
+    ?? mosaic.querySelector('.rods div');
+  if (first) {
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting) || pinned) return;
+      io.disconnect(); pinned = first; show(first); bench(items[first.dataset.i]);
+    }, { rootMargin: '300px' });
+    io.observe($('fit'));
+  }
 
   const counts = items.reduce((m, it) => ((m[it.mechanism] = (m[it.mechanism] || 0) + 1), m), { all: items.length });
   const box = $('filters');
@@ -525,10 +559,92 @@ function rack() {
       for (const x of box.children) x.setAttribute('aria-pressed', String(x === b));
       for (const d of mosaic.querySelectorAll('.rods div')) d.style.display = id === 'all' || items[d.dataset.i].mechanism === id ? '' : 'none';
       if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.replaceChildren(...blank.map((n) => n.cloneNode(true))); }
+      if (pinned && pinned.style.display === 'none') pinned = null; // the bench keeps its last result
       recount();
     });
     box.appendChild(b);
   }
+}
+
+/* ---------- 07 the rack, continued: the bench works a rod backwards to a melt ---------- */
+const LAMP = 'a tungsten bulb';
+function fitBench() {
+  const fitter = makeFitter(optics, { lamp: 'incandescent' });
+  const lab = (id) => COLORANT[id]?.label ?? id;
+  const names = (parts) => parts.map(([id]) => lab(id)).join(' + ');
+  const verdict = (dE) =>
+    dE <= 1 ? 'Side by side you could not tell them apart.'
+    : dE <= MATCH ? 'Close enough to pass for the same color side by side.'
+    : dE <= 6 ? 'Near, but visibly off. The twelve curves cannot quite reach this color.'
+    : 'Far off. No melt of these colorants makes this color, so something else is going on.';
+  // A melt in the mixing lab: concentrations up to 1 at a wall up to 4× thick, so scale the
+  // wall to fit the strongest colorant and divide it back out.
+  const labLink = (parts) => {
+    const t = Math.min(4, 2 ** Math.max(0, Math.ceil(Math.log2(Math.max(...parts.map(([, c]) => c))))));
+    const melt = parts.map(([id, c]) => `${id}:${(c / t).toFixed(3)}`).join(',');
+    return `${$('fitLab').getAttribute('href').split('?')[0]}?melt=${melt}&t=${t}`;
+  };
+  const row = (r, name) => h('div', {}, h('span', {}, name),
+    h('i', { style: { '--c': r.hex }, title: 'daylight' }), h('i', { style: { '--c': r.lamp.hex }, title: LAMP }));
+  let job = 0;
+
+  return function show(it) {
+    const id = ++job;
+    $('fitEmpty').hidden = true; $('fitBody').hidden = false;
+    $('fitName').textContent = it.name;
+    $('fitMeta').textContent = `${it.supplier} · ${it.code} · ${it.opacity}`;
+    $('fitPhoto').style.setProperty('--c', it.hex);
+    $('fit').classList.add('busy');
+    $('fitVerdict').textContent = 'Weighing every melt of up to three colorants…';
+    // Yield a frame so the click paints before the search runs.
+    setTimeout(() => {
+      if (id !== job) return;
+      const r = fitter.fit(it.hex), b = r.best;
+      $('fit').classList.remove('busy');
+      $('fitGlass').style.setProperty('--c', b.hex);
+      $('fitVerdict').replaceChildren(
+        h('b', {}, `ΔE ${b.dE.toFixed(1)}. `), verdict(b.dE),
+        ` ${r.matches} of the ${r.tried} melts tried ${r.matches === 1 ? 'matches' : 'match'} this photo; this is the simplest.`,
+      );
+      const top = Math.log(C_MAX / 0.01);
+      $('fitRecipe').replaceChildren(...b.parts.map(([cid, c]) => h('li', {},
+        h('i', { style: { '--c': colorOf([[cid, 1]], 1.2).css } }),
+        h('span', {}, lab(cid)),
+        h('em', { style: { '--w': `${Math.max(4, (100 * Math.log(c / 0.01)) / top)}%` } }),
+        h('output', {}, `×${c < 0.1 ? c.toFixed(3) : c.toFixed(2)}`),
+      )));
+      strip($('fitStrip'), ONES, mixT(b.parts));
+
+      if (r.alternatives.length) {
+        const alt = r.alternatives[0];
+        $('fitSplit').textContent = `Here is the simplest melt beside the other matching melt that disagrees with it most under ${LAMP}. In daylight they are ΔE ${alt.gap.toFixed(1)} apart. Under the bulb they are ${alt.split.toFixed(1)} apart${alt.split > 3 ? ', which a glassblower holding both rods would see' : ', still close: this palette has few ways to make this color'}.`;
+        $('fitAlts').replaceChildren(
+          h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')),
+          ...[b, ...r.alternatives].map((x, i) => row(x, i ? names(x.parts) : `${names(x.parts)} (simplest)`)),
+        );
+      } else {
+        $('fitSplit').textContent = `No other melt matches, so within this palette the recipe is fairly well pinned down. Under ${LAMP} it looks like this:`;
+        $('fitAlts').replaceChildren(h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')), row(b, names(b.parts)));
+      }
+
+      const known = it.colorant.filter((c) => COLORANT[c]);
+      if (known.length) {
+        const l = fitter.fit(it.hex, { only: known }).best;
+        const ok = l.dE <= MATCH ? 'matches the photo, so the label and the color agree' : l.dE <= 6 ? 'comes near the photo but not all the way' : 'cannot reach the photo. The photo, the label or the page\'s illustrative curve for it must be off, or the color comes from something the label does not name';
+        $('fitLabel').replaceChildren(h('b', {}, 'The label says ' + names(known.map((c) => [c])) + '. '), `${known.length > 1 ? 'Together, at their best amounts, they reach' : 'On its own, at its best amount, it reaches'} ΔE ${l.dE.toFixed(1)}: ${known.length > 1 ? 'the mix' : 'it'} ${ok}.`);
+      } else $('fitLabel').replaceChildren(h('b', {}, 'No colorant on the label. '), 'The supplier does not say what is in this one, so the bench has nothing to check its guess against.');
+
+      const scatter = ' The photo shows light scattered back from inside the glass, not light passed through it, so a transmission fit is only an analogy.';
+      const lit = {
+        transparent: '', translucent: scatter, opal: scatter, opalescent: scatter,
+        streaky: ' This is a streaky glass, so the swatch is an average of several colors that may each have their own recipe.',
+        metallic: ' This glass gets its look partly from a metallic surface or sparkle, which no absorption curve describes.',
+        dichroic: ' A dichroic coating colors this glass by interference, not absorption, so no melt is the true answer.',
+      }[it.opacity] ?? ' The catalog does not say whether it is transparent. If it is opaque, the fit is only an analogy.';
+      $('fitCaveat').textContent = `The bench fits the photo, which carries its own lighting and white balance.${lit}`;
+      $('fitLab').href = labLink(b.parts);
+    }, 30);
+  };
 }
 
 export function initHome() {
