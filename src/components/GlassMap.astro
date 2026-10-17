@@ -1,132 +1,167 @@
 ---
-// Home page: the four mechanisms as the lancets of a backlit window. Each lancet's
-// medallions are the real objects that mechanism explains.
+// Home page: the hot shop. A gather cools on the pipe, then the four mechanisms are laid out
+// as a rack of color rods: each rod a colorant (its color computed from its absorption curve),
+// tagged with how many real supplier colors in the catalog use it.
 import map from '../data/map.json';
+import optics from '../data/optics.json';
+import Gather from './islands/Gather.astro';
+import { mixedAbsorbance, transmittedColor } from '../scripts/optics-core.js';
+
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (slug: string, anchor: string | null) => `${base}/concepts/${slug}/${anchor ? `#${anchor}` : ''}`;
-const mechHref = (m: (typeof map.mechanisms)[number]) =>
-  m.slugs[0] ? href(m.slugs[0], null) : href(m.anchorTarget!.targetSlug, m.anchorTarget!.anchor);
+const mechHref = (m: any) =>
+  m.slugs[0] ? href(m.slugs[0], null) : href(m.anchorTarget.targetSlug, m.anchorTarget.anchor);
+
+// How many catalog products name each colorant (build time only; nothing ships to the client).
+const catalogFiles = import.meta.glob('../data/catalog/*.json', { eager: true, import: 'default' });
+const catalogCount: Record<string, number> = {};
+for (const [path, data] of Object.entries(catalogFiles) as [string, any][]) {
+  if (path.endsWith('index.json')) continue;
+  for (const p of data.products) for (const c of p.colorant) catalogCount[c] = (catalogCount[c] ?? 0) + 1;
+}
+
+const daylight = optics.illuminants.find((i) => i.id === 'daylight')!;
+const rodColor = (c: (typeof optics.colorants)[number]) =>
+  transmittedColor(optics.wavelengths, mixedAbsorbance([{ colorant: c, c: 1 }], optics.wavelengths.length, 1.6), daylight.spd);
+const rods: Record<string, { label: string; color: string; count?: number }[]> = {
+  structure: [
+    { label: 'opal (scattering)', color: 'linear-gradient(180deg, #fbfbf8, #d9dee6)' },
+    { label: 'dichroic (thin films)', color: 'linear-gradient(90deg, #7be3d0, #c77bf2, #f2d27b, #7be3d0)' },
+  ],
+};
+for (const c of optics.colorants) {
+  (rods[c.group] ??= []).push({ label: c.label, color: rodColor(c), count: catalogCount[c.id] });
+}
+const lengths = [96, 88, 100, 82, 92, 86, 98];
 ---
 <section class="hero">
-  <p class="label">an explorable explainer</p>
+  <p class="label">the hot shop</p>
   <h1>Why is glass <em>colored?</em></h1>
   <p class="lede">
-    Clear glass becomes cobalt blue, ruby red or traffic-light amber by four different kinds of
-    physics. Each lancet below is one of them, and every medallion is a real object it explains.
+    Pull a gather from the furnace and it glows orange whatever is in it. Let it cool and the color
+    it was carrying all along appears. Four kinds of physics decide what that color will be.
   </p>
-  <a class="start" href={href(map.anchorSlug, null)}>Start with the four mechanisms →</a>
 </section>
 
-<div class="window" role="list">
-  {map.mechanisms.map((m, i) => (
-    <article class="lancet" role="listitem" style={`--theme:${m.theme}`}>
-      <div class="pane">
-        <span class="numeral" aria-hidden="true">{['I', 'II', 'III', 'IV'][i]}</span>
-        <div class="medallions">
-          {m.artifacts.map((a) => (
-            <a class="medallion glass" href={href(a.targetSlug, a.anchor)} style={`--glass:${a.colorCss}`} aria-label={a.label}>
-              <span class="tip">{a.label}</span>
-            </a>
+<div class="bench"><Gather /></div>
+
+<section class="rack-wrap" aria-labelledby="rack-title">
+  <header class="rack-head">
+    <p class="label">the color rack</p>
+    <h2 id="rack-title">Four mechanisms, sorted like rod stock</h2>
+    <p>
+      Each rod is a colorant, colored from its absorption curve. The tag counts the supplier colors in
+      the catalog (Bullseye, Effetre, CiM and others) that use it.
+      <a href={href(map.anchorSlug, null)}>Read the overview first →</a>
+    </p>
+  </header>
+
+  <ol class="rack">
+    {map.mechanisms.map((m, i) => (
+      <li class="bin" style={`--theme:${m.theme}`}>
+        <div class="bin-text">
+          <span class="numeral">{['I', 'II', 'III', 'IV'][i]}</span>
+          <h3><a href={mechHref(m)}>{m.label}</a></h3>
+          <p class="blurb">{m.blurb}</p>
+          {m.slugs.length > 1 && (
+            <p class="also">also <a href={href(m.slugs[1], null)}>{m.slugs[1].replace(/-/g, ' ')}</a></p>
+          )}
+        </div>
+        <div class="rods">
+          {(rods[m.id] ?? []).map((r, j) => (
+            <div class="rod-line">
+              <span class="rod" style={`--glass:${r.color}; width:${lengths[j % lengths.length]}%`}></span>
+              <span class="tag">{r.label}{r.count ? <b>{r.count} in catalog</b> : null}</span>
+            </div>
           ))}
         </div>
-      </div>
-      <h2><a href={mechHref(m)}>{m.label}</a></h2>
-      <p class="blurb">{m.blurb}</p>
-      <ul class="objects">
-        {m.artifacts.map((a) => <li><a href={href(a.targetSlug, a.anchor)}>{a.label}</a></li>)}
-      </ul>
-      {m.slugs.length > 1 && (
-        <p class="also">also <a href={href(m.slugs[1], null)}>{m.slugs[1].replace(/-/g, ' ')}</a></p>
-      )}
-    </article>
-  ))}
-</div>
+        <div class="seen">
+          <span class="label">seen in</span>
+          {m.artifacts.map((a) => (
+            <a class="object" href={href(a.targetSlug, a.anchor)}><span class="bead" style={`--glass:${a.colorCss}`}></span>{a.label}</a>
+          ))}
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
 
 <div class="threads">
   <a class="thread" href={href(map.crosscutting.slug, null)}>
     <span class="label">cuts across all four</span>
     <span class="thread-title">Redox</span>
-    <span class="thread-sub">the furnace decides which ion you get</span>
+    <span class="thread-sub">the furnace atmosphere decides which ion you get</span>
   </a>
   <a class="thread" href={href(map.craft.slug, null)}>
     <span class="label">the craft</span>
     <span class="thread-title">Stained glass</span>
     <span class="thread-sub">all four mechanisms in one window</span>
   </a>
-  <a class="thread lab" href={`${base}/mixing-lab/`}>
-    <span class="label">hands on</span>
+  <a class="thread" href={`${base}/mixing-lab/`}>
+    <span class="label">the batch</span>
     <span class="thread-title">Mixing lab</span>
-    <span class="thread-sub">melt up to four colorants and watch the color respond</span>
-    <span class="lab-panes" aria-hidden="true">
-      <span class="glass" style="--glass:#3c5bf0"></span><span class="glass" style="--glass:#1f9a8a"></span><span class="glass" style="--glass:#e9a23b"></span>
-    </span>
+    <span class="thread-sub">melt up to four colorants, set the wall thickness, see the color</span>
   </a>
 </div>
 
 <style>
-  .hero { max-width: 46rem; margin: 0 auto; padding: clamp(2.5rem, 8vw, 5rem) clamp(1rem, 4vw, 2rem) 2.5rem; text-align: center; }
-  .hero h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2.8rem, 9vw, 5.2rem); line-height: 1;
-    letter-spacing: -0.03em; margin: 0.8rem 0 1.2rem; }
+  .hero { max-width: 46rem; margin: 0 auto; padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem) 0.5rem; text-align: center; }
+  .hero h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2.7rem, 8.5vw, 5rem); line-height: 1;
+    letter-spacing: -0.03em; margin: 0.7rem 0 1rem; }
   .hero h1 em { font-style: italic; font-weight: 400;
-    background: linear-gradient(100deg, #6f8dff 0%, #49c4a2 30%, #f2c14e 55%, #ef5a3c 78%, #d0457a 100%);
+    background: linear-gradient(100deg, #fff1c9 0%, #ffb347 30%, #ff6a1a 60%, #3c63f0 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.06em; }
-  .lede { font-size: 1.2rem; line-height: 1.55; color: var(--muted); margin: 0 auto 1.6rem; max-width: 36rem; text-wrap: pretty; }
-  .start { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-decoration: none;
-    display: inline-block; padding: 0.7rem 1.2rem; border-radius: 999px; border: 1px solid rgba(240,180,90,0.45);
-    background: var(--accent-soft); transition: background .15s, border-color .15s; }
-  .start:hover { background: rgba(240,180,90,0.24); border-color: var(--accent); }
+  .lede { font-size: 1.18rem; line-height: 1.55; color: var(--muted); margin: 0 auto; max-width: 35rem; text-wrap: pretty; }
 
-  .window { max-width: 68rem; margin: 1rem auto 0; padding: 0 clamp(1rem, 4vw, 2rem);
-    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 2vw, 1.6rem); }
-  .lancet { display: flex; flex-direction: column; }
-  .pane { position: relative; height: 23rem; border-radius: 50% 50% 6px 6px / 8.5rem 8.5rem 6px 6px;
-    border: 5px solid #050608; outline: 1px solid rgba(255,255,255,0.08); outline-offset: 1px;
+  .bench { max-width: 62rem; margin: 0 auto; padding: 0 clamp(0.5rem, 3vw, 2rem); }
+
+  .rack-wrap { max-width: 62rem; margin: 4rem auto 0; padding: 0 clamp(1rem, 4vw, 2rem); }
+  .rack-head { max-width: 40rem; margin-bottom: 2rem; }
+  .rack-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.7rem, 4vw, 2.3rem); line-height: 1.15; margin: 0.4rem 0 0.6rem; }
+  .rack-head p { color: var(--muted); margin: 0; }
+  .rack { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.2rem; }
+  .bin { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(0, 1.6fr); gap: 0.6rem 2rem; padding: 1.4rem 1.4rem 1.2rem;
+    border-radius: 14px; border: 1px solid var(--edge);
     background:
-      repeating-linear-gradient(60deg, transparent 0 2.6rem, rgba(0,0,0,0.38) 2.6rem calc(2.6rem + 2px)),
-      repeating-linear-gradient(-60deg, transparent 0 2.6rem, rgba(0,0,0,0.38) 2.6rem calc(2.6rem + 2px)),
-      radial-gradient(120% 70% at 50% 35%, color-mix(in srgb, var(--theme) 55%, #fff 8%) 0%, color-mix(in srgb, var(--theme) 70%, #000) 70%, color-mix(in srgb, var(--theme) 30%, #000) 100%);
-    box-shadow: 0 0 60px -10px color-mix(in srgb, var(--theme) 55%, transparent), inset 0 0 40px rgba(0,0,0,0.5);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .numeral { position: absolute; top: 3rem; font-family: var(--display); font-size: 1.1rem; color: rgba(255,255,255,0.55); letter-spacing: 0.1em; }
-  .medallions { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; margin-top: 4rem; }
-  .medallion { width: 3.2rem; height: 3.2rem; border-radius: 50%; display: block;
-    outline: 3px solid #050608; transition: transform .2s ease, box-shadow .2s; }
-  .medallion:hover, .medallion:focus-visible { transform: scale(1.12); box-shadow: 0 0 24px 2px rgba(255,255,255,0.25); z-index: 2; }
-  .tip { position: absolute; left: 50%; bottom: calc(100% + 0.5rem); transform: translateX(-50%); white-space: nowrap;
-    font-family: var(--mono); font-size: 0.68rem; color: var(--text); background: #050608; border: 1px solid var(--edge-hi);
-    padding: 0.25rem 0.55rem; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .15s; }
-  .medallion:hover .tip, .medallion:focus-visible .tip { opacity: 1; }
-
-  .lancet h2 { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.15; margin: 1.2rem 0 0.4rem; }
-  .lancet h2 a { color: var(--text); text-decoration: none; }
-  .lancet h2 a:hover { color: color-mix(in srgb, var(--theme) 60%, #fff); }
-  .blurb { font-size: 0.95rem; line-height: 1.5; color: var(--muted); margin: 0 0 0.6rem; }
-  .objects { list-style: none; padding: 0; margin: 0; font-size: 0.88rem; }
-  .objects li { padding: 0.2rem 0; border-top: 1px solid var(--edge); }
-  .objects a { color: var(--text); text-decoration: none; opacity: 0.85; }
-  .objects a:hover { color: var(--accent); opacity: 1; }
+      linear-gradient(90deg, color-mix(in srgb, var(--theme) 9%, transparent), transparent 55%),
+      linear-gradient(180deg, var(--bg-raise), var(--panel)); }
+  .numeral { font-family: var(--display); font-style: italic; color: color-mix(in srgb, var(--theme) 70%, #fff); font-size: 1rem; }
+  .bin h3 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; line-height: 1.1; margin: 0.15rem 0 0.4rem; }
+  .bin h3 a { color: var(--text); text-decoration: none; }
+  .bin h3 a:hover { color: color-mix(in srgb, var(--theme) 55%, #fff); }
+  .blurb { font-size: 0.95rem; line-height: 1.5; color: var(--muted); margin: 0; }
   .also { font-family: var(--mono); font-size: 0.7rem; color: var(--faint); margin: 0.6rem 0 0; letter-spacing: 0.04em; }
 
-  .threads { max-width: 68rem; margin: 3.5rem auto 0; padding: 0 clamp(1rem, 4vw, 2rem);
+  .rods { display: flex; flex-direction: column; gap: 0.45rem; justify-content: center; }
+  .rod-line { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; align-items: center; gap: 0.8rem; }
+  .rod { display: block; height: 0.95rem; border-radius: 0.5rem / 50%;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.12) 22%, transparent 42%, rgba(0,0,0,0.18) 72%, rgba(0,0,0,0.5) 100%),
+      var(--glass);
+    box-shadow: 0 4px 10px -4px rgba(0,0,0,0.8), 0 0 14px -6px var(--glass); }
+  .tag { font-family: var(--mono); font-size: 0.7rem; color: var(--text); line-height: 1.25; }
+  .tag b { display: block; font-weight: 400; color: var(--faint); font-size: 0.64rem; }
+
+  .seen { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; margin-top: 0.8rem;
+    padding-top: 0.8rem; border-top: 1px dashed var(--edge); }
+  .seen .label { display: inline; margin-right: 0.2rem; }
+  .object { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; color: var(--text); text-decoration: none; }
+  .object:hover { color: var(--accent); }
+  .bead { width: 0.95rem; height: 0.95rem; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7), transparent 45%), var(--glass);
+    box-shadow: inset 0 -2px 3px rgba(0,0,0,0.35), 0 0 8px -2px rgba(255,255,255,0.15); }
+
+  .threads { max-width: 62rem; margin: 3rem auto 0; padding: 0 clamp(1rem, 4vw, 2rem);
     display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  .thread { position: relative; display: flex; flex-direction: column; gap: 0.25rem; padding: 1.2rem 1.3rem 1.3rem;
+  .thread { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.2rem 1.3rem 1.3rem;
     border-radius: 14px; border: 1px solid var(--edge); background: linear-gradient(180deg, var(--bg-raise), var(--panel));
-    text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; overflow: hidden; }
-  .thread:hover { border-color: rgba(240,180,90,0.4); transform: translateY(-2px); }
+    text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; }
+  .thread:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); transform: translateY(-2px); }
   .thread-title { font-family: var(--display); font-size: 1.45rem; line-height: 1.2; }
   .thread-sub { font-size: 0.95rem; color: var(--muted); }
-  .lab-panes { position: absolute; right: 1.1rem; top: 1.1rem; display: flex; }
-  .lab-panes .glass { width: 1.3rem; height: 1.8rem; border-radius: 3px; margin-left: -0.35rem; }
 
-  @media (max-width: 900px) {
-    .window { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2.5rem; }
+  @media (max-width: 760px) {
+    .bin { grid-template-columns: 1fr; padding: 1.1rem; }
+    .rod-line { grid-template-columns: minmax(0, 1fr) 8.5rem; }
     .threads { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 480px) {
-    .pane { height: 16rem; border-radius: 50% 50% 6px 6px / 5rem 5rem 6px 6px; }
-    .medallions { gap: 0.5rem; margin-top: 2.6rem; }
-    .medallion { width: 2.4rem; height: 2.4rem; }
-    .numeral { top: 1.8rem; font-size: 0.9rem; }
-    .lancet h2 { font-size: 1.2rem; }
   }
 </style>
