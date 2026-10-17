@@ -6,6 +6,7 @@ import {
   SPECTRAL, bandEdge, dichroicBand, encode, css,
 } from './spectra.js';
 import * as na from './flare.js';
+import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 
 const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -167,7 +168,7 @@ const ROD_NOTES = {
   neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The colour shifts with the light it is viewed under.',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
 };
-function ions() {
+function ions(onRod) {
   const s = $('conc'), draw = slab($('slab3'));
   let cur = 'cobalt';
   const press = chips($('rods'), Object.keys(ROD_NOTES), (id) => COLORANT[id].label, (id) => { cur = id; render(); });
@@ -178,8 +179,138 @@ function ions() {
     $('concOut').textContent = `×${k.toFixed(2)}`;
     $('ionRead').textContent = ROD_NOTES[cur];
     press(cur);
+    onRod?.(cur, k);
   }
   s.addEventListener('input', render); addEventListener('resize', render); render();
+}
+
+/* ---------- 03 the colour rod, blown: wall thickness in a bowl and a cane ---------- */
+// Colorants differ in strength by an order of magnitude, so each rod is dosed to pass WALL_Y of
+// daylight through a 3 mm wall at amount ×1. A cased skin carries six times the colorant, so face
+// on 0.5 mm of it holds as much as a 3 mm solid wall.
+const SOLID_MM = 3, SKIN_DOSE = 6, WALL_Y = 0.6;
+const LUT_MAX = 40, LUT_N = 1024; // dose range in 3 mm walls, sampled on a square-root scale
+const PAPER = [1, 1, 1], CLEAR = [0.9, 0.925, 0.91], INK = 'rgba(20,20,20,.55)';
+
+// Size a canvas to its box at device resolution; returns [ctx, width, height, dpr].
+function fit(canvas, aspect) {
+  const w0 = canvas.getBoundingClientRect().width, dpr = Math.min(2, devicePixelRatio || 1);
+  const w = Math.max(1, Math.round(w0 * dpr)), h = Math.max(1, Math.round(w0 * aspect * dpr));
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  canvas.style.height = `${w0 * aspect}px`;
+  return [canvas.getContext('2d'), w, h, dpr];
+}
+
+function vessel() {
+  const bowl = $('bowl'), cane = $('cane'), wall = $('wall');
+  let rod = 'cobalt', k = 1, cased = false, lut = [], unit = 1, raf = 0;
+  const builds = [['solid', 'solid colour'], ['cased', 'cased in colour']].map(([id, label]) => {
+    const b = h('button', { className: 'chip chip-plain' }, label);
+    b.addEventListener('click', () => { cased = id === 'cased'; queue(); });
+    $('build').appendChild(b);
+    return [id, b];
+  });
+  const press = (cur) => { for (const [id, b] of builds) b.setAttribute('aria-pressed', String(id === cur)); };
+  const blow = () => 2 ** (wall.valueAsNumber / 100);
+  const dose = (mm, skin = cased) => (k * mm * (skin ? SKIN_DOSE : 1)) / SOLID_MM;
+  const look = (d) => lut[Math.min(LUT_N - 1, Math.round(Math.sqrt(Math.max(0, d) / LUT_MAX) * (LUT_N - 1)))];
+
+  function buildLut() {
+    let lo = 0, hi = 50; // bisect for the rod's dose per 3 mm wall
+    for (let n = 0; n < 40; n++) { const mid = (lo + hi) / 2; lum(tColor(mixT([[rod, 1]], mid)).lin) > WALL_Y ? (lo = mid) : (hi = mid); }
+    unit = lo;
+    lut = Array.from({ length: LUT_N }, (_, i) => tColor(mixT([[rod, 1]], unit * LUT_MAX * (i / (LUT_N - 1)) ** 2)));
+  }
+
+  // The bowl in half section: cut away on the left, as seen against the light on the right.
+  const X = 95, Y0 = -4, Y1 = 106; // drawing extents in mm (y up from the table)
+  function drawBowl() {
+    const [ctx, w, h, dpr] = fit(bowl, (Y1 - Y0) / (2 * X));
+    const img = ctx.createImageData(w, h), px = img.data, f = blow(), mm = (2 * X) / w;
+    for (let j = 0; j < h; j++) {
+      const y = Y1 - (j + 0.5) * mm, p = profile(y, f);
+      if (!p) continue;
+      for (let i = 0; i < w; i++) {
+        const x = -X + (i + 0.5) * mm, rho = Math.abs(x);
+        if (rho > p.R) continue;
+        let c;
+        if (x >= 0) c = look(dose(bowlPath(x, y, { blow: f, cased }))).rgb;
+        else if (rho < p.r) c = look(dose(bowlPath(x, y, { blow: f, cased, back: true }))).rgb;
+        else if (!cased) c = look(dose(p.t)).rgb; // the cut wall, tinted by its own thickness
+        else c = !p.inFoot && rho >= p.skinR ? look(dose(BOWL.skin)).rgb : CLEAR;
+        const o = 4 * (j * w + i);
+        px[o] = 255 * c[0]; px[o + 1] = 255 * c[1]; px[o + 2] = 255 * c[2]; px[o + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const sx = (x) => ((x + X) / (2 * X)) * w, sy = (y) => ((Y1 - y) / (Y1 - Y0)) * h;
+    const line = (pts) => { ctx.beginPath(); pts.forEach(([x, y], n) => (n ? ctx.lineTo(sx(x), sy(y)) : ctx.moveTo(sx(x), sy(y)))); ctx.stroke(); };
+    const ys = Array.from({ length: 121 }, (_, n) => (BOWL.H * n) / 120);
+    ctx.lineWidth = dpr; ctx.strokeStyle = INK;
+    line(ys.map((y) => [-profile(y, f).R, y]));
+    const floor = profile(BOWL.H, f).floor, inner = ys.filter((y) => y >= floor);
+    line([[0, floor], ...inner.map((y) => [-profile(y, f).r, y])]);
+    line([[-profile(BOWL.H, f).r, BOWL.H], [-BOWL.rimR, BOWL.H]]);
+    line([[-BOWL.footR, 0], [0, 0]]);
+    ctx.strokeStyle = 'rgba(20,20,20,.14)'; // the silhouette, so clear glass reads
+    line(ys.filter((y) => y >= BOWL.foot).map((y) => [profile(y, f).R, y]));
+    line([[profile(BOWL.foot, f).R, BOWL.foot], [BOWL.footR, BOWL.foot], [BOWL.footR, 0], [0, 0]]);
+    ctx.setLineDash([6 * dpr, 5 * dpr]); ctx.strokeStyle = 'rgba(20,20,20,.35)'; line([[0, -3], [0, 105]]); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(20,20,20,.5)'; ctx.font = `500 ${11 * dpr}px "IBM Plex Mono", monospace`;
+    ctx.textAlign = 'left'; ctx.fillText('CUT AWAY', 4 * dpr, h - 6 * dpr);
+    ctx.textAlign = 'right'; ctx.fillText('AS SEEN', w - 4 * dpr, h - 6 * dpr);
+  }
+
+  // A cane: a slice cut end on (a murrina), then the rod seen from the side.
+  const CX = 104, CY = 9; // extents in mm
+  function drawCane() {
+    const [ctx, w, h] = fit(cane, (2 * CY) / CX);
+    const img = ctx.createImageData(w, h), px = img.data, mm = CX / w, { R, skin, slice } = CANE;
+    const sliceC = (rho) => (cased && rho < R - skin ? CLEAR : look(dose(slice)).rgb);
+    for (let j = 0; j < h; j++) {
+      const y = CY - (j + 0.5) * mm;
+      for (let i = 0; i < w; i++) {
+        const x = (i + 0.5) * mm, rho = Math.hypot(x - 9, y);
+        let c = null;
+        if (rho <= R) c = sliceC(rho);
+        else if (x >= 22 && x <= 102 && Math.abs(y) <= R) c = look(dose(canePath(y, cased))).rgb;
+        if (!c) continue;
+        const o = 4 * (j * w + i);
+        px[o] = 255 * c[0]; px[o + 1] = 255 * c[1]; px[o + 2] = 255 * c[2]; px[o + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function meters() {
+    const read = bowlReadings({ blow: blow(), cased });
+    const rows = [['rim', read.rim], ['wall', read.wall], ['base', read.base]].map(([name, t]) => {
+      const col = look(dose(t)), pct = Math.round(100 * lum(col.lin));
+      return h('div', {}, h('dt', {}, `${name} · ${t.toFixed(1)} mm${cased ? ' of colour' : ''}`), h('dd', {}, `${pct}%`),
+        h('i', { style: { '--v': `${pct}%`, '--c': col.css } }));
+    });
+    $('bowlMeters').replaceChildren(...rows);
+    $('wallOut').textContent = `×${blow().toFixed(2)}`;
+    $('bowlRead').textContent = cased
+      ? 'Cased: the colour lives in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
+      : 'Solid colour: the rim is blown thinnest and is palest, and the heavy foot is darkest. The outline darkens too, because there your line of sight runs along the wall instead of across it.';
+    $('caneRead').textContent = cased
+      ? 'Cased cane is darkest at its edges and palest down the middle, like a tube, because the middle crosses only the skin twice. Cut end on, the colour is a ring.'
+      : 'Solid cane is darkest down the middle, where a ray crosses the most glass, and pales toward its edges. Cut end on, the slice is one even colour.';
+  }
+
+  function render() {
+    raf = 0;
+    press(cased ? 'cased' : 'solid');
+    drawBowl(); drawCane(); meters();
+  }
+  function queue() { if (!raf) raf = requestAnimationFrame(render); }
+  wall.addEventListener('input', queue);
+  addEventListener('resize', queue);
+  return (id, amount) => {
+    if (id !== rod || !lut.length) { rod = id; buildLut(); }
+    k = amount; queue();
+  };
 }
 
 /* ---------- 04 the glory hole: incandescence hides colour ---------- */
@@ -532,5 +663,5 @@ function rack() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack();
+  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack();
 }
