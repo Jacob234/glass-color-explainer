@@ -22,8 +22,8 @@ export function initAlexandriteToggle(root, optics) {
       'points',
       il.spd.map((v, i) => `${(i / (il.spd.length - 1)) * W},${H - v * H}`).join(' ')
     );
-    swatch.style.background = transmittedColor(optics.wavelengths, nd.absorbance, il.spd);
-    buttons.forEach((b) => b.classList.toggle('active', b.dataset.id === id));
+    swatch.style.setProperty('--glass', transmittedColor(optics.wavelengths, nd.absorbance, il.spd));
+    buttons.forEach((b) => { b.classList.toggle('active', b.dataset.id === id); b.setAttribute('aria-pressed', String(b.dataset.id === id)); });
   }
   buttons.forEach((b) => b.addEventListener('click', () => select(b.dataset.id)));
   select('daylight');

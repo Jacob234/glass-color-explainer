@@ -25,7 +25,7 @@ export function initStrikingSlider(root, optics) {
   const label = root.querySelector('.stk-label');
   const update = () => {
     const { color, label: text } = strikeColor(seq, slider.value / 100);
-    swatch.style.background = color;
+    swatch.style.setProperty('--glass', color);
     label.textContent = text;
   };
   slider.addEventListener('input', update);

@@ -8,12 +8,13 @@ const { colorants = '' } = Astro.props;
 const ids = colorants ? colorants.split(',').filter(Boolean) : [];
 const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id) : true));
 ---
-<figure class="spx" data-colorants={colorants}>
-  <div class="spx-buttons">
-    {selected.map((c) => <button data-id={c.id}>{c.label}</button>)}
+<figure class="spx instrument" data-colorants={colorants}>
+  <p class="lab-label">absorption over the visible spectrum</p>
+  <div class="spx-buttons pills">
+    {selected.map((c) => <button class="pill" data-id={c.id}>{c.label}</button>)}
   </div>
   <div class="spx-stage">
-    <svg viewBox="0 0 360 90" class="spx-svg" role="img" aria-label="absorption curve over the visible spectrum">
+    <svg viewBox="0 0 360 90" class="spx-svg spectrum-frame" role="img" aria-label="absorption curve over the visible spectrum" preserveAspectRatio="none">
       <defs>
         <linearGradient id="vis" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0%" stop-color="#610061"/><stop offset="12%" stop-color="#3b00b8"/>
@@ -22,13 +23,15 @@ const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id)
           <stop offset="100%" stop-color="#c40000"/>
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="360" height="90" fill="url(#vis)" opacity="0.85"/>
-      <polyline class="spx-curve" fill="none" stroke="#111" stroke-width="2.5" points=""/>
+      <rect x="0" y="0" width="360" height="90" fill="url(#vis)"/>
+      <polygon class="spx-shade" fill="#06070a" fill-opacity="0.82" points=""/>
+      <polyline class="spx-curve" fill="none" stroke="#fff" stroke-opacity="0.9" stroke-width="1.5" vector-effect="non-scaling-stroke" points=""/>
     </svg>
-    <div class="spx-swatch" title="transmitted color"></div>
+    <div class="spx-swatch swatch-pane glass cast" title="transmitted color"></div>
   </div>
+  <div class="axis" aria-hidden="true"><span>380 nm</span><span>violet · blue · green · yellow · red</span><span>780 nm</span></div>
   <figcaption><span class="spx-why"></span></figcaption>
-  <p class="island-footnote">Curves are illustrative approximations, not measured spectra. The swatch integrates them against the CIE 1931 observer under daylight.</p>
+  <p class="island-footnote">Shaded: the light the glass absorbs. What is left above the curve reaches your eye, and the pane shows that remainder as a color. Curves are illustrative approximations, not measured spectra; the color is integrated against the CIE 1931 observer under daylight.</p>
 </figure>
 <script>
   import optics from '../../data/optics.json';
@@ -36,17 +39,10 @@ const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id)
   for (const el of document.querySelectorAll('.spx')) initSpectrumExplorer(el, optics);
 </script>
 <style>
-  .spx { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
-  .spx-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
-  .spx-buttons button { font-size: 0.78rem; padding: 0.25rem 0.6rem; border-radius: 999px;
-    border: 1px solid var(--edge); background: var(--node); color: var(--muted); cursor: pointer;
-    transition: color .15s, border-color .15s, background .15s; }
-  .spx-buttons button:hover { color: var(--text); border-color: var(--faint); }
-  .spx-buttons button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .spx-stage { display: flex; gap: 0.8rem; align-items: center; }
-  .spx-svg { flex: 1; border-radius: 8px; }
-  .spx-swatch { width: 3.4rem; height: 3.4rem; border-radius: 10px; border: 2px solid var(--edge);
-    box-shadow: inset 0 0 12px rgba(255,255,255,0.35); }
-  figcaption { margin-top: 0.5rem; font-size: 0.88rem; color: var(--muted); }
-  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+  .spx-buttons { margin: 0.4rem 0 1rem; }
+  .spx-stage { display: flex; gap: 1.2rem; align-items: center; }
+  .spx-svg { flex: 1; height: 7rem; }
+  .axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.62rem; color: var(--faint);
+    letter-spacing: 0.06em; margin-top: 0.35rem; padding-right: 5.6rem; }
+  @media (max-width: 640px) { .axis { padding-right: 4.6rem; } .axis span:nth-child(2) { display: none; } }
 </style>

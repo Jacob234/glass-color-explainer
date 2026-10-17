@@ -67,11 +67,11 @@
   }
 </script>
 
-<figure class="lab">
+<figure class="lab instrument">
   <div class="lab-recipes">
     <span class="lab-label">recipes</span>
     {#each recipes as r (r.id)}
-      <button class="recipe" class:active={activeRecipeId === r.id} aria-pressed={activeRecipeId === r.id} onclick={() => applyRecipe(r)}>
+      <button class="recipe pill" class:active={activeRecipeId === r.id} aria-pressed={activeRecipeId === r.id} onclick={() => applyRecipe(r)}>
         ⚗ {r.label}
       </button>
     {/each}
@@ -85,7 +85,7 @@
           {#each optics.colorants.filter((c) => c.group === g.id) as c (c.id)}
             {@const inMelt = melt.some((m) => m.id === c.id)}
             <button
-              class="chip"
+              class="chip pill"
               class:active={inMelt}
               disabled={!inMelt && melt.length >= MAX}
               aria-pressed={inMelt}
@@ -131,7 +131,7 @@
   </div>
 
   <div class="lab-stage">
-    <svg viewBox="0 0 360 90" class="lab-svg" role="img"
+    <svg viewBox="0 0 360 90" class="lab-svg spectrum-frame" preserveAspectRatio="none" role="img"
       aria-label="combined absorption curve over the visible spectrum">
       <defs>
         <linearGradient id="vis-mix" x1="0" x2="1" y1="0" y2="0">
@@ -141,14 +141,15 @@
           <stop offset="100%" stop-color="#c40000"/>
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="360" height="90" fill="url(#vis-mix)" opacity="0.85"/>
+      <rect x="0" y="0" width="360" height="90" fill="url(#vis-mix)"/>
+      <polygon fill="#06070a" fill-opacity="0.82" points={`0,${H} ${toPoints(mixCurve)} ${W},${H}`} />
       {#each melt as m (m.id)}
-        <polyline fill="none" stroke="#111" stroke-width="1" opacity="0.35"
-          points={toPoints(componentCurve(m))} />
+        <polyline fill="none" stroke="#fff" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="3 3"
+          vector-effect="non-scaling-stroke" points={toPoints(componentCurve(m))} />
       {/each}
-      <polyline fill="none" stroke="#111" stroke-width="2.5" points={toPoints(mixCurve)} />
+      <polyline fill="none" stroke="#fff" stroke-opacity="0.9" stroke-width="1.5" vector-effect="non-scaling-stroke" points={toPoints(mixCurve)} />
     </svg>
-    <div class="lab-swatch" role="img" style:background={swatch} aria-label="transmitted color" title="transmitted color"></div>
+    <div class="lab-swatch swatch-pane glass cast" role="img" style:--glass={swatch} aria-label="transmitted color" title="transmitted color"></div>
   </div>
 
   <figcaption>{caption}</figcaption>
@@ -161,43 +162,36 @@
 </figure>
 
 <style>
-  .lab { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
-  .lab-label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--faint); margin-bottom: 0.3rem; }
+  .lab { margin-left: 0; margin-right: 0; }
+  .lab-recipes { margin-bottom: 1.1rem; }
+  .lab-recipes .pills, .lab-recipes { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+  .lab-recipes .lab-label { width: 100%; }
+  .recipe { border-style: dashed; }
+  .recipe.active { border-style: solid; }
 
-  .lab-recipes { margin-bottom: 0.9rem; }
-  .recipe { font-size: 0.78rem; padding: 0.25rem 0.6rem; margin: 0 0.3rem 0.3rem 0; border-radius: 6px;
-    border: 1px dashed var(--faint); background: var(--node); color: var(--muted); cursor: pointer;
-    transition: color .15s, border-color .15s, background .15s; }
-  .recipe:hover { color: var(--text); border-color: var(--accent); }
-  .recipe.active { background: var(--accent); color: var(--bg); border-color: var(--accent); border-style: solid; }
-
-  .lab-palette .group { margin-bottom: 0.6rem; }
-  .chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .chip { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem;
-    padding: 0.25rem 0.6rem; border-radius: 999px; border: 1px solid var(--edge);
-    background: var(--node); color: var(--muted); cursor: pointer;
-    transition: color .15s, border-color .15s, background .15s; }
-  .chip:hover:not(:disabled) { color: var(--text); border-color: var(--faint); }
+  .lab-palette .group { margin-bottom: 0.8rem; }
+  .chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.3rem; }
   .chip.active { background: var(--node-hi); color: var(--text); border-color: var(--accent); }
-  .chip:disabled { opacity: 0.35; cursor: not-allowed; }
-  .dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 1px solid var(--edge); flex: none; }
-  .cap-note { font-size: 0.72rem; color: var(--faint); margin: 0.3rem 0 0; font-style: italic; }
+  .dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); flex: none;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4); }
+  .cap-note { font-size: 0.8rem; color: var(--faint); margin: 0.3rem 0 0; font-style: italic; }
 
-  .lab-melt { border: 1px solid var(--edge); border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0.9rem 0; }
-  .row { display: flex; align-items: center; gap: 0.5rem; margin: 0.35rem 0; }
-  .row .name { font-size: 0.82rem; color: var(--text); width: 9.5rem; flex: none; }
+  .lab-melt { border: 1px solid var(--edge); border-radius: 12px; padding: 0.8rem 1rem; margin: 1rem 0 1.2rem; background: rgba(0,0,0,0.18); }
+  .row { display: flex; align-items: center; gap: 0.6rem; margin: 0.45rem 0; }
+  .row .name { font-size: 0.92rem; color: var(--text); width: 10rem; flex: none; display: inline-flex; gap: 0.45rem; align-items: center; }
   .row .remove { border: none; background: none; color: var(--faint); cursor: pointer; font-size: 0.8rem; padding: 0 0.2rem; }
   .row .remove:hover { color: var(--text); }
-  .row input[type="range"] { flex: 1; accent-color: var(--accent); }
-  .row.thickness { border-top: 1px dashed var(--edge); padding-top: 0.45rem; margin-top: 0.5rem; }
-  .row.thickness .name { color: var(--muted); padding-left: 1.2rem; }
-  .row .pct { font-size: 0.78rem; color: var(--muted); width: 2.6rem; text-align: right; font-family: var(--mono); }
+  .row input[type="range"] { flex: 1; min-width: 0; }
+  .row .pct { font-size: 0.75rem; color: var(--muted); width: 3rem; text-align: right; font-family: var(--mono); }
+  .row.thickness { border-top: 1px dashed var(--edge); padding-top: 0.6rem; margin-top: 0.7rem; }
+  .row.thickness .name { color: var(--muted); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; }
 
-  .lab-stage { display: flex; gap: 0.8rem; align-items: center; }
-  .lab-svg { flex: 1; border-radius: 8px; }
-  .lab-swatch { width: 3.4rem; height: 3.4rem; border-radius: 10px; border: 2px solid var(--edge);
-    box-shadow: inset 0 0 12px rgba(255,255,255,0.35); flex: none; }
-
-  figcaption { margin-top: 0.5rem; font-size: 0.88rem; color: var(--muted); min-height: 1.3em; }
-  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+  .lab-stage { display: flex; gap: 1.2rem; align-items: center; }
+  .lab-svg { flex: 1; height: 8rem; }
+  .lab-swatch { width: 5rem; height: 6.4rem; }
+  figcaption { min-height: 3em; }
+  @media (max-width: 640px) {
+    .row .name { width: 7.5rem; font-size: 0.85rem; }
+    .lab-swatch { width: 3.6rem; height: 4.8rem; }
+  }
 </style>

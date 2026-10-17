@@ -1,17 +1,28 @@
-<figure class="alx">
-  <div class="alx-buttons">
-    <button data-id="daylight">daylight</button>
-    <button data-id="incandescent">incandescent</button>
+<figure class="alx instrument">
+  <p class="lab-label">the alexandrite effect: same glass, two lights</p>
+  <div class="alx-buttons pills">
+    <button class="pill" data-id="daylight">daylight</button>
+    <button class="pill" data-id="incandescent">incandescent</button>
   </div>
   <div class="alx-stage">
-    <svg viewBox="0 0 360 90" class="alx-svg" role="img" aria-label="illuminant spectrum vs neodymium absorption">
-      <polyline class="alx-abs" fill="none" stroke="#7d6a9e" stroke-width="2.5" points=""/>
-      <polyline class="alx-spd" fill="none" stroke="#d09a2a" stroke-width="2" stroke-dasharray="5 4" points=""/>
+    <svg viewBox="0 0 360 90" class="alx-svg spectrum-frame" role="img" aria-label="illuminant spectrum vs neodymium absorption" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="vis-alx" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stop-color="#610061"/><stop offset="12%" stop-color="#3b00b8"/>
+          <stop offset="28%" stop-color="#007bff"/><stop offset="44%" stop-color="#00c853"/>
+          <stop offset="58%" stop-color="#ffe600"/><stop offset="74%" stop-color="#ff8c00"/>
+          <stop offset="100%" stop-color="#c40000"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="360" height="90" fill="#08090d"/>
+      <rect x="0" y="84" width="360" height="6" fill="url(#vis-alx)"/>
+      <polyline class="alx-abs" fill="none" stroke="#b9a3e6" stroke-width="2" vector-effect="non-scaling-stroke" points=""/>
+      <polyline class="alx-spd" fill="none" stroke="#f0b45a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke" points=""/>
     </svg>
-    <div class="alx-swatch" title="neodymium glass under this light"></div>
+    <div class="alx-swatch swatch-pane glass cast" title="neodymium glass under this light"></div>
   </div>
-  <figcaption>Solid: neodymium's picket-fence absorption. Dashed: the light source. The glass color is what survives both.</figcaption>
-  <p class="island-footnote">Illuminant curves approximate D65 and incandescent A. The swatch is computed with the CIE 1931 observer, adapted to each light the way your eye adapts, so the shift you see is the glass, not the lamp.</p>
+  <figcaption><span class="key abs"></span>neodymium's picket-fence absorption <span class="key spd"></span>the light source. The glass color is what survives both.</figcaption>
+  <p class="island-footnote">Illuminant curves approximate D65 and incandescent A. The color is computed with the CIE 1931 observer and adapted to each light the way your eye adapts, so the shift you see is the glass, not the lamp.</p>
 </figure>
 <script>
   import optics from '../../data/optics.json';
@@ -19,17 +30,10 @@
   for (const el of document.querySelectorAll('.alx')) initAlexandriteToggle(el, optics);
 </script>
 <style>
-  .alx { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
-  .alx-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; }
-  .alx-buttons button { font-size: 0.78rem; padding: 0.25rem 0.7rem; border-radius: 999px;
-    border: 1px solid var(--edge); background: var(--node); color: var(--muted); cursor: pointer;
-    transition: color .15s, border-color .15s, background .15s; }
-  .alx-buttons button:hover { color: var(--text); border-color: var(--faint); }
-  .alx-buttons button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .alx-stage { display: flex; gap: 0.8rem; align-items: center; }
-  .alx-svg { flex: 1; border: 1px solid var(--edge); border-radius: 8px; }
-  .alx-swatch { width: 3.4rem; height: 3.4rem; border-radius: 10px; border: 2px solid var(--edge);
-    box-shadow: inset 0 0 12px rgba(255,255,255,0.35); }
-  figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
-  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+  .alx-buttons { margin: 0.4rem 0 1rem; }
+  .alx-stage { display: flex; gap: 1.2rem; align-items: center; }
+  .alx-svg { flex: 1; height: 7rem; }
+  .key { display: inline-block; width: 1.1rem; height: 0; vertical-align: middle; margin: 0 0.35rem 0 0.2rem; }
+  .key.abs { border-top: 2px solid #b9a3e6; }
+  .key.spd { border-top: 2px dashed #f0b45a; margin-left: 0.6rem; }
 </style>

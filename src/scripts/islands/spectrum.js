@@ -6,6 +6,7 @@ export { transmittedColor };
 export function initSpectrumExplorer(root, optics) {
   const daylight = optics.illuminants.find((i) => i.id === 'daylight');
   const curve = root.querySelector('.spx-curve');
+  const shade = root.querySelector('.spx-shade');
   const swatch = root.querySelector('.spx-swatch');
   const why = root.querySelector('.spx-why');
   const W = 360, H = 90;
@@ -19,9 +20,10 @@ export function initSpectrumExplorer(root, optics) {
       .map((a, i) => `${(i / (c.absorbance.length - 1)) * W},${H - a * H}`)
       .join(' ');
     curve.setAttribute('points', pts);
-    swatch.style.background = transmittedColor(optics.wavelengths, c.absorbance, daylight.spd);
+    shade.setAttribute('points', `0,${H} ${pts} ${W},${H}`);
+    swatch.style.setProperty('--glass', transmittedColor(optics.wavelengths, c.absorbance, daylight.spd));
     why.textContent = c.why;
-    for (const b of buttons) b.classList.toggle('active', b.dataset.id === c.id);
+    for (const b of buttons) { b.classList.toggle('active', b.dataset.id === c.id); b.setAttribute('aria-pressed', String(b.dataset.id === c.id)); }
   }
 
   for (const b of buttons) {
