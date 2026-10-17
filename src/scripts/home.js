@@ -1,6 +1,7 @@
 // home.js — the instruments on the home page. Every glass colour is computed from absorption
 // spectra in optics.json through spectra.js; nothing here is a hand-picked colour.
 import optics from '../data/optics.json';
+import history from '../data/history.json';
 import {
   GRID, toGrid, spectrumColor, densityOnGrid, transmission, glow, glowStrength,
   SPECTRAL, bandEdge, dichroicBand, encode, css,
@@ -531,6 +532,77 @@ function rack() {
   }
 }
 
+/* ---------- ← the record: the history rail ---------- */
+function historyRail() {
+  const box = $('history');
+  // a pin's colour comes from the same engine as the stage it links to
+  const pinColor = (c) => (c.dichroic != null ? tColor(dichroicBand(c.dichroic).R.map((r) => 1 - r)) : colorOf(c.parts, c.thickness ?? 1)).css;
+  for (const p of history.pins) {
+    if (!p.color) continue;
+    for (const el of box.querySelectorAll(`[data-pin="${p.id}"]`)) el.style.setProperty('--c', pinColor(p.color));
+  }
+  const buttons = [...box.querySelectorAll('.pin button')], cards = [...box.querySelectorAll('.hist-card')];
+  const pick = (id) => {
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.id === id));
+    for (const c of cards) c.hidden = c.dataset.id !== id;
+  };
+  for (const b of buttons) {
+    b.addEventListener('click', () => pick(b.dataset.id));
+    b.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') pick(b.dataset.id); });
+    b.addEventListener('focus', () => pick(b.dataset.id));
+  }
+  pick(history.pins[0].id);
+
+  // Lanes: the build guesses them from a nominal label width; here they are redone from the
+  // measured labels, so neighbours never overlap at any width. A tick's year hides under a stem.
+  const rail = box.querySelector('.hist-rail'), pinEls = [...rail.querySelectorAll('.pin')], ticks = [...rail.querySelectorAll('.hist-tick')];
+  const pct = (el) => parseFloat(el.style.getPropertyValue('--x')) / 100;
+  const lanes = () => {
+    const W = rail.clientWidth;
+    if (getComputedStyle(rail).display === 'grid') return; // the phone layout is a plain list
+    // Each label takes a lane and a side of its stem. A label may not overlap another in its lane,
+    // and an outer stem may not cross an inner label. A small depth-first search finds a fit.
+    const P = pinEls.map((el) => ({ el, x: pct(el) * W, w: el.querySelector('.pin-lab').offsetWidth + 12 }));
+    const OPTS = ['up1', 'down1', 'up2', 'down2'].flatMap((lane) => [[lane, 'left'], [lane, 'right']]);
+    const hits = (a, b, c, d) => !(b < c || a > d);
+    const fits = (i, lane, side, placed) => {
+      const { x, w } = P[i], [a, b] = side === 'left' ? [x, x + w] : [x - w, x];
+      if (a < 0 || b > W) return false;
+      const up = lane.slice(0, -1), outer = lane.endsWith('2');
+      return placed.every((q, j) => {
+        if (q.lane === lane && hits(a, b, q.a, q.b)) return false;
+        if (q.lane.slice(0, -1) !== up) return true;
+        const qOuter = q.lane.endsWith('2');
+        if (outer && !qOuter && hits(x - 4, x + 4, q.a, q.b)) return false;
+        if (!outer && qOuter && hits(P[j].x - 4, P[j].x + 4, a, b)) return false;
+        return true;
+      }) && { lane, side, a, b };
+    };
+    let steps = 0;
+    const solve = (i, placed) => {
+      if (i === P.length) return placed;
+      if (++steps > 20000) return null;
+      for (const [lane, side] of OPTS) {
+        const q = fits(i, lane, side, placed), done = q && solve(i + 1, [...placed, q]);
+        if (done) return done;
+      }
+      return null;
+    };
+    const plan = solve(0, []), downs = [];
+    if (!plan) return; // keep the build's lanes
+    plan.forEach((q, i) => {
+      P[i].el.dataset.lane = q.lane; P[i].el.dataset.side = q.side;
+      if (q.lane.startsWith('down')) downs.push(P[i].x);
+    });
+    const left = rail.getBoundingClientRect().left;
+    for (const t of ticks) {
+      const s = t.querySelector('span'), r = s.getBoundingClientRect();
+      s.style.visibility = downs.some((d) => d > r.left - left - 4 && d < r.right - left + 4) ? 'hidden' : '';
+    }
+  };
+  lanes(); addEventListener('resize', lanes);
+}
+
 export function initHome() {
-  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack();
+  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack(); historyRail();
 }
