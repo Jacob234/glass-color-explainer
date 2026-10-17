@@ -72,6 +72,31 @@ svg.slab, .scene { display: block; width: 100%; height: auto; overflow: visible;
 .furnace input[type=range]::-moz-range-thumb { background: var(--soot); border-color: var(--ember); }
 .furnace .chip { border-color: #3a2d25; }
 .furnace .chip[aria-pressed=true] { background: #efe6dc; color: var(--soot); border-color: #efe6dc; }
+.scene { --na: #ffb000; }
+.flare { mix-blend-mode: screen; }
+#g-flare2, #g-flare2-L { mix-blend-mode: normal; } /* the flare in front of the gather washes it out */
+.eyes { align-items: center; margin-top: 0.6rem; }
+.eyes .mono { font-size: 0.68rem; letter-spacing: .06em; text-transform: uppercase; margin-right: 0.3rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .flare { animation: flicker 1.7s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 30% 70%; }
+  #g-flare2 { animation-duration: 1.1s; }
+}
+@keyframes flicker { 0% { transform: scale(1, 1); } 40% { transform: scale(1.04, 1.1) translateY(-2%); } 100% { transform: scale(.97, 1.03); } }
+#lens-view { isolation: isolate; }
+.lens-frame { cursor: grab; stroke: #1b1714; outline: none; touch-action: none; }
+.lens-frame:active { cursor: grabbing; }
+.lens-frame:focus-visible ellipse { stroke: var(--ember); }
+.lens-frame text { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; fill: #efe6dc; stroke: none; }
+.glasses { margin-top: 3rem; border-top: 1px solid #3a2d25; padding-top: 1.5rem; }
+.glasses h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3.5vw, 2.3rem); margin: 0 0 0.8rem; line-height: 1.1; }
+.strip.tall { height: 120px; }
+.strip-key b { font-weight: 400; color: #c9786a; }
+.meters { display: grid; gap: 0.7rem; margin: 0; }
+.meters div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.15rem 1rem; align-items: baseline; }
+.meters dt { font-family: var(--mono); font-size: 0.68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ash); }
+.meters dd { margin: 0; font-family: var(--display); font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.meters i { grid-column: 1 / -1; display: block; height: 4px; background: #2a201a; position: relative; }
+.meters i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--v); background: var(--c, #efe6dc); transition: width .3s; }
 .temp { font-family: var(--display); font-size: clamp(3rem, 8vw, 5.5rem); line-height: 1; font-variant-numeric: tabular-nums; color: var(--ember); }
 .temp small { font-size: 0.4em; color: var(--ash); }
 
