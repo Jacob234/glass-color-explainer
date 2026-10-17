@@ -5,24 +5,34 @@ const { title, description } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const current = Astro.url.pathname;
 const navLinks = [
-  { href: `${base}/`, label: 'map' },
+  { href: `${base}/#read`, label: 'read' },
+  { href: `${base}/mixing-lab/`, label: 'mixing lab' },
 ];
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌈</text></svg>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3f4f1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2238%22 cy=%2242%22 r=%2230%22 fill=%22%237b5cf0%22/><circle cx=%2262%22 cy=%2258%22 r=%2230%22 fill=%22%23ffe600%22 style=%22mix-blend-mode:multiply%22/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" />
   <title>{title} | Why Glass Has Color</title>
   {description && <meta name="description" content={description} />}
 </head>
 <body>
-  <nav class="site-nav" aria-label="Site">
+  <nav class="site-nav wrap" aria-label="Site">
+    <a class="brand" href={`${base}/`}>Why glass has color</a>
     {navLinks.map((l) => (
       <a href={l.href} aria-current={current === l.href ? 'page' : undefined}>{l.label}</a>
     ))}
   </nav>
   <slot />
+  <footer class="site-footer wrap">
+    <div><p><b>How the colors are made.</b> Absorption curves are illustrative, drawn from the shape of published spectra rather than measured. Each is converted to optical density, scaled by amount and thickness (Beer–Lambert), multiplied against a daylight spectrum, integrated with the CIE 1931 2° observer on a 5 nm grid, adapted to D65 and encoded as sRGB.</p></div>
+    <div><p>Source and data on <a href="https://github.com/Jacob234/glass-color-explainer">GitHub</a>.</p></div>
+  </footer>
 </body>
 </html>

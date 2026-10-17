@@ -1,0 +1,251 @@
+---
+// Home page: a light table of draggable glass, then one piece of glass followed through the
+// studio in seven stages. The instruments live in scripts/home.js.
+import { getCollection } from 'astro:content';
+import map from '../data/map.json';
+import Slab from './Slab.astro';
+import '../styles/home.css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const page = (slug: string, anchor?: string) => `${base}/concepts/${slug}/${anchor ? `#${anchor}` : ''}`;
+
+// The rack: every catalog product with a sampled swatch (build time; shipped as JSON).
+const catalogFiles = import.meta.glob('../data/catalog/*.json', { eager: true, import: 'default' });
+const rack: object[] = [];
+for (const [path, data] of Object.entries(catalogFiles) as [string, any][]) {
+  if (path.endsWith('index.json')) continue;
+  for (const p of data.products) {
+    if (!p.swatchHex) continue;
+    rack.push({ hex: p.swatchHex, supplier: p.supplier, code: p.code, name: p.name, colorant: p.colorant, mechanism: p.mechanism, opacity: p.opacity });
+  }
+}
+const suppliers = new Set((rack as { supplier: string }[]).map((p) => p.supplier)).size;
+
+// The long read: concept pages in map order.
+const concepts = await getCollection('concepts');
+const order = [map.anchorSlug, ...map.mechanisms.flatMap((m) => m.slugs), map.crosscutting.slug, map.craft.slug];
+const reading = order.map((slug) => concepts.find((c) => c.id === slug)).filter(Boolean) as typeof concepts;
+const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget!;
+---
+<section class="wrap hero">
+  <h1>Why glass<br />has <i>color</i></h1>
+  <div class="hero-sub">
+    <p>Glass is colored by what it takes away. White light goes in, and whatever the glass absorbs never comes out. Everything on this page follows from that, from the green edge of a windowpane to a ruby goblet.</p>
+    <span class="mono">Drag the glass.<br />Lay pieces over each other.</span>
+  </div>
+  <div class="table" id="table" aria-label="A light table with pieces of colored glass you can drag"></div>
+  <div class="table-note">
+    <span>Each piece's color is computed from the absorption curve of its colorant, through the CIE 1931 observer, under daylight.</span>
+    <span>Where pieces overlap the screen multiplies their colors, a fair stand-in for stacking two filters.</span>
+  </div>
+</section>
+
+<section class="wrap stage" id="batch">
+  <div class="stage-rail"><div class="stage-num">01</div><span class="mono">the batch</span></div>
+  <div class="stage-body">
+    <h2>Clear glass is <i>not</i> clear</h2>
+    <div class="prose">
+      <p>Glass starts as sand, soda and lime, and sand carries a trace of iron. Look through a windowpane face on and you cross a few millimetres of it, too little for the iron to show. Look into the edge and you cross the whole width of the sheet. The same faint absorption, repeated over that distance, turns green.</p>
+    </div>
+    <div class="bench">
+      <Slab id="slab1" />
+      <div class="controls">
+        <div class="ctl"><label class="mono" for="iron">iron in the sand <output id="ironOut"></output></label>
+          <input id="iron" type="range" min="0" max="100" value="45" /><div class="ends"><span>low-iron "optic" glass</span><span>bottle glass</span></div></div>
+        <p class="readout" id="ironRead"></p>
+      </div>
+    </div>
+    <p class="aside"><b>Beer–Lambert.</b> Absorption compounds with distance: if 1 mm lets through 99% of some colour, 50 mm lets through 0.99⁵⁰, about 60%. Thickness and concentration play the same role, which is why the edge and a heavily dosed batch look alike.</p>
+    <p class="more"><a href={page(map.anchorSlug)}>Read: color in glass →</a></p>
+  </div>
+</section>
+
+<section class="wrap stage" id="melt">
+  <div class="stage-rail"><div class="stage-num">02</div><span class="mono">the melt</span></div>
+  <div class="stage-body">
+    <h2>The furnace <i>air</i> picks the color</h2>
+    <div class="prose">
+      <p>The same iron can sit in the melt as Fe²⁺ or Fe³⁺, and the two absorb differently. A furnace starved of oxygen pushes iron toward Fe²⁺, which absorbs red and leaves glass blue-green. Plenty of oxygen favours Fe³⁺, which absorbs violet and blue and leaves it a weak yellow. Nothing was added; only the atmosphere changed.</p>
+    </div>
+    <div class="bench">
+      <Slab id="slab2" />
+      <div class="controls">
+        <div class="ctl"><label class="mono" for="redoxR">furnace atmosphere <output id="redoxOut"></output></label>
+          <input id="redoxR" type="range" min="0" max="100" value="70" /><div class="ends"><span>oxidizing</span><span>reducing</span></div></div>
+        <p class="readout" id="redoxRead"></p>
+      </div>
+    </div>
+    <p class="aside"><b>Not shown:</b> the brown of beer bottles. Strongly reduced glass with sulfur forms an iron–sulfur chromophore, a different absorber from either ion. This model has only the two ions.</p>
+    <p class="more"><a href={page(map.crosscutting.slug)}>Read: redox in the furnace →</a></p>
+  </div>
+</section>
+
+<section class="wrap stage" id="ions">
+  <div class="stage-rail"><div class="stage-num">03</div><span class="mono">the color rod</span></div>
+  <div class="stage-body">
+    <h2>A few atoms eat <i>one</i> band of light</h2>
+    <div class="prose">
+      <p>Transition-metal ions are the workhorse colorants. Their outer d-electrons can be lifted between energy levels by light of particular colours, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod and watch which part of the spectrum goes missing.</p>
+    </div>
+    <div class="chips" id="rods" role="group" aria-label="colorant"></div>
+    <div class="bench bench-tight">
+      <div>
+        <canvas class="strip" id="strip3" aria-label="spectrum of light in and light out"></canvas>
+        <div class="strip-key"><span>380 nm</span><span>top: light in · bottom: light out</span><span>780 nm</span></div>
+      </div>
+      <div class="controls">
+        <Slab id="slab3" class="slab-small" />
+        <div class="ctl"><label class="mono" for="conc">amount × thickness <output id="concOut"></output></label>
+          <input id="conc" type="range" min="-200" max="200" value="0" /><div class="ends"><span>a trace</span><span>heavy</span></div></div>
+      </div>
+    </div>
+    <p class="readout prose" id="ionRead"></p>
+    <p class="more"><a href={page('transition-metal-colorants')}>Read: transition metal colorants →</a> <a href={page('rare-earth-colorants')}>Rare-earth colorants →</a></p>
+  </div>
+</section>
+
+<div class="furnace">
+  <section class="wrap stage" id="heat">
+    <div class="stage-rail"><div class="stage-num">04</div><span class="mono">the glory hole</span></div>
+    <div class="stage-body">
+      <h2>At heat, every glass <i>glows</i> the same</h2>
+      <div class="prose">
+        <p>Pull a gather from the furnace and you cannot tell cobalt from copper. At 1100 °C the glass is a black-body emitter, and its own orange light swamps whatever it absorbs. Below about 525 °C, the Draper point, the glow is too faint to see and the colorant finally shows. Glassblowers learn to work colors they cannot see.</p>
+      </div>
+      <svg class="scene" id="scene" viewBox="0 0 900 300" aria-hidden="true">
+        <defs>
+          <radialGradient id="g-hole" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6dc" /><stop offset=".45" stop-color="#ffc35a" /><stop offset=".8" stop-color="#ff6a1a" /><stop offset="1" stop-color="#4a1204" /></radialGradient>
+          <linearGradient id="g-pipe" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#cfcac2" /><stop offset=".5" stop-color="#5f5b55" /><stop offset="1" stop-color="#211f1d" /></linearGradient>
+          <radialGradient id="g-shine" cx=".33" cy=".28" r=".62"><stop offset="0" stop-color="#fff" stop-opacity=".7" /><stop offset=".35" stop-color="#fff" stop-opacity=".1" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+          <radialGradient id="g-rimfill" cx=".5" cy=".5" r=".5"><stop offset=".55" stop-color="#000" stop-opacity="0" /><stop offset="1" stop-color="#000" stop-opacity=".5" /></radialGradient>
+          <filter id="g-bl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="22" /></filter>
+          <filter id="g-bl2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9" /></filter>
+        </defs>
+        <rect x="-400" y="262" width="1700" height="30" fill="#070504" />
+        <rect x="690" y="10" width="260" height="252" rx="6" fill="#1f1511" />
+        <g stroke="#120c09" stroke-width="3"><line x1="690" y1="60" x2="950" y2="60" /><line x1="690" y1="110" x2="950" y2="110" /><line x1="690" y1="200" x2="950" y2="200" /><line x1="740" y1="10" x2="740" y2="60" /><line x1="840" y1="10" x2="840" y2="60" /><line x1="790" y1="200" x2="790" y2="262" /></g>
+        <circle cx="805" cy="150" r="130" fill="#ff7a24" opacity=".22" filter="url(#g-bl)" />
+        <circle cx="805" cy="150" r="82" fill="#0d0806" stroke="#33241c" stroke-width="10" />
+        <circle cx="805" cy="150" r="74" fill="url(#g-hole)" />
+        <g id="g-rig">
+          <ellipse id="g-cast" cx="800" cy="268" rx="90" ry="9" filter="url(#g-bl2)" />
+          <circle id="g-halo" cx="800" cy="150" r="100" filter="url(#g-bl)" />
+          <rect x="-500" y="144" width="1260" height="11" rx="3" fill="url(#g-pipe)" />
+          <path id="g-body" d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" />
+          <path id="g-rim" d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" fill="url(#g-rimfill)" />
+          <path d="M746 148 C746 104 782 96 810 98 C852 100 866 130 866 154 C866 184 842 206 806 206 C770 206 746 188 746 148Z" fill="url(#g-shine)" />
+        </g>
+      </svg>
+      <div class="bench bench-top">
+        <div class="controls">
+          <div class="temp"><span id="tempOut">1150</span><small> °C</small></div>
+          <div class="ctl"><input id="temp" type="range" min="20" max="1150" value="1150" aria-label="gather temperature" />
+            <div class="ends"><span>bench</span><span>furnace</span></div></div>
+        </div>
+        <div class="controls">
+          <div class="chips" id="heatRods" role="group" aria-label="colorant in the gather"></div>
+          <p class="readout" id="heatRead"></p>
+        </div>
+      </div>
+      <p class="aside"><b>Computed, not painted.</b> The glow colour is Planck's law integrated against the colour-matching functions, and its strength is the black body's luminance on a log scale, so it fades the way the eye sees it fade.</p>
+    </div>
+  </section>
+</div>
+
+<section class="wrap stage" id="strike">
+  <div class="stage-rail"><div class="stage-num">05</div><span class="mono">the reheat</span></div>
+  <div class="stage-body">
+    <h2>Some colors must be <i>struck</i></h2>
+    <div class="prose">
+      <p>Gold ruby comes out of the furnace nearly clear. The gold is dissolved as single atoms, which absorb almost nothing. Reheating lets them cluster into particles a few tens of nanometres across, and electrons sloshing across each particle absorb green. The cadmium colors work differently: tiny semiconductor crystals swallow every photon with more energy than their band gap.</p>
+    </div>
+    <div class="pair">
+      <div>
+        <h3>Gold, struck</h3>
+        <div class="pane" id="goldPane"><b id="goldTag"></b></div>
+        <canvas class="strip" id="stripGold" aria-hidden="true"></canvas>
+        <div class="ctl"><label class="mono" for="gold">time in the reheat <output id="goldOut"></output></label>
+          <input id="gold" type="range" min="0" max="100" value="55" /><div class="ends"><span>straight from the melt</span><span>over-struck</span></div></div>
+        <p id="goldRead"></p>
+        <p class="more"><a href={page('colloidal-color')}>Read: colloidal color →</a></p>
+      </div>
+      <div>
+        <h3>Cadmium, by band gap</h3>
+        <div class="pane" id="gapPane"><b id="gapTag"></b></div>
+        <canvas class="strip" id="stripGap" aria-hidden="true"></canvas>
+        <div class="ctl"><label class="mono" for="gap">band gap <output id="gapOut"></output></label>
+          <input id="gap" type="range" min="175" max="260" value="210" class="reverse" /><div class="ends"><span>CdS, 2.4 eV</span><span>CdSe, 1.7 eV</span></div></div>
+        <p id="gapRead"></p>
+        <p class="more"><a href={page('selenium-ruby')}>Read: selenium ruby →</a></p>
+      </div>
+    </div>
+    <p class="aside"><b>Models.</b> The over-strike is drawn as the gold band shifting about 30 nm and broadening as particles grow and clump, which is the direction real over-striking goes toward liver brown. The band edge is an idealized step at λ = 1240 / E<sub>g</sub>. Selenium narrows the gap, and very small crystals widen it again (quantum confinement), which is why the strike temperature matters.</p>
+  </div>
+</section>
+
+<section class="wrap stage" id="light">
+  <div class="stage-rail"><div class="stage-num">06</div><span class="mono">the cold shop</span></div>
+  <div class="stage-body">
+    <h2>Color with <i>no</i> colorant</h2>
+    <div class="prose">
+      <p>Dichroic glass is coated with stacks of oxide films a fraction of a wavelength thick. Light reflected from each layer interferes, so one band bounces back and the rest goes through. Nothing is absorbed, which is why the reflected and transmitted colors are complements. Tilt the piece and the band slides toward blue, because a slanted ray sees the layers as thinner.</p>
+    </div>
+    <div class="bench">
+      <svg class="scene" id="dichro" viewBox="0 0 520 320" aria-hidden="true">
+        <rect x="20" y="150" width="480" height="34" fill="#e8ebe9" stroke="#141414" stroke-width="1" />
+        <g opacity=".9"><rect x="20" y="150" width="480" height="3" fill="#7fd0c8" /><rect x="20" y="155" width="480" height="2" fill="#c49ae0" /><rect x="20" y="159" width="480" height="2" fill="#e9cf86" /></g>
+        <line x1="260" y1="40" x2="260" y2="290" stroke="#141414" stroke-dasharray="3 5" stroke-width="1" opacity=".4" />
+        <line id="d-in" stroke="#141414" stroke-width="3" />
+        <line id="d-ref" stroke-width="9" stroke-linecap="round" />
+        <line id="d-tr" stroke-width="9" stroke-linecap="round" />
+        <text x="30" y="30" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5d605b">WHITE LIGHT IN</text>
+        <text id="d-tref" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5d605b" text-anchor="end">REFLECTED</text>
+        <text id="d-ttr" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5d605b">TRANSMITTED</text>
+      </svg>
+      <div class="controls">
+        <div class="ctl"><label class="mono" for="angle">viewing angle <output id="angleOut"></output></label>
+          <input id="angle" type="range" min="0" max="70" value="20" /><div class="ends"><span>face on</span><span>glancing</span></div></div>
+        <canvas class="strip" id="stripDi" aria-hidden="true"></canvas>
+        <div class="strip-key"><span>380 nm</span><span>top: reflected · bottom: transmitted</span><span>780 nm</span></div>
+      </div>
+    </div>
+    <p class="aside"><b>Model.</b> One reflection band, 80 nm wide at 90% peak, centred at λ₀√(1 − sin²θ / n²) with λ₀ = 640 nm and an effective index of 1.8. Real coatings have several bands and a thicker stack. Opal glass is the other structural color: particles about the size of a wavelength scatter all colours, so it reads white.</p>
+    <p class="more"><a href={page(structure.targetSlug, structure.anchor)}>Read: structure and scattering →</a></p>
+  </div>
+</section>
+
+<section class="wrap stage" id="rack">
+  <div class="stage-rail"><div class="stage-num">07</div><span class="mono">the rack</span></div>
+  <div class="stage-body">
+    <h2>Every color on the <i>shelf</i></h2>
+    <div class="prose">
+      <p>These are <span id="rackN">{rack.length.toLocaleString('en')}</span> real rod and sheet colors from {suppliers} suppliers, shelved by hue. Filter by the mechanism that makes them. Most suppliers do not publish recipes, so the large unclassified group is honest, not a gap in effort.</p>
+    </div>
+    <div class="filters chips" id="filters" role="group" aria-label="filter by mechanism"></div>
+    <div class="rackbox">
+      <div id="mosaic"></div>
+      <div class="tag" id="tag" aria-live="polite"><i></i><div><strong>Point at a rod</strong><span>supplier, code and colorant appear here</span></div></div>
+    </div>
+    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements.</p>
+  </div>
+</section>
+
+<section class="wrap stage" id="read">
+  <div class="stage-rail"><div class="stage-num">→</div><span class="mono">the long read</span></div>
+  <div class="stage-body">
+    <h2>Go <i>deeper</i></h2>
+    <ol class="reading">
+      {reading.map((c) => (
+        <li><a href={page(c.id)}><span class="mono">{c.data.mechanism}</span><strong>{c.data.title}</strong><span>{c.data.summary}</span></a></li>
+      ))}
+      <li><a href={`${base}/mixing-lab/`}><span class="mono">instrument</span><strong>mixing lab</strong><span>Melt up to four colorants, set the wall thickness, and see the color the batch would make.</span></a></li>
+    </ol>
+  </div>
+</section>
+
+{/* escape "<" so a product name can never close the script element */}
+<script type="application/json" id="rack-data" set:html={JSON.stringify(rack).replace(/</g, '\\u003c')} />
+<script>
+  import { initHome } from '../scripts/home.js';
+  initHome();
+</script>

@@ -16,7 +16,7 @@ const nodes = [
 ];
 ---
 <nav class="locator" aria-label="mechanism locator">
-  <a href={`${base}/`} class="locator-map">map</a>
+  <a href={`${base}/`} class="locator-map">start</a>
   {nodes.map((n) => (
     <a href={n.href} class={`locator-node${n.id === mechanism ? ' active' : ''}`}>{n.label}</a>
   ))}
