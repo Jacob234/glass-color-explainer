@@ -3,23 +3,15 @@
 // sodium D lines are 0.6 nm apart and didymium's yellow notch is ~15 nm wide, so this module
 // works at 1 nm and reaches into the near infrared (to 1400 nm), where the eye's own lens is at risk.
 import { cmf } from './optics-core.js';
+import { ND_BANDS, PR_BANDS, wavelengthBands, energyBands } from './bands.js';
 
 export const STEP = 1; // nm
 export const FINE = Array.from({ length: 1021 }, (_, i) => 380 + i); // 380–1400 nm
 export const VIS_END = FINE.indexOf(780); // last visible sample
 const CMF = FINE.map((w) => (w <= 780 ? cmf(w) : [0, 0, 0]));
 
-// Absorption bands of the two "twins" in didymium glass, as Gaussians in decadic density.
-// Centres follow the didymium wavelength-reference peaks (Starna RM-DG: 431, 473, 513, 529, 573,
-// 585, 685, 741, 749, 807, 879 nm) plus the Pr³⁺ bands in silicate glass (444, 469, 482, 590 nm).
-// Widths and strengths are approximate, scaled so a 3 mm working lens passes about 1% at 589 nm.
-// [centre nm, FWHM nm, peak density]
-export const ND_BANDS = [
-  [431, 6, 0.10], [473, 8, 0.06], [513, 8, 0.18], [529, 11, 0.42],
-  [573, 7, 0.6], [585, 12, 1.6], [685, 7, 0.08], [741, 7, 0.40],
-  [749, 7, 0.38], [807, 13, 0.55], [879, 13, 0.30],
-];
-export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 10, 0.8]];
+// Absorption bands of the two "twins" in didymium glass live in bands.js, shared with the colour engine.
+export { ND_BANDS, PR_BANDS };
 
 // Ferrous iron, the absorber in old "heat-absorbing" sage-green glass: one broad band centred in the
 // near infrared whose tail reaches the red. A band this broad is Gaussian in energy, not wavelength,
@@ -28,12 +20,10 @@ export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 1
 // [centre cm⁻¹, FWHM cm⁻¹, peak density]
 export const FE_BAND = [9100, 6500, 1.6];
 
-const gauss = (x, c, fwhm) => Math.exp(-4 * Math.LN2 * ((x - c) / fwhm) ** 2);
-export const bandDensity = (bands) => FINE.map((w) => bands.reduce((d, [c, fwhm, k]) => d + k * gauss(w, c, fwhm), 0));
-const energyBand = ([c, fwhm, k]) => FINE.map((w) => k * gauss(1e7 / w, c, fwhm));
+export const bandDensity = (bands) => wavelengthBands(bands, FINE);
 
 const FRESNEL = 0.92; // two glass–air surfaces at normal incidence, ~4% each
-const ND = bandDensity(ND_BANDS), PR = bandDensity(PR_BANDS), FE = energyBand(FE_BAND);
+const ND = bandDensity(ND_BANDS), PR = bandDensity(PR_BANDS), FE = energyBands([FE_BAND], FINE);
 
 // Lens transmission on FINE. Densities add (Beer–Lambert) across the absorbers in a stack.
 export const LENSES = {
