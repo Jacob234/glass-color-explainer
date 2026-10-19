@@ -1,5 +1,5 @@
 {
-  "note": "Viscosity of one standard soda-lime-silica glass, NBS Standard Glass No. 710, measured at NBS and seven other laboratories. The Fulcher constants are the combined fit to Laboratory A's five samples (Table 4), log10 η in poise with T in °C, fitted from 560 to 1400 °C; viscosity in Pa·s is poise / 10. Fixed points are the ASTM softening, annealing and strain points reported in Table 10. Studio temperatures are typical practice, not measured for this glass. `fitted` is their Table 5 (log10 poise, °C), which this fit reproduces within 3 °C.",
+  "note": "Viscosity of one standard soda-lime-silica glass, NBS Standard Glass No. 710, measured at NBS and seven other laboratories. The Fulcher constants are the combined fit to Laboratory A's five samples (Table 4), log10 η in poise with T in °C, fitted from 560 to 1400 °C; viscosity in Pa·s is poise / 10. Fixed points are the ASTM softening, annealing and strain points in Table 10, averaged over the laboratories that measured them (Avg column). Studio temperatures are typical practice, not measured for this glass. `fitted` is their Table 5 (log10 poise, °C), which this fit reproduces within 3 °C.",
   "glass": "NBS Standard Glass No. 710 (soda-lime-silica)",
   "source": {
     "label": "Napolitano and Hawkins, Viscosity of a standard soda-lime-silica glass, J. Res. NBS 68A (1964) 439",
@@ -11,9 +11,9 @@
   "points": [
     { "id": "melting", "label": "melting", "logPas": 1, "definition": "10 Pa·s: runny enough to fine out bubbles" },
     { "id": "working", "label": "working", "logPas": 3, "definition": "1000 Pa·s: stiff enough to hold a shape on the pipe" },
-    { "id": "softening", "label": "softening", "logPas": 6.6, "measured": 727, "definition": "Littleton point: a hanging fibre stretches under its own weight" },
+    { "id": "softening", "label": "softening", "logPas": 6.6, "measured": 724, "definition": "Littleton point: a hanging fibre stretches under its own weight" },
     { "id": "annealing", "label": "annealing", "logPas": 12, "measured": 546, "definition": "stress relaxes in minutes" },
-    { "id": "strain", "label": "strain", "logPas": 13.5, "measured": 503, "definition": "stress takes hours to relax; below it, nothing moves" }
+    { "id": "strain", "label": "strain", "logPas": 13.5, "measured": 504, "definition": "stress takes hours to relax; below it, nothing moves" }
   ],
   "studio": [
     { "id": "furnace", "label": "furnace", "stage": "melt", "T": 1150, "note": "a studio furnace held for gathering (typical, unverified)" },
