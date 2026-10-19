@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import StructureSim from '../components/islands/StructureSim.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Structure Lab" description="A molecular-dynamics glass former: melt four hundred atoms, cool them slowly and they crystallise, quench them and they freeze into a glass.">
+  <article class="concept ss-page">
+    <p class="detail-type">a simulation</p>
+    <h1>Structure Lab</h1>
+    <p class="summary">
+      Four hundred atoms on the table, pushed around by nothing but their own heat and the forces
+      between them. Melt them, then choose how fast to take the heat away. Cooled slowly, they find
+      a crystal. Cooled fast, they run out of time and freeze where they stand. That frozen liquid
+      is a glass.
+    </p>
+
+    <StructureSim />
+
+    <div class="prose-col">
+      <h2>Three runs worth making</h2>
+      <p>
+        <strong>All alike, quenched.</strong> Set the size difference to zero and cool at the fastest
+        rate. The atoms crystallise anyway, almost at once. Identical spheres in a plane pack
+        so easily into triangles that no cooling rate a computer can reach outruns them. This is the
+        rule rather than the exception: most pure substances cannot be made into a glass in the
+        laboratory either, and the ones that can, such as silica, owe it to the connected network
+        their bonds build rather than to speed.
+      </p>
+      <p>
+        <strong>Mixed, slow then fast.</strong> Put the size difference back to 20%, cool slowly, then
+        melt and quench. The slow run ends mostly in ordered patches; the quench leaves far more of
+        the box disordered. On the curve, the slow run sinks lower: the crystal packs tighter and
+        holds less energy. Each run is a different roll of the dice, so two runs at the same rate
+        can differ by twenty points or so; the trend survives repeating.
+      </p>
+      <p>
+        <strong>Very mixed, any rate.</strong> At 30% or more the two sizes no longer fit one lattice
+        between them. Every run ends as a glass, and the volume curve bends rather than drops: the
+        liquid stiffens until its atoms stop trading places, and below that bend the volume shrinks
+        only as fast as a solid's would. The bend is the glass transition. Compare g(r), the count of
+        neighbours at each distance: the glass keeps the liquid's broad humps, only sharper, while
+        a crystal splits them into narrow peaks at the lattice spacings.
+      </p>
+
+      <h2>Why mixing makes glass</h2>
+      <p>
+        A crystal has to sort its atoms: every site in the lattice expects a particular size. When the
+        melt holds two sizes in equal numbers, a growing crystal must either make room for both or push
+        one out and wait for it to diffuse away. Either way it slows down, and if the cooling is fast
+        enough the melt is too stiff to move before the crystal has grown. Metallurgists call this the
+        confusion principle, after A. L. Greer (1993), and it is why the metallic glasses that can be
+        cast thick are alloys of four or five elements with very different atomic sizes.
+      </p>
+      <p>
+        The glass in a window works on the same principle in a different way. Silica alone forms a
+        glass because its tetrahedra lock into a network that is very slow to rearrange (stage 00 on
+        the <a href={`${base}/#glass`}>front page</a> draws it). Soda and lime cut that network so it
+        melts in a studio furnace, and a soda–lime batch is then a mixture of several oxides that
+        would have to separate to crystallise. When it does crystallise, glassmakers call it
+        devitrification, and they avoid it by keeping a melt out of the temperature range where the
+        crystal grows fastest.
+      </p>
+
+      <h2>Simulation is fast, the furnace is slow</h2>
+      <p>
+        Taken as argon, the slowest rate here is about 10¹¹ kelvin per second. A lehr cools glass at
+        a few kelvin per minute, about twelve orders of magnitude slower. Molecular-dynamics glasses
+        are therefore always quenched far harder than any made in a studio, and their glass
+        transitions sit correspondingly higher. On the front page, stage 00 follows the transition
+        of a real soda–lime glass across the rates a studio can reach, using its measured viscosity
+        instead of atoms. The two pictures agree on the shape: cool faster and the liquid falls out of
+        equilibrium sooner, hotter and less dense.
+      </p>
+
+      <h2>What the model leaves out</h2>
+      <ul>
+        <li><strong>The chemistry.</strong> These atoms attract and repel with no preferred direction, as argon does. Silicon and oxygen bond covalently at fixed angles, which is what builds the network. A model of silica needs a three-body or charged potential, such as the BKS potential.</li>
+        <li><strong>The third dimension.</strong> The atoms live in a plane. Two-dimensional crystallisation differs in detail from three, and two-dimensional crystals can melt through an intermediate, hexatic phase that three-dimensional ones lack. Still, a two-dimensional glass is not only a teaching device: in 2012 a sheet of silica glass two atoms thick was imaged atom by atom on graphene, and it looks much like Zachariasen's 1932 drawing.</li>
+        <li><strong>Size.</strong> Four hundred atoms in a box that wraps around at its edges, so a grain the size of the box can meet itself. Real grains hold billions of atoms.</li>
+        <li><strong>The bath.</strong> Temperature and pressure are held by the Berendsen thermostat and barostat, which rescale velocities and the box each step. They steer the averages well but do not give exactly the right fluctuations. The run uses velocity Verlet steps of 0.005 τ.</li>
+        <li><strong>The order detector.</strong> An atom is drawn solid when its neighbours sit in a near-perfect hexagon and at least five of them are oriented the same way, by the sixfold bond-order test of ten Wolde, Ruiz-Montero and Frenkel adapted to a plane. The threshold is a choice; a glass in two dimensions always has a few small ordered clusters.</li>
+      </ul>
+      <p>
+        For the real thing in a browser, <a href="https://andeplane.github.io/atomify/" rel="noopener">Atomify</a> runs
+        LAMMPS, the research code, with silica and other potentials, in three dimensions.
+      </p>
+
+      <section class="sources">
+        <h2>Sources</h2>
+        <ul>
+          <li>W. Kob and H. C. Andersen, Testing mode-coupling theory for a supercooled binary Lennard-Jones mixture, Phys. Rev. E 51, 4626 (1995). The standard model glass former; the engine keeps it as an option.</li>
+          <li>R. Brüning, D. A. St-Onge, S. Patterson and W. Kob, <a href="https://arxiv.org/abs/0811.2995" rel="noopener">Glass transitions in one-, two-, three- and four-dimensional binary Lennard-Jones systems</a> (2009): in two dimensions the 80:20 Kob–Andersen mixture forms hexagonal crystals, and a 65:35 mix is needed to suppress them.</li>
+          <li>A. L. Greer, Confusion by design, Nature (1993): the confusion principle for glass-forming alloys.</li>
+          <li>P. R. ten Wolde, M. J. Ruiz-Montero and D. Frenkel, Numerical evidence for bcc ordering at the surface of a critical fcc nucleus, <a href="https://doi.org/10.1103/PhysRevLett.75.2714" rel="noopener">Phys. Rev. Lett. 75, 2714 (1995)</a>: the bond-order test for which atoms are crystalline.</li>
+          <li>P. Y. Huang et al., Direct imaging of a two-dimensional silica glass on graphene, Nano Letters (2012); see the <a href="https://news.cornell.edu/node/279316" rel="noopener">Cornell summary</a>.</li>
+          <li>A. Rahman, Correlations in the motion of atoms in liquid argon, Phys. Rev. 136, A405 (1964): the first molecular dynamics with a Lennard-Jones potential. The argon scale (ε/k ≈ 120 K, σ ≈ 0.34 nm, τ ≈ 2.2 ps) is the textbook one, quoted for scale and not checked against this paper.</li>
+        </ul>
+      </section>
+      <p class="back"><a href={`${base}/`}>← back to the start</a></p>
+    </div>
+  </article>
+</Base>
+<style>
+  .ss-page { max-width: 72rem; }
+  .ss-page .summary { max-width: 46rem; }
+  .prose-col { max-width: 46rem; }
+</style>

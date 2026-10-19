@@ -1,0 +1,91 @@
+---
+// The Structure Lab: a 2D molecular-dynamics glass former. Island in scripts/islands/structure.js,
+// physics in scripts/md.js.
+---
+<figure class="ss">
+  <div class="ss-grid">
+    <div class="ss-table">
+      <canvas aria-label="Four hundred atoms of two sizes in a periodic box; atoms in ordered hexagonal patches are drawn solid, the rest open"></canvas>
+      <div class="ss-key mono" aria-hidden="true"><span><i class="k-open"></i>disordered</span><span><i class="k-solid"></i>in an ordered patch</span></div>
+    </div>
+    <div class="ss-side">
+      <div class="ss-ctl">
+        <label class="mono" for="ss-mismatch">size difference <output class="ss-mis"></output></label>
+        <input id="ss-mismatch" name="mismatch" type="range" min="0" max="40" step="5" value="20" />
+        <div class="ends"><span>all alike</span><span>very mixed</span></div>
+      </div>
+      <div class="ss-ctl">
+        <label class="mono" for="ss-rate">cooling rate</label>
+        <input id="ss-rate" name="rate" type="range" min="-2.5" max="-0.5" step="0.05" value="-0.5" />
+        <div class="ends"><span>slow</span><span>quench</span></div>
+        <p class="ss-rate mono"></p>
+      </div>
+      <div class="ss-btns">
+        <button type="button" name="cool" class="chip">cool</button>
+        <button type="button" name="melt" class="chip chip-plain">melt</button>
+      </div>
+      <dl class="ss-meters"></dl>
+      <p class="ss-read" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="ss-plots">
+    <div>
+      <div class="ss-qty" role="group" aria-label="what to plot">
+        <button type="button" class="chip chip-plain" data-q="volume" aria-pressed="true">volume</button>
+        <button type="button" class="chip chip-plain" data-q="energy" aria-pressed="false">energy</button>
+      </div>
+      <svg class="ss-plot" viewBox="0 0 640 300" role="img" aria-label="volume or enthalpy per atom against temperature for this run and up to four earlier runs"></svg>
+      <ol class="ss-runs mono"></ol>
+    </div>
+    <svg class="ss-rdf" viewBox="0 0 640 220" role="img" aria-label="the pair distribution function g(r) now, with the liquid's as a faint line"></svg>
+  </div>
+  <p class="ss-foot">A model, not silica: 400 atoms in two dimensions, half of them larger than the rest, attracting and repelling by the Lennard-Jones law, in a box that wraps around at the edges and is held at constant pressure. Reduced units; the argon figures are for scale only.</p>
+</figure>
+<script>
+  import { initStructureSim } from '../../scripts/islands/structure.js';
+  for (const el of document.querySelectorAll('.ss')) initStructureSim(el);
+</script>
+<style>
+  .ss { margin: 1.5rem 0 2rem; }
+  .ss-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .ss canvas { display: block; width: 100%; aspect-ratio: 1; border: 1px solid var(--ink); touch-action: pan-y; }
+  .ss-key { display: flex; gap: 1.2rem; margin-top: 0.5rem; font-size: 0.64rem; }
+  .ss-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .ss-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1.2px solid var(--ink); }
+  .ss-key .k-solid { background: var(--ink); }
+  .ss-side { display: grid; gap: 1.1rem; align-content: start; }
+  .ss-ctl label { display: flex; justify-content: space-between; }
+  .ss-ctl output { color: var(--ink); }
+  .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .ss-rate { margin: 0.35rem 0 0; text-transform: none; letter-spacing: 0.02em; color: var(--ink); }
+  .ss-btns { display: flex; gap: 0.6rem; }
+  .chip { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.45rem 1.1rem; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--ink); color: var(--paper); cursor: pointer; }
+  .chip-plain { background: transparent; color: var(--ink); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .chip:disabled { opacity: 0.35; cursor: default; }
+  .ss-meters { margin: 0; display: grid; gap: 0.35rem; }
+  .ss-meters :global(div) { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.25rem; }
+  .ss-meters :global(dt) { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+  .ss-meters :global(dd) { margin: 0; font-family: var(--mono); font-size: 0.74rem; text-align: right; }
+  .ss-read { margin: 0; font-size: 0.95rem; min-height: 4.5em; }
+  .ss-plots { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; margin-top: 1.5rem; align-items: end; }
+  .ss-qty { display: flex; gap: 0.4rem; margin-bottom: 0.4rem; }
+  .ss-qty .chip { padding: 0.25rem 0.8rem; font-size: 0.64rem; }
+  .ss svg { display: block; width: 100%; height: auto; }
+  .ss svg :global(.ax) { stroke: var(--ink); stroke-width: 1; }
+  .ss svg :global(.ax.faint) { stroke: var(--ink-3); stroke-dasharray: 2 4; }
+  .ss svg :global(text) { font-family: var(--mono); fill: var(--ink-2); }
+  .ss svg :global(.tk), .ss svg :global(.lb) { font-size: 12px; }
+  .ss svg :global(.gl) { font-size: 11px; fill: var(--ink-3); }
+  .ss svg :global(.live) { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  .ss svg :global(.ghost) { fill: none; stroke: var(--ink-3); stroke-width: 1.2; }
+  .ss svg :global(.dot) { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+  .ss-runs { margin: 0.3rem 0 0; padding-left: 0; list-style: none; font-size: 0.62rem; text-transform: none; letter-spacing: 0.02em; color: var(--ink-2); min-height: 1em; }
+  .ss-runs :global(li) { display: flex; align-items: center; gap: 0.5rem; }
+  .ss-foot { font-size: 0.75rem; color: var(--ink-3); margin: 0.8rem 0 0; }
+  @media (max-width: 820px) {
+    .ss-grid, .ss-plots { grid-template-columns: 1fr; }
+    .ss svg :global(.tk), .ss svg :global(.lb) { font-size: 18px; }
+    .ss svg :global(.gl) { font-size: 16px; }
+  }
+</style>
