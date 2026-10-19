@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import FormingSim from '../components/islands/FormingSim.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Forming Lab" description="A gather of hot glass on a blowpipe: viscosity from a measured soda-lime glass, sag, blowing and swinging from viscous flow, cooling by radiation in three bands.">
+  <article class="concept">
+    <h1>Forming lab</h1>
+    <p class="summary">
+      Glassblowing is a race against viscosity. A gather fresh from the furnace is runny enough to drip
+      off the pipe in a couple of seconds; a minute later its skin is past the working point. Everything a
+      blower does, turning, reheating, blowing in puffs, swinging, is a way of steering three slow flows
+      while the glass cools. Here they are, computed.
+    </p>
+    <FormingSim />
+
+    <h2>Things to try</h2>
+    <p>
+      <b>Stop turning.</b> Set the turn to zero and the gather sags off the pipe within a few seconds.
+      Turn it again and look at the end-on view: the far end no longer falls; it circles a point off to
+      one side. Turning does not stop the glass from flowing. It reverses the direction of the flow
+      every half turn, so the sag cancels itself instead of adding up.
+    </p>
+    <p>
+      <b>Blow and hold.</b> The first bubble is the hard part. At the tip of the pipe it is a few
+      millimetres across, and the glass around a small bubble must stretch hard to let it grow, so a
+      gather that has cooled for half a minute hardly moves. Once it starts, it runs away: a thinner wall
+      is easier to stretch, so the same breath stretches it faster, until your breath rather than the
+      glass sets the pace. Keep holding and the wall thins until it chills and sets as a thin, oversized
+      bubble. Blowers start the bubble while the gather is hot, then blow in short puffs with reheats
+      between, so the wall never gets ahead of them.
+    </p>
+    <p>
+      <b>Swing.</b> Point the pipe down and the gather stretches under its own weight; point it up and it
+      settles back, shorter and fatter. Swinging the pipe is how a blower makes length.
+    </p>
+    <p>
+      <b>Reheat.</b> In the glory hole a gather takes heat back by the same bands it loses heat by. Watch
+      the clear one: near the chamber's own temperature it all but disappears against the walls, the
+      same law that makes it glow dimly in the dark shop (see <a href={`${base}/#heat`}>the glory hole</a>).
+    </p>
+
+    <h2>The three flows</h2>
+    <p>
+      Viscosity sets the pace of every flow, and for soda-lime glass it changes a thousandfold between
+      the furnace and the point where a blower gives up. The simulator takes it from one measured glass,
+      NBS Standard Glass No. 710, through the Fulcher fit Napolitano and Hawkins made for it in 1964,
+      the same curve as the site's <a href={`${base}/#glass`}>stage 00</a>. The gather is cut into 24 shells
+      of equal mass, each with its own temperature and so its own viscosity, and each flow is the
+      textbook result for a viscous body of that shape.
+    </p>
+    <h3>Blowing: a hollow sphere</h3>
+    <p>
+      Glass is incompressible, so when the bubble grows every shell must move outward with velocity
+      u = C/r², whatever its temperature. That fixes the flow, and the pressure it needs follows
+      exactly: Δp = ∫ 12 η(r) C / r⁴ dr across the wall. Two consequences fall out. The 1/r⁴ weight puts
+      almost all the stretching in the glass next to the bubble, so in a thick gather the core's heat,
+      not the skin's, decides whether it will blow. And for a thin wall the rate becomes
+      da/dt = Δp a² / 12 η h: it grows as the bubble grows and the wall thins, which is the runaway.
+      Surface tension on both faces pulls back by 2γ/r each, which matters only for the smallest bubbles.
+    </p>
+    <h3>Sagging: a viscous cantilever</h3>
+    <p>
+      The part of the gather beyond the pipe's tip is a short beam under its own weight. Slow viscous
+      flow obeys the same equations as
+      elastic deformation, with velocities in place of displacements and 3η in place of Young's modulus
+      (the Stokes–Rayleigh analogy, exact for incompressible material; the attribution is from memory, unverified). So the elastic tip deflection wL⁴/8EI becomes a
+      deflection <i>rate</i>. Its stiffness weights each shell by r³, the opposite of blowing: the skin
+      carries the bending. That is the blower's trick, as the model has it: let the skin chill and it
+      holds the gather straight while the core is still hot enough to blow.
+    </p>
+    <p>
+      Turning the pipe at ω carries the sag round with the glass. In the shop's frame the far end obeys
+      d′ = ω × d + v ĝ, and the solution circles the point v/ω to one side of the pipe with radius v/ω.
+      For a fresh gather turned once a second, the far end strays less than a centimetre; stopped, the
+      same glass falls two or three centimetres a second (both from the model).
+    </p>
+    <h3>Swinging: stretching under weight</h3>
+    <p>
+      Along the pipe, the weight of the glass pulls the gather into a longer spheroid at a strain rate
+      σ/3η, where 3η is the extensional viscosity Frederick Trouton measured for pitch and other very
+      viscous liquids in 1906.
+    </p>
+
+    <h2>Cooling, in three bands</h2>
+    <p>
+      Out of the fire the gather loses heat mainly as radiation, and glass is not a simple radiator.
+      Liu, Kitamura, Xia and Pilon measured soda-lime melts in 2016 and described their absorption in
+      two bands. Below 2.8 µm the glass is nearly transparent: clear glass absorbs about 43 per metre
+      there, so light crosses centimetres of it, while green bottle glass, with six times the iron,
+      absorbs about 179 per metre. From 2.8 to 5 µm every soda-lime glass absorbs about 460 per metre,
+      and beyond 5 µm it is opaque. At 1100 °C a black body sends about 45% of its power into the first
+      band, 35% into the second and 20% into the opaque one (computed from Planck's law).
+    </p>
+    <p>
+      So each band leaves from a different depth. The opaque band leaves from the skin, the second from
+      the outer few millimetres, and the first from deep inside a clear gather. Each shell here emits each
+      band in proportion to how much of it can reach the surface, by the exact result for a non-scattering
+      slab (the kernel 2κE₂(κd), whose total is the slab's emissivity, 1 − 2E₃(κh)). Two things follow
+      that the simulator shows. A thin blown wall is a poorer emitter than the solid gather, because thin
+      glass is transparent to its own first band, the point Robert Gardon made in 1956. And it cools much
+      faster anyway, because the same glass now has three or four times the surface. Heat moves between
+      shells by conduction, with the conductivity Liu and colleagues measured.
+    </p>
+    <p>
+      The glow is computed the way <a href={`${base}/#heat`}>the glory hole</a> computes it: Planck's law
+      times the glass's own visible emissivity, one minus its transmission along a line of sight through
+      the wall (Kirchhoff, 1860). Each shell is drawn at its own temperature, so a chilled skin shows as a
+      dimmer rim around a brighter core.
+    </p>
+
+    <h2>What the model leaves out</h2>
+    <ul>
+      <li>The gather is an equal-volume sphere for heat and blowing, and a spheroid only for drawing,
+        sagging and stretching. Real gathers are lopsided, and blowers use uneven heat to shape them;
+        here every shell is the same all the way round.</li>
+      <li>The beam formula is for slender beams; a gather is stubby, so the sag rate is an order of
+        magnitude, not a prediction. The free length is taken as the far half of the gather.</li>
+      <li>Radiation the wall trades with itself is ignored, the sphere is treated as a slab for emission,
+        and the glory hole heats by radiation alone (no flame). Absorption is the room-temperature
+        two-band data; colorants' own infrared absorption is ignored, so a cobalt gather cools like a
+        clear one here.</li>
+      <li>No marver, jacks or paddles (contact cooling and shaping), no capping the pipe to let trapped air
+        blow the bubble, no thermal shock or annealing stress (for that, the lehr).</li>
+      <li>Heat capacity, surface tension, convection, breath pressure and the most a blower can exhale are
+        assumed typical values, listed in <code>src/data/forming.json</code>.</li>
+    </ul>
+
+    <h2>Sources</h2>
+    <ul>
+      <li>Viscosity: A. Napolitano and E. G. Hawkins, "Viscosity of a standard soda-lime-silica glass",
+        <i>J. Res. NBS</i> 68A (1964) 439, <a href="https://doi.org/10.6028/jres.068A.042">doi:10.6028/jres.068A.042</a>.</li>
+      <li>Conductivity and absorption bands: H. Liu, R. Kitamura, X. Xia and L. Pilon, "Conductive and
+        radiative properties of soda-lime silicate glassmelts with different iron contents from 1100 °C to
+        1500 °C", <i>J. Am. Ceram. Soc.</i> 99 (2016) 1271, <a href="https://doi.org/10.1111/jace.14095">doi:10.1111/jace.14095</a>.</li>
+      <li>Emissivity of thin glass: R. Gardon, "The emissivity of transparent materials", <i>J. Am. Ceram.
+        Soc.</i> 39 (1956) 278.</li>
+      <li>Extensional viscosity: F. T. Trouton, "On the coefficient of viscous traction and its relation to
+        that of viscosity", <i>Proc. R. Soc. Lond. A</i> 77 (1906) 426 (citation from memory, unverified).</li>
+      <li>Kirchhoff's law: G. Kirchhoff, <i>Annalen der Physik</i> 109 (1860) 275.</li>
+    </ul>
+    <p class="back"><a href={`${base}/#heat`}>← back to the glory hole</a></p>
+  </article>
+</Base>

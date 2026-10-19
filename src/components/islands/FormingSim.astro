@@ -1,0 +1,60 @@
+---
+import { BATCHES } from '../../scripts/islands/formingsim.js';
+import F from '../../data/forming.json';
+const b = F.breath;
+---
+<figure class="fs">
+  <canvas aria-label="A gather of hot glass on a turning blowpipe, drawn in section, glowing by its temperature"></canvas>
+  <div class="fs-bar">
+    <div class="fs-where" role="radiogroup" aria-label="where the gather is">
+      <label><input type="radio" name="where" value="glory" /> glory hole</label>
+      <label><input type="radio" name="where" value="air" checked /> bench</label>
+    </div>
+    <button type="button" class="fs-blow" aria-label="hold to blow">hold to blow</button>
+    <button type="button" class="fs-new">new gather</button>
+  </div>
+  <div class="fs-controls">
+    <label>breath <span data-show="breath">{b.default} kPa</span><input type="range" name="breath" min={b.min} max={b.max} step="0.1" value={b.default} /></label>
+    <label>turn <span data-show="turn">1 rev/s</span><input type="range" name="turn" min="0" max="2" step="0.05" value="1" /></label>
+    <label>pipe <span data-show="tilt">0°</span><input type="range" name="tilt" min="-60" max="80" step="1" value="0" aria-label="pipe angle below horizontal" /></label>
+    <label>glass <select name="batch">{Object.entries(BATCHES).map(([id, x]) => <option value={id}>{x.label}</option>)}</select></label>
+    <label>time <select name="speed"><option value="1">real time</option><option value="4">×4</option><option value="16">×16</option></select></label>
+  </div>
+  <dl class="fs-read">
+    <div><dt>time</dt><dd data-out="time"></dd></div>
+    <div><dt>skin</dt><dd data-out="skin"></dd></div>
+    <div><dt>core</dt><dd data-out="core"></dd></div>
+    <div><dt>size</dt><dd data-out="size"></dd></div>
+    <div><dt>wall</dt><dd data-out="wall"></dd></div>
+    <div><dt>blows like</dt><dd data-out="blow"></dd></div>
+    <div><dt>sag</dt><dd data-out="sag"></dd></div>
+    <div><dt>emissivity</dt><dd data-out="emis"></dd></div>
+    <div><dt>heat</dt><dd data-out="power"></dd></div>
+  </dl>
+  <p class="fs-note" data-out="note" aria-live="polite"></p>
+  <p class="island-footnote">A model: a hollow sphere of NBS 710 soda-lime glass in 24 shells of equal mass, each at its own temperature and viscosity; blowing, sagging and stretching from the textbook viscous solutions for that shape; heat by conduction between shells and radiation in three wavelength bands. Drawn in section. Hold the button (or the space bar) to blow.</p>
+</figure>
+<script>
+  import { initFormingSim } from '../../scripts/islands/formingsim.js';
+  for (const el of document.querySelectorAll('.fs')) initFormingSim(el);
+</script>
+<style>
+  .fs { margin: 1.5rem 0; }
+  .fs canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 4px; background: var(--soot); touch-action: none; }
+  @media (max-width: 640px) { .fs canvas { aspect-ratio: 4 / 5; } }
+  .fs-bar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-top: 0.8rem; }
+  .fs-where { display: flex; gap: 0.8rem; font-size: 0.85rem; margin-right: auto; }
+  .fs-bar button { font: inherit; font-size: 0.85rem; padding: 0.45rem 0.9rem; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 3px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; }
+  .fs-blow { min-width: 9rem; }
+  .fs-blow.on { background: var(--ink); color: var(--paper); }
+  .fs-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.4rem 1rem; margin-top: 0.8rem; font-size: 0.8rem; color: var(--muted); }
+  .fs-controls label { display: flex; flex-direction: column; }
+  .fs-controls span { font-family: var(--mono); color: var(--ink); }
+  .fs-controls select { font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--edge); padding: 0.25rem; }
+  .fs-read { font-family: var(--mono); display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.3rem 1rem; margin: 0.9rem 0 0; font-size: 0.78rem; }
+  .fs-read div { border-top: 1px solid var(--rule); padding-top: 0.2rem; }
+  .fs-read dt { color: var(--faint); }
+  .fs-read dd { margin: 0; color: var(--ink); }
+  .fs-note { min-height: 2.8em; font-size: 0.88rem; margin: 0.7rem 0 0; }
+  .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
+</style>
