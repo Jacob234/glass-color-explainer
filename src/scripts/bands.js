@@ -4,6 +4,8 @@
 // 605 nm samples. A band model can be evaluated on any grid, so the 5 nm colour engine (spectra.js)
 // and the 1 nm flare model (flare.js) see the same physics.
 
+import { MEASURED_MODELS } from './measured.js';
+
 const gauss = (x, c, fwhm) => Math.exp(-4 * Math.LN2 * ((x - c) / fwhm) ** 2);
 
 // Narrow bands, Gaussian in wavelength: [centre nm, FWHM nm, peak decadic density].
@@ -22,19 +24,17 @@ export const ND_BANDS = [
 ];
 export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 10, 0.8]];
 
-// Tetrahedral Co²⁺, the ion in cobalt blue: the spin-allowed ⁴A₂ → ⁴T₁(P) transition, a band spanning
-// about 15,000–19,000 cm⁻¹ and split into a triplet (Taran et al., Am. Mineral. 94, 2009, measured in
-// spinel; the centres used here, near 535, 580 and 630 nm, are approximate values for silicate glass).
-// Above ~680 nm the glass is clear again until the ⁴T₁(F) band near 1500 nm, so cobalt glass passes
-// deep red: the red leak is real, but it sits where the eye is nearly blind, so the glass reads blue
-// rather than violet. Peak density matches the old sampled curve
-// (1.3), so concentrations on the page keep their meaning; relative strengths are approximate.
-export const CO_BANDS = [[15900, 1800, 0.95], [17200, 1800, 0.90], [18700, 1800, 0.66]];
+// Tetrahedral Co²⁺, the ion in cobalt blue: the spin-allowed ⁴A₂ → ⁴T₁(P) transition, split into a
+// triplet (Taran et al., Am. Mineral. 94, 2009). Its curve is measured (measured.js, from
+// Meulebroeck et al. 2016), whose three bands sit at 534, 596 and 640 nm in soda-rich glass. Above
+// ~700 nm the glass is clear again until the ⁴T₁(F) band near 1500 nm, so cobalt glass passes deep
+// red: the red leak is real, but it sits where the eye is nearly blind, so the glass reads blue.
 
-// Decadic density on a wavelength grid, for each colorant that has a band model, at the page's
-// reference amount (c = 1). For neodymium that is an art glass with three times the working lens's
-// density (illustrative): narrow bands take little light, so a lens-strength piece is barely lilac.
+// Decadic density on a wavelength grid, for each colorant that has a band model or a measured curve,
+// at the page's reference amount (c = 1). For neodymium that is an art glass with three times the
+// working lens's density (illustrative): narrow bands take little light, so a lens-strength piece is
+// barely lilac. The measured curves (cobalt, chromium, iron, copper, silver) come from measured.js.
 export const BAND_MODELS = {
   neodymium: (grid) => wavelengthBands(ND_BANDS, grid).map((d) => 3 * d),
-  cobalt: (grid) => energyBands(CO_BANDS, grid),
+  ...MEASURED_MODELS,
 };

@@ -46,6 +46,7 @@
 .ctl output { font-family: var(--mono); font-size: 0.8rem; color: var(--ink); text-transform: none; letter-spacing: 0; text-align: right; }
 .ends { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.78rem; color: var(--ink-3); margin-top: 0.1rem; }
 .readout { font-size: 0.95rem; min-height: 3em; text-wrap: pretty; }
+.readout .basis { display: block; margin-top: 0.35em; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 #rods { margin-top: 1.4rem; }
 .chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.7rem 0.35rem 0.4rem; border: 1px solid var(--rule); border-radius: 999px; background: transparent; cursor: pointer; font-size: 0.82rem; }

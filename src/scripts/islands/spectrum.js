@@ -1,6 +1,7 @@
 // SpectrumExplorer: colorant buttons -> absorption curve over a spectrum gradient
 // -> transmitted-color swatch. Color science lives in ../optics-core.js.
 import { transmittedColor } from '../optics-core.js';
+import { basisLine } from '../measured.js';
 export { transmittedColor };
 
 export function initSpectrumExplorer(root, optics) {
@@ -8,6 +9,7 @@ export function initSpectrumExplorer(root, optics) {
   const curve = root.querySelector('.spx-curve');
   const swatch = root.querySelector('.spx-swatch');
   const why = root.querySelector('.spx-why');
+  const basis = root.querySelector('.spx-basis');
   const W = 360, H = 90;
 
   // Buttons are server-rendered by SpectrumExplorer.astro (so Astro scoped-CSS applies).
@@ -21,6 +23,7 @@ export function initSpectrumExplorer(root, optics) {
     curve.setAttribute('points', pts);
     swatch.style.background = transmittedColor(optics.wavelengths, c.absorbance, daylight.spd);
     why.textContent = c.why;
+    if (basis) basis.textContent = basisLine(c.id);
     for (const b of buttons) b.classList.toggle('active', b.dataset.id === c.id);
   }
 
