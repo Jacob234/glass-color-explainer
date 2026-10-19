@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { GLASSES, sellmeier, fresnel, traceRay, slab, prism } from '../src/scripts/raytrace.js';
+import { GLASSES, sellmeier, fresnel, traceRay, slab, prism, lens } from '../src/scripts/raytrace.js';
 import { GRID, CMF_GRID, displayMatrix, spectrumColor } from '../src/scripts/spectra.js';
 import { LAMP } from '../src/scripts/lamps.js';
 
@@ -53,4 +53,20 @@ test('displayMatrix matches radianceColor for a whole spectrum', () => {
     const got = displayMatrix(lamp.spd, lamp.adapt).map((r) => r[0] * xyz[0] + r[1] * xyz[1] + r[2] * xyz[2]);
     got.forEach((v, k) => assert.ok(Math.abs(v - want[k]) < 1e-9, `${id} ${k}: ${v} vs ${want[k]}`));
   }
+});
+
+test('a lens focuses near the lensmaker focal length, using its true curvature', () => {
+  // Biconvex crown lens, R = 60 mm, thin-lens f = R / (2 (n − 1)) ≈ 58 mm from the centre.
+  const pieces = [{ poly: lens(0, 0, 30, 60), glass: 'crown', density: GRID.map(() => 0) }];
+  const crossing = (h) => {
+    let last;
+    traceRay(pieces, { ...ray(590), x: -40, y: h }, seq([0.99]), (...r) => { last = r; }, [-50, -60, 300, 60]);
+    const [x0, y0, x1, y1] = last;
+    return x0 - (y0 * (x1 - x0)) / (y1 - y0); // where the exiting ray crosses the axis
+  };
+  const f = 60 / (2 * (sellmeier(GLASSES.crown, 590) - 1));
+  const near = crossing(1), far = crossing(-1.5);
+  assert.ok(Math.abs(near - f) < 2, `paraxial focus ${near} vs ${f}`);
+  assert.ok(Math.abs(near - far) < 0.2, 'paraxial rays meet at one point');
+  assert.ok(crossing(12) < near, 'marginal rays focus shorter (spherical aberration)');
 });

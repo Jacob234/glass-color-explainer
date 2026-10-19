@@ -30,12 +30,17 @@ export function fresnel(cosI, eta) {
 // Regular polygon helpers, in scene units (mm).
 export const prism = (cx, cy, side, rot = 0) => regular(cx, cy, side / Math.sqrt(3), 3, rot - Math.PI / 2);
 export const slab = (cx, cy, w, h, rot = 0) => [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]].map(([x, y]) => turn(cx, cy, x, y, rot));
-// A biconvex lens as a polygon: two circular arcs of radius R meeting at the rim, height h.
-export function lens(cx, cy, h, R, rot = 0, steps = 96) {
+// A biconvex lens: two circular arcs of radius R meeting at the rim, height h. The arcs are stored
+// as polygon edges for intersection, but each edge also records its arc's centre, so the normal at
+// a hit is the true circle's normal, not the facet's (facets would split light into parallel bundles).
+export function lens(cx, cy, h, R, rot = 0, steps = 48) {
   const a = Math.asin(h / 2 / R), sag = R - R * Math.cos(a), pts = [];
   for (let i = 0; i <= steps; i++) { const t = -a + (2 * a * i) / steps; pts.push([R * Math.cos(t) - R + sag, R * Math.sin(t)]); }
   for (let i = 0; i <= steps; i++) { const t = a - (2 * a * i) / steps; pts.push([-(R * Math.cos(t) - R + sag), R * Math.sin(t)]); }
-  return pts.map(([x, y]) => turn(cx, cy, x, y, rot));
+  const poly = pts.map(([x, y]) => turn(cx, cy, x, y, rot));
+  const c1 = turn(cx, cy, sag - R, 0, rot), c2 = turn(cx, cy, R - sag, 0, rot);
+  poly.centers = poly.map((_, i) => (i < steps ? c1 : i > steps && i <= 2 * steps ? c2 : null));
+  return poly;
 }
 function regular(cx, cy, r, n, rot) {
   return Array.from({ length: n }, (_, i) => { const t = rot + (2 * Math.PI * i) / n; return [cx + r * Math.cos(t), cy + r * Math.sin(t)]; });
@@ -55,7 +60,11 @@ function hit(pieces, ox, oy, dx, dy) {
       const ex = bx - ax, ey = by - ay, den = dx * ey - dy * ex;
       if (Math.abs(den) < 1e-12) continue;
       const t = ((ax - ox) * ey - (ay - oy) * ex) / den, u = ((ax - ox) * dy - (ay - oy) * dx) / den;
-      if (t > 1e-6 && u >= 0 && u <= 1 && t < best) { best = t; piece = k; nx = ey; ny = -ex; }
+      if (t > 1e-6 && u >= 0 && u <= 1 && t < best) {
+        best = t; piece = k; nx = ey; ny = -ex;
+        const c = v.centers?.[i];
+        if (c) { nx = ox + dx * t - c[0]; ny = oy + dy * t - c[1]; }
+      }
     }
   });
   const len = Math.hypot(nx, ny) || 1;
