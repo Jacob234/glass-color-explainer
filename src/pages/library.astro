@@ -1,0 +1,135 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '../layouts/Base.astro';
+import lib from '../data/library.json';
+import { KINDS, REUSE, sourceStatus } from '../scripts/library.js';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Status comes from the files on this tree at build time (see library.js).
+const read = (file) => { try { return readFileSync(join(process.cwd(), file), 'utf8'); } catch { return null; } };
+const stageOrder = Object.keys(lib.stages);
+const firstStage = (s) => Math.min(...(s.usedBy ?? []).map((u) => stageOrder.indexOf(u.stage)).filter((i) => i >= 0), 99);
+const sources = lib.sources
+  .map((s) => ({ ...s, status: sourceStatus(s, read) }))
+  .sort((a, b) => firstStage(a) - firstStage(b) || a.date.localeCompare(b.date));
+const shelves = [
+  { state: 'main', mark: '●', title: 'On the page', blurb: 'Sources the live explainer computes from or quotes. Each is checked against the code at every build: if the citation leaves the code, the source leaves this shelf.' },
+  { state: 'pr', mark: '◐', title: 'Arriving', blurb: 'Cited by a stage that is still a pull request. These move up to the first shelf by themselves when the pull request merges.' },
+  { state: 'wanted', mark: '○', title: 'Wanted', blurb: 'Not used yet. Each would replace a drawn curve or a typical number with a measured one, or open a new stage.' },
+];
+const byId = Object.fromEntries(sources.map((s) => [s.id, s]));
+const count = (state) => sources.filter((s) => s.status.state === state).length;
+const stageLabel = (u) => lib.stages[u.stage] ?? u.stage;
+const host = (url) => new URL(url).hostname.replace(/^www\./, '');
+---
+<Base title="Library" description="Every datasheet, standard table, database and measurement the glass explainer computes from, with what each provides, where it is used and what its licence allows.">
+  <article class="concept library">
+    <p class="detail-type">Library</p>
+    <h1>Where the numbers come from</h1>
+    <p class="summary">
+      Every measured number on this site comes from one of these: a manufacturer's datasheet, a standard table, a database, or a paper that measured it. This shelf lists each
+      one with what it provides, where the page uses it, and what its licence allows. Sources are
+      linked, not rehosted; the repo keeps only the numbers it computes from, with the citation beside them.
+    </p>
+
+    <dl class="tally">
+      {shelves.map((sh) => <div><dt><span aria-hidden="true">{sh.mark}</span> {sh.title}</dt><dd>{count(sh.state)}</dd></div>)}
+    </dl>
+
+    {shelves.map((sh) => (
+      <section class="shelf" id={sh.state === 'main' ? 'in-use' : sh.state === 'pr' ? 'arriving' : 'wanted'}>
+        <h2><span class="mark" aria-hidden="true">{sh.mark}</span> {sh.title}</h2>
+        <p class="shelf-blurb">{sh.blurb}</p>
+        <ol class="cards">
+          {sources.filter((s) => s.status.state === sh.state).map((s) => (
+            <li class="card" id={s.id}>
+              <p class="call"><span>{KINDS[s.kind]}</span><span>{s.date}</span></p>
+              <h3><a href={s.url} rel="noopener">{s.title}</a></h3>
+              <p class="by">{s.by}{s.edition && <>, <span class="ed">{s.edition}</span></>}</p>
+              <p class="provides">{s.provides}</p>
+              {s.status.uses.length > 0 && (
+                <ul class="uses">
+                  {s.status.uses.map((u) => (
+                    <li class={u.state}>
+                      <span class="stage">{stageLabel(u)}</span>
+                      <code>{u.file.replace(/^src\//, '')}</code>
+                      {u.state === 'pr' && <a class="pr" href={`https://github.com/Jacob234/glass-color-explainer/pull/${u.pr}`} rel="noopener">PR #{u.pr}</a>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {s.would && <p class="would"><b>Would give:</b> {s.would}</p>}
+              {s.caution && <p class="caution"><b>Note.</b> {s.caution}</p>}
+              <p class="licence"><b>{REUSE[s.reuse]}.</b> {s.licence}</p>
+              <p class="foot"><a href={s.url} rel="noopener">{host(s.url)}</a> · checked {s.checked}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+
+    <section class="shelf" id="gaps">
+      <h2>Still drawn, not measured</h2>
+      <p class="shelf-blurb">The page labels these as models. Each line names what is drawn and which source on this shelf could replace it.</p>
+      <table>
+        <thead><tr><th>What</th><th>Where</th><th>Could come from</th></tr></thead>
+        <tbody>
+          {lib.gaps.map((g) => (
+            <tr>
+              <td>{g.what}</td>
+              <td class="where">{g.file.split('/').pop()}</td>
+              <td>{g.candidates.length === 0 && <span>none yet.</span>}{g.candidates.map((id, i) => <>{i > 0 && ', '}<a href={`#${id}`}>{byId[id].short ?? byId[id].title}</a></>)}{g.note && <span class="gap-note">{g.note}</span>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <p class="aside"><b>Not on this shelf.</b> Dates and stories on the history rail carry their own sources there; this shelf holds sources of data. Licence notes summarise what each source states about reuse and were read on the date shown; they are not legal advice. The list lives in <code>src/data/library.json</code>, and <code>npm run check</code> fails if a source says it is used in a file that no longer cites it.</p>
+    <p class="back"><a href={`${base}/`}>← back to the start</a></p>
+  </article>
+</Base>
+
+<style>
+  .library { max-width: 58rem; }
+  .tally { display: flex; gap: 2.4rem; flex-wrap: wrap; margin: 0 0 1rem; }
+  .tally div { display: flex; flex-direction: column-reverse; }
+  .tally dt { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  .tally dd { margin: 0; font-family: var(--display); font-size: 2.6rem; line-height: 1; }
+  .shelf { margin-top: 3rem; }
+  .shelf h2 { border-top: 1px solid var(--ink); padding-top: 1rem; margin-top: 0; }
+  .shelf h2 .mark { font-size: 1.2rem; vertical-align: 0.2em; }
+  .shelf-blurb { color: var(--ink-2); max-width: 40rem; margin: 0 0 1.4rem; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); gap: 1rem; }
+  .card { margin: 0; background: var(--panel); border: 1px solid var(--rule); padding: 1rem 1.1rem 0.9rem; display: flex; flex-direction: column; scroll-margin-top: 1.5rem; }
+  .card:target { border-color: var(--ink); }
+  .call { margin: 0; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; }
+  .card h3 { font-family: var(--display); font-weight: 500; font-size: 1.25rem; line-height: 1.2; margin: 0.6rem 0 0.25rem; text-wrap: balance; }
+  .card h3 a { text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; }
+  .by { margin: 0 0 0.6rem; font-size: 0.88rem; color: var(--ink-2); }
+  .by .ed { font-style: italic; }
+  .provides, .would { margin: 0 0 0.6rem; font-size: 0.92rem; }
+  .uses { list-style: none; padding: 0; margin: 0 0 0.6rem; font-size: 0.8rem; }
+  .uses li { display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; align-items: baseline; padding: 0.25rem 0; border-top: 1px dotted var(--rule); }
+  .uses .stage { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .uses li.main .stage::before { content: '● '; }
+  .uses li.pr .stage::before { content: '◐ '; }
+  .uses code { font-size: 0.78em; word-break: break-all; }
+  .uses .pr { font-family: var(--mono); font-size: 0.72rem; margin-left: auto; }
+  .licence { margin: auto 0 0.4rem; padding-top: 0.5rem; font-size: 0.8rem; color: var(--ink-2); }
+  .licence b { color: var(--ink); font-weight: 500; }
+  .foot { margin: 0; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); }
+  .foot a { color: var(--ink-2); }
+  .caution { margin: 0 0 0.6rem; font-size: 0.82rem; border-left: 2px solid var(--ink); padding-left: 0.6rem; }
+  .gap-note { color: var(--ink-2); }
+  .library td.where { font-family: var(--mono); font-size: 0.78rem; }
+  .gap-note { display: block; }
+  .aside { margin-top: 3rem; font-size: 0.88rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 1rem; }
+  .aside b { color: var(--ink); }
+  @media (max-width: 520px) {
+    .tally { gap: 1.4rem; }
+    .tally dd { font-size: 2rem; }
+  }
+</style>
