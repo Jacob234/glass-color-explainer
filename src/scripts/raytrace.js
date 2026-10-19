@@ -4,18 +4,11 @@
 // It is a model: the world is a flat plane (a beam raking across paper), each ray carries one
 // wavelength, and polarisation is averaged away in the Fresnel terms.
 import { GRID } from './spectra.js';
+import { GLASS, index } from './dispersion.js';
 
-// Sellmeier coefficients (λ in µm, C in µm²) from the SCHOTT catalogue, via refractiveindex.info.
-// N-BK7 is a borosilicate crown (nd 1.5168, Abbe 64); N-SF11 a dense flint (nd 1.7847, Abbe 25.7).
-// Soda-lime window and studio glass is a crown with dispersion close to BK7's.
-export const GLASSES = {
-  crown: { label: 'crown (N-BK7)', B: [1.03961212, 0.231792344, 1.01046945], C: [0.00600069867, 0.0200179144, 103.560653] },
-  flint: { label: 'dense flint (N-SF11)', B: [1.73759695, 0.313747346, 1.89878101], C: [0.013188707, 0.0623068142, 155.23629] },
-};
-export function sellmeier({ B, C }, nm) {
-  const l2 = (nm / 1000) ** 2;
-  return Math.sqrt(1 + B.reduce((s, b, k) => s + (b * l2) / (l2 - C[k]), 0));
-}
+// Glasses and their index n(λ) come from data/glasses.json (Sellmeier or Cauchy fits from the
+// SCHOTT catalogue and others, via refractiveindex.info), shared with the dispersion stage.
+export { GLASS as GLASSES } from './dispersion.js';
 
 // Unpolarised Fresnel reflectance at a dielectric boundary, from relative index eta = n1/n2.
 // Returns 1 past the critical angle (total internal reflection).
@@ -91,7 +84,7 @@ export function traceRay(pieces, ray, rand, deposit, bounds, maxBounces = 12) {
     let { nx, ny } = h;
     let cosI = -(dx * nx + dy * ny);
     if (cosI < 0) { nx = -nx; ny = -ny; cosI = -cosI; }
-    const entering = inside < 0, n = sellmeier(GLASSES[pieces[h.piece].glass], nm);
+    const entering = inside < 0, n = index(GLASS[pieces[h.piece].glass], nm);
     const eta = entering ? 1 / n : n;
     x = ex; y = ey;
     if (rand() < fresnel(cosI, eta)) { // reflect

@@ -144,8 +144,8 @@
       "reuse": "cite", "licence": "US government publication; no licence stated. Fit constants and fixed points are quoted with citation.",
       "checked": "2026-10-19",
       "usedBy": [
-        { "file": "src/data/viscosity.json", "find": "jres.068A.042", "stage": "glass", "pr": 17 },
-        { "file": "src/scripts/stress.js", "find": "Napolitano and Hawkins", "stage": "lehr", "pr": 16 }
+        { "file": "src/data/viscosity.json", "find": "jres.068A.042", "stage": "glass" },
+        { "file": "src/scripts/stress.js", "find": "Napolitano and Hawkins", "stage": "lehr" }
       ]
     },
     {
@@ -156,7 +156,7 @@
       "provides": "Elastic, thermal and optical constants of float glass: E = 72 GPa, expansion 8.3 × 10⁻⁶ /°C, density, conductivity, heat capacity, and a rule for reading stress from optical retardation.",
       "reuse": "cite", "licence": "Disclaimer only; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr", "pr": 16 }],
+      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }],
       "caution": "The 2026 edition gives Poisson's ratio 0.22; the stage uses 0.23 from the 2013 edition."
     },
     {
@@ -167,7 +167,7 @@
       "provides": "Measurements of how stress decays in hot glass, the basis of annealing schedules.",
       "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/Home.astro", "find": "JOSA.4.000213", "stage": "lehr", "pr": 16 }]
+      "usedBy": [{ "file": "src/components/Home.astro", "find": "JOSA.4.000213", "stage": "lehr" }]
     },
     {
       "id": "zanotto-1998", "kind": "measurement", "short": "Zanotto 1998",
@@ -177,7 +177,7 @@
       "provides": "The shear modulus (about 30 GPa) and viscosity extrapolation that turn room-temperature glass into a relaxation time longer than the age of the universe.",
       "reuse": "cite", "licence": "Journal article (AIP); no reuse licence stated. PR #17 links an author-hosted PDF; the DOI is the record.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/viscosity.json", "find": "Zanotto", "stage": "glass", "pr": 17 }]
+      "usedBy": [{ "file": "src/data/viscosity.json", "find": "Zanotto", "stage": "glass" }]
     },
     {
       "id": "gulbiten-2017", "kind": "measurement", "short": "Gulbiten et al. 2017",
@@ -187,7 +187,7 @@
       "provides": "Measured room-temperature viscosity of a medieval Westminster Abbey glass (10²⁴–10²⁵ Pa·s) and flow of about 1 nm per billion years.",
       "reuse": "cite", "licence": "Journal article (Wiley); no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "jace.15092", "stage": "glass", "pr": 17 }]
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "jace.15092", "stage": "glass" }]
     },
     {
       "id": "schott-optical", "kind": "datasheet", "short": "SCHOTT optical glass",
@@ -198,8 +198,8 @@
       "reuse": "cite", "licence": "No terms of use on the downloads page. The repo takes the coefficients through the CC0 refractiveindex.info copy, and links SCHOTT for the datasheet itself.",
       "checked": "2026-10-19",
       "usedBy": [
-        { "file": "src/data/glasses.json", "find": "SCHOTT Zemax catalogue", "stage": "prism", "pr": 18 },
-        { "file": "src/scripts/raytrace.js", "find": "SCHOTT catalogue", "stage": "lightlab", "pr": 15 }
+        { "file": "src/data/glasses.json", "find": "SCHOTT Zemax catalogue", "stage": "prism" },
+        { "file": "src/scripts/raytrace.js", "find": "SCHOTT catalogue", "stage": "lightlab" }
       ]
     },
     {
@@ -211,8 +211,8 @@
       "reuse": "open", "licence": "CC0 1.0 (public domain dedication).",
       "checked": "2026-10-19",
       "usedBy": [
-        { "file": "src/data/glasses.json", "find": "refractiveindex.info", "stage": "prism", "pr": 18 },
-        { "file": "src/scripts/raytrace.js", "find": "refractiveindex.info", "stage": "lightlab", "pr": 15 }
+        { "file": "src/data/glasses.json", "find": "refractiveindex.info", "stage": "prism" },
+        { "file": "src/scripts/raytrace.js", "find": "refractiveindex.info", "stage": "lightlab" }
       ]
     },
     {
@@ -223,7 +223,7 @@
       "provides": "The standard Sellmeier fit for fused silica, 0.21 to 3.71 µm.",
       "reuse": "cite", "licence": "Journal article; coefficients quoted with citation.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/glasses.json", "find": "Malitson", "stage": "prism", "pr": 18 }]
+      "usedBy": [{ "file": "src/data/glasses.json", "find": "Malitson", "stage": "prism" }]
     },
     {
       "id": "rubin-1985", "kind": "measurement", "short": "Rubin 1985",
@@ -233,7 +233,7 @@
       "provides": "Refractive index and absorption of window glass from the ultraviolet to the infrared; the page's soda-lime index curve.",
       "reuse": "cite", "licence": "Journal article (Elsevier); coefficients quoted with citation.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/glasses.json", "find": "Rubin", "stage": "prism", "pr": 18 }]
+      "usedBy": [{ "file": "src/data/glasses.json", "find": "Rubin", "stage": "prism" }]
     },
     {
       "id": "eu-69-493", "kind": "standard", "short": "Directive 69/493/EEC",
@@ -243,7 +243,7 @@
       "provides": "Legal definitions of lead crystal (at least 24% PbO) and full lead crystal (at least 30%), with density and refractive-index limits.",
       "reuse": "cite", "licence": "EU legislation; quoted with citation (EUR-Lex reuse terms not re-read).",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "eli/dir/1969/493", "stage": "prism", "pr": 18 }]
+      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "eli/dir/1969/493", "stage": "prism" }]
     },
 
     {
