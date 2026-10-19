@@ -2,25 +2,32 @@
 // spectra in optics.json through spectra.js; nothing here is a hand-picked colour.
 import optics from '../data/optics.json';
 import {
-  GRID, toGrid, spectrumColor, colorantDensity, transmission, glow, glowStrength,
-  SPECTRAL, bandEdge, dichroicBand, encode, css,
+  GRID, colorantDensity, transmission, glow, glowStrength,
+  SPECTRAL, bandEdge, dichroicBand, encode, css, upsample,
 } from './spectra.js';
 import * as na from './flare.js';
+import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
 
-const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
 const ONES = GRID.map(() => 1);
 const $ = (id) => document.getElementById(id);
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const tColor = (T) => spectrumColor(T, DAY);
+// The lamp the whole page is lit by. Every instrument registers a re-render with onLamp.
+let lamp = LAMP.daylight;
+const relight = [];
+const onLamp = (fn) => relight.push(fn);
+const lampLight = () => { const m = Math.max(...lamp.spd); return lamp.spd.map((v) => v / m); };
+
+const tColor = (T) => underLamp(T, lamp);
 const mixT = (parts, thickness = 1) => transmission(parts.map(([id, c]) => [DENS[id], c]), thickness);
 const colorOf = (parts, thickness = 1) => tColor(mixT(parts, thickness));
 
-// A spectrum strip: light in (top band) and light out (bottom band, with its curve drawn on).
-function strip(canvas, top, bottom) {
+// A spectrum strip: light in (top band) and light out (bottom band), with curve drawn on the bottom.
+// Without bands given, the light in is the current lamp and the light out is that lamp through T.
+function strip(canvas, T, top = lampLight(), bottom = top.map((v, i) => v * T[i]), curve = T) {
   const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
   const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
@@ -36,7 +43,7 @@ function strip(canvas, top, bottom) {
   }
   ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.2 * dpr; ctx.beginPath();
   for (let i = 0; i < n; i++) {
-    const x = ((i + 0.5) / n) * w, y = h - 3 * dpr - bottom[i] * (h - half - gap - 6 * dpr);
+    const x = ((i + 0.5) / n) * w, y = h - 3 * dpr - curve[i] * (h - half - gap - 6 * dpr);
     i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
   }
   ctx.stroke();
@@ -64,12 +71,15 @@ function h(tag, props = {}, ...children) {
 }
 
 function chips(box, ids, label, onPick) {
-  for (const id of ids) {
-    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': colorOf([[id, 1]], 1.2).css } }), label(id));
+  const swatches = ids.map((id) => {
+    const i = h('i'), b = h('button', { className: 'chip' }, i, label(id));
     b.dataset.id = id;
     b.addEventListener('click', () => onPick(id));
     box.appendChild(b);
-  }
+    return [i, id];
+  });
+  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf([[id, 1]], 1.2).css); };
+  paint(); onLamp(paint);
   return (cur) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
 }
 
@@ -90,11 +100,16 @@ function lightTable() {
   const els = pieces.map((p) => {
     const g = h('div', { className: 'g' });
     const el = h('div', { className: 'piece' + (p.r === '50%' ? ' round' : '') }, g, h('span', { className: 'lab' }, p.lab));
-    g.style.setProperty('--c', colorOf(p.parts).css);
     if (p.clip) g.style.setProperty('--clip', p.clip);
     if (p.r) g.style.setProperty('--r', p.r);
     table.appendChild(el);
-    return { el, p };
+    return { el, g, p };
+  });
+  // The table is lit by the lamp too (see paint() below), and the screen multiplies each piece over
+  // it, so a piece is drawn as its colour divided by the table's: the product is the computed colour.
+  onLamp(() => {
+    const paper = tColor(ONES).rgb;
+    for (const { g, p } of els) g.style.setProperty('--c', css(colorOf(p.parts).rgb.map((v, i) => Math.min(1, v / Math.max(paper[i], 1e-3)))));
   });
   function layout() {
     const w = table.clientWidth, h = table.clientHeight, base = Math.min(w * 0.9, h * 1.25);
@@ -142,7 +157,7 @@ function batch() {
       ? 'Low-iron glass stays nearly colourless even edge on. It is used where the green would show: display cases, solar panels, aquariums.'
       : 'Face on, the light crosses a thin sheet and barely changes. Edge on, it crosses forty times as much glass, and the same iron reads as green.';
   };
-  s.addEventListener('input', render); render();
+  s.addEventListener('input', render); onLamp(render);
 }
 
 /* ---------- 02 the melt: redox ---------- */
@@ -156,7 +171,7 @@ function redox() {
       : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing violet and blue. A pale straw yellow.'
       : 'A mix of both ions. Each subtracts its own band, and the result is a muddy olive.';
   };
-  s.addEventListener('input', render); render();
+  s.addEventListener('input', render); onLamp(render);
 }
 
 /* ---------- 03 the colour rod: ions ---------- */
@@ -175,12 +190,12 @@ function ions() {
   function render() {
     const k = 2 ** (s.valueAsNumber / 100), T = mixT([[cur, 1]], k);
     draw(tColor(T).css, colorOf([[cur, 1]], k * 5).css);
-    strip($('strip3'), ONES, T);
+    strip($('strip3'), T);
     $('concOut').textContent = `×${k.toFixed(2)}`;
     $('ionRead').textContent = ROD_NOTES[cur];
     press(cur);
   }
-  s.addEventListener('input', render); addEventListener('resize', render); render();
+  s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
 /* ---------- 04 the glory hole: incandescence hides colour ---------- */
@@ -219,6 +234,7 @@ function heat() {
     press(cur);
   }
   lens.onChange = () => render(s.valueAsNumber);
+  onLamp(() => { body = colorOf([[cur, 1]], 1.4).rgb; lens.relight(); render(s.valueAsNumber); });
   s.addEventListener('input', () => { cancelAnimationFrame(raf); render(s.valueAsNumber); });
   render(HOT);
   // Play the cool-down once, when the scene first comes into view.
@@ -241,7 +257,7 @@ function heat() {
 
 /* ---------- 04 the glory hole: the glasses ---------- */
 // A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recoloured by
-// each lens's transmission: the room by the lens under daylight, the glowing parts by the lens
+// each lens's transmission: the room by the lens under the page's lamp, the glowing parts by the lens
 // against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
 // lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
 const LENS_NOTES = {
@@ -276,10 +292,18 @@ function glasses() {
   const linOf = (v) => [[3.2404542, -1.5371385, -0.4985314], [-0.969266, 1.8760108, 0.041556], [0.0556434, -0.2040259, 1.0572252]]
     .map((r) => Math.max(1e-6, r[0] * v[0] + r[1] * v[1] + r[2] * v[2]));
   const FLARE = na.lineSpectrum();
-  const lensData = Object.fromEntries(Object.entries(na.LENSES).map(([id, { label, T }]) => {
-    const paper = spectrumColor(T5(T), DAY); // white paper seen through the lens
-    return [id, { id, label, T, room: norm(paper.lin), roomCss: paper.css, flareT: na.xyz(FLARE, T)[1] / na.xyz(FLARE)[1] }];
-  }));
+  const lensData = Object.fromEntries(Object.entries(na.LENSES).map(([id, { label, T }]) =>
+    [id, { id, label, T, flareT: na.xyz(FLARE, T)[1] / na.xyz(FLARE)[1] }]));
+  // The room through each lens depends on the lamp: white paper seen through the lens, relative to
+  // bare paper, and the share of the lamp's light the lens lets through (on the 1 nm grid).
+  function relightLenses() {
+    const bare = tColor(ONES).lin, spd = fineSpd(lamp);
+    for (const d of Object.values(lensData)) {
+      const paper = tColor(T5(d.T));
+      Object.assign(d, { room: norm(paper.lin.map((v, i) => v / Math.max(1e-6, bare[i]))), roomCss: paper.css, lampT: na.luminousT(d.T, spd) });
+    }
+    for (const b of box.querySelectorAll('button')) b.firstChild.style.setProperty('--c', lensData[b.dataset.id].roomCss);
+  }
   const fireCache = new Map();
   function fire(lensId, tK) { // glow multiplier and luminous transmission for a black body at tK
     const key = `${lensId}:${Math.round(tK / 10)}`;
@@ -323,14 +347,15 @@ function glasses() {
 
   // Lens chips, meters and the spectrum strip.
   let cur = 'didymium', last = null;
-  const api = { onChange: null, render };
+  const api = { onChange: null, render, relight: () => { relightLenses(); last = null; } };
   const box = $('lensPick');
   for (const id of Object.keys(lensData)) {
-    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': lensData[id].roomCss } }), lensData[id].label);
+    const b = h('button', { className: 'chip' }, h('i'), lensData[id].label);
     b.dataset.id = id;
     b.addEventListener('click', () => { cur = id; api.onChange?.(); });
     box.appendChild(b);
   }
+  relightLenses();
   const meters = $('lensMeters');
   const meter = (label, v, color) => h('div', {}, h('dt', {}, label), h('dd', {}, v < 0.1 ? `${(v * 100).toFixed(1)}%` : `${Math.round(v * 100)}%`), h('i', { style: { '--v': `${Math.min(100, v * 100)}%`, '--c': color } }));
 
@@ -391,8 +416,10 @@ function glasses() {
         meter('sodium flare reaching you', d.flareT, css(naColor)),
         meter('light from the glass', f.lumT, '#ff8a2a'),
         meter('near infrared, 780–1400 nm', ir, '#c9786a'),
+        meter(`room light (${lamp.label})`, d.lampT, lampColor(lamp.spd)),
       );
-      $('lensRead').textContent = LENS_NOTES[cur];
+      $('lensRead').textContent = LENS_NOTES[cur] + (lamp.lines && cur !== 'none'
+        ? ' Under the sodium street lamp the trick runs backwards: the notch that removes the flare removes almost all the light there is, and the room goes nearly black.' : '');
       drawStrip(d.T, tK, flare);
     }
   }
@@ -420,7 +447,7 @@ function strike() {
   const renderGold = () => {
     const t = sG.valueAsNumber / 100, T = goldT(t);
     $('goldPane').style.setProperty('--c', tColor(T).css);
-    strip($('stripGold'), ONES, T);
+    strip($('stripGold'), T);
     const lab = t < 0.15 ? 'unstruck' : t < 0.4 ? 'pink' : t < 0.7 ? 'ruby' : 'over-struck';
     $('goldTag').textContent = lab; $('goldOut').textContent = lab;
     $('goldRead').textContent = t < 0.15 ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
@@ -430,14 +457,14 @@ function strike() {
   const renderGap = () => {
     const eV = sE.valueAsNumber / 100, edge = 1240 / eV, T = bandEdge(eV);
     $('gapPane').style.setProperty('--c', tColor(T).css);
-    strip($('stripGap'), ONES, T);
+    strip($('stripGap'), T);
     $('gapOut').textContent = `${eV.toFixed(2)} eV · edge ${Math.round(edge)} nm`;
     $('gapTag').textContent = eV > 2.3 ? 'yellow' : eV > 2.05 ? 'orange' : eV > 1.85 ? 'red' : 'deep red';
     $('gapRead').textContent = `Every photon above ${eV.toFixed(2)} eV (shorter than ${Math.round(edge)} nm) is absorbed; everything longer passes. A sharp edge gives these colors their clean, saturated look.`;
   };
   sG.addEventListener('input', renderGold); sE.addEventListener('input', renderGap);
   addEventListener('resize', () => { renderGold(); renderGap(); });
-  renderGold(); renderGap();
+  onLamp(() => { renderGold(); renderGap(); });
 }
 
 /* ---------- 06 the cold shop: dichroic ---------- */
@@ -456,10 +483,11 @@ function dichroic() {
     set('d-tr', { x1: bx, y1: y0 + 34, x2: ex, y2: ey, stroke: tc.css });
     set('d-tref', { x: Math.min(505, x0 + dx + 4), y: Math.max(16, y0 - dy - 10) });
     set('d-ttr', { x: Math.min(420, ex + 12), y: Math.min(312, ey) });
-    strip($('stripDi'), R.map((r) => Math.min(1, r / 0.9)), T);
+    const light = lampLight();
+    strip($('stripDi'), T, light.map((v, i) => v * Math.min(1, R[i] / 0.9)), light.map((v, i) => v * T[i]));
     $('angleOut').textContent = `${deg}° · band at ${Math.round(center)} nm`;
   };
-  s.addEventListener('input', render); addEventListener('resize', render); render();
+  s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
 /* ---------- 07 the rack: real supplier colours on hue shelves ---------- */
@@ -490,7 +518,7 @@ function rack() {
   }
   items.forEach((it, i) => {
     const d = document.createElement('div');
-    d.style.setProperty('--c', it.hex); d.dataset.i = i;
+    d.style.setProperty('--c', it.hex); d.dataset.i = i; it.el = d; it.c = it.hex;
     if (it.opacity === 'opaque') d.className = 'op';
     rows[it.shelf].lastChild.appendChild(d);
   });
@@ -511,7 +539,7 @@ function rack() {
     on?.classList.remove('on'); on = el; el.classList.add('on');
     const colorants = it.colorant.length ? ` · ${it.colorant.join(', ')}` : '';
     tag.replaceChildren(
-      h('i', { style: { '--c': it.hex } }),
+      h('i', { style: { '--c': it.c } }),
       h('div', {}, h('strong', {}, it.name), h('span', {}, `${it.supplier} · ${it.code} · ${it.opacity}${colorants} · ${MECH_NOTE[it.mechanism] ?? it.mechanism}`)),
     );
   };
@@ -564,10 +592,64 @@ function rack() {
     });
     box.appendChild(b);
   }
+
+  // Relighting: the swatches are photos, not spectra, so each gets a smooth spectrum that reproduces
+  // its daylight colour (spectra.js upsample), fitted the first time the lamp changes.
+  let fitted = false;
+  onLamp(() => {
+    if (lamp === LAMP.daylight && !fitted) return;
+    for (const it of items) {
+      if (!fitted) it.T = upsample([1, 3, 5].map((i) => parseInt(it.hex.slice(i, i + 2), 16) / 255), LAMP.daylight.spd);
+      it.c = lamp === LAMP.daylight ? it.hex : tColor(it.T).css;
+      it.el.style.setProperty('--c', it.c);
+    }
+    fitted = true;
+    if (on) show(on);
+  });
+}
+
+/* ---------- the lamp switch: one light for the whole page ---------- */
+// The page's paper, table and rules are lit by the lamp too: each base colour is multiplied by the
+// colour white paper takes on under it.
+const BASE = { '--paper': '#f3f4f1', '--paper-2': '#e9eae5', '--rule': '#d6d8d2', '--panel': '#fafaf8' };
+function lampSwitch() {
+  const bar = $('lamps'), spark = $('lampSpark'), root = document.documentElement;
+  const hex = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16) / 255);
+  const buttons = LAMPS.map((l) => {
+    const b = h('button', { className: 'lamp', 'aria-pressed': String(l === lamp) }, h('i', { style: { '--c': lampColor(l.spd) } }), l.label);
+    b.addEventListener('click', () => set(l));
+    bar.appendChild(b);
+    return [b, l];
+  });
+  function sparkline() {
+    const r = spark.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), hh = Math.max(1, Math.round(r.height * dpr));
+    if (spark.width !== w || spark.height !== hh) { spark.width = w; spark.height = hh; }
+    const ctx = spark.getContext('2d'), L = lampLight(), n = GRID.length;
+    ctx.clearRect(0, 0, w, hh);
+    for (let i = 0; i < n; i++) {
+      const x0 = Math.floor((i / n) * w), x1 = Math.ceil(((i + 1) / n) * w), y = Math.max(1 * dpr, L[i] * hh);
+      ctx.fillStyle = css(SPECTRAL[i].map((v) => encode(Math.min(1, v * 1.6))));
+      ctx.fillRect(x0, hh - y, x1 - x0, y);
+    }
+  }
+  function set(l) {
+    lamp = l;
+    const tint = tColor(ONES).rgb;
+    for (const [k, v] of Object.entries(BASE)) root.style.setProperty(k, css(hex(v).map((c, i) => c * tint[i])));
+    root.style.setProperty('--tint', css(tint));
+    for (const [b, x] of buttons) b.setAttribute('aria-pressed', String(x === l));
+    $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
+    $('lampNote').textContent = l.note;
+    sparkline();
+    for (const fn of relight) fn();
+  }
+  addEventListener('resize', sparkline);
+  set(lamp);
 }
 
 /* ---------- 07 the rack, continued: the bench works a rod backwards to a melt ---------- */
-const LAMP = 'a tungsten bulb';
+const BENCH_LAMP = 'a tungsten bulb';
 function fitBench() {
   const fitter = makeFitter(optics, { lamp: 'incandescent' });
   const lab = (id) => COLORANT[id]?.label ?? id;
@@ -585,7 +667,7 @@ function fitBench() {
     return `${$('fitLab').getAttribute('href').split('?')[0]}?melt=${melt}&t=${t}`;
   };
   const row = (r, name) => h('div', {}, h('span', {}, name),
-    h('i', { style: { '--c': r.hex }, title: 'daylight' }), h('i', { style: { '--c': r.lamp.hex }, title: LAMP }));
+    h('i', { style: { '--c': r.hex }, title: 'daylight' }), h('i', { style: { '--c': r.lamp.hex }, title: BENCH_LAMP }));
   let job = 0;
 
   return function show(it) {
@@ -613,17 +695,17 @@ function fitBench() {
         h('em', { style: { '--w': `${Math.max(4, (100 * Math.log(c / 0.01)) / top)}%` } }),
         h('output', {}, `×${c < 0.1 ? c.toFixed(3) : c.toFixed(2)}`),
       )));
-      strip($('fitStrip'), ONES, mixT(b.parts));
+      strip($('fitStrip'), mixT(b.parts));
 
       if (r.alternatives.length) {
         const alt = r.alternatives[0];
-        $('fitSplit').textContent = `Here is the simplest melt beside the other matching melt that disagrees with it most under ${LAMP}. In daylight they are ΔE ${alt.gap.toFixed(1)} apart. Under the bulb they are ${alt.split.toFixed(1)} apart${alt.split > 3 ? ', which a glassblower holding both rods would see' : ', still close: this palette has few ways to make this color'}.`;
+        $('fitSplit').textContent = `Here is the simplest melt beside the other matching melt that disagrees with it most under ${BENCH_LAMP}. In daylight they are ΔE ${alt.gap.toFixed(1)} apart. Under the bulb they are ${alt.split.toFixed(1)} apart${alt.split > 3 ? ', which a glassblower holding both rods would see' : ', still close: this palette has few ways to make this color'}.`;
         $('fitAlts').replaceChildren(
           h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')),
           ...[b, ...r.alternatives].map((x, i) => row(x, i ? names(x.parts) : `${names(x.parts)} (simplest)`)),
         );
       } else {
-        $('fitSplit').textContent = `No other melt matches, so within this palette the recipe is fairly well pinned down. Under ${LAMP} it looks like this:`;
+        $('fitSplit').textContent = `No other melt matches, so within this palette the recipe is fairly well pinned down. Under ${BENCH_LAMP} it looks like this:`;
         $('fitAlts').replaceChildren(h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')), row(b, names(b.parts)));
       }
 
@@ -648,5 +730,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack();
+  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack(); lampSwitch();
 }

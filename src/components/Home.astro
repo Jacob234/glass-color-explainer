@@ -35,9 +35,10 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
   </div>
   <div class="table" id="table" aria-label="A light table with pieces of colored glass you can drag"></div>
   <div class="table-note">
-    <span>Each piece's color is computed from the absorption curve of its colorant, through the CIE 1931 observer, under daylight.</span>
+    <span>Each piece's color is computed from the absorption curve of its colorant, through the CIE 1931 observer, under <b id="lampName">daylight</b>. Change the lamp at the foot of the screen and every color on the page is computed again.</span>
     <span>Where pieces overlap the screen multiplies their colors, a fair stand-in for stacking two filters.</span>
   </div>
+  <p class="lamp-note" id="lampNote" aria-live="polite"></p>
 </section>
 
 <section class="wrap stage" id="batch">
@@ -291,7 +292,7 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
         </div>
       </aside>
     </div>
-    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements. The bench fits the photo, not the glass, and its twelve absorption curves are illustrative rather than measured, so its recipes are candidates, never the supplier's formula.</p>
+    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements. The bench fits the photo, not the glass, and its twelve absorption curves are illustrative rather than measured, so its recipes are candidates, never the supplier's formula. Under another lamp each swatch is relit through the smoothest spectrum that matches its daylight color (Jakob and Hanika's sigmoid fit), which is an estimate: two glasses that match in daylight can part ways under a sodium lamp or a fluorescent tube, and a photo cannot tell you which will.</p>
   </div>
 </section>
 
@@ -309,6 +310,12 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
 </section>
 
 {/* escape "<" so a product name can never close the script element */}
+<div class="lampbar" role="group" aria-label="lamp: the light the whole page is lit by">
+  <span class="mono">lamp</span>
+  <canvas id="lampSpark" aria-hidden="true"></canvas>
+  <div class="lamps" id="lamps"></div>
+</div>
+
 <script type="application/json" id="rack-data" set:html={JSON.stringify(rack).replace(/</g, '\\u003c')} />
 <script>
   import { initHome } from '../scripts/home.js';
