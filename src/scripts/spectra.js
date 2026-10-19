@@ -86,12 +86,25 @@ export function transmission(parts, thickness = 1) {
 const C2 = 1.4388e7; // second radiation constant, nm·K
 export const planck = (T) => GRID.map((w) => w ** -5 / (Math.exp(C2 / (w * T)) - 1));
 
-// The colour and relative luminance of a glowing body at T kelvin. The colour is normalised so
-// its brightest channel is 1; luminance is relative to a body at Tref (1150 °C furnace glass).
-export function glow(T, Tref = 1423) {
-  const xyz = integrate(planck(T)), lin = mul(XYZ_TO_SRGB, xyz), peak = Math.max(...lin);
+// Kirchhoff's law (1860): in thermal equilibrium a body emits, at each wavelength, the fraction of a
+// black body's light that it would absorb there. For a slab of glass with internal transmission T,
+// spectral emissivity ε(λ) = 1 − T(λ), surface reflection ignored (it would scale both by about 0.92).
+export const emissivity = (T) => T.map((t) => 1 - t);
+
+// The colour and relative luminance of a glowing body at T kelvin with spectral emissivity eps
+// (on GRID; omitted, a black body). The colour is normalised so its brightest channel is 1;
+// luminance is relative to a black body at Tref (1150 °C furnace glass).
+export function glow(T, Tref = 1423, eps = null) {
+  const B = planck(T), L = eps ? B.map((b, i) => b * eps[i]) : B;
+  const xyz = integrate(L), lin = mul(XYZ_TO_SRGB, xyz), peak = Math.max(...lin, 1e-30);
   return { rgb: lin.map((v) => encode(Math.max(0, v) / peak)), luminance: xyz[1] / integrate(planck(Tref))[1] };
 }
+
+// Luminous emissivity: how bright a body glows at T relative to a black body at the same T.
+export const luminousEmissivity = (eps, T) => {
+  const B = planck(T);
+  return integrate(B.map((b, i) => b * eps[i]))[1] / integrate(B)[1];
+};
 
 // Perceived glow strength 0..1 from relative luminance, on a log scale (the eye is roughly
 // logarithmic, and luminance falls about five orders of magnitude from 1150 °C to the Draper point).
