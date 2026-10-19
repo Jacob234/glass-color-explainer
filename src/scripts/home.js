@@ -764,12 +764,15 @@ function lampSwitch() {
 /* ---------- ← the record: the history rail ---------- */
 function historyRail() {
   const box = $('history');
-  // a pin's colour comes from the same engine as the stage it links to
-  const pinColor = (c) => (c.dichroic != null ? tColor(dichroicBand(c.dichroic).R.map((r) => 1 - r)) : colorOf(c.parts, c.thickness ?? 1)).css;
-  for (const p of history.pins) {
-    if (!p.color) continue;
-    for (const el of box.querySelectorAll(`[data-pin="${p.id}"]`)) el.style.setProperty('--c', pinColor(p.color));
-  }
+  // a pin's colour comes from the same engine as the stage it links to, under the page's lamp
+  const pinColor = (c) => (c.uranium ? uraniumOf(c.thickness ?? 1)
+    : c.dichroic != null ? tColor(dichroicBand(c.dichroic).R.map((r) => 1 - r)) : colorOf(c.parts, c.thickness ?? 1)).css;
+  onLamp(() => {
+    for (const p of history.pins) {
+      if (!p.color) continue;
+      for (const el of box.querySelectorAll(`[data-pin="${p.id}"]`)) el.style.setProperty('--c', pinColor(p.color));
+    }
+  });
   const buttons = [...box.querySelectorAll('.pin button')], cards = [...box.querySelectorAll('.hist-card')];
   const pick = (id) => {
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.id === id));

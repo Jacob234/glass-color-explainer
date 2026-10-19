@@ -1,5 +1,5 @@
 {
-  "note": "The history rail on the home page. Each pin is coloured by the same engine as the stages: parts are [colorantId, concentration] pairs through Beer–Lambert at the given thickness, or a dichroic band at an angle. A pin with no colour is one the engine cannot model yet. stage is the id of the home-page section that explains it.",
+  "note": "The history rail on the home page. Each pin is coloured by the same engine as the stages: parts are [colorantId, concentration] pairs through Beer–Lambert at the given thickness, or a dichroic band at an angle, or uranium glass through the showroom's absorption-and-emission model. A pin with no colour is one the engine cannot model yet. stage is the id of the home-page section that explains it.",
   "pins": [
     {
       "id": "cobalt", "short": "Cobalt blue", "year": -1400, "when": "c. 1400 BCE", "title": "Cobalt blue in Egypt",
@@ -41,9 +41,9 @@
     },
     {
       "id": "uranium", "short": "Uranium glass", "year": 1830, "when": "1830s", "title": "Uranium glass",
-      "text": "In Bohemia, Franz Xaver Riedel named his uranium yellow and yellow-green glasses annagelb and annagrün after his daughter. In the US, production stopped in 1942 when uranium went to the Manhattan Project. Under ultraviolet light it glows green: it gives light out instead of taking it away, so this absorption-only engine cannot colour its pin.",
-      "color": null,
-      "stage": null,
+      "text": "In Bohemia, Franz Xaver Riedel named his uranium yellow and yellow-green glasses annagelb and annagrün after his daughter. In the US, production stopped in 1942 when uranium went to the Manhattan Project. Under ultraviolet light it glows green: it gives light out instead of taking it away. Its pin is drawn with the showroom's fluorescence model, so switch on the black light to see it glow.",
+      "color": { "uranium": true },
+      "stage": "showroom",
       "sources": [["Wikipedia: Uranium glass", "https://en.wikipedia.org/wiki/Uranium_glass"]]
     },
     {
