@@ -1,0 +1,89 @@
+---
+// Stage 00: what glass is, before any colour. The network, the glass transition and the
+// viscosity curve the studio works by. Instruments in scripts/stage-glass.js, physics in
+// scripts/glass.js, data in data/viscosity.json.
+import vis from '../data/viscosity.json';
+import '../styles/stage-glass.css';
+const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
+---
+<section class="wrap stage" id="glass">
+  <div class="stage-rail"><div class="stage-num">00</div><span class="mono">the material</span></div>
+  <div class="stage-body">
+    <h2>Glass is a liquid that <i>stopped</i></h2>
+    <div class="prose">
+      <p>Before any colour, the stuff itself. Cool most liquids and at one temperature their atoms drop into a repeating crystal. Cool a silicate melt and it only gets stiffer, smoothly, until it is too stiff to rearrange at all. What is left keeps the liquid's disorder and gains a solid's rigidity. Glass has no melting point, and everything a glassblower does depends on that slow stiffening.</p>
+    </div>
+
+    <div class="mat" id="net">
+      <h3>A network with <i>no</i> pattern</h3>
+      <div class="prose">
+        <p>Silica is the network former. Each silicon sits inside four oxygens, a tetrahedron, and each oxygen is shared by two tetrahedra: a bridge. In quartz the tetrahedra join in a repeating pattern. In silica glass they join just as firmly, corner to corner, but the rings they close have five, six or seven members in no order. W. H. Zachariasen proposed this picture in 1932 from the rules an oxide must obey to form a glass, decades before anyone could image it.</p>
+        <p>Pure silica glass is too stiff for any studio furnace. Soda is the flux. Each Na₂O brings one more oxygen, which cuts a bridge into two non-bridging oxygens with a sodium ion beside each. Fewer bridges make a looser network that flows at lower temperature. A soda–silica glass also dissolves in water; it is sold as water glass. Lime is the stabilizer. A Ca²⁺ ion holds two non-bridging oxygens at once and moves far less readily than sodium, so the glass stops leaching.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="netbox" id="netSvg" viewBox="0 0 640 400" role="img" aria-label="a two-dimensional sketch of a silicate network: triangles of oxygen around silicon, sharing corners"></svg>
+          <div class="netkey" aria-hidden="true"><span><i class="k-si"></i>Si</span><span><i class="k-bo"></i>bridging O</span><span><i class="k-nbo"></i>non-bridging O</span><span><i class="k-na"></i>Na⁺</span><span><i class="k-ca"></i>Ca²⁺</span></div></div>
+        <div class="controls">
+          <div class="chips" id="netOrder" role="group" aria-label="crystal or glass"></div>
+          <div class="ctl"><label class="mono" for="mods">soda and lime <output id="modsOut"></output></label>
+            <input id="mods" type="range" min="0" max="40" step="0.5" value="0" /><div class="ends"><span>pure silica</span><span>heavily fluxed</span></div></div>
+          <button type="button" class="chip chip-plain" id="modsStd">set to a standard window glass</button>
+          <dl class="meters" id="netMeters"></dl>
+          <p class="readout" id="netRead"></p>
+        </div>
+      </div>
+      <p class="aside"><b>Model.</b> Drawn in two dimensions, as Zachariasen drew it: triangles stand in for tetrahedra, with three corners instead of four. The glass is made from the crystal by Stone–Wales bond switches and spring relaxation, after Wooten, Winer and Weaire's method for amorphous silicon (1985); it is a sketch of that method, not its energy-minimised result. The drawing cuts the same fraction of corners that the composition does in three dimensions, NBO/T = 2x / (1 − x) for a mole fraction x of modifier oxide, with potash counted alongside soda and alumina ignored. Sodium and calcium ions are placed in the gap they open, not at modelled sites. The standard glass is NBS glass No. 710: 70.5 SiO₂, 8.7 Na₂O, 7.7 K₂O, 11.6 CaO by weight.</p>
+    </div>
+
+    <div class="mat" id="tg">
+      <h3>Falling out of <i>equilibrium</i></h3>
+      <div class="prose">
+        <p>The atoms of a liquid are always rearranging, and the time that takes, the relaxation time, grows with viscosity. Cooling gives them less time at each temperature. At some point the melt can no longer keep up and its structure freezes in as it was. That point is the glass transition, T<sub>g</sub>, and it belongs to the cooling as much as to the glass: cool faster and the structure freezes in hotter, looser and larger. A quenched glass and a slowly cooled one of the same batch differ in density and refractive index.</p>
+      </div>
+      <div class="bench bench-top wide">
+        <div class="lightbox"><svg class="plot" id="vtSvg" viewBox="0 0 640 360" role="img" aria-label="volume against temperature: the liquid line, the crystal, and the glass leaving the liquid line at the glass transition"></svg></div>
+        <div class="controls">
+          <div>
+            <div class="ctl"><label class="mono" for="rate">cooling rate <output id="rateOut"></output></label>
+              <input id="rate" type="range" min="-4" max="6" step="0.05" value="-0.78" /><div class="ends"><span>very slow</span><span>quenched</span></div></div>
+            <dl class="meters" id="tgMeters"></dl>
+          </div>
+          <div><p class="readout" id="tgRead"></p></div>
+        </div>
+      </div>
+      <p class="aside"><b>Model.</b> Relaxation time τ = η / G∞ (Maxwell), with G∞ ≈ 30 GPa as in <a href={vis.maxwell.source.url} rel="noopener">Zanotto (1998)</a> and η from the curve below. The melt falls out of equilibrium where q · τ · |d ln τ / dT| = 1: where the time to cool through one e-fold change in τ has grown as long as τ itself. At 10 K/min that gives T<sub>g</sub> near 552 °C, close to the measured annealing point of 546 °C, as the usual rule of thumb (T<sub>g</sub> near η ≈ 10¹² Pa·s) expects. Below 560 °C the viscosity fit is extrapolated, so the slow end of the slider is the least certain. Volumes are schematic: the liquid is drawn expanding three times as fast as the glass, and the transition is smoothed over a few kelvin. Crystallization, which a very slow cool through the liquidus range invites, is not modelled.</p>
+    </div>
+
+    <div class="mat" id="visc">
+      <h3>One curve runs the <i>studio</i></h3>
+      <div class="prose">
+        <p>Viscosity is the number the studio works by. Between the melting point and the strain point it rises by more than twelve orders of magnitude, and every step in making a piece sits somewhere on this one curve. Glassmakers name its points: melting, where the melt is runny enough for bubbles to rise out; working, stiff enough to hold a shape on the pipe; softening, where a hanging fibre stretches under its own weight; annealing, where stress relaxes in minutes; and strain, where it takes hours and below which nothing moves at all on a human timescale. For scale, water is 10⁻³ Pa·s.</p>
+      </div>
+      <div class="bench bench-top wide">
+        <div class="lightbox"><svg class="plot" id="viscSvg" viewBox="0 0 640 380" role="img" aria-label="log viscosity against temperature for a standard soda-lime glass, with the melting, working, softening, annealing and strain points and the studio's furnace, glory hole and lehr"></svg></div>
+        <div class="controls">
+          <div>
+            <div class="temp"><span id="vTempOut">1100</span><small> °C</small></div>
+            <div class="ctl"><input id="vTemp" type="range" min="20" max="1500" value="1100" aria-label="temperature" />
+              <div class="ends"><span>bench</span><span>melting tank</span></div></div>
+            <dl class="meters" id="viscMeters"></dl>
+          </div>
+          <div>
+            <svg class="gather" id="gatherSvg" viewBox="0 0 320 230" aria-hidden="true"></svg>
+            <p class="readout" id="viscRead"></p>
+          </div>
+        </div>
+      </div>
+      <p class="aside"><b>Measured, then fitted.</b> The curve is the Fulcher fit to NBS standard glass No. 710, log₁₀ η [poise] = {vis.fulcher.A} + {vis.fulcher.B} / (T − {vis.fulcher.T0}) with T in °C, fitted to measurements from {vis.fulcher.fitMin} to {vis.fulcher.fitMax} °C by <a href={vis.source.url} rel="noopener">Napolitano and Hawkins (1964)</a>; it is drawn solid where it was fitted and dashed where it is extrapolated. Rings are the average of the laboratories' measured softening ({pt.softening.measured} °C), annealing ({pt.annealing.measured} °C) and strain ({pt.strain.measured} °C) points. The fit runs 25 °C hot at the strain point, the usual sign that a Fulcher curve rises too steeply below its range. The furnace and glory-hole marks are typical studio temperatures, not measurements, and studio colour glasses each have their own curve. The sag time, η / (ρgR) for a 10 cm gather of density 2.5 g/cm³, is an order of magnitude, not a prediction. The gather is drawn in its cold colour, clear glass with its trace of iron; how it glows is stage 04's subject.</p>
+    </div>
+
+    <div class="mat" id="windows">
+      <h3>Do old windows <i>flow</i>?</h3>
+      <div class="prose">
+        <p>A popular story says medieval windows are thicker at the bottom because glass is a very slow liquid that has run downhill. The curve above cannot even be asked: its fitted form goes to infinity at {Math.round(vis.fulcher.T0)} °C, far above room temperature. Zanotto (1998) instead extrapolated the gentler curve of germania glass, which stiffens more slowly on cooling than window glass and so gives a lower bound, and found a room-temperature relaxation time near 10³² years, against a universe about 10¹⁰ years old. By his estimate a medieval glass would have to be held near 414 °C to flow noticeably in 800 years. Gulbiten and Mauro (2017), working from the composition of 13th-century glass at Westminster Abbey, found it could flow about a nanometre in a billion years.</p>
+        <p>The thick bottoms are craft. Window glass was blown into cylinders, split and flattened by hand, so panes came out uneven, and glaziers often set the heavy edge down.</p>
+      </div>
+      <p class="more"><a href={vis.maxwell.source.url} rel="noopener">Zanotto, Do cathedral glasses flow? ↗</a> <a href="https://doi.org/10.1111/jace.15092" rel="noopener">Gulbiten and Mauro, Viscous flow of medieval cathedral glass ↗</a> <a href="https://www.lehigh.edu/imi/teched/AtModel/Lecture_2_reading_Zachariasen.pdf" rel="noopener">Zachariasen, The atomic arrangement in glass (1932) ↗</a> <a href="https://doi.org/10.1103/PhysRevLett.54.1392" rel="noopener">Wooten, Winer and Weaire (1985) ↗</a></p>
+    </div>
+  </div>
+</section>

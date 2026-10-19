@@ -1,0 +1,56 @@
+/* Stage 00, what glass is: diagrams in ink on the light box; the gather is the only colour. */
+.mat { margin-top: 3rem; border-top: 1px solid var(--rule); padding-top: 1.5rem; }
+.mat h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3.5vw, 2.3rem); margin: 0 0 0.8rem; line-height: 1.1; }
+.mat .bench { margin-bottom: 0.4rem; }
+.mat .meters dt { color: var(--ink-2); }
+.mat .meters i { background: var(--paper-2); }
+.mat .meters i::after { background: var(--ink); }
+.mat .lightbox svg { display: block; width: 100%; height: auto; }
+.netbox { aspect-ratio: 640 / 400; }
+.net-tri polygon, .net-tri polyline { fill: rgba(20, 20, 20, .035); stroke: var(--ink); stroke-width: 1.1; stroke-linejoin: round; }
+.n-si { fill: var(--ink); }
+.n-bo { fill: #fff; stroke: var(--ink); stroke-width: 1.1; }
+.n-nbo { fill: var(--ink); stroke: var(--ink); stroke-width: 1.1; }
+.n-na { fill: none; stroke: var(--ink-2); stroke-width: 1.2; }
+.n-ca { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+.netkey { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin-top: 0.6rem; font-family: var(--mono); font-size: 0.66rem; color: var(--ink-2); }
+.netkey span { display: inline-flex; align-items: center; gap: 0.35rem; }
+.netkey i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.netkey .k-si { width: 5px; height: 5px; background: var(--ink); }
+.netkey .k-bo { background: #fff; border: 1.1px solid var(--ink); }
+.netkey .k-nbo { background: var(--ink); }
+.netkey .k-na { border: 1.2px solid var(--ink-2); }
+.netkey .k-ca { width: 13px; height: 13px; border: 2.2px solid var(--ink); }
+.plot .axis line { stroke: var(--ink); stroke-width: 1; }
+.plot text, .gather text { font-family: var(--mono); fill: var(--ink-2); }
+.plot .ax-t { font-size: 11px; }
+.plot .ax-l, .plot .lab, .gather .lab { font-size: 11px; letter-spacing: .04em; }
+.plot .lab.faint { fill: var(--ink-3); }
+.plot .studio { fill: var(--ink); text-transform: uppercase; letter-spacing: .08em; font-size: 10px; }
+.plot .ln { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+.plot .ln.bold { stroke-width: 2.6; }
+.plot .ln.thin { stroke-width: 1; }
+.plot .ln.faint { stroke: var(--ink-3); stroke-width: 1; }
+.plot .ln.ghost { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 1 3; }
+.plot .ln.dash { stroke-dasharray: 4 4; }
+.plot .dot { fill: var(--ink); }
+.plot .ring { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+.plot .mark { fill: var(--paper); stroke: var(--ink); stroke-width: 2.2; }
+#viscSvg { cursor: crosshair; }
+.mat .temp { color: var(--ink); }
+.mat .temp small { color: var(--ink-2); }
+.gather { display: block; width: 100%; max-width: 20rem; height: auto; overflow: visible; }
+.gather .pipe { fill: var(--ink); }
+.gather .glob { stroke: rgba(20, 20, 20, .35); stroke-width: 1; }
+#modsStd { justify-self: start; }
+.mat .bench.wide { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+.mat .bench.wide > .controls { grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.4rem 2.5rem; align-items: start; }
+.mat .bench.wide > .controls > div { display: grid; gap: 1rem; align-content: start; }
+.plot .ax-t { font-size: 12px; }
+.plot .ax-l, .plot .lab { font-size: 12px; }
+@media (max-width: 820px) {
+  .plot .ax-t, .plot .ax-l, .plot .lab { font-size: 20px; }
+  .plot .studio { font-size: 16px; }
+  .gather { max-width: 14rem; }
+  .netbox .n-si { r: 2.6px; }
+}
