@@ -1,0 +1,87 @@
+---
+// The cold shop, cut: refraction and dispersion in clear glass. The instruments live in
+// scripts/prism.js; the physics in scripts/dispersion.js; the glasses in data/glasses.json.
+import data from '../data/glasses.json';
+import '../styles/dispersion.css';
+const sources = data.glasses.map((g) => g.source);
+---
+<section class="wrap stage disp" id="prism">
+  <div class="stage-rail"><div class="stage-num">07′</div><span class="mono">the cold shop, cut</span></div>
+  <div class="stage-body">
+    <h2>Clear glass holds <i>every</i> color</h2>
+    <div class="prose">
+      <p>The cold shop grinds facets onto the piece, and a facet bends light. Glass slows light down, by a factor called its refractive index, n, and a ray that meets a surface at a slant turns as it crosses. The turn depends on n, and n is not one number: it is larger for violet than for red. So every wavelength leaves a prism at its own angle, and white light fans out into the colors it was made of.</p>
+      <p>Nothing here is taken away. The glass is as clear as it gets, and the color is all sorting. That is the page's rule broken from the other side: dichroic glass sorts light by interference, a prism sorts it by bending. Drag the prism to turn it.</p>
+    </div>
+    <div class="bench bench-top">
+      <div class="lightbox">
+        <svg class="scene" id="prismScene" viewBox="-60 180 960 420" role="img" aria-label="a beam of white light through a glass prism, fanned onto a card"></svg>
+      </div>
+      <div class="controls">
+        <div class="chips" id="glassPick" role="group" aria-label="glass"></div>
+        <div class="ctl"><label class="mono" for="turn">prism turned <output id="turnOut"></output></label>
+          <input id="turn" type="range" min="-25" max="26" step="0.5" value="0" /><div class="ends"><span>light meets it face on</span><span>glancing</span></div></div>
+        <div class="ctl"><label class="mono" for="card">card distance <output id="cardOut"></output></label>
+          <input id="card" type="range" min="0" max="100" value="55" /><div class="ends"><span>close</span><span>across the room</span></div></div>
+        <div>
+          <canvas class="strip card-strip" id="cardStrip" aria-label="the light landing on the card, computed from every wavelength that reaches each point"></canvas>
+          <div class="strip-key"><span id="cardKeyL"></span><span>on the card, room dark</span><span id="cardKeyR"></span></div>
+        </div>
+        <p class="readout" id="prismRead" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>Index climbs toward the <i>ultraviolet</i></h3>
+      <div class="prose">
+        <p>Why should violet bend more? Electrons in the glass are bound to their atoms like weights on springs, and light drives them. Each kind of oscillator has a resonance, a frequency where it absorbs, and for glass the strongest lie in the ultraviolet, out of sight. Below a resonance the driven electrons slow the light, and the nearer the light comes to the resonance, the more it is slowed. Violet is nearest, so n climbs toward the blue end of every curve below.</p>
+        <p>So the color of clear glass also comes from absorption, only from absorption we cannot see. A glass whose ultraviolet absorption sits closer to the visible has a steeper curve and a stronger fan.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="scene" id="nChart" viewBox="0 0 640 340" role="img" aria-label="refractive index against wavelength for six glasses"></svg></div>
+        <div class="controls">
+          <dl class="meters" id="glassMeters"></dl>
+          <p class="readout" id="glassRead"></p>
+        </div>
+      </div>
+      <p class="aside"><b>Abbe number.</b> Ernst Abbe's figure V<sub>d</sub> = (n<sub>d</sub> − 1) / (n<sub>F</sub> − n<sub>C</sub>) sets how much a glass bends light against how much it spreads it, using the helium d line (587.6 nm) and the hydrogen F and C lines (486.1 and 656.3 nm). Above about 50 a glass is called a crown, below it a flint. The values here are computed from each glass's dispersion formula and agree with the datasheets.</p>
+    </div>
+
+    <div class="sub">
+      <h3>Why lead glass has <i>fire</i></h3>
+      <div class="prose">
+        <p>Lead does two things to glass. The lead ion is large, with two loosely held outer electrons that light can push around easily, so it raises the index: more bending, more light reflected back from each facet, more sparkle. Those same electrons bring the ultraviolet absorption closer to the visible, so it also steepens the curve: more spread. A cut lead-crystal glass throws small spectra across the table, which is what cutters call fire. Pick F2 or SF11 above and watch the fan widen.</p>
+        <p>Lead is not the only way there. Schott's N-SF11 replaces the lead in SF11 with titanium, another ion with absorption close to the visible, and lands on the same index and nearly the same Abbe number. The two curves above lie almost on top of each other.</p>
+      </div>
+      <p class="aside"><b>History.</b> George Ravenscroft took a seven-year patent in 1674 for a clear "flint" glass and soon added lead to cure its crizzling, which gave English glass its weight, ring and brilliance (<a href="https://www.britannica.com/print/article/492277" rel="noopener">Britannica</a>). The name flint glass has stuck to lead glass ever since. Today EU law (<a href="https://eur-lex.europa.eu/eli/dir/1969/493" rel="noopener">Directive 69/493/EEC</a>) lets glass be sold as lead crystal from 24% lead oxide and as full lead crystal from 30%, with a refractive index n<sub>D</sub> of at least 1.545.</p>
+    </div>
+
+    <div class="sub">
+      <h3>Crown and flint, <i>cancelled</i></h3>
+      <div class="prose">
+        <p>A lens is a prism bent round, so a plain glass lens brings violet to a focus nearer than red. Look at a black line through it and the edges fringe with color, a defect called chromatic aberration. Isaac Newton thought it could not be cured, because he supposed every glass spread light in proportion to how much it bent it. It can, because that proportion differs from glass to glass. A strong converging lens of crown, which spreads little, is cemented to a weaker diverging lens of flint, which spreads a lot. The flint undoes the crown's spread while keeping most of its bending.</p>
+      </div>
+      <div class="lightbox lens-box">
+        <svg class="scene" id="lensScene" viewBox="0 0 900 260" role="img" aria-label="rays of several colors focused by a lens; the focus is stretched along the axis so the colors' separate foci show"></svg>
+      </div>
+      <div class="pair">
+        <div>
+          <h3 class="mono-h">N-BK7 crown alone</h3>
+          <canvas class="line-img" id="imgSinglet" aria-label="a black line seen through the plain crown lens"></canvas>
+          <p id="readSinglet"></p>
+        </div>
+        <div>
+          <h3 class="mono-h" id="achroTitle">crown + flint</h3>
+          <canvas class="line-img" id="imgAchro" aria-label="the same black line through the crown and flint achromat"></canvas>
+          <p id="readAchro"></p>
+        </div>
+      </div>
+      <div class="ctl focus-ctl"><label class="mono" for="focus">card behind the lens <output id="focusOut"></output></label>
+        <input id="focus" type="range" min="-100" max="100" value="-25" /><div class="ends"><span>nearer</span><span>farther</span></div></div>
+      <p class="aside"><b>History.</b> Chester Moor Hall is said to have made achromatic lenses around 1733 without publishing them; John Dollond described his experiments with crown and flint in the <i>Philosophical Transactions</i> in 1758 (<a href="https://vision.mpiwg-berlin.mpg.de/elib/Miscellaneous/Dollond_Glasses_1758" rel="noopener">vol. 50, pp. 733–743</a>) and patented the achromat. Newton's view is in his <i>Opticks</i> (1704). The Hall date is from memory and unverified.</p>
+    </div>
+
+    <p class="aside"><b>Models.</b> The index curves are the published dispersion formulas, not illustrations: Sellmeier fits from Schott's catalogue for the optical glasses and from Malitson for fused silica, and Rubin's Cauchy fit for window glass. The ultraviolet resonance quoted is the Sellmeier term nearest the visible; a fitted term behaves like a resonance but is not a measured absorption line. Rays are traced in two dimensions with Snell's law at each face, unpolarised Fresnel losses, and total internal reflection; the card adds up every wavelength that lands at each point, so the white middle and colored edges of a near card are computed. The beam is 8 mm wide and the prism 60 mm on a side. Spectral colors lie outside what a screen can show and are drawn as near as sRGB allows. The lenses are thin lenses of 100 mm focal length at f/4, with the focus stretched along the axis in the drawing; a real achromat is bent to correct other aberrations too.</p>
+    <p class="aside"><b>Sources.</b> {sources.map(([label, url], i) => <>{i ? ' · ' : ''}<a href={url} rel="noopener">{label}</a></>)}</p>
+  </div>
+</section>

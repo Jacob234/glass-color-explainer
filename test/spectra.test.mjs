@@ -50,3 +50,18 @@ test('dichroicBand blue-shifts as the angle increases', () => {
   assert.equal(Math.round(s.dichroicBand(0).center), 640);
   assert.ok(s.dichroicBand(60).center < s.dichroicBand(20).center);
 });
+
+test("Kirchhoff: emissivity is 1 − T, and a clear gather glows dimmer than a cobalt one at the same heat", async () => {
+  const optics = (await import('../src/data/optics.json', { with: { type: 'json' } })).default;
+  const dens = (id) => s.colorantDensity(optics.colorants.find((c) => c.id === id), optics.wavelengths);
+  const path = 1.4, tK = 1150 + 273.15; // the glory-hole stage's gathers
+  const clear = s.emissivity(s.transmission([[dens('iron-ferrous'), 0.03], [dens('iron-ferric'), 0.03]], path));
+  const cobalt = s.emissivity(s.transmission([[dens('cobalt'), 1]], path));
+  assert.ok(Math.abs(s.emissivity(s.GRID.map(() => 0.25))[0] - 0.75) < 1e-12);
+  const lc = s.glow(tK, 1423, clear).luminance, lb = s.glow(tK, 1423, cobalt).luminance;
+  assert.ok(lc < lb / 10, `clear ${lc} should be far dimmer than cobalt ${lb}`);
+  assert.ok(lb < s.glow(tK).luminance); // nothing outglows a black body
+  assert.ok(Math.abs(s.luminousEmissivity(s.GRID.map(() => 1), tK) - 1) < 1e-12);
+  // cobalt emits where it absorbs: in the orange, not the blue it passes
+  assert.ok(cobalt[s.GRID.indexOf(600)] > 0.9 && cobalt[s.GRID.indexOf(450)] < 0.05);
+});

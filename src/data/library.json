@@ -1,0 +1,349 @@
+{
+  "note": "The datasheet library: every source of data the explainer computes from or quotes, and sources worth adding. Status is not stored here; src/scripts/library.js works it out from usedBy at build time. A use without `pr` must be cited (its `find` text present) in that file on this tree, or `npm run check` fails. `reuse` is what the source states about copying (open, cite, unknown); `licence` gives the detail, read on the `checked` date. Links only: no PDFs are rehosted.",
+  "stages": {
+    "engine": "colour engine",
+    "lamps": "lamp switch",
+    "glass": "00 what glass is",
+    "ions": "03 colour rod",
+    "heat": "04 glory hole",
+    "light": "07 cold shop",
+    "prism": "07′ cold shop, cut",
+    "lehr": "06 lehr",
+    "rack": "08 rack",
+    "showroom": "showroom",
+    "lightlab": "light lab"
+  },
+  "sources": [
+    {
+      "id": "cie-1931", "kind": "standard", "short": "CIE 1931 observer",
+      "title": "CIE 1931 colour-matching functions, 2 degree observer",
+      "by": "International Commission on Illumination (CIE)", "date": "2019", "edition": "data set from CIE 018:2019, Table 6; DOI 10.25039/CIE.DS.xvudnb9b",
+      "url": "https://doi.org/10.25039/CIE.DS.xvudnb9b",
+      "provides": "The standard observer at 1 nm: how strongly the eye's three colour channels respond to each wavelength. Every colour on the site is an integral against these curves.",
+      "reuse": "open", "licence": "CIE publishes its data sets under CC BY-SA 4.0 (read from the CIE D65 data set's metadata; share-alike means derived tables carry the same licence).",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/optics-core.js", "find": "CIE 1931 2° colour-matching functions", "stage": "engine" }]
+    },
+    {
+      "id": "wyman-2013", "kind": "method", "short": "Wyman, Sloan & Shirley",
+      "title": "Simple Analytic Approximations to the CIE XYZ Color Matching Functions",
+      "by": "Chris Wyman, Peter-Pike Sloan and Peter Shirley", "date": "2013", "edition": "JCGT 2(2), 1–11",
+      "url": "https://jcgt.org/published/0002/02/01/",
+      "provides": "A sum of piecewise Gaussians that reproduces the CIE 1931 curves to about 1%, so the engine needs no table.",
+      "reuse": "open", "licence": "Authors keep copyright; JCGT articles may be redistributed unmodified under CC BY-ND 4.0 and their code is under an open-source licence. The fit's coefficients are copied into optics-core.js with this citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/optics-core.js", "find": "Wyman, Sloan & Shirley", "stage": "engine" }]
+    },
+    {
+      "id": "cie-illuminants", "kind": "standard", "short": "CIE illuminants",
+      "title": "CIE standard illuminant D65, illuminant A, typical fluorescent lamps (FL11) and typical LED lamps (LED-B3)",
+      "by": "International Commission on Illumination (CIE)", "date": "2018–2019", "edition": "tables from CIE 015:2018 and ISO/CIE 11664-2:2022",
+      "url": "https://doi.org/10.25039/CIE.DS.hjfjmt59",
+      "provides": "Spectral power of daylight, tungsten, a tri-phosphor tube and a white LED, the lamps on the lamp switch. D65 doi 10.25039/CIE.DS.hjfjmt59; FLs 10.25039/CIE.DS.ukaymjdn; LEDs 10.25039/CIE.DS.vgssnyfg.",
+      "reuse": "open", "licence": "CC BY-SA 4.0 (stated in the D65 data set's metadata). The tables in lamps.json are copies, so they carry CC BY-SA.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/lamps.json", "find": "CIE 15:2018", "stage": "lamps" }]
+    },
+    {
+      "id": "colour-science", "kind": "database", "short": "colour-science",
+      "title": "Colour (colour-science)",
+      "by": "Colour Developers", "date": "2025", "edition": "v0.4.7",
+      "url": "https://github.com/colour-science/colour",
+      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json.",
+      "reuse": "open", "licence": "BSD 3-Clause.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }]
+    },
+    {
+      "id": "taran-2009", "kind": "measurement", "short": "Taran et al. 2009",
+      "title": "Optical spectroscopic study of tetrahedrally coordinated Co²⁺ in natural spinel and staurolite at different temperatures and pressures",
+      "by": "M. N. Taran et al.", "date": "2009", "edition": "American Mineralogist 94(11–12), 1647",
+      "url": "https://doi.org/10.2138/am.2009.3247",
+      "provides": "Measured absorption of tetrahedral Co²⁺, the triplet that makes cobalt blue. The page takes the band's shape from it and places the centres for silicate glass by estimate.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated (the PDF is restricted).",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/bands.js", "find": "Taran et al.", "stage": "ions" }]
+    },
+    {
+      "id": "coblentz-1917", "kind": "measurement", "short": "Coblentz & Emerson",
+      "title": "Glasses for Protecting the Eyes from Injurious Radiations",
+      "by": "W. W. Coblentz and W. B. Emerson, Bureau of Standards", "date": "1917", "edition": "Technologic Paper 93; the free copy is the 3rd edition, 1919",
+      "url": "https://nvlpubs.nist.gov/nistpubs/nbstechnologic/nbstechnologicpaperT93e3.pdf",
+      "provides": "Measured ultraviolet, visible and infrared transmission of protective glasses, including ferrous heat-absorbing glass. Sets the strength of the Fe²⁺ infrared band on the glory-hole lenses.",
+      "reuse": "cite", "licence": "US government work; no licence stated on the document.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/flare.js", "find": "Coblentz & Emerson", "stage": "heat" }]
+    },
+    {
+      "id": "sharma-2005", "kind": "method", "short": "CIEDE2000 (Sharma et al.)",
+      "title": "The CIEDE2000 color-difference formula: implementation notes, supplementary test data, and mathematical observations",
+      "by": "Gaurav Sharma, Wencheng Wu and Edul N. Dalal", "date": "2005", "edition": "Color Research & Application 30(1), 21–30",
+      "url": "https://doi.org/10.1002/col.20070",
+      "provides": "The colour-difference formula and test data the rack's recipe fits are scored with.",
+      "reuse": "cite", "licence": "Journal article; formula used with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/fit.js", "find": "Sharma, Wu & Dalal", "stage": "rack" }]
+    },
+    {
+      "id": "jakob-hanika-2019", "kind": "method", "short": "Jakob & Hanika",
+      "title": "A Low-Dimensional Function Space for Efficient Spectral Upsampling",
+      "by": "Wenzel Jakob and Johannes Hanika", "date": "2019", "edition": "Computer Graphics Forum 38(2), 147–155 (Eurographics)",
+      "url": "https://doi.org/10.1111/cgf.13626",
+      "provides": "The three-number sigmoid spectrum used to relight photographed swatches under other lamps.",
+      "reuse": "cite", "licence": "Journal article; method used with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/spectra.js", "find": "Jakob & Hanika", "stage": "rack" }]
+    },
+    {
+      "id": "bullseye-shop", "kind": "catalogue", "short": "Bullseye store",
+      "title": "Bullseye Glass Co. online store",
+      "by": "Bullseye Glass Co., Portland, Oregon", "date": "live", "edition": "swept for the rack (328 colours, COE 90)",
+      "url": "https://shop.bullseyeglass.com/",
+      "provides": "Names, codes and product photos of Bullseye sheet, frit, rod and billet. Rack swatches are sampled from the photos; colorants are inferred from names.",
+      "reuse": "unknown", "licence": "No data licence stated. The repo keeps names, codes, links and one sampled colour per product, not the photos.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://shop.bullseyeglass.com", "stage": "rack" }]
+    },
+    {
+      "id": "glass-alchemy-shop", "kind": "catalogue", "short": "Glass Alchemy store",
+      "title": "Glass Alchemy online store",
+      "by": "Glass Alchemy", "date": "live", "edition": "swept for the rack (borosilicate, COE 33)",
+      "url": "https://glassalchemy.com/",
+      "provides": "Names and product photos of Glass Alchemy borosilicate colour rod. Swatches sampled from photos.",
+      "reuse": "unknown", "licence": "No data licence stated. Names, links and sampled colours only.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://glassalchemy.com", "stage": "rack" }]
+    },
+    {
+      "id": "frantz-shop", "kind": "catalogue", "short": "Frantz Art Glass",
+      "title": "Frantz Art Glass online store",
+      "by": "Frantz Art Glass (a Perle di Vetro company)", "date": "live", "edition": "swept for Effetre, Reichenbach, CiM, Vetrofond, Double Helix, Northstar and TAG",
+      "url": "https://www.frantzartglass.com/",
+      "provides": "Catalogue codes, names and photos for seven lampwork rod brands a retailer resells. Swatches sampled from photos.",
+      "reuse": "unknown", "licence": "No data licence stated. Names, codes, links and sampled colours only.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://www.frantzartglass.com", "stage": "rack" }]
+    },
+    {
+      "id": "ledmuseum-uranium", "kind": "measurement", "short": "LED Museum spectra",
+      "title": "Craig Johnson's LED Museum: fluorescence spectra of a uranium glass marble",
+      "by": "ledmuseum.candlepower.us", "date": "2013", "edition": "page last updated 9 March 2013",
+      "url": "http://ledmuseum.candlepower.us/eighth/blu-ray.htm",
+      "provides": "Spectrograph plots of a uranium glass marble fluorescing under a violet laser. The page places uranium glass's strongest emission peak near 527 nm from this site.",
+      "reuse": "unknown", "licence": "No copyright or terms notice on the page. Plots are images; no numbers are copied beyond the peak position.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/uranium.js", "find": "ledmuseum.candlepower.us", "stage": "showroom" }],
+      "caution": "uranium.js cites \"spectrum 1001\" under a 445 nm laser; the page found on 2026-10-19 is a uranium marble under a Blu-ray (about 405 nm) laser. The exact spectrum cited has not been re-found."
+    },
+    {
+      "id": "nbs-710", "kind": "measurement", "short": "NBS glass 710",
+      "title": "Viscosity of a standard soda-lime-silica glass",
+      "by": "Albert Napolitano and Earl G. Hawkins, National Bureau of Standards", "date": "1964", "edition": "J. Res. NBS 68A(5), 439–448",
+      "url": "https://doi.org/10.6028/jres.068A.042",
+      "provides": "Viscosity of NBS Standard Glass No. 710 from 560 to 1400 °C, measured at eight laboratories, with a Fulcher fit and the strain (504 °C), annealing (546 °C) and softening (724 °C) points.",
+      "reuse": "cite", "licence": "US government publication; no licence stated. Fit constants and fixed points are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [
+        { "file": "src/data/viscosity.json", "find": "jres.068A.042", "stage": "glass" },
+        { "file": "src/scripts/stress.js", "find": "Napolitano and Hawkins", "stage": "lehr" }
+      ]
+    },
+    {
+      "id": "pilkington-ats129", "kind": "datasheet", "short": "Pilkington ATS-129",
+      "title": "ATS-129: Properties of Soda-Lime Silica Float Glass",
+      "by": "Pilkington North America (NSG Group)", "date": "2026", "edition": "technical bulletin, current edition dated 09/2026; PR #16 cites the 2013-01-14 edition",
+      "url": "https://www.pilkington.com/-/media/pilkingtonredesign/downloads/usa/architectural/technical-bulletins/ats-129---properties-of-soda-lime-silica-float-glass.pdf",
+      "provides": "Elastic, thermal and optical constants of float glass: E = 72 GPa, expansion 8.3 × 10⁻⁶ /°C, density, conductivity, heat capacity, and a rule for reading stress from optical retardation.",
+      "reuse": "cite", "licence": "Disclaimer only; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }],
+      "caution": "The 2026 edition gives Poisson's ratio 0.22; the stage uses 0.23 from the 2013 edition."
+    },
+    {
+      "id": "adams-williamson-1920", "kind": "measurement", "short": "Adams & Williamson",
+      "title": "A Note on the Annealing of Optical Glass",
+      "by": "L. H. Adams and E. D. Williamson", "date": "1920", "edition": "JOSA 4(4), 213",
+      "url": "https://doi.org/10.1364/JOSA.4.000213",
+      "provides": "Measurements of how stress decays in hot glass, the basis of annealing schedules.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Home.astro", "find": "JOSA.4.000213", "stage": "lehr" }]
+    },
+    {
+      "id": "zanotto-1998", "kind": "measurement", "short": "Zanotto 1998",
+      "title": "Do cathedral glasses flow?",
+      "by": "Edgar Dutra Zanotto", "date": "1998", "edition": "Am. J. Phys. 66(5), 392–395",
+      "url": "https://doi.org/10.1119/1.19026",
+      "provides": "The shear modulus (about 30 GPa) and viscosity extrapolation that turn room-temperature glass into a relaxation time longer than the age of the universe.",
+      "reuse": "cite", "licence": "Journal article (AIP); no reuse licence stated. PR #17 links an author-hosted PDF; the DOI is the record.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/viscosity.json", "find": "Zanotto", "stage": "glass" }]
+    },
+    {
+      "id": "gulbiten-2017", "kind": "measurement", "short": "Gulbiten et al. 2017",
+      "title": "Viscous flow of medieval cathedral glass",
+      "by": "Ozgur Gulbiten, John C. Mauro, Xiaoju Guo and Olus N. Boratav", "date": "2017", "edition": "J. Am. Ceram. Soc. 101(1), 5–11",
+      "url": "https://doi.org/10.1111/jace.15092",
+      "provides": "Measured room-temperature viscosity of a medieval Westminster Abbey glass (10²⁴–10²⁵ Pa·s) and flow of about 1 nm per billion years.",
+      "reuse": "cite", "licence": "Journal article (Wiley); no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "jace.15092", "stage": "glass" }]
+    },
+    {
+      "id": "schott-optical", "kind": "datasheet", "short": "SCHOTT optical glass",
+      "title": "SCHOTT optical glass datasheets (N-BK7, F2, SF11, N-SF11)",
+      "by": "SCHOTT AG", "date": "2017", "edition": "values as in the SCHOTT Zemax catalogue 2017-01-20b; the downloads page gives no version for the current collection",
+      "url": "https://www.schott.com/en-gb/products/optical-glass-p1000267/downloads",
+      "provides": "Sellmeier coefficients, refractive index nd and Abbe number vd for each glass, plus internal transmittance and thermal data. The downloads page also offers the catalogue in Zemax format.",
+      "reuse": "cite", "licence": "No terms of use on the downloads page. The repo takes the coefficients through the CC0 refractiveindex.info copy, and links SCHOTT for the datasheet itself.",
+      "checked": "2026-10-19",
+      "usedBy": [
+        { "file": "src/data/glasses.json", "find": "SCHOTT Zemax catalogue", "stage": "prism" },
+        { "file": "src/scripts/raytrace.js", "find": "SCHOTT catalogue", "stage": "lightlab" }
+      ]
+    },
+    {
+      "id": "refractiveindex-db", "kind": "database", "short": "refractiveindex.info",
+      "title": "refractiveindex.info database",
+      "by": "Mikhail Polyanskiy", "date": "2026", "edition": "release v.2026-05-24",
+      "url": "https://github.com/polyanskiy/refractiveindex.info-database",
+      "provides": "Optical constants of thousands of materials as YAML, including the SCHOTT, Ohara and Hoya catalogues. The source of every Sellmeier coefficient the site uses.",
+      "reuse": "open", "licence": "CC0 1.0 (public domain dedication).",
+      "checked": "2026-10-19",
+      "usedBy": [
+        { "file": "src/data/glasses.json", "find": "refractiveindex.info", "stage": "prism" },
+        { "file": "src/scripts/raytrace.js", "find": "refractiveindex.info", "stage": "lightlab" }
+      ]
+    },
+    {
+      "id": "malitson-1965", "kind": "measurement", "short": "Malitson 1965",
+      "title": "Interspecimen Comparison of the Refractive Index of Fused Silica",
+      "by": "I. H. Malitson", "date": "1965", "edition": "JOSA 55(10), 1205",
+      "url": "https://doi.org/10.1364/JOSA.55.001205",
+      "provides": "The standard Sellmeier fit for fused silica, 0.21 to 3.71 µm.",
+      "reuse": "cite", "licence": "Journal article; coefficients quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/glasses.json", "find": "Malitson", "stage": "prism" }]
+    },
+    {
+      "id": "rubin-1985", "kind": "measurement", "short": "Rubin 1985",
+      "title": "Optical properties of soda lime silica glasses",
+      "by": "M. Rubin", "date": "1985", "edition": "Solar Energy Materials 12(4), 275–288",
+      "url": "https://doi.org/10.1016/0165-1633(85)90052-8",
+      "provides": "Refractive index and absorption of window glass from the ultraviolet to the infrared; the page's soda-lime index curve.",
+      "reuse": "cite", "licence": "Journal article (Elsevier); coefficients quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/glasses.json", "find": "Rubin", "stage": "prism" }]
+    },
+    {
+      "id": "eu-69-493", "kind": "standard", "short": "Directive 69/493/EEC",
+      "title": "Council Directive 69/493/EEC on the approximation of the laws of the Member States relating to crystal glass",
+      "by": "Council of the European Communities", "date": "1969", "edition": "EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/dir/1969/493",
+      "provides": "Legal definitions of lead crystal (at least 24% PbO) and full lead crystal (at least 30%), with density and refractive-index limits.",
+      "reuse": "cite", "licence": "EU legislation; quoted with citation (EUR-Lex reuse terms not re-read).",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "eli/dir/1969/493", "stage": "prism" }]
+    },
+
+    {
+      "id": "meulebroeck-2016", "kind": "measurement", "short": "Meulebroeck et al. 2016",
+      "title": "Authenticity screening of stained glass windows using optical spectroscopy",
+      "by": "Wendy Meulebroeck, Hilde Wouters, Karin Nys and Hugo Thienpont", "date": "2016", "edition": "Scientific Reports 6, 37726",
+      "url": "https://doi.org/10.1038/srep37726",
+      "provides": "Measured ultraviolet to near-infrared transmission of historical and modern coloured stained glass, with the absorption bands of cobalt, copper, iron, manganese and chromium identified.",
+      "would": "Real curves in place of the drawn ones for the common colorants, and an openly licensed set that can be copied into the repo.",
+      "reuse": "open", "licence": "CC BY 4.0.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "schott-filter", "kind": "datasheet", "short": "SCHOTT filter glass",
+      "title": "SCHOTT optical filter glass data sheets and calculation program",
+      "by": "SCHOTT AG", "date": "2026", "edition": "data sheets version June 2026 (169 pp); Excel calculation program with 2015 tutorial",
+      "url": "https://www.schott.com/en-gb/products/optical-filter-glass-p1000266/downloads",
+      "provides": "Measured internal transmittance of coloured glasses, 200–5200 nm, at a reference thickness: cobalt blues (BG), coppers, ferrous heat absorbers (KG), selenium–cadmium long-pass reds and oranges (RG, OG), neutral densities (NG). The Excel tool rescales to any thickness.",
+      "would": "Industrial colored glass measured to datasheet standard, to check each drawn colorant curve and the Beer–Lambert thickness scaling against.",
+      "reuse": "cite", "licence": "No reuse licence stated; values are \"reference values\". Use to check curves and quote individual numbers with citation, not to copy tables.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "sciglass", "kind": "database", "short": "SciGlass",
+      "title": "SciGlass",
+      "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "MS Access release; browsable at sciglass.uni-jena.de",
+      "url": "https://github.com/epam/SciGlass",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared.",
+      "would": "Measured spectra for uranium and didymium glass, and composition–property data for a formers-and-modifiers stage.",
+      "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "schott-tie29", "kind": "datasheet", "short": "SCHOTT TIE-29",
+      "title": "TIE-29: Refractive Index and Dispersion",
+      "by": "SCHOTT AG, Advanced Optics", "date": "2023", "edition": "version August 2023",
+      "url": "https://media.schott.com/api/public/content/aaa572afd854434fb7b3faa4bc46103f?v=c0f4fa52",
+      "provides": "How SCHOTT defines and fits index: the Sellmeier form, Abbe numbers, partial dispersions and tolerances.",
+      "would": "A citable check on the cut stage's formulas and its Abbe-number definitions.",
+      "reuse": "cite", "licence": "No reuse licence stated.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "schott-tie35", "kind": "datasheet", "short": "SCHOTT TIE-35",
+      "title": "TIE-35: Transmittance of optical glass",
+      "by": "SCHOTT AG, Advanced Optics", "date": "2005", "edition": "current PDF undated; earlier version October 2005",
+      "url": "https://media.schott.com/api/public/content/3d5861d824f64033aafd5353a21f7603?v=ab765931",
+      "provides": "Internal versus external transmittance, surface reflection losses and how to rescale transmittance to another thickness.",
+      "would": "A source for the engine's two-surface reflection loss and thickness scaling, now stated without one.",
+      "reuse": "cite", "licence": "No reuse licence stated.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "nist-asd", "kind": "database", "short": "NIST ASD",
+      "title": "NIST Atomic Spectra Database (Standard Reference Database 78)",
+      "by": "A. Kramida, Yu. Ralchenko, J. Reader and the NIST ASD Team", "date": "2024", "edition": "version 5.12; DOI 10.18434/T4W30F",
+      "url": "https://physics.nist.gov/asd",
+      "provides": "Evaluated atomic lines. Sodium D2 588.995095 nm and D1 589.592424 nm in air, matching the values in flare.js.",
+      "would": "A citation for the sodium doublet the glory-hole stage uses, and lines for any other flame or lamp.",
+      "reuse": "cite", "licence": "NIST Standard Reference Data can be copyrighted under the Standard Reference Data Act; no licence text found. Quote values with the recommended citation.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "nist-srm-710a", "kind": "standard", "short": "NIST SRM 710a",
+      "title": "Standard Reference Material 710a: Soda-Lime-Silica Glass",
+      "by": "National Institute of Standards and Technology", "date": "1991", "edition": "certificate dated 20 March 1991 (archived)",
+      "url": "https://tsapps.nist.gov/srmext/certificates/archives/710a.pdf",
+      "provides": "Certified viscosity from log η = 2 (1464 °C) to 5 (918 °C) poise and a certified softening point of 730.6 °C, with annealing 545 °C and strain 504 °C for information. A different melt from NBS 710 (zinc and alumina added).",
+      "would": "A second, certified soda-lime curve to show how much fixed points move between two similar glasses.",
+      "reuse": "cite", "licence": "US government certificate; no licence stated.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "bullseye-annealing", "kind": "datasheet", "short": "Bullseye annealing",
+      "title": "TechNotes 4: Heat & Glass, and the Annealing Thick Slabs chart",
+      "by": "Bullseye Glass Co.", "date": "2020", "edition": "TechNotes 4 © 2020; thick-slab chart revised June 2009",
+      "url": "https://www.bullseyeglass.com/annealing-thick-slabs/",
+      "provides": "A studio glass maker's annealing soak (482 °C) and cooling rates by thickness, derived from Corning's method, and how kiln glass behaves at each temperature.",
+      "would": "Real studio schedules for the lehr, in place of float-glass numbers applied to studio glass.",
+      "reuse": "cite", "licence": "© Bullseye Glass Co.; no reuse licence stated.",
+      "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "cvrl", "kind": "database", "short": "CVRL",
+      "title": "Colour & Vision Research Laboratory database",
+      "by": "Institute of Ophthalmology, University College London", "date": "live", "edition": "cvrl.org",
+      "url": "http://www.cvrl.org/",
+      "provides": "Tabulated colour-matching functions (CIE 1931, Stiles–Burch, CIE 2006), cone fundamentals and luminous efficiency.",
+      "would": "Tables to test the analytic observer against, and the CIE 2006 cone fundamentals if the page ever explains metamerism from the cones up.",
+      "reuse": "unknown", "licence": "\"Provided free of charge as a service to the vision science community\"; no explicit reuse licence.",
+      "checked": "2026-10-19", "usedBy": []
+    }
+  ],
+  "gaps": [
+    { "what": "Absorption curves of the twelve colorants", "file": "src/data/optics.json", "candidates": ["meulebroeck-2016", "schott-filter", "sciglass"] },
+    { "what": "Uranyl absorption bands and emission comb strengths", "file": "src/scripts/uranium.js", "candidates": ["sciglass"] },
+    { "what": "Neodymium and praseodymium band strengths", "file": "src/scripts/bands.js", "candidates": ["sciglass"], "note": "Peak positions are sourced; strengths are scaled by eye." },
+    { "what": "Surface reflection loss (4% a face) and thickness scaling", "file": "src/scripts/flare.js", "candidates": ["schott-tie35"] },
+    { "what": "Sodium D line wavelengths", "file": "src/scripts/flare.js", "candidates": ["nist-asd"], "note": "Values are right; the citation is missing." },
+    { "what": "Studio furnace and glory-hole temperatures", "file": "src/data/viscosity.json", "candidates": ["bullseye-annealing"], "note": "Kiln glass only; furnace practice still needs a source (PR #17)." },
+    { "what": "Rack swatch colours, sampled from product photos", "file": "src/data/catalog/index.json", "candidates": [], "note": "Needs measured transmission of the supplier glasses, which no source here publishes." }
+  ]
+}
