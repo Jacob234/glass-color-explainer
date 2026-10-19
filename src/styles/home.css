@@ -163,6 +163,50 @@ svg.slab, .scene { display: block; width: 100%; height: auto; overflow: visible;
 .metamers .key { font-family: var(--mono); font-size: 0.62rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
 .metamers .key b { font-weight: 400; text-align: center; }
 
+/* ---- the record: the history rail ---- */
+.hist { margin-top: 1.8rem; }
+/* the line runs through the middle; labels sit in two lanes above it and two below */
+.hist-rail { --lane: 2.9rem; position: relative; list-style: none; margin: 0; padding: 0; height: calc(4 * var(--lane) + 2.2rem); }
+.hist-rail::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--ink); }
+.hist-tick { position: absolute; left: var(--x); top: 50%; height: 0.5rem; border-left: 1px solid var(--ink); }
+.hist-tick span { position: absolute; top: 0.6rem; left: 0; transform: translateX(-50%); font: 0.6rem var(--mono); letter-spacing: .04em; color: var(--ink-3); white-space: nowrap; }
+.hist-tick.first span { transform: none; }
+.hist-tick.last span { transform: translateX(-100%); }
+.hist-span { position: absolute; left: var(--x); width: calc(var(--x1) - var(--x)); top: calc(50% - 2px); height: 4px; border-radius: 2px; background: var(--c, var(--ink-3)); mix-blend-mode: multiply; }
+.pin { position: absolute; left: var(--x); top: 50%; width: 0; height: 0; }
+/* the button is the bead; its label hangs off it on a stem */
+.pin button { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; }
+.pin button::before { content: ""; position: absolute; left: 8.5px; height: calc(var(--h) - 9px); border-left: 1px solid var(--rule); }
+.pin[data-lane^=up] button::before { bottom: 18px; }
+.pin[data-lane^=down] button::before { top: 18px; }
+.pin[data-lane$="1"] { --h: calc(var(--lane) * 0.6); }
+.pin[data-lane$="2"] { --h: calc(var(--lane) * 1.6); }
+.pin .bead { position: absolute; inset: 0; z-index: 1; }
+.pin-lab { position: absolute; left: 15px; width: max-content; white-space: nowrap; display: grid; line-height: 1.15; }
+.pin[data-side=right] .pin-lab { left: auto; right: 3px; text-align: right; }
+.pin[data-lane^=up] .pin-lab { bottom: calc(var(--h) + 9px); }
+.pin[data-lane^=down] .pin-lab { top: calc(var(--h) + 9px); }
+.pin-when { font: 0.62rem var(--mono); letter-spacing: .04em; color: var(--ink-3); }
+.pin-lab b { font: 500 0.66rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.pin button:hover .pin-lab b, .pin button[aria-pressed=true] .pin-lab b { color: var(--ink); }
+.pin button[aria-pressed=true]::before { border-color: var(--ink); }
+.pin button[aria-pressed=true] .bead { outline: 1px solid var(--ink); outline-offset: 3px; }
+.pin button:focus-visible { outline: none; }
+.pin button:focus-visible .bead { outline: 2px solid var(--ink); outline-offset: 3px; }
+/* a drop of glass: its own color, thicker (darker) at the rim, with a highlight */
+.bead { display: block; border-radius: 50%; background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, .75) 0 12%, transparent 30%), radial-gradient(closest-side, transparent 60%, rgba(0, 0, 0, .2) 100%), var(--c, transparent);
+  mix-blend-mode: multiply; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+.bead.hollow { background: var(--paper); border: 1.5px dashed var(--ink-2); box-shadow: none; mix-blend-mode: normal; }
+.hist-cards { border-top: 1px solid var(--ink); margin-top: 0.4rem; }
+.hist-card { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1.4rem; padding: 1.1rem 0 0.4rem; }
+.hist-card[hidden] { display: none; }
+.hist-card > .bead { width: 4.5rem; height: 4.5rem; }
+.hist-card h3 { font-family: var(--display); font-weight: 400; font-size: 1.7rem; line-height: 1.1; margin: 0.2rem 0 0.5rem; }
+.hist-card p { margin: 0; max-width: 38rem; text-wrap: pretty; }
+.hist-card .more { margin-top: 0.8rem; }
+.hist-card .src { color: var(--ink-2); }
+.hist-card .more span { color: var(--ink-3); }
+
 /* ---- the long read ---- */
 .reading { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0 2rem; }
 .reading a { display: grid; align-content: start; gap: 0.25rem; padding: 1rem 0 1.2rem; border-bottom: 1px solid var(--rule); text-decoration: none; height: 100%; }
@@ -186,6 +230,20 @@ svg.slab, .scene { display: block; width: 100%; height: auto; overflow: visible;
   .rods div { width: 10px; height: 28px; }
   .rackbox { grid-template-columns: 1fr; }
   .fit { position: static; }
+}
+/* on a phone the rail stands up: oldest at the top, one pin per row */
+@media (max-width: 640px) {
+  .hist-rail { height: auto; display: grid; gap: 0.15rem; }
+  .hist-rail::before { left: 8px; right: auto; top: 0.6rem; bottom: 0.6rem; border-top: 0; border-left: 1px solid var(--ink); }
+  .hist-tick, .hist-span { display: none; }
+  .pin { position: static; width: auto; height: auto; }
+  .pin button { position: static; width: 100%; height: auto; display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 0.8rem; align-items: center; width: 100%; padding: 0.3rem 0; }
+  .pin button::before { display: none; }
+  .pin .bead { position: static; width: 18px; height: 18px; }
+  .pin-lab, .pin[data-side=right] .pin-lab { position: static; width: auto; text-align: left; display: flex; gap: 0.6rem; align-items: baseline; padding: 0 !important; }
+  .pin-when { min-width: 6.5rem; }
+  .hist-card { grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; }
+  .hist-card > .bead { width: 3rem; height: 3rem; }
 }
 
 /* ---- the lamp switch: one light for the whole page ---- */
@@ -212,3 +270,14 @@ body:has(.lampbar) .site-footer { padding-bottom: 6rem; }
   .lampbar { left: 12px; right: 12px; transform: none; max-width: none; padding-left: 0.7rem; }
   .lampbar canvas { display: none; }
 }
+
+/* ---- the black light: the page as a dark room, uranium glass as the only light ---- */
+:root[data-dark] { --ink: #ece8f4; --ink-2: #a8a2b8; --ink-3: #6f6982; color-scheme: dark; }
+.piece.lit { mix-blend-mode: screen; filter: drop-shadow(0 0 14px var(--glow)) drop-shadow(0 0 40px var(--glow)); }
+.shade { position: absolute; inset: 0; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity .5s;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0 70px, rgba(4, 3, 8, .96) 150px); }
+.table.dark .shade { opacity: 1; }
+.table { isolation: isolate; } /* keeps the torch shade below the lamp bar */
+.table.dark { cursor: crosshair; }
+.upane { aspect-ratio: 16 / 9; transition: box-shadow .4s; }
+.upane.lit { box-shadow: 0 0 30px 4px var(--glow), 0 0 90px 10px var(--glow); }
