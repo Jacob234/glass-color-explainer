@@ -122,6 +122,35 @@ const pins = history.pins.map((p) => {
     </div>
     <p class="readout prose" id="ionRead"></p>
     <p class="more"><a href={page('transition-metal-colorants')}>Read: transition metal colorants →</a> <a href={page('rare-earth-colorants')}>Rare-earth colorants →</a></p>
+
+    <div class="vessel" id="vessel">
+      <h3>Now <i>blow</i> it</h3>
+      <div class="prose">
+        <p>A rod's colour is not the colour of the finished piece. Melted onto a gather and blown out, the same glass becomes a wall that is thin at the rim and heavy at the foot, and every part of it is coloured by its own thickness. This is the windowpane edge from the batch, spread over a whole object.</p>
+        <p>The bowl is drawn in half section, the way a glass drawing shows it. On the left the near half is cut away: the cut wall is tinted by its thickness, and behind it you see the inside of the far wall. On the right is the bowl as you would see it held up to the light. It uses the rod and amount chosen above.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><canvas id="bowl" aria-label="a blown bowl in half section, coloured by the glass each ray crosses"></canvas></div>
+        <div class="controls">
+          <div class="chips" id="build" role="group" aria-label="how the colour is put on"></div>
+          <div class="ctl"><label class="mono" for="wall">wall thickness <output id="wallOut"></output></label>
+            <input id="wall" type="range" min="-100" max="100" value="0" /><div class="ends"><span>blown thin</span><span>heavy</span></div></div>
+          <dl class="meters" id="bowlMeters"></dl>
+          <p class="readout" id="bowlRead"></p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>Glassblowers get around this by casing. They put the colour on as a thin skin of strong glass and blow clear glass inside it, so every part of the piece crosses about the same amount of colour however unevenly the clear behind it was blown. Switch to cased and the foot stops going dark.</p>
+      </div>
+      <h4 class="mono">the same rule in a cane</h4>
+      <div class="bench bench-top">
+        <div class="lightbox"><canvas id="cane" aria-label="a cane cut end on, then seen from the side"></canvas>
+          <div class="strip-key"><span>slice, end on</span><span>cane, side on</span></div></div>
+        <p class="readout" id="caneRead"></p>
+      </div>
+      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the colour was only ever half a millimetre deep.</p>
+      <p class="aside"><b>Model.</b> The bowl is a solid of revolution 170 mm across and 100 mm tall. Its wall runs from 1.1 mm at the rim to about 6 mm at the base and sits on a 6 mm floor, all scaled by the slider; the 8 mm foot is a separate gather and stays fixed. On the right each point's colour is Beer–Lambert through the glass a straight ray crosses there, front wall and back. On the left the cut wall is tinted by its thickness at right angles to the surface, and the floor and foot by the whole stack a ray straight up from the table would cross. Each rod is dosed so a 3 mm solid wall passes about 60% of daylight at amount ×1, since colorants differ in strength by an order of magnitude. The cased skin is 0.5 mm at six times that concentration, so face on it holds the same colorant as a 3 mm solid wall. The cane is 12 mm across with the same 0.5 mm skin, and the slice is 3 mm thick. Refraction at the curved surfaces, which bends real outlines, is ignored.</p>
+    </div>
   </div>
 </section>
 

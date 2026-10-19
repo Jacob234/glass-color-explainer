@@ -100,6 +100,17 @@ svg.slab, .scene { display: block; width: 100%; height: auto; overflow: visible;
 .temp { font-family: var(--display); font-size: clamp(3rem, 8vw, 5.5rem); line-height: 1; font-variant-numeric: tabular-nums; color: var(--ember); }
 .temp small { font-size: 0.4em; color: var(--ash); }
 
+/* ---- 03 blown: the bowl and the cane ---- */
+.vessel { margin-top: 3rem; border-top: 1px solid var(--rule); padding-top: 1.5rem; }
+.vessel h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3.5vw, 2.3rem); margin: 0 0 0.8rem; line-height: 1.1; }
+.vessel h4 { margin: 2rem 0 0; font-weight: 400; }
+.vessel .bench { margin-bottom: 1.4rem; }
+.lightbox { background: #fff; border-radius: 4px; padding: 1rem; box-shadow: inset 0 0 0 1px var(--rule); }
+.lightbox canvas { display: block; width: 100%; }
+.chip-plain { padding-left: 0.7rem; }
+.vessel .meters dt { color: var(--ink-2); }
+.vessel .meters i { background: var(--paper-2); }
+
 /* ---- two-up instruments ---- */
 .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; margin-top: 2rem; }
 .pair > div { border-top: 1px solid var(--rule); padding-top: 1rem; display: grid; gap: 1rem; align-content: start; }
