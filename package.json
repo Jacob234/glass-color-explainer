@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "node scripts/check_data.mjs && node scripts/check_catalog.mjs",
+    "check": "node scripts/check_data.mjs && node scripts/check_catalog.mjs && node scripts/check_library.mjs",
     "check:catalog": "node scripts/check_catalog.mjs",
     "test": "node --test 'test/**/*.test.mjs'"
   },
