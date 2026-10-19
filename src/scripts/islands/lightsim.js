@@ -18,13 +18,16 @@ const PRESETS = {
   lens: () => ({ beam: { x: 2, y: 55, angle: 0, width: 44 }, pieces: [{ shape: 'lens', x: 50, y: 55, rot: 0 }] }),
   slab: () => ({ beam: { x: 2, y: 40, angle: 0, width: 3 }, pieces: [{ shape: 'slab', x: 70, y: 55, rot: 0.5 }] }),
 };
-const RAYS_PER_FRAME = 4000, RAY_BUDGET = 1.2e6, BEAM_LEVEL = 0.55, AMBIENT = 0.03;
+// Display value for linear light v: a soft shoulder where light focuses, then sRGB encoding.
+// Tabulated, since it runs for every channel of every pixel each frame.
+const TONE_STEPS = 1024, TONE = Uint8ClampedArray.from({ length: 8 * TONE_STEPS }, (_, k) => 255 * encode(1 - Math.exp((-1.6 * (k + 0.5)) / TONE_STEPS)));
+const RAY_BUDGET = 3e6, BEAM_LEVEL = 0.55, AMBIENT = 0.03;
 
 export function initLightSim(root) {
   const canvas = root.querySelector('canvas'), ctx = canvas.getContext('2d');
   const $ = (name) => root.querySelector(`[name=${name}]`);
   const colorants = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
-  let W, H, scale, X, Y, Z, img, rays = 0, frame = 0, drag = null;
+  let W, H, scale, X, Y, Z, img, rays = 0, frame = 0, drag = null, perFrame = 2000;
   let { beam, pieces } = PRESETS.prism();
 
   const state = () => ({ glass: $('glass').value, colorant: $('colorant').value, conc: +$('conc').value / 100, lamp: LAMP[$('lamp').value] });
@@ -44,16 +47,26 @@ export function initLightSim(root) {
   function reset() { X = new Float32Array(W * H); Y = new Float32Array(W * H); Z = new Float32Array(W * H); rays = 0; }
 
   // Add the light of one straight run, decaying geometrically from w0 to w1 (Beer–Lambert).
+  // Antialiased (Wu): step one pixel along the run's major axis and split each step between the two
+  // pixels straddling it on the minor axis, so thin bundles of rays don't alias into stripes.
   function deposit(x0, y0, x1, y1, i, w0, w1) {
-    const ax = x0 * scale, ay = y0 * scale, bx = x1 * scale, by = y1 * scale;
-    const n = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay))), [cx, cy, cz] = CMF_GRID[i];
+    let ax = x0 * scale - 0.5, ay = y0 * scale - 0.5, bx = x1 * scale - 0.5, by = y1 * scale - 0.5;
+    const steep = Math.abs(by - ay) > Math.abs(bx - ax);
+    if (steep) [ax, ay, bx, by] = [ay, ax, by, bx];
+    const n = Math.max(1, Math.ceil(Math.abs(bx - ax))), [cx, cy, cz] = CMF_GRID[i];
+    const len = Math.hypot(bx - ax, by - ay), per = len / n; // light laid per step, in pixel lengths
     const r = w0 > 0 ? w1 / w0 : 0;
     for (let k = 0; k < n; k++) {
-      const f = (k + 0.5) / n, px = (ax + (bx - ax) * f) | 0, py = (ay + (by - ay) * f) | 0;
-      if (px < 0 || py < 0 || px >= W || py >= H) continue;
-      const w = w0 * r ** f, j = py * W + px;
-      X[j] += w * cx; Y[j] += w * cy; Z[j] += w * cz;
+      const f = (k + 0.5) / n, u = ax + (bx - ax) * f, v = ay + (by - ay) * f;
+      const pu = Math.round(u), pv = Math.floor(v), fv = v - pv, w = w0 * r ** f * per;
+      add(steep ? pv : pu, steep ? pu : pv, w * (1 - fv), cx, cy, cz);
+      add(steep ? pv + 1 : pu, steep ? pu : pv + 1, w * fv, cx, cy, cz);
     }
+  }
+  function add(px, py, w, cx, cy, cz) {
+    if (px < 0 || py < 0 || px >= W || py >= H) return;
+    const j = py * W + px;
+    X[j] += w * cx; Y[j] += w * cy; Z[j] += w * cz;
   }
 
   function render(lamp, scene) {
@@ -66,7 +79,7 @@ export function initLightSim(root) {
       const x = X[j] * k, y = Y[j] * k, z = Z[j] * k;
       for (let c = 0; c < 3; c++) {
         const v = AMBIENT + Math.max(0, M[c][0] * x + M[c][1] * y + M[c][2] * z);
-        d[4 * j + c] = 255 * encode(1 - Math.exp(-1.6 * v)); // soft shoulder where light focuses
+        d[4 * j + c] = TONE[Math.min(TONE.length - 1, (v * TONE_STEPS) | 0)];
       }
       d[4 * j + 3] = 255;
     }
@@ -82,8 +95,12 @@ export function initLightSim(root) {
   function tick() {
     const s = state(), scene = built();
     if (rays < RAY_BUDGET) {
-      for (let n = 0; n < RAYS_PER_FRAME; n++) traceRay(scene, slitRay(beam, s.lamp.spd, Math.random), Math.random, deposit, SCENE);
-      rays += RAYS_PER_FRAME;
+      // Trace as many rays as fit in about 20 ms, so slow phones stay responsive and fast ones converge.
+      const t0 = performance.now();
+      for (let n = 0; n < perFrame; n++) traceRay(scene, slitRay(beam, s.lamp.spd, Math.random), Math.random, deposit, SCENE);
+      rays += perFrame;
+      const dt = performance.now() - t0;
+      perFrame = Math.round(Math.min(40000, Math.max(1000, (perFrame * 20) / Math.max(1, dt))));
       render(s.lamp, scene);
     }
     frame = requestAnimationFrame(tick);
