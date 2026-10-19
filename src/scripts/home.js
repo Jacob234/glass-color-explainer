@@ -1,26 +1,44 @@
 // home.js — the instruments on the home page. Every glass colour is computed from absorption
 // spectra in optics.json through spectra.js; nothing here is a hand-picked colour.
 import optics from '../data/optics.json';
+import history from '../data/history.json';
 import {
-  GRID, toGrid, spectrumColor, densityOnGrid, transmission, glow, glowStrength,
-  SPECTRAL, bandEdge, dichroicBand, encode, css,
+  GRID, colorantDensity, transmission, glow, glowStrength,
+  SPECTRAL, bandEdge, dichroicBand, encode, css, upsample,
 } from './spectra.js';
 import * as na from './flare.js';
+import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
+import { makeFitter, MATCH, C_MAX } from './fit.js';
+import * as u from './uranium.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 
-const DAY = toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
-const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, densityOnGrid(optics.wavelengths, c.absorbance)]));
+const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
+DENS.uranium = GRID.map(u.density); // uranium.js: the one colorant that also gives light out
 const ONES = GRID.map(() => 1);
 const $ = (id) => document.getElementById(id);
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const tColor = (T) => spectrumColor(T, DAY);
+// The lamp the whole page is lit by. Every instrument registers a re-render with onLamp.
+let lamp = LAMP.daylight;
+const relight = [];
+const onLamp = (fn) => relight.push(fn);
+const lampLight = () => { const m = Math.max(...lamp.spd); return lamp.spd.map((v) => v / m); };
+
+const tColor = (T) => underLamp(T, lamp);
 const mixT = (parts, thickness = 1) => transmission(parts.map(([id, c]) => [DENS[id], c]), thickness);
 const colorOf = (parts, thickness = 1) => tColor(mixT(parts, thickness));
+// Uranium glass: what it passes plus what it gives out. glow is the fluorescence's share of the light.
+function uraniumOf(thickness = 1) {
+  const T = u.transmissionOnGrid(thickness), F = u.fluorescence(lamp.ext, thickness);
+  const all = underLamp(T, lamp, F), lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  const glowOnly = underLamp(GRID.map(() => 0), lamp, F);
+  return { ...all, T, F, glow: lum(glowOnly.lin) / Math.max(1e-9, lum(all.lin)), glowCss: glowOnly.css };
+}
 
-// A spectrum strip: light in (top band) and light out (bottom band, with its curve drawn on).
-function strip(canvas, top, bottom) {
+// A spectrum strip: light in (top band) and light out (bottom band), with curve drawn on the bottom.
+// Without bands given, the light in is the current lamp and the light out is that lamp through T.
+function strip(canvas, T, top = lampLight(), bottom = top.map((v, i) => v * T[i]), curve = T) {
   const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
   const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
@@ -36,7 +54,7 @@ function strip(canvas, top, bottom) {
   }
   ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.2 * dpr; ctx.beginPath();
   for (let i = 0; i < n; i++) {
-    const x = ((i + 0.5) / n) * w, y = h - 3 * dpr - bottom[i] * (h - half - gap - 6 * dpr);
+    const x = ((i + 0.5) / n) * w, y = h - 3 * dpr - curve[i] * (h - half - gap - 6 * dpr);
     i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
   }
   ctx.stroke();
@@ -64,12 +82,15 @@ function h(tag, props = {}, ...children) {
 }
 
 function chips(box, ids, label, onPick) {
-  for (const id of ids) {
-    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': colorOf([[id, 1]], 1.2).css } }), label(id));
+  const swatches = ids.map((id) => {
+    const i = h('i'), b = h('button', { className: 'chip' }, i, label(id));
     b.dataset.id = id;
     b.addEventListener('click', () => onPick(id));
     box.appendChild(b);
-  }
+    return [i, id];
+  });
+  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf([[id, 1]], 1.2).css); };
+  paint(); onLamp(paint);
   return (cur) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
 }
 
@@ -84,18 +105,67 @@ function lightTable() {
     { lab: 'chromium', parts: [['chromium', 1.2]], x: 0.60, y: 0.32, s: 0.24, clip: shard('0% 30%, 46% 0%, 100% 22%, 88% 92%, 26% 100%') },
     { lab: 'copper', parts: [['copper', 1]], x: 0.07, y: 0.62, s: 0.20, r: '6px' },
     { lab: 'manganese', parts: [['manganese', 1.3]], x: 0.82, y: 0.10, s: 0.18, r: '50%' },
-    { lab: 'neodymium', parts: [['neodymium', 1.6]], x: 0.38, y: 0.56, s: 0.17, clip: shard('50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%') },
+    { lab: 'neodymium', parts: [['neodymium', 1]], x: 0.38, y: 0.56, s: 0.17, clip: shard('50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%') },
+    { lab: 'uranium', uranium: true, x: 0.74, y: 0.56, s: 0.2, clip: shard('25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%') },
   ];
   let z = 10;
   const els = pieces.map((p) => {
     const g = h('div', { className: 'g' });
     const el = h('div', { className: 'piece' + (p.r === '50%' ? ' round' : '') }, g, h('span', { className: 'lab' }, p.lab));
-    g.style.setProperty('--c', colorOf(p.parts).css);
     if (p.clip) g.style.setProperty('--clip', p.clip);
     if (p.r) g.style.setProperty('--r', p.r);
     table.appendChild(el);
-    return { el, p };
+    return { el, g, p };
   });
+  // The table is lit by the lamp too (see paint() below), and the screen multiplies each piece over
+  // it, so a piece is drawn as its colour divided by the table's: the product is the computed colour.
+  // A glowing piece can be brighter than the table under it, which multiply cannot draw; it switches
+  // to screen, which adds light: screen(paper, x) = c when x = 1 − (1 − c) / (1 − paper).
+  onLamp(() => {
+    const paper = tColor(ONES).rgb;
+    for (const { el, g, p } of els) {
+      const c = p.uranium ? uraniumOf() : colorOf(p.parts), lit = c.rgb.some((v, i) => v > paper[i] + 0.01);
+      g.style.setProperty('--c', css(c.rgb.map((v, i) => (lit
+        ? Math.max(0, 1 - (1 - v) / Math.max(1e-3, 1 - paper[i]))
+        : Math.min(1, v / Math.max(paper[i], 1e-3))))));
+      el.classList.toggle('lit', lit);
+      if (lit) el.style.setProperty('--glow', c.glowCss);
+    }
+    torch.toggle(!!lamp.dark);
+  });
+
+  // Under the black light the table is a dark room and the light is a torch: a dark layer over the
+  // pieces with a hole where the beam falls. It follows the pointer, and sweeps once on its own.
+  const shade = h('div', { className: 'shade', 'aria-hidden': 'true' });
+  table.appendChild(shade);
+  const torch = (() => {
+    let raf = 0, on = false;
+    const aim = (x, y) => { shade.style.setProperty('--x', `${x}px`); shade.style.setProperty('--y', `${y}px`); };
+    const target = () => { const t = els.find((e) => e.p.uranium).el; return [t.offsetLeft + t.offsetWidth / 2, t.offsetTop + t.offsetHeight / 2]; };
+    table.addEventListener('pointermove', (e) => {
+      if (!on) return;
+      cancelAnimationFrame(raf);
+      const r = table.getBoundingClientRect(); aim(e.clientX - r.left, e.clientY - r.top);
+    });
+    return {
+      toggle(next) {
+        if (next === on) return;
+        on = next; table.classList.toggle('dark', on); cancelAnimationFrame(raf);
+        if (!on) return;
+        const [tx, ty] = target(), w = table.clientWidth, hh = table.clientHeight;
+        if (reduceMotion()) return aim(tx, ty);
+        // a sweep from the left edge, across the table, coming to rest on the uranium glass
+        const t0 = performance.now(), dur = 3200;
+        const tick = (now) => {
+          const f = Math.min(1, (now - t0) / dur), e = 1 - (1 - f) ** 3;
+          const x = -0.1 * w + (tx + 0.1 * w) * e, y = hh * 0.35 + (ty - hh * 0.35) * e + Math.sin(f * Math.PI * 2) * hh * 0.18 * (1 - f);
+          aim(x, y);
+          if (f < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+    };
+  })();
   function layout() {
     const w = table.clientWidth, h = table.clientHeight, base = Math.min(w * 0.9, h * 1.25);
     for (const { el, p } of els) {
@@ -142,7 +212,7 @@ function batch() {
       ? 'Low-iron glass stays nearly colourless even edge on. It is used where the green would show: display cases, solar panels, aquariums.'
       : 'Face on, the light crosses a thin sheet and barely changes. Edge on, it crosses forty times as much glass, and the same iron reads as green.';
   };
-  s.addEventListener('input', render); render();
+  s.addEventListener('input', render); onLamp(render);
 }
 
 /* ---------- 02 the melt: redox ---------- */
@@ -156,7 +226,7 @@ function redox() {
       : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing violet and blue. A pale straw yellow.'
       : 'A mix of both ions. Each subtracts its own band, and the result is a muddy olive.';
   };
-  s.addEventListener('input', render); render();
+  s.addEventListener('input', render); onLamp(render);
 }
 
 /* ---------- 03 the colour rod: ions ---------- */
@@ -175,13 +245,13 @@ function ions(onRod) {
   function render() {
     const k = 2 ** (s.valueAsNumber / 100), T = mixT([[cur, 1]], k);
     draw(tColor(T).css, colorOf([[cur, 1]], k * 5).css);
-    strip($('strip3'), ONES, T);
+    strip($('strip3'), T);
     $('concOut').textContent = `×${k.toFixed(2)}`;
     $('ionRead').textContent = ROD_NOTES[cur];
     press(cur);
     onRod?.(cur, k);
   }
-  s.addEventListener('input', render); addEventListener('resize', render); render();
+  s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
 /* ---------- 03 the colour rod, blown: wall thickness in a bowl and a cane ---------- */
@@ -203,7 +273,7 @@ function fit(canvas, aspect) {
 
 function vessel() {
   const bowl = $('bowl'), cane = $('cane'), wall = $('wall');
-  let rod = 'cobalt', k = 1, cased = false, lut = [], unit = 1, raf = 0;
+  let rod = 'cobalt', k = 1, cased = false, lut = [], unit = 1, raf = 0, litBy = null;
   const builds = [['solid', 'solid colour'], ['cased', 'cased in colour']].map(([id, label]) => {
     const b = h('button', { className: 'chip chip-plain' }, label);
     b.addEventListener('click', () => { cased = id === 'cased'; queue(); });
@@ -216,9 +286,10 @@ function vessel() {
   const look = (d) => lut[Math.min(LUT_N - 1, Math.round(Math.sqrt(Math.max(0, d) / LUT_MAX) * (LUT_N - 1)))];
 
   function buildLut() {
-    let lo = 0, hi = 50; // bisect for the rod's dose per 3 mm wall
-    for (let n = 0; n < 40; n++) { const mid = (lo + hi) / 2; lum(tColor(mixT([[rod, 1]], mid)).lin) > WALL_Y ? (lo = mid) : (hi = mid); }
+    let lo = 0, hi = 50; // bisect for the rod's dose per 3 mm wall, always in daylight
+    for (let n = 0; n < 40; n++) { const mid = (lo + hi) / 2; lum(underLamp(mixT([[rod, 1]], mid), LAMP.daylight).lin) > WALL_Y ? (lo = mid) : (hi = mid); }
     unit = lo;
+    litBy = lamp; // the colours themselves are under the page's lamp
     lut = Array.from({ length: LUT_N }, (_, i) => tColor(mixT([[rod, 1]], unit * LUT_MAX * (i / (LUT_N - 1)) ** 2)));
   }
 
@@ -308,7 +379,7 @@ function vessel() {
   wall.addEventListener('input', queue);
   addEventListener('resize', queue);
   return (id, amount) => {
-    if (id !== rod || !lut.length) { rod = id; buildLut(); }
+    if (id !== rod || !lut.length || litBy !== lamp) { rod = id; buildLut(); }
     k = amount; queue();
   };
 }
@@ -349,6 +420,7 @@ function heat() {
     press(cur);
   }
   lens.onChange = () => render(s.valueAsNumber);
+  onLamp(() => { body = colorOf([[cur, 1]], 1.4).rgb; lens.relight(); render(s.valueAsNumber); });
   s.addEventListener('input', () => { cancelAnimationFrame(raf); render(s.valueAsNumber); });
   render(HOT);
   // Play the cool-down once, when the scene first comes into view.
@@ -371,7 +443,7 @@ function heat() {
 
 /* ---------- 04 the glory hole: the glasses ---------- */
 // A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recoloured by
-// each lens's transmission: the room by the lens under daylight, the glowing parts by the lens
+// each lens's transmission: the room by the lens under the page's lamp, the glowing parts by the lens
 // against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
 // lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
 const LENS_NOTES = {
@@ -406,10 +478,18 @@ function glasses() {
   const linOf = (v) => [[3.2404542, -1.5371385, -0.4985314], [-0.969266, 1.8760108, 0.041556], [0.0556434, -0.2040259, 1.0572252]]
     .map((r) => Math.max(1e-6, r[0] * v[0] + r[1] * v[1] + r[2] * v[2]));
   const FLARE = na.lineSpectrum();
-  const lensData = Object.fromEntries(Object.entries(na.LENSES).map(([id, { label, T }]) => {
-    const paper = spectrumColor(T5(T), DAY); // white paper seen through the lens
-    return [id, { id, label, T, room: norm(paper.lin), roomCss: paper.css, flareT: na.xyz(FLARE, T)[1] / na.xyz(FLARE)[1] }];
-  }));
+  const lensData = Object.fromEntries(Object.entries(na.LENSES).map(([id, { label, T }]) =>
+    [id, { id, label, T, flareT: na.xyz(FLARE, T)[1] / na.xyz(FLARE)[1] }]));
+  // The room through each lens depends on the lamp: white paper seen through the lens, relative to
+  // bare paper, and the share of the lamp's light the lens lets through (on the 1 nm grid).
+  function relightLenses() {
+    const bare = tColor(ONES).lin, spd = fineSpd(lamp);
+    for (const d of Object.values(lensData)) {
+      const paper = tColor(T5(d.T));
+      Object.assign(d, { room: norm(paper.lin.map((v, i) => v / Math.max(1e-6, bare[i]))), roomCss: paper.css, lampT: na.luminousT(d.T, spd) });
+    }
+    for (const b of box.querySelectorAll('button')) b.firstChild.style.setProperty('--c', lensData[b.dataset.id].roomCss);
+  }
   const fireCache = new Map();
   function fire(lensId, tK) { // glow multiplier and luminous transmission for a black body at tK
     const key = `${lensId}:${Math.round(tK / 10)}`;
@@ -453,14 +533,15 @@ function glasses() {
 
   // Lens chips, meters and the spectrum strip.
   let cur = 'didymium', last = null;
-  const api = { onChange: null, render };
+  const api = { onChange: null, render, relight: () => { relightLenses(); last = null; } };
   const box = $('lensPick');
   for (const id of Object.keys(lensData)) {
-    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': lensData[id].roomCss } }), lensData[id].label);
+    const b = h('button', { className: 'chip' }, h('i'), lensData[id].label);
     b.dataset.id = id;
     b.addEventListener('click', () => { cur = id; api.onChange?.(); });
     box.appendChild(b);
   }
+  relightLenses();
   const meters = $('lensMeters');
   const meter = (label, v, color) => h('div', {}, h('dt', {}, label), h('dd', {}, v < 0.1 ? `${(v * 100).toFixed(1)}%` : `${Math.round(v * 100)}%`), h('i', { style: { '--v': `${Math.min(100, v * 100)}%`, '--c': color } }));
 
@@ -521,8 +602,10 @@ function glasses() {
         meter('sodium flare reaching you', d.flareT, css(naColor)),
         meter('light from the glass', f.lumT, '#ff8a2a'),
         meter('near infrared, 780–1400 nm', ir, '#c9786a'),
+        meter(`room light (${lamp.label})`, d.lampT, lampColor(lamp.spd)),
       );
-      $('lensRead').textContent = LENS_NOTES[cur];
+      $('lensRead').textContent = LENS_NOTES[cur] + (lamp.lines && cur !== 'none'
+        ? ' Under the sodium street lamp the trick runs backwards: the notch that removes the flare removes almost all the light there is, and the room goes nearly black.' : '');
       drawStrip(d.T, tK, flare);
     }
   }
@@ -550,7 +633,7 @@ function strike() {
   const renderGold = () => {
     const t = sG.valueAsNumber / 100, T = goldT(t);
     $('goldPane').style.setProperty('--c', tColor(T).css);
-    strip($('stripGold'), ONES, T);
+    strip($('stripGold'), T);
     const lab = t < 0.15 ? 'unstruck' : t < 0.4 ? 'pink' : t < 0.7 ? 'ruby' : 'over-struck';
     $('goldTag').textContent = lab; $('goldOut').textContent = lab;
     $('goldRead').textContent = t < 0.15 ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
@@ -560,14 +643,14 @@ function strike() {
   const renderGap = () => {
     const eV = sE.valueAsNumber / 100, edge = 1240 / eV, T = bandEdge(eV);
     $('gapPane').style.setProperty('--c', tColor(T).css);
-    strip($('stripGap'), ONES, T);
+    strip($('stripGap'), T);
     $('gapOut').textContent = `${eV.toFixed(2)} eV · edge ${Math.round(edge)} nm`;
     $('gapTag').textContent = eV > 2.3 ? 'yellow' : eV > 2.05 ? 'orange' : eV > 1.85 ? 'red' : 'deep red';
     $('gapRead').textContent = `Every photon above ${eV.toFixed(2)} eV (shorter than ${Math.round(edge)} nm) is absorbed; everything longer passes. A sharp edge gives these colors their clean, saturated look.`;
   };
   sG.addEventListener('input', renderGold); sE.addEventListener('input', renderGap);
   addEventListener('resize', () => { renderGold(); renderGap(); });
-  renderGold(); renderGap();
+  onLamp(() => { renderGold(); renderGap(); });
 }
 
 /* ---------- 06 the cold shop: dichroic ---------- */
@@ -586,10 +669,11 @@ function dichroic() {
     set('d-tr', { x1: bx, y1: y0 + 34, x2: ex, y2: ey, stroke: tc.css });
     set('d-tref', { x: Math.min(505, x0 + dx + 4), y: Math.max(16, y0 - dy - 10) });
     set('d-ttr', { x: Math.min(420, ex + 12), y: Math.min(312, ey) });
-    strip($('stripDi'), R.map((r) => Math.min(1, r / 0.9)), T);
+    const light = lampLight();
+    strip($('stripDi'), T, light.map((v, i) => v * Math.min(1, R[i] / 0.9)), light.map((v, i) => v * T[i]));
     $('angleOut').textContent = `${deg}° · band at ${Math.round(center)} nm`;
   };
-  s.addEventListener('input', render); addEventListener('resize', render); render();
+  s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
 /* ---------- 07 the rack: real supplier colours on hue shelves ---------- */
@@ -620,7 +704,7 @@ function rack() {
   }
   items.forEach((it, i) => {
     const d = document.createElement('div');
-    d.style.setProperty('--c', it.hex); d.dataset.i = i;
+    d.style.setProperty('--c', it.hex); d.dataset.i = i; it.el = d; it.c = it.hex;
     if (it.opacity === 'opaque') d.className = 'op';
     rows[it.shelf].lastChild.appendChild(d);
   });
@@ -641,12 +725,45 @@ function rack() {
     on?.classList.remove('on'); on = el; el.classList.add('on');
     const colorants = it.colorant.length ? ` · ${it.colorant.join(', ')}` : '';
     tag.replaceChildren(
-      h('i', { style: { '--c': it.hex } }),
+      h('i', { style: { '--c': it.c } }),
       h('div', {}, h('strong', {}, it.name), h('span', {}, `${it.supplier} · ${it.code} · ${it.opacity}${colorants} · ${MECH_NOTE[it.mechanism] ?? it.mechanism}`)),
     );
   };
+  const bench = fitBench();
+  let pinned = null;
   mosaic.addEventListener('pointerover', (e) => show(e.target));
-  mosaic.addEventListener('click', (e) => show(e.target));
+  mosaic.addEventListener('pointerleave', () => pinned && show(pinned));
+  const pick = (el) => {
+    pinned = el; show(pinned); bench(items[pinned.dataset.i]);
+    // On a phone the bench sits under the shelves, out of sight.
+    if (matchMedia('(max-width: 820px)').matches) $('fit').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+  };
+  mosaic.addEventListener('click', (e) => e.target?.dataset?.i && pick(e.target));
+  // Keyboard: the rack is one tab stop; arrow keys walk the visible rods, Enter puts one on the bench.
+  mosaic.tabIndex = 0;
+  mosaic.setAttribute('aria-label', 'rack of rods: arrow keys to browse, Enter to reverse-engineer');
+  mosaic.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (step) {
+      const vis = [...mosaic.querySelectorAll('.rods div')].filter((d) => d.style.display !== 'none');
+      const at = vis.indexOf(on);
+      show(vis[Math.min(vis.length - 1, Math.max(0, at < 0 ? 0 : at + step))]);
+      on?.scrollIntoView({ block: 'nearest' });
+      e.preventDefault();
+    } else if ((e.key === 'Enter' || e.key === ' ') && on) { pick(on); e.preventDefault(); }
+  });
+  // Start the bench on a rod whose label names its colorant and whose photo that colorant can
+  // match (Bullseye's cadmium yellow), so the first thing it shows is a claim that checks out.
+  // Wait until the rack is near the screen: a fit takes a moment.
+  const first = [...mosaic.querySelectorAll('.rods div')].find((d) => items[d.dataset.i].code === '004220')
+    ?? mosaic.querySelector('.rods div');
+  if (first) {
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting) || pinned) return;
+      io.disconnect(); pinned = first; show(first); bench(items[first.dataset.i]);
+    }, { rootMargin: '300px' });
+    io.observe($('fit'));
+  }
 
   const counts = items.reduce((m, it) => ((m[it.mechanism] = (m[it.mechanism] || 0) + 1), m), { all: items.length });
   const box = $('filters');
@@ -656,12 +773,281 @@ function rack() {
       for (const x of box.children) x.setAttribute('aria-pressed', String(x === b));
       for (const d of mosaic.querySelectorAll('.rods div')) d.style.display = id === 'all' || items[d.dataset.i].mechanism === id ? '' : 'none';
       if (on && on.style.display === 'none') { on.classList.remove('on'); on = null; tag.replaceChildren(...blank.map((n) => n.cloneNode(true))); }
+      if (pinned && pinned.style.display === 'none') pinned = null; // the bench keeps its last result
       recount();
     });
     box.appendChild(b);
   }
+
+  // Relighting: the swatches are photos, not spectra, so each gets a smooth spectrum that reproduces
+  // its daylight colour (spectra.js upsample), fitted the first time the lamp changes.
+  let fitted = false;
+  onLamp(() => {
+    if (lamp === LAMP.daylight && !fitted) return;
+    for (const it of items) {
+      if (!fitted) it.T = upsample([1, 3, 5].map((i) => parseInt(it.hex.slice(i, i + 2), 16) / 255), LAMP.daylight.spd);
+      it.c = lamp === LAMP.daylight ? it.hex : tColor(it.T).css;
+      it.el.style.setProperty('--c', it.c);
+    }
+    fitted = true;
+    if (on) show(on);
+  });
+}
+
+/* ---------- 08 the showroom: uranium glass gives light back ---------- */
+function showroom() {
+  const canvas = $('stripU');
+  for (const id of ['black', 'daylight']) {
+    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': lampColor(LAMP[id].spd) } }), `switch on ${LAMP[id].label}`);
+    b.addEventListener('click', () => setLamp(LAMP[id]));
+    $('uLamps').appendChild(b);
+  }
+  // The strip runs from 300 nm so the ultraviolet shows: hatched, because the eye cannot see it.
+  function draw(top, bottom, curve) {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), hh = Math.max(1, Math.round(r.height * dpr));
+    if (canvas.width !== w || canvas.height !== hh) { canvas.width = w; canvas.height = hh; }
+    const ctx = canvas.getContext('2d'), n = u.EXT.length, nUV = u.UV.length;
+    const half = Math.round(hh * 0.42), gap = Math.round(hh * 0.08);
+    const color = (i, v) => (i < nUV ? `rgba(150, 110, 255, ${0.08 + 0.85 * v})` : css(SPECTRAL[i - nUV].map((c) => encode(c * v))));
+    ctx.clearRect(0, 0, w, hh);
+    for (let i = 0; i < n; i++) {
+      const x0 = Math.floor((i / n) * w), x1 = Math.ceil(((i + 1) / n) * w);
+      ctx.fillStyle = color(i, top[i]); ctx.fillRect(x0, 0, x1 - x0, half);
+      ctx.fillStyle = color(i, bottom[i]); ctx.fillRect(x0, half + gap, x1 - x0, hh - half - gap);
+    }
+    const xv = (nUV / n) * w; // hatch the invisible part
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, xv, hh); ctx.clip();
+    ctx.strokeStyle = 'rgba(0, 0, 0, .35)'; ctx.lineWidth = 1 * dpr;
+    for (let x = -hh; x < xv; x += 6 * dpr) { ctx.beginPath(); ctx.moveTo(x, hh); ctx.lineTo(x + hh, 0); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.2 * dpr; ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const x = ((i + 0.5) / n) * w, y = hh - 3 * dpr - curve[i] * (hh - half - gap - 6 * dpr);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+  }
+  function render() {
+    const c = uraniumOf(), Text = u.EXT.map((w) => 10 ** -u.density(w));
+    const out = u.EXT.map((w, i) => lamp.ext[i] * Text[i] + (i < u.UV.length ? 0 : c.F[i - u.UV.length]));
+    const peak = (a) => Math.max(...a, 1e-30);
+    draw(lamp.ext.map((v) => v / peak(lamp.ext)), out.map((v) => v / peak(out)), Text);
+    $('uPane').style.setProperty('--c', c.css);
+    $('uPane').style.setProperty('--glow', c.glowCss);
+    $('uPane').classList.toggle('lit', c.glow > 0.5);
+    const pct = c.glow * 100, share = pct < 0.1 ? 'under 0.1%' : pct < 10 ? `${pct.toFixed(1)}%` : `${Math.round(pct)}%`;
+    $('uTag').textContent = `${share} of this light is glow`;
+    $('uRead').textContent = lamp.dark
+      ? 'The torch puts out almost nothing you can see, so there is nothing to take away. The glass absorbs the ultraviolet and sends a share of it back out as green: all the light you see from it is light it made.'
+      : lamp.lines
+        ? 'The sodium lamp has no ultraviolet and no blue, so there is nothing for the uranium to absorb or to re-emit. It looks like plain glass, the same orange as everything else.'
+        : `Under ${lamp.label} the glass is mostly a filter: it takes away violet and blue and looks yellow. The ultraviolet in the light makes ${share} of what you see from it, a faint green cast on top.`;
+  }
+  addEventListener('resize', render); onLamp(render);
+}
+
+/* ---------- the lamp switch: one light for the whole page ---------- */
+// The page's paper, table and rules are lit by the lamp too: each base colour is multiplied by the
+// colour white paper takes on under it.
+const BASE = { '--paper': '#f3f4f1', '--paper-2': '#e9eae5', '--rule': '#d6d8d2', '--panel': '#fafaf8' };
+// When the paper goes nearly black (the black light), the page needs light ink and visible rules.
+const DARK = { '--rule': '#2d2838', '--paper-2': '#17131f', '--panel': '#110e18' };
+let setLamp = () => {};
+function lampSwitch() {
+  const bar = $('lamps'), spark = $('lampSpark'), root = document.documentElement;
+  const hex = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16) / 255);
+  const buttons = LAMPS.map((l) => {
+    const b = h('button', { className: 'lamp', 'aria-pressed': String(l === lamp) }, h('i', { style: { '--c': lampColor(l.spd) } }), l.label);
+    b.addEventListener('click', () => set(l));
+    bar.appendChild(b);
+    return [b, l];
+  });
+  function sparkline() {
+    const r = spark.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), hh = Math.max(1, Math.round(r.height * dpr));
+    if (spark.width !== w || spark.height !== hh) { spark.width = w; spark.height = hh; }
+    const ctx = spark.getContext('2d'), L = lampLight(), n = GRID.length;
+    ctx.clearRect(0, 0, w, hh);
+    for (let i = 0; i < n; i++) {
+      const x0 = Math.floor((i / n) * w), x1 = Math.ceil(((i + 1) / n) * w), y = Math.max(1 * dpr, L[i] * hh);
+      ctx.fillStyle = css(SPECTRAL[i].map((v) => encode(Math.min(1, v * 1.6))));
+      ctx.fillRect(x0, hh - y, x1 - x0, y);
+    }
+  }
+  function set(l) {
+    lamp = l;
+    const tint = tColor(ONES).rgb;
+    const dark = 0.2126 * tint[0] + 0.7152 * tint[1] + 0.0722 * tint[2] < 0.2;
+    for (const [k, v] of Object.entries(BASE)) root.style.setProperty(k, dark && DARK[k] ? DARK[k] : css(hex(v).map((c, i) => c * tint[i])));
+    root.style.setProperty('--tint', css(tint));
+    root.toggleAttribute('data-dark', dark);
+    for (const [b, x] of buttons) b.setAttribute('aria-pressed', String(x === l));
+    $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
+    $('lampNote').textContent = l.note;
+    sparkline();
+    for (const fn of relight) fn();
+  }
+  addEventListener('resize', sparkline);
+  setLamp = set;
+  set(lamp);
+}
+
+/* ---------- ← the record: the history rail ---------- */
+function historyRail() {
+  const box = $('history');
+  // a pin's colour comes from the same engine as the stage it links to, under the page's lamp
+  const pinColor = (c) => (c.uranium ? uraniumOf(c.thickness ?? 1)
+    : c.dichroic != null ? tColor(dichroicBand(c.dichroic).R.map((r) => 1 - r)) : colorOf(c.parts, c.thickness ?? 1)).css;
+  onLamp(() => {
+    for (const p of history.pins) {
+      if (!p.color) continue;
+      for (const el of box.querySelectorAll(`[data-pin="${p.id}"]`)) el.style.setProperty('--c', pinColor(p.color));
+    }
+  });
+  const buttons = [...box.querySelectorAll('.pin button')], cards = [...box.querySelectorAll('.hist-card')];
+  const pick = (id) => {
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.id === id));
+    for (const c of cards) c.hidden = c.dataset.id !== id;
+  };
+  for (const b of buttons) {
+    b.addEventListener('click', () => pick(b.dataset.id));
+    b.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') pick(b.dataset.id); });
+    b.addEventListener('focus', () => pick(b.dataset.id));
+  }
+  pick(history.pins[0].id);
+
+  // Lanes: the build guesses them from a nominal label width; here they are redone from the
+  // measured labels, so neighbours never overlap at any width. A tick's year hides under a stem.
+  const rail = box.querySelector('.hist-rail'), pinEls = [...rail.querySelectorAll('.pin')], ticks = [...rail.querySelectorAll('.hist-tick')];
+  const pct = (el) => parseFloat(el.style.getPropertyValue('--x')) / 100;
+  const lanes = () => {
+    const W = rail.clientWidth;
+    if (getComputedStyle(rail).display === 'grid') return; // the phone layout is a plain list
+    // Each label takes a lane and a side of its stem. A label may not overlap another in its lane,
+    // and an outer stem may not cross an inner label. A small depth-first search finds a fit.
+    const P = pinEls.map((el) => ({ el, x: pct(el) * W, w: el.querySelector('.pin-lab').offsetWidth + 12 }));
+    const OPTS = ['up1', 'down1', 'up2', 'down2'].flatMap((lane) => [[lane, 'left'], [lane, 'right']]);
+    const hits = (a, b, c, d) => !(b < c || a > d);
+    const fits = (i, lane, side, placed) => {
+      const { x, w } = P[i], [a, b] = side === 'left' ? [x, x + w] : [x - w, x];
+      if (a < 0 || b > W) return false;
+      const up = lane.slice(0, -1), outer = lane.endsWith('2');
+      return placed.every((q, j) => {
+        if (q.lane === lane && hits(a, b, q.a, q.b)) return false;
+        if (q.lane.slice(0, -1) !== up) return true;
+        const qOuter = q.lane.endsWith('2');
+        if (outer && !qOuter && hits(x - 4, x + 4, q.a, q.b)) return false;
+        if (!outer && qOuter && hits(P[j].x - 4, P[j].x + 4, a, b)) return false;
+        return true;
+      }) && { lane, side, a, b };
+    };
+    let steps = 0;
+    const solve = (i, placed) => {
+      if (i === P.length) return placed;
+      if (++steps > 20000) return null;
+      for (const [lane, side] of OPTS) {
+        const q = fits(i, lane, side, placed), done = q && solve(i + 1, [...placed, q]);
+        if (done) return done;
+      }
+      return null;
+    };
+    const plan = solve(0, []), downs = [];
+    if (!plan) return; // keep the build's lanes
+    plan.forEach((q, i) => {
+      P[i].el.dataset.lane = q.lane; P[i].el.dataset.side = q.side;
+      if (q.lane.startsWith('down')) downs.push(P[i].x);
+    });
+    const left = rail.getBoundingClientRect().left;
+    for (const t of ticks) {
+      const s = t.querySelector('span'), r = s.getBoundingClientRect();
+      s.style.visibility = downs.some((d) => d > r.left - left - 4 && d < r.right - left + 4) ? 'hidden' : '';
+    }
+  };
+  lanes(); addEventListener('resize', lanes);
+}
+
+/* ---------- 07 the rack, continued: the bench works a rod backwards to a melt ---------- */
+const BENCH_LAMP = 'a tungsten bulb';
+function fitBench() {
+  const fitter = makeFitter(optics, { lamp: 'incandescent' });
+  const lab = (id) => COLORANT[id]?.label ?? id;
+  const names = (parts) => parts.map(([id]) => lab(id)).join(' + ');
+  const verdict = (dE) =>
+    dE <= 1 ? 'Side by side you could not tell them apart.'
+    : dE <= MATCH ? 'Close enough to pass for the same color side by side.'
+    : dE <= 6 ? 'Near, but visibly off. The twelve curves cannot quite reach this color.'
+    : 'Far off. No melt of these colorants makes this color, so something else is going on.';
+  // A melt in the mixing lab: concentrations up to 1 at a wall up to 4× thick, so scale the
+  // wall to fit the strongest colorant and divide it back out.
+  const labLink = (parts) => {
+    const t = Math.min(4, 2 ** Math.max(0, Math.ceil(Math.log2(Math.max(...parts.map(([, c]) => c))))));
+    const melt = parts.map(([id, c]) => `${id}:${(c / t).toFixed(3)}`).join(',');
+    return `${$('fitLab').getAttribute('href').split('?')[0]}?melt=${melt}&t=${t}`;
+  };
+  const row = (r, name) => h('div', {}, h('span', {}, name),
+    h('i', { style: { '--c': r.hex }, title: 'daylight' }), h('i', { style: { '--c': r.lamp.hex }, title: BENCH_LAMP }));
+  let job = 0;
+
+  return function show(it) {
+    const id = ++job;
+    $('fitEmpty').hidden = true; $('fitBody').hidden = false;
+    $('fitName').textContent = it.name;
+    $('fitMeta').textContent = `${it.supplier} · ${it.code} · ${it.opacity}`;
+    $('fitPhoto').style.setProperty('--c', it.hex);
+    $('fit').classList.add('busy');
+    $('fitVerdict').textContent = 'Weighing every melt of up to three colorants…';
+    // Yield a frame so the click paints before the search runs.
+    setTimeout(() => {
+      if (id !== job) return;
+      const r = fitter.fit(it.hex), b = r.best;
+      $('fit').classList.remove('busy');
+      $('fitGlass').style.setProperty('--c', b.hex);
+      $('fitVerdict').replaceChildren(
+        h('b', {}, `ΔE ${b.dE.toFixed(1)}. `), verdict(b.dE),
+        ` ${r.matches} of the ${r.tried} melts tried ${r.matches === 1 ? 'matches' : 'match'} this photo; this is the simplest.`,
+      );
+      const top = Math.log(C_MAX / 0.01);
+      $('fitRecipe').replaceChildren(...b.parts.map(([cid, c]) => h('li', {},
+        h('i', { style: { '--c': colorOf([[cid, 1]], 1.2).css } }),
+        h('span', {}, lab(cid)),
+        h('em', { style: { '--w': `${Math.max(4, (100 * Math.log(c / 0.01)) / top)}%` } }),
+        h('output', {}, `×${c < 0.1 ? c.toFixed(3) : c.toFixed(2)}`),
+      )));
+      strip($('fitStrip'), mixT(b.parts));
+
+      if (r.alternatives.length) {
+        const alt = r.alternatives[0];
+        $('fitSplit').textContent = `Here is the simplest melt beside the other matching melt that disagrees with it most under ${BENCH_LAMP}. In daylight they are ΔE ${alt.gap.toFixed(1)} apart. Under the bulb they are ${alt.split.toFixed(1)} apart${alt.split > 3 ? ', which a glassblower holding both rods would see' : ', still close: this palette has few ways to make this color'}.`;
+        $('fitAlts').replaceChildren(
+          h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')),
+          ...[b, ...r.alternatives].map((x, i) => row(x, i ? names(x.parts) : `${names(x.parts)} (simplest)`)),
+        );
+      } else {
+        $('fitSplit').textContent = `No other melt matches, so within this palette the recipe is fairly well pinned down. Under ${BENCH_LAMP} it looks like this:`;
+        $('fitAlts').replaceChildren(h('div', { className: 'key' }, h('span'), h('b', {}, 'day'), h('b', {}, 'bulb')), row(b, names(b.parts)));
+      }
+
+      const known = it.colorant.filter((c) => COLORANT[c]);
+      if (known.length) {
+        const l = fitter.fit(it.hex, { only: known }).best;
+        const ok = l.dE <= MATCH ? 'matches the photo, so the label and the color agree' : l.dE <= 6 ? 'comes near the photo but not all the way' : 'cannot reach the photo. The photo, the label or the page\'s illustrative curve for it must be off, or the color comes from something the label does not name';
+        $('fitLabel').replaceChildren(h('b', {}, 'The label says ' + names(known.map((c) => [c])) + '. '), `${known.length > 1 ? 'Together, at their best amounts, they reach' : 'On its own, at its best amount, it reaches'} ΔE ${l.dE.toFixed(1)}: ${known.length > 1 ? 'the mix' : 'it'} ${ok}.`);
+      } else $('fitLabel').replaceChildren(h('b', {}, 'No colorant on the label. '), 'The supplier does not say what is in this one, so the bench has nothing to check its guess against.');
+
+      const scatter = ' The photo shows light scattered back from inside the glass, not light passed through it, so a transmission fit is only an analogy.';
+      const lit = {
+        transparent: '', translucent: scatter, opal: scatter, opalescent: scatter,
+        streaky: ' This is a streaky glass, so the swatch is an average of several colors that may each have their own recipe.',
+        metallic: ' This glass gets its look partly from a metallic surface or sparkle, which no absorption curve describes.',
+        dichroic: ' A dichroic coating colors this glass by interference, not absorption, so no melt is the true answer.',
+      }[it.opacity] ?? ' The catalog does not say whether it is transparent. If it is opaque, the fit is only an analogy.';
+      $('fitCaveat').textContent = `The bench fits the photo, which carries its own lighting and white balance.${lit}`;
+      $('fitLab').href = labLink(b.parts);
+    }, 30);
+  };
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack();
+  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
 }

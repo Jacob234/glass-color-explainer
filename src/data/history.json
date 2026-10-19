@@ -1,0 +1,82 @@
+{
+  "note": "The history rail on the home page. Each pin is coloured by the same engine as the stages: parts are [colorantId, concentration] pairs through Beer–Lambert at the given thickness, or a dichroic band at an angle, or uranium glass through the showroom's absorption-and-emission model. A pin with no colour is one the engine cannot model yet. stage is the id of the home-page section that explains it.",
+  "pins": [
+    {
+      "id": "cobalt", "short": "Cobalt blue", "year": -1400, "when": "c. 1400 BCE", "title": "Cobalt blue in Egypt",
+      "text": "Glass of Egypt's 18th Dynasty is already coloured with cobalt, the same ion as in a modern blue rod. Cobalt was used as a blue on pottery of the same period too.",
+      "color": { "parts": [["cobalt", 0.9]], "thickness": 1.2 },
+      "stage": "ions",
+      "sources": [
+        ["Internet Archaeology 52: cobalt-blue glass of the 18th Dynasty", "https://www.intarch.ac.uk/journal/issue52/3/index.html"],
+        ["CAMEO: Amarna blue", "https://cameo.mfa.org/wiki/Amarna_blue"]
+      ]
+    },
+    {
+      "id": "lycurgus", "short": "Lycurgus cup", "year": 300, "when": "c. 290–325 CE", "title": "The Lycurgus cup",
+      "text": "A Roman cage cup that looks jade green in reflected light and glows red when lit from inside. About 330 ppm of silver and 40 ppm of gold sit in it as particles about 70 nm across. The pin shows the transmitted colour; the green is scattered light, which this engine does not model.",
+      "color": { "parts": [["gold-colloid", 0.7], ["silver-colloid", 0.3]], "thickness": 1.4 },
+      "stage": "strike",
+      "sources": [["Wikipedia: Lycurgus Cup (British Museum 1958,1202.1)", "https://en.wikipedia.org/wiki/Lycurgus_Cup"]]
+    },
+    {
+      "id": "forest", "short": "Forest glass", "year": 1000, "until": 1700, "when": "c. 1000–1700", "title": "Forest glass",
+      "text": "North of the Alps, glass was melted in woodland furnaces with potash from wood ash. Iron in the sand and the furnace atmosphere left it green, from pale to deep.",
+      "color": { "parts": [["iron-ferrous", 0.6], ["iron-ferric", 0.3]], "thickness": 2 },
+      "stage": "melt",
+      "sources": [["Wikipedia: Forest glass", "https://en.wikipedia.org/wiki/Forest_glass"]]
+    },
+    {
+      "id": "cristallo", "short": "Cristallo", "year": 1450, "when": "c. 1450", "title": "Venetian cristallo",
+      "text": "Angelo Barovier of Murano is credited with a nearly colourless glass. Small additions of manganese oxide cancel the iron's tint: manganese absorbs in the green, iron at the ends, and together they take a little of everything, which reads as clear.",
+      "color": { "parts": [["iron-ferrous", 0.04], ["iron-ferric", 0.03], ["manganese", 0.03]], "thickness": 4 },
+      "stage": "batch",
+      "sources": [["Wikipedia: Cristallo", "https://en.wikipedia.org/wiki/Cristallo"]]
+    },
+    {
+      "id": "ruby", "short": "Gold ruby", "year": 1679, "when": "1676–c. 1679", "title": "Gold ruby",
+      "text": "In 1676 the Hamburg physician Andreas Cassius reported the red that gold chloride gives. By about 1679 Johann Kunckel was making ruby glass in Potsdam and keeping the recipe secret. It comes out of the melt grey and turns red only on reheating.",
+      "color": { "parts": [["gold-colloid", 1.1]], "thickness": 1.2 },
+      "stage": "strike",
+      "sources": [["Britannica: ruby glass", "https://www.britannica.com/technology/ruby-glass"]]
+    },
+    {
+      "id": "uranium", "short": "Uranium glass", "year": 1830, "when": "1830s", "title": "Uranium glass",
+      "text": "In Bohemia, Franz Xaver Riedel named his uranium yellow and yellow-green glasses annagelb and annagrün after his daughter. In the US, production stopped in 1942 when uranium went to the Manhattan Project. Under ultraviolet light it glows green: it gives light out instead of taking it away. Its pin is drawn with the showroom's fluorescence model, so switch on the black light to see it glow.",
+      "color": { "uranium": true },
+      "stage": "showroom",
+      "sources": [["Wikipedia: Uranium glass", "https://en.wikipedia.org/wiki/Uranium_glass"]]
+    },
+    {
+      "id": "didymium", "short": "Didymium split", "year": 1885, "when": "1885", "title": "Didymium split in two",
+      "text": "Carl Auer von Welsbach separated didymium, named in 1841 as one element, into neodymium and praseodymium. Didymium glasses need both to block the sodium flare.",
+      "color": { "parts": [["neodymium", 1.6]], "thickness": 1 },
+      "stage": "glasses",
+      "sources": [["Wikipedia: Didymium", "https://en.wikipedia.org/wiki/Didymium"]]
+    },
+    {
+      "id": "selenium", "short": "Selenium red", "year": 1891, "when": "1891", "title": "Selenium red",
+      "text": "Franz Welz of Klostergrab in Bohemia patented selenium as a glass colorant (German patent 63558, December 1891; US patent 479,689, 1892). Selenium alone gave a rose; with cadmium sulfide it gave orange-red to orange-yellow. The deep cadmium sulfoselenide ruby of signal lamps came later and was described in the Journal of the American Ceramic Society in 1919.",
+      "color": { "parts": [["cdsse", 1]], "thickness": 1.2 },
+      "stage": "strike",
+      "sources": [
+        ["US patent 479,689: Welz, rose or orange stained glass (1892)", "https://patents.google.com/patent/US479689"],
+        ["Yuryeva et al., Materials Research Bulletin, citing DE patent 63558 (6 Dec 1891)", "https://arxiv.org/html/1901.10764v3"],
+        ["Corning Museum of Glass: when was selenium first used?", "https://libanswers.cmog.org/faq/143954"]
+      ]
+    },
+    {
+      "id": "crookes", "short": "Crookes's glass", "year": 1913, "when": "1913", "title": "Crookes's eye-preserving glass",
+      "text": "On 10 November 1913 the Royal Society's Glassworkers' Cataract Committee adopted William Crookes's report on \"eye-preserving glass for spectacles\". His glasses used iron to absorb a furnace's infrared.",
+      "color": { "parts": [["iron-ferrous", 0.7]], "thickness": 1.4 },
+      "stage": "glasses",
+      "sources": [["Royal Society archive: committee minutes, 10 Nov 1913", "https://catalogues.royalsociety.org/CalmView/rdf/catalog/CMB/10/28"]]
+    },
+    {
+      "id": "dichroic", "short": "Thin-film filter", "year": 1939, "when": "1939", "title": "The interference filter",
+      "text": "Walter Geffcken at Schott in Jena filed a patent for a light filter made of stacked thin films. Dichroic art glass is often credited to NASA, but the multilayer filter behind it is older.",
+      "color": { "dichroic": 20 },
+      "stage": "light",
+      "sources": [["Patent DE716153C, filed 8 Dec 1939", "https://patents.google.com/patent/DE716153C"]]
+    }
+  ]
+}
