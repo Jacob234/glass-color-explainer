@@ -7,10 +7,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <article class="concept">
     <h1>Forming lab</h1>
     <p class="summary">
-      Glassblowing is a race against viscosity. A gather fresh from the furnace is runny enough to drip
+      Glassblowing is limited by viscosity, which rises as the glass cools. A gather fresh from the furnace is runny enough to drip
       off the pipe in a couple of seconds; a minute later its skin is past the working point. Everything a
       blower does, turning, reheating, blowing in puffs, swinging, is a way of steering three slow flows
-      while the glass cools. Here they are, computed.
+      while the glass cools. The simulator below computes them.
     </p>
     <FormingSim />
 
@@ -53,7 +53,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <p>
       Glass is incompressible, so when the bubble grows every shell must move outward with velocity
       u = C/r², whatever its temperature. That fixes the flow, and the pressure it needs follows
-      exactly: Δp = ∫ 12 η(r) C / r⁴ dr across the wall. Two consequences fall out. The 1/r⁴ weight puts
+      exactly: Δp = ∫ 12 η(r) C / r⁴ dr across the wall. Two consequences follow. The 1/r⁴ weight puts
       almost all the stretching in the glass next to the bubble, so in a thick gather the core's heat,
       not the skin's, decides whether it will blow. And for a thin wall the rate becomes
       da/dt = Δp a² / 12 η h: it grows as the bubble grows and the wall thins, which is the runaway.
@@ -66,7 +66,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       elastic deformation, with velocities in place of displacements and 3η in place of Young's modulus
       (the Stokes–Rayleigh analogy, exact for incompressible material; the attribution is from memory, unverified). So the elastic tip deflection wL⁴/8EI becomes a
       deflection <i>rate</i>. Its stiffness weights each shell by r³, the opposite of blowing: the skin
-      carries the bending. That is the blower's trick, as the model has it: let the skin chill and it
+      carries the bending. In the model, this is how a blower keeps control: let the skin chill and it
       holds the gather straight while the core is still hot enough to blow.
     </p>
     <p>

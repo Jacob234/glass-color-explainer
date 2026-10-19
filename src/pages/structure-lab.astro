@@ -8,9 +8,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <p class="detail-type">a simulation</p>
     <h1>Structure Lab</h1>
     <p class="summary">
-      Four hundred atoms on the table, pushed around by nothing but their own heat and the forces
-      between them. Melt them, then choose how fast to take the heat away. Cooled slowly, they find
-      a crystal. Cooled fast, they run out of time and freeze where they stand. That frozen liquid
+      Four hundred atoms, moved only by their thermal motion and the forces
+      between them. Melt them, then choose how fast to take the heat away. Cooled slowly, they form
+      a crystal. Cooled fast, they stop moving before they can order, and freeze in place. That frozen liquid
       is a glass.
     </p>
 
@@ -30,8 +30,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <strong>Mixed, slow then fast.</strong> Put the size difference back to 20%, cool slowly, then
         melt and quench. The slow run ends mostly in ordered patches; the quench leaves far more of
         the box disordered. On the curve, the slow run sinks lower: the crystal packs tighter and
-        holds less energy. Each run is a different roll of the dice, so two runs at the same rate
-        can differ by twenty points or so; the trend survives repeating.
+        holds less energy. Each run is random, so two runs at the same rate
+        can differ by twenty points or so; the trend holds over repeated runs.
       </p>
       <p>
         <strong>Very mixed, any rate.</strong> At 30% or more the two sizes no longer fit one lattice
@@ -75,7 +75,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h2>What the model leaves out</h2>
       <ul>
         <li><strong>The chemistry.</strong> These atoms attract and repel with no preferred direction, as argon does. Silicon and oxygen bond covalently at fixed angles, which is what builds the network. A model of silica needs a three-body or charged potential, such as the BKS potential.</li>
-        <li><strong>The third dimension.</strong> The atoms live in a plane. Two-dimensional crystallisation differs in detail from three, and two-dimensional crystals can melt through an intermediate, hexatic phase that three-dimensional ones lack. Still, a two-dimensional glass is not only a teaching device: in 2012 a sheet of silica glass two atoms thick was imaged atom by atom on graphene, and it looks much like Zachariasen's 1932 drawing.</li>
+        <li><strong>The third dimension.</strong> The atoms live in a plane. Two-dimensional crystallisation differs in detail from three, and two-dimensional crystals can melt through an intermediate, hexatic phase that three-dimensional ones lack. Two-dimensional glass also exists: in 2012 a sheet of silica glass two atoms thick was imaged atom by atom on graphene, and it looks much like Zachariasen's 1932 drawing.</li>
         <li><strong>Size.</strong> Four hundred atoms in a box that wraps around at its edges, so a grain the size of the box can meet itself. Real grains hold billions of atoms.</li>
         <li><strong>The bath.</strong> Temperature and pressure are held by the Berendsen thermostat and barostat, which rescale velocities and the box each step. They steer the averages well but do not give exactly the right fluctuations. The run uses velocity Verlet steps of 0.005 τ.</li>
         <li><strong>The order detector.</strong> An atom is drawn solid when its neighbours sit in a near-perfect hexagon and at least five of them are oriented the same way, by the sixfold bond-order test of ten Wolde, Ruiz-Montero and Frenkel adapted to a plane. The threshold is a choice; a glass in two dimensions always has a few small ordered clusters.</li>

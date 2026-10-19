@@ -8,9 +8,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <article class="concept">
     <h1>Mixing Lab</h1>
     <p class="summary">
-      Every concept page shows one colorant at a time. Real glass is a melt: pick up to four
+      Every concept page shows one colorant at a time. Real glass often holds several: pick up to four
       colorants, set their concentrations, and watch the combined absorption curve and the
-      transmitted color respond. The recipes set up classic combinations worth understanding.
+      transmitted color respond. The recipes load preset combinations.
     </p>
     <MixingLab client:load optics={optics} recipes={optics.recipes} />
     <p class="back"><a href={`${base}/`}>← back to the start</a></p>

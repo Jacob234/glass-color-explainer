@@ -52,13 +52,13 @@ const pins = history.pins.map((p) => {
 <section class="wrap hero">
   <h1>Why glass<br />has <i>color</i></h1>
   <div class="hero-sub">
-    <p>Glass is colored by what it takes away. White light goes in, and whatever the glass absorbs never comes out. Everything on this page follows from that, from the green edge of a windowpane to a ruby goblet.</p>
+    <p>Glass is colored by what it takes away. White light goes in, and whatever the glass absorbs never comes out. Most of this page follows from that, from the green edge of a windowpane to a ruby goblet, and the later stages show where the rule fails.</p>
     <span class="mono">Drag the glass.<br />Lay pieces over each other.</span>
   </div>
   <div class="table" id="table" aria-label="A light table with pieces of colored glass you can drag"></div>
   <div class="table-note">
     <span>Each piece's color is computed from the absorption curve of its colorant, through the CIE 1931 observer, under <b id="lampName">daylight</b>. Change the lamp at the foot of the screen and every color on the page is computed again.</span>
-    <span>Where pieces overlap the screen multiplies their colors, a fair stand-in for stacking two filters.</span>
+    <span>Where pieces overlap the screen multiplies their colors, which approximates stacking two filters.</span>
   </div>
   <p class="lamp-note" id="lampNote" aria-live="polite"></p>
 </section>
@@ -70,7 +70,7 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>Clear glass is <i>not</i> clear</h2>
     <div class="prose">
-      <p>Glass starts as sand, soda and lime, and sand carries a trace of iron. Look through a windowpane face on and you cross a few millimetres of it, too little for the iron to show. Look into the edge and you cross the whole width of the sheet. The same faint absorption, repeated over that distance, turns green.</p>
+      <p>Glass starts as sand, soda and lime, and sand carries a trace of iron. Look through a windowpane face on and you cross a few millimetres of it, too little for the iron to show. Look into the edge and you cross the whole width of the sheet. Over that distance the same faint absorption adds up to a visible green.</p>
     </div>
     <div class="bench">
       <Slab id="slab1" />
@@ -108,9 +108,9 @@ const pins = history.pins.map((p) => {
 <section class="wrap stage" id="ions">
   <div class="stage-rail"><div class="stage-num">03</div><span class="mono">the color rod</span></div>
   <div class="stage-body">
-    <h2>A few atoms eat <i>one</i> band of light</h2>
+    <h2>Each ion absorbs <i>its own</i> bands</h2>
     <div class="prose">
-      <p>Transition-metal ions are the workhorse colorants. Their outer d-electrons can be lifted between energy levels by light of particular colours, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod and watch which part of the spectrum goes missing.</p>
+      <p>Transition-metal ions are the most common colorants. Their outer d-electrons can be lifted between energy levels by light of particular colours, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod to see which part of the spectrum it removes.</p>
     </div>
     <div class="chips" id="rods" role="group" aria-label="colorant"></div>
     <div class="bench bench-tight">
@@ -152,7 +152,7 @@ const pins = history.pins.map((p) => {
           <div class="strip-key"><span>slice, end on</span><span>cane, side on</span></div></div>
         <p class="readout" id="caneRead"></p>
       </div>
-      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the colour was only ever half a millimetre deep.</p>
+      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the colour is only half a millimetre deep.</p>
       <p class="aside"><b>Model.</b> The bowl is a solid of revolution 170 mm across and 100 mm tall. Its wall runs from 1.1 mm at the rim to about 6 mm at the base and sits on a 6 mm floor, all scaled by the slider; the 8 mm foot is a separate gather and stays fixed. On the right each point's colour is Beer–Lambert through the glass a straight ray crosses there, front wall and back. On the left the cut wall is tinted by its thickness at right angles to the surface, and the floor and foot by the whole stack a ray straight up from the table would cross. Each rod is dosed so a 3 mm solid wall passes about 60% of daylight at amount ×1, since colorants differ in strength by an order of magnitude. The cased skin is 0.5 mm at six times that concentration, so face on it holds the same colorant as a 3 mm solid wall. The cane is 12 mm across with the same 0.5 mm skin, and the slice is 3 mm thick. Refraction at the curved surfaces, which bends real outlines, is ignored.</p>
     </div>
   </div>
@@ -164,8 +164,8 @@ const pins = history.pins.map((p) => {
     <div class="stage-body">
       <h2>At heat, glass gives back what it <i>takes</i></h2>
       <div class="prose">
-        <p>Pull a gather from the furnace and the color is gone: cobalt and copper both come out glowing orange. The reason is a law Gustav Kirchhoff published in 1860. At a given temperature, a body gives out at each wavelength exactly the share of a black body's light that it would absorb there. Cold, cobalt glass is blue because it takes away orange and red. Hot, it gives orange and red back. The blue it lets through it hardly emits, and at 1150 °C a black body has almost no blue to give anyway. Every colorant glows in its own absorption bands, so what you see at heat is the furnace's temperature written in the glass's absorption, not the color it will be.</p>
-        <p>Below about 525 °C, the Draper point, even a black body's glow is too faint to see, and the colorant finally shows. Glassblowers learn to work colors they cannot see.</p>
+        <p>Pull a gather from the furnace and the color is gone: cobalt and copper both come out glowing orange. The reason is a law Gustav Kirchhoff published in 1860. At a given temperature, a body gives out at each wavelength exactly the share of a black body's light that it would absorb there. Cold, cobalt glass is blue because it takes away orange and red. Hot, it gives orange and red back. The blue it lets through it hardly emits, and at 1150 °C a black body has almost no blue to give anyway. Every colorant glows in its own absorption bands, so the color at heat is set by the temperature and the absorption bands together, and says little about the color the glass will have cold.</p>
+        <p>Below about 525 °C, the Draper point, even a black body's glow is too faint to see, and the colorant finally shows. Above it, a glassblower works a color that does not show until the piece cools.</p>
       </div>
       <svg class="scene" id="scene" viewBox="0 0 900 300" aria-hidden="true">
         <defs>
@@ -222,7 +222,7 @@ const pins = history.pins.map((p) => {
           <p class="readout" id="heatRead"></p>
         </div>
       </div>
-      <p class="aside"><b>Computed, not painted.</b> The glow is Planck's law times the gather's emissivity, integrated against the colour-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
+      <p class="aside"><b>How the glow is computed.</b> The glow is Planck's law times the gather's emissivity, integrated against the colour-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
 
       <p class="more"><a href={`${base}/forming-lab/`}>Work a gather yourself in the forming lab: sag, blow, swing and cool it →</a></p>
 
@@ -230,11 +230,11 @@ const pins = history.pins.map((p) => {
         <h3>The page's rule, <i>run backwards</i></h3>
         <div class="prose">
           <p>Everywhere else on this page, glass is colored by what it takes away. In the glory hole the same spectrum runs the other way. Below, three gathers share one temperature. Each card shows the gather cold on the light table, then hot in the dark, then its spectrum: a black body at that temperature on top, what this glass gives out underneath, and the line is its emissivity, one minus its transmission.</p>
-          <p>The surprise is clear glass. It absorbs almost nothing you can see, so it gives almost nothing back. Beside cobalt, which absorbs nearly all of the orange and red a black body sends, a clear gather is a dim ghost, and its glow fades from sight well above the Draper point. Its heat leaves instead as infrared beyond the visible, where every glass absorbs.</p>
+          <p>Clear glass glows least. It absorbs almost nothing you can see, so it gives almost nothing back. Beside cobalt, which absorbs nearly all of the orange and red a black body sends, a clear gather is dim, and its glow fades from sight well above the Draper point. Its heat leaves instead as infrared beyond the visible, where every glass absorbs.</p>
         </div>
         <div class="k-grid" id="kGrid"></div>
         <div class="strip-key"><span>top: black body · bottom: this glass</span><span>line: emissivity, 1 − T</span></div>
-        <p class="aside"><b>And inside the glory hole?</b> Hold any gather in a chamber whose walls are at its own temperature and it vanishes. What it fails to emit, it lets through from the wall behind, and emission plus transmission add up to the wall's own black-body light. Only out in the dark shop does a gather show its own glow. This follows from the law; it is not a separate measurement.</p>
+        <p class="aside"><b>And inside the glory hole?</b> Hold any gather in a chamber whose walls are at its own temperature and it vanishes. What it fails to emit, it lets through from the wall behind, and emission plus transmission add up to the wall's own black-body light. Only out in the dark shop does a gather show its own glow. This follows from the law alone.</p>
         <p class="aside"><b>Sources.</b> G. Kirchhoff, "Ueber das Verhältniss zwischen dem Emissionsvermögen und dem Absorptionsvermögen der Körper für Wärme und Licht", <i>Annalen der Physik</i> 109 (1860) 275–301; Balfour Stewart reached a version of it independently in 1858 (D. M. Siegel, "Balfour Stewart and Gustav Robert Kirchhoff: Two Independent Approaches to 'Kirchhoff's Radiation Law'", <i>Isis</i> 67, 1976). Kirchhoff's first step, in October 1859, was the sodium line: a sodium flame in the path of sunlight darkened the solar D lines, because the flame absorbs exactly where it emits ("Über die Fraunhofer'schen Linien", <i>Monatsberichte der Berliner Akademie</i>, 1859, 662–665). That is the same doublet the glasses below are built to stop. For glass itself, R. Gardon, "The Emissivity of Transparent Materials", <i>J. Am. Ceram. Soc.</i> 39 (1956) 278–285, works out the emissivity of transparent sheets from their thickness and absorption: the familiar total emissivity of window glass, about 0.91, holds only for sheets thick enough, from 3/16 in at 200 °C to as much as 8 in at 1000 °C, and a 3/16 in sheet at 1000 °C has an emissivity of only 0.59.</p>
         <p class="aside"><b>Model.</b> Emissivity is 1 − T(λ) for the path through the gather, the same path whose colour the cooled gather shows; reflection at the surface (about 4% on each side) is ignored, and so is the flame's light scattered in the glass. Clear glass is a trace of ferrous and ferric iron at an illustrative level, not a measured batch, and the colorant spectra are the page's illustrative ones. The "fades from sight" temperature is where the glow reaches the bottom of this page's strength scale, which puts a black body's fade at about the Draper point; it is a comparison, not a measured visibility threshold.</p>
         <p class="aside"><b>Not modelled: absorption changes with heat.</b> The spectra here are room-temperature spectra. At working heat, ligand-field bands broaden and shift, the balance between Fe²⁺ and Fe³⁺ moves with temperature, and the ultraviolet edge creeps toward the visible, so a real hot gather, clear ones included, absorbs and therefore glows more than shown (direction from general physics; size unverified). Band-gap colors move most: a semiconductor's gap narrows as it heats (Y. P. Varshni, "Temperature dependence of the energy gap in semiconductors", <i>Physica</i> 34 (1967) 149–154), so the cadmium yellows and reds absorb further toward the red when hot than they do cold.</p>
@@ -243,7 +243,7 @@ const pins = history.pins.map((p) => {
       <div class="glasses" id="glasses">
         <h3>Put the <i>glasses</i> on</h3>
         <div class="prose">
-          <p>The yellow blaze around a hot gather is not the glass. Drag the glasses across the scene above. Soda in the glass boils off into the flame, and every sodium atom there emits at two wavelengths, 589.0 and 589.6 nm. Two lines that bright are enough to drown out the glass inside them. Didymium lenses cut a notch exactly there. The flare goes out, the glass reappears, and everything else gets through.</p>
+          <p>The yellow glare around a hot gather comes from the flame, not the glass. Drag the glasses across the scene above. Soda in the glass boils off into the flame, and every sodium atom there emits at two wavelengths, 589.0 and 589.6 nm. The two lines are bright enough to hide the glass behind them. Didymium lenses absorb a narrow band at those wavelengths, so the flare disappears, the glass shows again, and most other light passes.</p>
           <p>Didymium was named in 1841 as one element, the "twin" of lanthanum. In 1885 Carl Auer von Welsbach split it into two, neodymium and praseodymium, and the lens needs both: neodymium's strongest band sits at 585 nm and praseodymium's at 590 nm, so together they cover the doublet.</p>
         </div>
         <div class="bench bench-top">
@@ -256,7 +256,7 @@ const pins = history.pins.map((p) => {
             <p class="readout" id="lensRead"></p>
           </div>
         </div>
-        <p class="aside"><b>Not shown, but there.</b> Over 98% of what a 1150 °C gather radiates between 380 and 1400 nm is near infrared, which you cannot see and which reaches the lens of your eye. Years of it cause glassblower's cataract. Didymium does almost nothing about it. Around 1913 William Crookes, working for a Royal Society committee on the problem, made iron-bearing glasses to absorb it, and Coblentz and Emerson (1917) measured sage-green ferrous glass passing about 5% of a furnace's infrared. Furnace and glory-hole work calls for rated IR protection, not didymium alone.</p>
+        <p class="aside"><b>Infrared.</b> Over 98% of what a 1150 °C gather radiates between 380 and 1400 nm is near infrared, which you cannot see and which reaches the lens of your eye. Years of it cause glassblower's cataract. Didymium does almost nothing about it. Around 1913 William Crookes, working for a Royal Society committee on the problem, made iron-bearing glasses to absorb it, and Coblentz and Emerson (1917) measured sage-green ferrous glass passing about 5% of a furnace's infrared. Furnace and glory-hole work calls for rated IR protection, not didymium alone.</p>
         <p class="aside"><b>Model.</b> Lens bands are Gaussians at the didymium reference peaks (431, 473, 513, 529, 573, 585, 685, 741, 749, 807, 879 nm) plus praseodymium's 444, 469, 482 and 590 nm, on a 1 nm grid. Strengths are approximate, scaled so a 3 mm lens passes about 1% at 589 nm. The flare's brightness relative to the glass is illustrative; it is strongest at a torch. The view through the lens is shown after your eye has adapted to its overall dimming, so what changes is balance and hue.</p>
       </div>
     </div>
@@ -268,7 +268,7 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>Some colors must be <i>struck</i></h2>
     <div class="prose">
-      <p>Gold ruby comes out of the furnace nearly clear. The gold is dissolved as single atoms, which absorb almost nothing. Reheating lets them cluster into particles a few tens of nanometres across, and electrons sloshing across each particle absorb green. The cadmium colors work differently: tiny semiconductor crystals swallow every photon with more energy than their band gap.</p>
+      <p>Gold ruby comes out of the furnace nearly clear. The gold is dissolved as single atoms, which absorb almost nothing. Reheating lets them cluster into particles a few tens of nanometres across, and the conduction electrons in each particle oscillate together (a surface plasmon) and absorb green. The cadmium colors work differently: small semiconductor crystals absorb every photon with more energy than their band gap.</p>
     </div>
     <div class="pair">
       <div>
@@ -372,8 +372,8 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>Every color on the <i>shelf</i></h2>
     <div class="prose">
-      <p>These are <span id="rackN">{rack.length.toLocaleString('en')}</span> real rod and sheet colors from {suppliers} suppliers, shelved by hue. Filter by the mechanism that makes them. Most suppliers do not publish recipes, so the large unclassified group is honest, not a gap in effort.</p>
-      <p>Click a rod and the bench works backwards. It tries every melt of up to three of the page's twelve colorants and keeps the ones whose color through the glass matches the photo. Expect to be surprised by how many do. A color is three numbers and a recipe is a whole spectrum, so one swatch can never tell you what is in the glass. A different lamp can.</p>
+      <p>These are <span id="rackN">{rack.length.toLocaleString('en')}</span> real rod and sheet colors from {suppliers} suppliers, shelved by hue. Filter by the mechanism that makes them. Most suppliers do not publish recipes, so many rods are left unclassified.</p>
+      <p>Click a rod and the bench works backwards. It tries every melt of up to three of the page's twelve colorants and keeps the ones whose color through the glass matches the photo. Usually many do. A color is three numbers and a transmission spectrum is hundreds, so one swatch cannot determine what is in the glass. Seeing it under a second lamp narrows the candidates.</p>
     </div>
     <div class="filters chips" id="filters" role="group" aria-label="filter by mechanism"></div>
     <div class="rackbox">
@@ -404,7 +404,7 @@ const pins = history.pins.map((p) => {
         </div>
       </aside>
     </div>
-    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. Treat them as a map of the territory, not as calibrated measurements. The bench fits the photo, not the glass, and its twelve absorption curves are illustrative rather than measured, so its recipes are candidates, never the supplier's formula. Under another lamp each swatch is relit through the smoothest spectrum that matches its daylight color (Jakob and Hanika's sigmoid fit), which is an estimate: two glasses that match in daylight can part ways under a sodium lamp or a fluorescent tube, and a photo cannot tell you which will.</p>
+    <p class="aside">Swatch colors are sampled from supplier product photos, so they inherit each photo's lighting and white balance. They are approximate, not calibrated measurements. The bench fits the photo, not the glass, and its twelve absorption curves are illustrative rather than measured, so its recipes are candidates, never the supplier's formula. Under another lamp each swatch is relit through the smoothest spectrum that matches its daylight color (Jakob and Hanika's sigmoid fit), which is an estimate: two glasses that match in daylight can part ways under a sodium lamp or a fluorescent tube, and a photo cannot tell you which will.</p>
   </div>
 </section>
 
@@ -413,8 +413,8 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>One glass gives light <i>back</i></h2>
     <div class="prose">
-      <p>Everything so far has been subtraction: light goes in, the glass takes some away, and the rest is its color. Uranium glass breaks the rule. The uranyl ion absorbs ultraviolet and violet, and instead of turning that energy into heat it sends much of it back out as green light. That green is not in the lamp, so no amount of taking away could have made it.</p>
-      <p>In daylight the effect is a faint cast on a pale canary yellow. Under a black light, which gives almost nothing visible for any glass to filter, every other piece goes dark and uranium glass blazes.</p>
+      <p>Everything so far has been subtraction: light goes in, the glass takes some away, and the rest is its color. Uranium glass breaks the rule. The uranyl ion absorbs ultraviolet and violet, and instead of turning that energy into heat it sends much of it back out as green light. That green is not in the lamp, so no absorber could have produced it.</p>
+      <p>In daylight the effect is a faint cast on a pale canary yellow. Under a black light, which gives almost nothing visible for any glass to filter, every other piece goes dark and uranium glass glows bright green.</p>
     </div>
     <div class="bench">
       <div>
@@ -439,7 +439,7 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>Three thousand years of <i>the same</i> physics</h2>
     <div class="prose">
-      <p>Most of the colors above were found by glassmakers long before anyone could explain them. Each pin on this rail is colored by the same engine as the stages, so an Egyptian bead, a Roman cup and a 1939 light filter are drawn from their absorbers, not from photographs. Pick one to see what happened and which stage explains it.</p>
+      <p>Most of the colors above were found by glassmakers long before anyone could explain them. Each pin on this rail is colored by the same engine as the stages, so an Egyptian bead, a Roman cup and a 1939 light filter are computed from their spectra, not taken from photographs. Pick one to see what happened and which stage explains it.</p>
     </div>
     <div class="hist">
       <ol class="hist-rail" aria-label="history of glass color, oldest first">

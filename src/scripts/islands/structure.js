@@ -132,12 +132,12 @@ export function initStructureSim(root) {
     meters.replaceChildren(...rows.map(([dt, dd]) => { const d = document.createElement('div'); d.innerHTML = '<dt></dt><dd></dd>'; d.firstChild.textContent = dt; d.lastChild.textContent = dd; return d; }));
     const m = Math.round(misOf() * 100);
     read.textContent = phase === 'melting' && pending ? 'Melting first, so every run starts from the same liquid; cooling starts when it is molten.'
-      : phase === 'melting' ? 'Melting: every atom wanders, and any order from the last run is being forgotten.'
+      : phase === 'melting' ? 'Melting: the atoms diffuse, and any order from the last run is being lost.'
       : phase === 'liquid' ? `A liquid at ${T_HI} ε/k. Choose a cooling rate and press cool.`
       : phase === 'cooling' ? (cf > 0.25 ? 'Ordered patches are growing: the liquid is crystallising as it cools.' : T > 0.6 ? 'Cooling. The atoms still swap places freely; watch for solid patches to appear.' : 'The atoms have almost stopped swapping places. Whatever order exists now is being frozen in.')
       : cf > 0.75 ? `A crystal, with ${m === 0 ? 'every atom alike' : 'both sizes'} packed into hexagonal order. Melt it and quench, then compare the curves.`
       : cf > 0.35 ? 'Part crystal, part glass: ordered grains separated by disordered seams. A slower cool usually gives bigger grains.'
-      : 'A glass: the atoms are as jumbled as in the liquid, but they no longer move. Compare its g(r) with the faint liquid curve.';
+      : 'A glass: the atoms are as disordered as in the liquid, but they no longer move. Compare its g(r) with the faint liquid curve.';
     coolBtn.disabled = phase === 'cooling' || pending;
     $('.ss-rate').textContent = `${rateOf() >= 0.1 ? rateOf().toFixed(1) : rateOf().toFixed(3)} ε/k per τ  ·  about ${pow10(rateOf() * ARGON.K / (ARGON.ps * 1e-12))} K/s as argon`;
     $('.ss-mis').textContent = `${Math.round(misOf() * 100)}%`;
