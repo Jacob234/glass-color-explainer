@@ -1,6 +1,6 @@
 ---
 // Home page: a light table of draggable glass, then one piece of glass followed through the
-// studio in seven stages. The instruments live in scripts/home.js.
+// studio in nine stages. The instruments live in scripts/home.js.
 import { getCollection } from 'astro:content';
 import map from '../data/map.json';
 import history from '../data/history.json';
@@ -36,7 +36,7 @@ const at = (year: number) => {
   const [[y0, p0], [y1, p1]] = [BREAKS[i - 1], BREAKS[i]];
   return p0 + ((year - y0) / (y1 - y0)) * (p1 - p0);
 };
-const STAGES: Record<string, string> = { batch: '01 · the batch', melt: '02 · the melt', ions: '03 · the color rod', glasses: '04 · the glory hole', strike: '05 · the reheat', light: '06 · the cold shop', rack: '07 · the rack', showroom: '08 · the showroom' };
+const STAGES: Record<string, string> = { batch: '01 · the batch', melt: '02 · the melt', ions: '03 · the color rod', glasses: '04 · the glory hole', strike: '05 · the reheat', lehr: '06 · the lehr', light: '07 · the cold shop', rack: '08 · the rack', showroom: '09 · the showroom' };
 const TICKS = [[-2000, '2000 BCE'], [0, '1 CE'], [1000, '1000'], [1800, '1800'], [1900, '1900'], [1950, '1950']] as const;
 // Labels take turns between lanes above and below the line so neighbours never overlap.
 const LANES = ['up1', 'down1', 'up2', 'down2'], LABEL = 12, laneEnd: Record<string, number> = {};
@@ -273,8 +273,48 @@ const pins = history.pins.map((p) => {
   </div>
 </section>
 
+<section class="wrap stage lehr" id="lehr">
+  <div class="stage-rail"><div class="stage-num">06</div><span class="mono">the lehr</span></div>
+  <div class="stage-body">
+    <h2>Glass remembers how it <i>cooled</i></h2>
+    <div class="prose">
+      <p>A finished piece cannot just be set down. Its outside cools first. Around 550 °C the skin stiffens while the inside is still soft enough to flow, and when the inside catches up and shrinks it pulls the stiff skin into compression and is left in tension itself. That stress stays in the glass when it is cold. In an uneven shape it is enough to crack a piece on the shelf hours or weeks later.</p>
+      <p>The lehr, the annealing oven, prevents it. The piece goes in hot, soaks at the annealing point until the stress relaxes, and is cooled slowly through the range where glass stops flowing and starts holding stress. Only that range matters. Above it the glass still flows. Below the strain point it is stiff enough that the stress of further cooling is elastic, and it goes away again once the piece is evenly cold.</p>
+      <p>Stress cannot be seen, but it makes glass birefringent. Light polarized along one principal stress travels a little slower than light polarized along the other, and after crossing the glass the two are out of step by a <i>retardation</i>. Between crossed polarizers that retardation becomes colour, because the same retardation is a different fraction of a cycle for every wavelength. The piece here is the foot of the bowl from stage 03, a disc 64 mm across, on a light table that gives out polarized light. Drag the second polarizer over it.</p>
+    </div>
+    <div class="bench bench-top">
+      <div class="lightbox polar-box">
+        <div class="polar-wrap">
+          <canvas id="polar" aria-label="the foot of the bowl from above on a polarized light table, with a second polarizer over part of it"></canvas>
+          <div class="analyzer" id="analyzer" tabindex="0" role="slider" aria-label="second polarizer: drag across the light table, or use the arrow keys"><span>polarizer ↕</span></div>
+        </div>
+        <div class="strip-key"><span>light table: polarized ↔</span><span>drag the second polarizer</span></div>
+      </div>
+      <div class="controls">
+        <div class="chips" id="polarView" role="group" aria-label="what the second polarizer is"></div>
+        <div class="ctl"><label class="mono" for="cool">cooling from 548 to 511 °C <output id="coolOut"></output></label>
+          <input id="cool" type="range" min="0" max="1000" value="1000" /><div class="ends"><span>a slow lehr</span><span>left on the bench</span></div></div>
+        <div class="ctl"><label class="mono" for="thick">thickness of the foot <output id="thickOut"></output></label>
+          <input id="thick" type="range" min="2" max="16" step="0.5" value="8" /><div class="ends"><span>2 mm</span><span>16 mm</span></div></div>
+        <dl class="meters" id="lehrMeters"></dl>
+      </div>
+    </div>
+    <p class="readout prose" id="lehrRead"></p>
+    <h4 class="mono">the same foot, through its edge</h4>
+    <div class="lightbox polar-edge">
+      <canvas id="polarEdge" aria-label="the foot seen through its edge between crossed polarizers"></canvas>
+      <div class="strip-key"><span>between crossed polarizers at 45° to the faces</span><span>64 mm of glass along the line of sight</span></div>
+    </div>
+    <p class="readout prose" id="edgeRead"></p>
+    <p class="aside"><b>Try it.</b> A laptop or phone screen gives out polarized light, and polarized sunglasses are the second polarizer. Hold a glass or a clear plastic box in front of a white screen and look through the sunglasses, turning your head. Tempered car windows show a pattern of dark spots through polarized sunglasses for the same reason: the air jets that tempered them froze stress in unevenly.</p>
+    <p class="aside"><b>Tempered glass is this on purpose.</b> The profile through the edge is the one that makes toughened glass strong: the faces are held in compression, so a scratch has to overcome it before it can open. Tempering quenches evenly and hard; a blown piece is uneven, so its stress is uneven too, and it is the tension at the junctions and in the core that breaks it.</p>
+    <p class="aside"><b>History.</b> David Brewster reported in 1816 that squeezing or unevenly heating glass gives it the double refraction of a crystal (<a href="https://jimclifford.ca/philosophical-transactions-ocr-1665-1869/articles/jstor-107522/" rel="noopener">Phil. Trans. 106</a>). Annealing became a schedule rather than a craft rule after L. H. Adams and E. D. Williamson at the Carnegie Institution's Geophysical Laboratory measured how stress decays in hot glass, during the wartime push for optical glass (<a href="https://doi.org/10.1364/JOSA.4.000213" rel="noopener">JOSA 4, 213, 1920</a>). Their law, that the rate of relief goes as the square of the stress remaining, is quoted here from memory (unverified).</p>
+    <p class="aside"><b>Model.</b> Material figures are for soda-lime float glass from <a href="https://www.pilkington.com:443/-/media/pilkington/site-content/usa/window-manufacturers/technical-bulletins/ats129propertiesofglass20130114.pdf" rel="noopener">Pilkington's ATS-129 bulletin</a>: strain point 511 °C, annealing point 548 °C, softening point 715 °C, E = 72 GPa, ν = 0.23, α = 8.3 × 10⁻⁶ /°C, thermal diffusivity 0.43 mm²/s from its conductivity, density and heat capacity, and a stress-optic coefficient of 2.62 nm per mm per MPa from its strain-viewing rule. Studio furnace glasses are other recipes and anneal at their own temperatures. Stress is frozen in by "instant freezing": cooling at a steady rate q through the annealing range sets a parabolic difference ΔT = qd²/8D between core and faces, which becomes stress Eα(T − T̄)/(1 − ν) when cold. That overstates real stress, since glass sets over a range rather than at once. Face on, only the in-plane pattern shows; it is modelled as a disc whose rim set first, with a rim-to-centre difference equal to ΔT, which is a guess at its shape and size. "On the bench" is about 300 °C/min, an estimate for an 8 mm piece radiating at 550 °C. Polarizers and plates are ideal and the same at every wavelength; the tint plate is a 550 nm full-wave plate, and its colours are held fixed beyond 3000 nm of retardation. Each colour is the polariscope's transmission spectrum, computed by Jones calculus at every wavelength, under the page's lamp.</p>
+  </div>
+</section>
+
 <section class="wrap stage" id="light">
-  <div class="stage-rail"><div class="stage-num">06</div><span class="mono">the cold shop</span></div>
+  <div class="stage-rail"><div class="stage-num">07</div><span class="mono">the cold shop</span></div>
   <div class="stage-body">
     <h2>Color with <i>no</i> colorant</h2>
     <div class="prose">
@@ -305,7 +345,7 @@ const pins = history.pins.map((p) => {
 </section>
 
 <section class="wrap stage" id="rack">
-  <div class="stage-rail"><div class="stage-num">07</div><span class="mono">the rack</span></div>
+  <div class="stage-rail"><div class="stage-num">08</div><span class="mono">the rack</span></div>
   <div class="stage-body">
     <h2>Every color on the <i>shelf</i></h2>
     <div class="prose">
@@ -346,7 +386,7 @@ const pins = history.pins.map((p) => {
 </section>
 
 <section class="wrap stage" id="showroom">
-  <div class="stage-rail"><div class="stage-num">08</div><span class="mono">the showroom</span></div>
+  <div class="stage-rail"><div class="stage-num">09</div><span class="mono">the showroom</span></div>
   <div class="stage-body">
     <h2>One glass gives light <i>back</i></h2>
     <div class="prose">
