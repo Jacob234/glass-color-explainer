@@ -775,7 +775,7 @@ function lehr() {
       row('faces · compression', mpa(face), face),
       row('core · tension', mpa(core), core),
       row('rim, face on · retardation', `${rim < 10 ? rim.toFixed(1) : Math.round(rim)} nm`, rim / 6),
-      row('548 → 511 °C takes', time, mins / 6));
+      row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
     const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot all but vanishes into the dark field.`
       : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
       : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal colour are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'

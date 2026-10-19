@@ -9,16 +9,19 @@
 import { GRID } from './spectra.js';
 import { chord } from './vessel.js';
 
-// Soda-lime-silica float glass, all from one source: Pilkington, "Properties of Soda-Lime Silica Float
-// Glass", technical bulletin ATS-129 (2013). C is its stress-optical rule, σ(psi) = 2.18 Γ(nm) / d(in),
-// converted: 1 / (2.18 × 0.006895 MPa × 25.4 mm) = 2.62 nm per mm per MPa (2.62 brewsters).
+// Soda-lime-silica glass. Elastic, thermal and optical figures are for float glass from Pilkington,
+// "Properties of Soda-Lime Silica Float Glass", technical bulletin ATS-129 (2013). C is its
+// stress-optical rule, σ(psi) = 2.18 Γ(nm) / d(in), converted: 1 / (2.18 × 0.006895 MPa × 25.4 mm)
+// = 2.62 nm per mm per MPa (2.62 brewsters). The reference points are the measured averages for NBS
+// standard soda-lime glass No. 710 (Napolitano and Hawkins, J. Res. NBS 68A, 439, 1964, Table 10),
+// shared with the page's other stages so the temperatures agree everywhere.
 export const GLASS = {
   E: 72000, // Young's modulus, MPa
   nu: 0.23, // Poisson's ratio
   alpha: 8.3e-6, // linear expansion, per °C
   k: 0.937, rho: 2500, c: 880, // conductivity W/m·K, density kg/m³, specific heat J/kg·K
   C: 2.62, // stress-optic coefficient, nm per mm of path per MPa
-  strain: 511, anneal: 548, soften: 715, // reference points, °C (viscosity 10^13.5, 10^12, 10^6.6 Pa·s)
+  strain: 504, anneal: 546, soften: 724, // reference points, °C (viscosity 10^13.5, 10^12, 10^6.6 Pa·s)
 };
 export const DIFFUSIVITY = (GLASS.k / (GLASS.rho * GLASS.c)) * 1e6; // mm²/s, about 0.43
 
