@@ -11,7 +11,8 @@
     "lehr": "06 lehr",
     "rack": "08 rack",
     "showroom": "showroom",
-    "lightlab": "light lab"
+    "lightlab": "light lab",
+    "eyes": "09′ showroom, other eyes"
   },
   "sources": [
     {
@@ -49,10 +50,10 @@
       "title": "Colour (colour-science)",
       "by": "Colour Developers", "date": "2025", "edition": "v0.4.7",
       "url": "https://github.com/colour-science/colour",
-      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json.",
+      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json, and the CIE 1964 10° table, Stockman & Sharpe fundamentals and CIE 2015 functions behind observers.json.",
       "reuse": "open", "licence": "BSD 3-Clause.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }]
+      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }, { "file": "scripts/build_observers.py", "find": "colour-science", "stage": "eyes" }]
     },
     {
       "id": "taran-2009", "kind": "measurement", "short": "Taran et al. 2009",
@@ -332,9 +333,69 @@
       "by": "Institute of Ophthalmology, University College London", "date": "live", "edition": "cvrl.org",
       "url": "http://www.cvrl.org/",
       "provides": "Tabulated colour-matching functions (CIE 1931, Stiles–Burch, CIE 2006), cone fundamentals and luminous efficiency.",
-      "would": "Tables to test the analytic observer against, and the CIE 2006 cone fundamentals if the page ever explains metamerism from the cones up.",
+      "would": "Tables to test the analytic observer against, and a second copy of the CIE 2006 tables to check observers.json against (cvrl.org did not answer from the build container on 2026-10-19, so the tables came through asano-2016).",
       "reuse": "unknown", "licence": "\"Provided free of charge as a service to the vision science community\"; no explicit reuse licence.",
       "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "cie-1964", "kind": "standard", "short": "CIE 1964 observer",
+      "title": "CIE 1964 colour-matching functions, 10 degree observer",
+      "by": "International Commission on Illumination (CIE)", "date": "2019", "edition": "data set from ISO/CIE 11664-1:2019, Table 2; DOI 10.25039/CIE.DS.sqksu2n5",
+      "url": "https://doi.org/10.25039/CIE.DS.sqksu2n5",
+      "provides": "The standard observer for fields about 10° across: the wide-field eye of the many-observers stage.",
+      "reuse": "open", "licence": "CIE open-access data set. Its page shows no licence text and its metadata file was not read, so the CC BY-SA 4.0 read from the D65 set is assumed here, not checked.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/observers.json", "find": "CIE 1964 10°", "stage": "eyes" }]
+    },
+    {
+      "id": "cie-170-1", "kind": "standard", "short": "CIE 170-1:2006",
+      "title": "Fundamental Chromaticity Diagram with Physiological Axes, Part 1",
+      "by": "CIE Technical Committee 1-36", "date": "2006", "edition": "CIE 170-1:2006",
+      "url": "https://cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1",
+      "provides": "Cone fundamentals built from their parts: photopigment absorbance, pigment density by field size, macular pigment, and lens density by age (the Pokorny, Smith & Lutze 1987 formula). Gives an eye of any age from 20 to 80 and any field from 2° to 10°.",
+      "reuse": "cite", "licence": "Paid CIE publication. The model is cited; its tables reached the repo through Asano et al.'s distribution (asano-2016).",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/observers.js", "find": "CIE 170-1:2006", "stage": "eyes" }]
+    },
+    {
+      "id": "cie-170-2", "kind": "standard", "short": "CIE 170-2:2015",
+      "title": "Fundamental Chromaticity Diagram with Physiological Axes, Part 2",
+      "by": "CIE Technical Committee 1-36", "date": "2015", "edition": "CIE 170-2:2015",
+      "url": "https://cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-2-spectral-luminous-efficiency",
+      "provides": "The linear map from cone fundamentals to cone-based XYZ functions, 2° and 10°. observers.json refits it from colour-science's tables (residual about 1e-6).",
+      "reuse": "cite", "licence": "Paid CIE publication; only the nine matrix coefficients are used, refitted from open tables.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "scripts/build_observers.py", "find": "CIE 170-2:2015", "stage": "eyes" }]
+    },
+    {
+      "id": "asano-2016", "kind": "method", "short": "Asano, Fairchild & Blondé",
+      "title": "Individual Colorimetric Observer Model",
+      "by": "Yuta Asano, Mark D. Fairchild and Laurent Blondé", "date": "2016", "edition": "PLoS ONE 11(2), e0145671",
+      "url": "https://doi.org/10.1371/journal.pone.0145671",
+      "provides": "An individual-observer extension of CIE 2006. Its distribution carries the CIE 170-1 component tables at 5 nm that observers.json holds, copied from the luxpy package (v1.12.5) data folder.",
+      "reuse": "open", "licence": "Article CC BY 4.0 (PLoS ONE). The tables are CIE 170-1 values; luxpy's code is GPL-3.0, and none of it is copied, only the numbers.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/observers.json", "find": "Asano, Fairchild & Blondé (2016)", "stage": "eyes" }]
+    },
+    {
+      "id": "brettel-1997", "kind": "method", "short": "Brettel, Viénot & Mollon",
+      "title": "Computerized simulation of color appearance for dichromats",
+      "by": "Hans Brettel, Françoise Viénot and John D. Mollon", "date": "1997", "edition": "J. Opt. Soc. Am. A 14, 2647–2655",
+      "url": "https://doi.org/10.1364/JOSAA.14.002647",
+      "provides": "How a dichromat's colours look to a trichromat: two half-planes in cone space through white, anchored at 475 and 575 nm (protan, deutan) or 485 and 660 nm (tritan).",
+      "reuse": "cite", "licence": "Journal article (Optica); the method is cited and reimplemented, nothing copied.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/observers.js", "find": "Brettel, Viénot & Mollon (1997)", "stage": "eyes" }]
+    },
+    {
+      "id": "werner-schefrin-1993", "kind": "measurement", "short": "Werner & Schefrin",
+      "title": "Loci of achromatic points throughout the life span",
+      "by": "John S. Werner and Brooke E. Schefrin", "date": "1993", "edition": "J. Opt. Soc. Am. A 10, 1509–1516",
+      "url": "https://doi.org/10.1364/JOSAA.10.001509",
+      "provides": "Fifty observers aged 11 to 78: the white point does not shift significantly with age. The support for treating every eye as adapted to its own lens.",
+      "reuse": "cite", "licence": "Journal article (Optica); the finding is cited.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Observers.astro", "find": "Werner and Schefrin (1993)", "stage": "eyes" }]
     }
   ],
   "gaps": [
