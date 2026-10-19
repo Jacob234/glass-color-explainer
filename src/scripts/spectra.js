@@ -36,16 +36,16 @@ function integrate(spectrum) {
   return xyz;
 }
 
-// Colour of a transmission (or reflection) spectrum T under illuminant spd, both on GRID,
+// Color of a transmission (or reflection) spectrum T under illuminant spd, both on GRID,
 // as seen by an eye adapted to that illuminant. Returns linear sRGB, encoded sRGB (0..1) and css.
 // adapt is the degree of adaptation D: 1 = the eye fully discounts the lamp, so its white renders as
-// white; 0 = no adaptation, so the lamp's own colour shows. In between, each cone's von Kries gain is
+// white; 0 = no adaptation, so the lamp's own color shows. In between, each cone's von Kries gain is
 // raised to the power D (CIECAM02 blends the gains linearly instead, which turns warm lamps pink here).
 export function spectrumColor(T, spd, adapt = 1) {
   return radianceColor(spd.map((s, i) => s * T[i]), spd, adapt);
 }
 
-// Colour of light L reaching the eye (on GRID, in the lamp's units) under illuminant spd: the same as
+// Color of light L reaching the eye (on GRID, in the lamp's units) under illuminant spd: the same as
 // spectrumColor, but L may hold light the glass gives out itself (fluorescence) as well as light it
 // passes. scale multiplies the result, for scenes where the eye is set by something other than white.
 export function radianceColor(L, spd, adapt = 1, scale = 1) {
@@ -101,8 +101,8 @@ export const planck = (T) => GRID.map((w) => w ** -5 / (Math.exp(C2 / (w * T)) -
 // spectral emissivity ε(λ) = 1 − T(λ), surface reflection ignored (it would scale both by about 0.92).
 export const emissivity = (T) => T.map((t) => 1 - t);
 
-// The colour and relative luminance of a glowing body at T kelvin with spectral emissivity eps
-// (on GRID; omitted, a black body). The colour is normalised so its brightest channel is 1;
+// The color and relative luminance of a glowing body at T kelvin with spectral emissivity eps
+// (on GRID; omitted, a black body). The color is normalised so its brightest channel is 1;
 // luminance is relative to a black body at Tref (1150 °C furnace glass).
 export function glow(T, Tref = 1423, eps = null) {
   const B = planck(T), L = eps ? B.map((b, i) => b * eps[i]) : B;
@@ -120,7 +120,7 @@ export const luminousEmissivity = (eps, T) => {
 // logarithmic, and luminance falls about five orders of magnitude from 1150 °C to the Draper point).
 export const glowStrength = (luminance) => Math.min(1, Math.max(0, (Math.log10(luminance) + 5.2) / 5.2));
 
-// Monochromatic colours for drawing spectra, at a brightness that follows the eye's sensitivity.
+// Monochromatic colors for drawing spectra, at a brightness that follows the eye's sensitivity.
 // The hue is held fixed beyond 420–675 nm, where the analytic observer fit is least reliable.
 export const SPECTRAL = GRID.map((w, i) => {
   const lin = mul(XYZ_TO_SRGB, cmf(Math.min(675, Math.max(420, w)))).map((v) => Math.max(0, v));
@@ -140,12 +140,12 @@ export function dichroicBand(degrees, { lambda0 = 640, n = 1.8, sigma = 34, peak
   return { center, R: GRID.map((w) => peak * Math.exp(-0.5 * ((w - center) / sigma) ** 2)) };
 }
 
-// A smooth transmission spectrum that reproduces an sRGB colour under illuminant spd, for colours
+// A smooth transmission spectrum that reproduces an sRGB color under illuminant spd, for colors
 // that come from photos rather than spectra. Jakob & Hanika's sigmoid-polynomial form ("A
 // Low-Dimensional Function Space for Efficient Spectral Upsampling", Eurographics 2019):
 // T(λ) = S(c₀x² + c₁x + c₂), with S a sigmoid, so T stays in 0..1 and is as smooth as a real
 // absorber's broad bands. The three coefficients are fitted by damped Gauss–Newton. Many spectra
-// give the same colour (metamers); this picks the smoothest family, so treat it as an estimate.
+// give the same color (metamers); this picks the smoothest family, so treat it as an estimate.
 const sigmoid = (z) => 0.5 + z / (2 * Math.sqrt(1 + z * z));
 export const sigmoidSpectrum = (c) => GRID.map((w) => { const x = (w - 580) / 200; return sigmoid(c[0] * x * x + c[1] * x + c[2]); });
 const toLinear = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);

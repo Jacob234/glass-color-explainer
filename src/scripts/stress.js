@@ -5,7 +5,7 @@
 // Glass under stress is birefringent: light polarized along the two principal stresses travels at
 // slightly different speeds, and after crossing a path d the two fall out of step by a retardation
 // Γ = C · (σ₁ − σ₂) · d (Brewster's law, with C the stress-optic coefficient). Between polarizers that
-// retardation becomes colour, because each wavelength is a different fraction of a cycle out of step.
+// retardation becomes color, because each wavelength is a different fraction of a cycle out of step.
 import { GRID } from './spectra.js';
 import { chord } from './vessel.js';
 

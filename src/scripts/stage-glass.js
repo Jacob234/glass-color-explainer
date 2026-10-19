@@ -1,5 +1,5 @@
 // stage-glass.js — the instruments of stage 00, what glass is. Diagrams are drawn in ink; the
-// only colour is the gather, which is clear soda-lime glass (its trace of iron) computed through
+// only color is the gather, which is clear soda-lime glass (its trace of iron) computed through
 // the page's engine and relit with the page's lamp. Physics lives in glass.js.
 import * as g from './glass.js';
 import vis from '../data/viscosity.json' with { type: 'json' };

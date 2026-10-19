@@ -1,5 +1,5 @@
 // prism.js — the instruments for the cold shop, cut (components/Dispersion.astro): a prism bench,
-// the index chart, and crown against achromat. Physics in dispersion.js; colours through lamps.js,
+// the index chart, and crown against achromat. Physics in dispersion.js; colors through lamps.js,
 // under whatever lamp the page is lit by.
 import { GRID, SPECTRAL, css } from './spectra.js';
 import { underLamp } from './lamps.js';
@@ -47,7 +47,7 @@ export function initDispersion({ getLamp, onLamp }) {
 
   // The card is lit at 1 nm steps, since a dense flint near its critical angle spreads neighbouring
   // 5 nm samples apart; each 1 nm slice's light is added to the nearest sample of the observer's grid.
-  function cardColours(poly, ref, D, samples) {
+  function cardColors(poly, ref, D, samples) {
     const spd = getLamp().spd, at = (nm) => { const x = (nm - 380) / 5, i = Math.min(GRID.length - 2, Math.floor(x)); return spd[i] + (spd[i + 1] - spd[i]) * (x - i); };
     // a line lamp is traced at its own lines; anything else at 1 nm, each slice a fifth of a grid sample
     const lamp = getLamp(), src = lamp.lines ? lamp.lines.map(([w, a]) => [w, a]) : FINE.map((nm) => [nm, at(nm) / 5]);
@@ -71,7 +71,7 @@ export function initDispersion({ getLamp, onLamp }) {
     const hit = trace(poly, index(glass, LINES.d), ORIGIN, DIR);
     const entry = hit.pts[1] ?? ORIGIN;
     svg('polygon', { class: 'beam', points: [beamPts[0], beamPts[1], [entry[0] + HALF * perp[0], entry[1] + HALF * perp[1]], [entry[0] - HALF * perp[0], entry[1] - HALF * perp[1]]].map(P).join(' ') }, gBeam);
-    // inside the glass the colours have barely parted: drawn as one beam along the d line
+    // inside the glass the colors have barely parted: drawn as one beam along the d line
     if (hit.pts.length > 2) svg('polyline', { class: 'beam-in', points: hit.pts.slice(1).map(P).join(' ') }, gBeam);
 
     // every other wavelength on the grid, weighted by the lamp
@@ -104,8 +104,8 @@ export function initDispersion({ getLamp, onLamp }) {
       }
       svg('polyline', { points: path.map(P).join(' '), stroke: HUE[i], 'stroke-opacity': (through(r) ? 0.25 + 0.75 * light[i] * r.T : 0.18).toFixed(2) }, gRays);
     }
-    // the card, coloured where the light lands at the drawn distance
-    const drawn = cardColours(poly, ref, Dd, 48);
+    // the card, colored where the light lands at the drawn distance
+    const drawn = cardColors(poly, ref, Dd, 48);
     if (drawn) {
       const n = drawn.cols.length, half = Math.max(drawn.s1 - drawn.s0, 24) / 2, mid = (drawn.s0 + drawn.s1) / 2;
       const A = [c0[0] + (mid - half) * across[0], c0[1] + (mid - half) * across[1]], B = [c0[0] + (mid + half) * across[0], c0[1] + (mid + half) * across[1]];
@@ -117,7 +117,7 @@ export function initDispersion({ getLamp, onLamp }) {
       cardLab.setAttribute('x', 880); cardLab.setAttribute('y', 590);
       cardLab.textContent = D > DRAWN ? `CARD · ${fmtMm(D)} (DRAWN NEARER)` : `CARD · ${fmtMm(D)}`;
     }
-    fitStrip(cardColours(poly, ref, D, 200));
+    fitStrip(cardColors(poly, ref, D, 200));
 
     // the readout
     const lost = rays.filter(({ r }) => !through(r)).map(({ i }) => GRID[i]);
