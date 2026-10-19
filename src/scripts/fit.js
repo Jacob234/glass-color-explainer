@@ -4,7 +4,7 @@
 // measured by CIEDE2000. A colour is three numbers and a recipe is a whole spectrum, so many
 // recipes can match one swatch (metamerism); the fitter returns the runners-up too, and the
 // colour each recipe takes under a second lamp, where metamers stop agreeing.
-import { GRID, toGrid, densityOnGrid, transmission, spectrumColor, encode } from './spectra.js';
+import { GRID, toGrid, colorantDensity, transmission, spectrumColor, encode } from './spectra.js';
 
 // Concentrations are relative to each curve as given (1 = the curve in optics.json). The upper
 // bound matches what the mixing lab can express: c ≤ 1 at up to 4× wall thickness.
@@ -127,7 +127,7 @@ export function makeFitter(optics, { lamp = 'incandescent' } = {}) {
   const spdOf = (id) => toGrid(optics.wavelengths, optics.illuminants.find((x) => x.id === id).spd);
   const W = { day: weights(spdOf('daylight')), lamp: weights(spdOf(lamp)) };
   const ids = optics.colorants.map((c) => c.id);
-  const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, densityOnGrid(optics.wavelengths, c.absorbance)]));
+  const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
   const lin = (parts, which = 'day') => linOf(W[which], parts.map(([id]) => DENS[id]), parts.map(([, c]) => c));
   const SETS = subsets(ids, MAX_PARTS);
 
@@ -176,6 +176,6 @@ export function makeFitter(optics, { lamp = 'incandescent' } = {}) {
 // The same forward model through spectra.js directly, for checking the fast path in tests.
 export function referenceLin(optics, parts, illuminant = 'daylight') {
   const spd = toGrid(optics.wavelengths, optics.illuminants.find((x) => x.id === illuminant).spd);
-  const T = transmission(parts.map(([id, c]) => [densityOnGrid(optics.wavelengths, optics.colorants.find((x) => x.id === id).absorbance), c]));
+  const T = transmission(parts.map(([id, c]) => [colorantDensity(optics.colorants.find((x) => x.id === id), optics.wavelengths), c]));
   return spectrumColor(T, spd).lin;
 }

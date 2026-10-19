@@ -1,8 +1,12 @@
 <script>
   import { onMount } from 'svelte';
   import { mixedAbsorbance, transmittedColor } from '../../scripts/optics-core.js';
+  import { fineOptics } from '../../scripts/spectra.js';
 
-  let { optics, recipes = [] } = $props();
+  let { optics: coarse, recipes = [] } = $props();
+  // Work on the 5 nm grid with band models, so narrow bands (neodymium's) survive and the lab
+  // agrees with the home page and the rack's bench.
+  const optics = fineOptics(coarse);
 
   const MAX = 4;
   const W = 360, H = 90;
