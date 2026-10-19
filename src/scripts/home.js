@@ -3,7 +3,7 @@
 import optics from '../data/optics.json';
 import history from '../data/history.json';
 import {
-  GRID, colorantDensity, transmission, glow, glowStrength,
+  GRID, colorantDensity, transmission, glow, glowStrength, emissivity, luminousEmissivity, planck,
   SPECTRAL, bandEdge, dichroicBand, encode, css, upsample,
 } from './spectra.js';
 import * as na from './flare.js';
@@ -12,6 +12,8 @@ import { makeFitter, MATCH, C_MAX } from './fit.js';
 import * as u from './uranium.js';
 import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
+import * as st from './stress.js';
+import { glassStage } from './stage-glass.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -82,7 +84,7 @@ function h(tag, props = {}, ...children) {
   return el;
 }
 
-function chips(box, ids, label, onPick) {
+function chips(box, ids, label, onPick, parts = (id) => [[id, 1]]) {
   const swatches = ids.map((id) => {
     const i = h('i'), b = h('button', { className: 'chip' }, i, label(id));
     b.dataset.id = id;
@@ -90,7 +92,7 @@ function chips(box, ids, label, onPick) {
     box.appendChild(b);
     return [i, id];
   });
-  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf([[id, 1]], 1.2).css); };
+  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf(parts(id), 1.2).css); };
   paint(); onLamp(paint);
   return (cur) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
 }
@@ -385,44 +387,77 @@ function vessel() {
   };
 }
 
-/* ---------- 04 the glory hole: incandescence hides colour ---------- */
+/* ---------- 04 the glory hole: hot glass glows where it absorbs ---------- */
 const HOT = 1150; // °C, soda-lime furnace
 const toLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const lum = (lin) => 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
-// The sodium flare's brightness relative to the gather's own glow (illustrative): strong in the
-// glory hole's flame, gone once the gather is out of it and below working heat.
+// The sodium flare's brightness relative to a black body's glow (illustrative): strong in the
+// glory hole's flame, gone once the gather is out of it and below working heat. The flame does not
+// care what the gather is, so against a gather that glows less than a black body the flare wins by more.
 const flareRatio = (t) => { const x = Math.min(1, Math.max(0, (t - 820) / 180)); return 6 * x * x * (3 - 2 * x); };
 
+// The gathers. Each is seen through the same path (in optics.json's units), so the colour it shows
+// cold and the light it gives out hot come from one transmission spectrum. Clear is a trace of iron.
+const GATHERS = {
+  clear: { label: 'Clear (trace iron)', parts: [['iron-ferrous', 0.03], ['iron-ferric', 0.03]] },
+  ...Object.fromEntries(['cobalt', 'copper', 'chromium', 'manganese'].map((id) => [id, { label: COLORANT[id].label, parts: [[id, 1]] }])),
+};
+const GATHER_PATH = 1.4;
+const gatherT = (id) => mixT(GATHERS[id].parts, GATHER_PATH);
+const gatherEps = Object.fromEntries(Object.keys(GATHERS).map((id) => [id, emissivity(gatherT(id))]));
+const SOOT = [0.06, 0.045, 0.035];
+const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+// What a glowing gather looks like at t °C: its glow colour, its strength, and the hottest glass pushed
+// toward yellow-orange the way an overexposed glow reads. Strength is the log visibility scale (zero
+// once the glow is too faint to see) times the cube root of its luminous emissivity, Stevens's
+// brightness exponent, so a glass that emits a thirtieth of a black body's light looks about a third as bright.
+function hotLook(id, t) {
+  const tK = t + 273.15, g = glow(tK, 1423, gatherEps[id]);
+  const a = glowStrength(g.luminance) * luminousEmissivity(gatherEps[id], tK) ** (1 / 3);
+  return { g, a, hot: lerp(g.rgb, [1, 0.82, 0.45], a ** 3 * 0.45) };
+}
+// The lowest temperature (°C) at which a gather's glow is still visible on the page's strength scale.
+// For a black body that is the Draper point; a glass that emits less fades out hotter.
+function fadeOut(eps) {
+  let lo = 300, hi = 1150;
+  for (let n = 0; n < 30; n++) { const mid = (lo + hi) / 2; glowStrength(glow(mid + 273.15, 1423, eps).luminance) > 0 ? (hi = mid) : (lo = mid); }
+  return hi;
+}
+
 function heat() {
-  const s = $('temp'), ids = ['cobalt', 'copper', 'chromium', 'manganese'];
-  let cur = 'cobalt', body = colorOf([[cur, 1]], 1.4).rgb, raf = 0;
-  const press = chips($('heatRods'), ids, (id) => id, (id) => { cur = id; body = colorOf([[id, 1]], 1.4).rgb; render(s.valueAsNumber); });
-  const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  const s = $('temp'), ids = Object.keys(GATHERS);
+  let cur = 'cobalt', body = colorOf(GATHERS[cur].parts, GATHER_PATH).rgb, raf = 0;
+  const press = chips($('heatRods'), ids, (id) => (id === 'clear' ? 'clear' : id), (id) => { cur = id; body = colorOf(GATHERS[id].parts, GATHER_PATH).rgb; render(s.valueAsNumber); }, (id) => GATHERS[id].parts);
   const el = (id) => document.getElementById(id);
   const lens = glasses();
+  const compare = kirchhoff();
   function render(t) {
-    const g = glow(t + 273.15), a = glowStrength(g.luminance);
-    const hot = lerp(g.rgb, [1, 0.82, 0.45], a ** 3 * 0.45); // the hottest glass reads yellow-orange
-    const col = css(lerp(body, hot, a)), flare = flareRatio(t);
+    const { g, a, hot } = hotLook(cur, t), epsY = luminousEmissivity(gatherEps[cur], t + 273.15);
+    const col = css(lerp(body, hot, a)), flare = flareRatio(t) / Math.max(0.01, epsY);
     el('g-body').setAttribute('fill', col);
     el('g-cast').setAttribute('fill', col); el('g-cast').setAttribute('opacity', 0.2 + a * 0.5);
     el('g-halo').setAttribute('fill', css(g.rgb)); el('g-halo').setAttribute('opacity', a * 0.85);
     el('g-rim').setAttribute('opacity', 1 - a * 0.9); // hot glass glows from within; the dark rim appears as it cools
     for (const id of ['g-flare', 'g-flare2']) el(id).setAttribute('opacity', flare / (1 + flare));
     el('g-rig').setAttribute('transform', `translate(${-(1 - t / HOT) * 330} 0)`);
-    lens.render({ t, a, body, hot, glowRgb: g.rgb, flare });
+    lens.render({ t, a, body, hot, glowRgb: g.rgb, flare, gather: cur, eps: gatherEps[cur] });
+    compare(t);
     $('tempOut').textContent = String(Math.round(t));
     s.setAttribute('aria-valuetext', `${Math.round(t)} degrees Celsius`);
-    $('heatRead').textContent = t > 1000 ? 'In the glory hole. The gather is brighter than any color it carries, and the sodium flare is brighter still.'
-      : t > 800 ? 'Working heat. Still orange: you are reading temperature, not color.'
-      : t > 525 ? 'Cooling through cherry red. The glow is dimming and the colorant starts to show.'
-      : t > 200 ? 'Past the Draper point. The glow is too faint to see; this is the colorant.'
-      : `Cooled: ${COLORANT[cur].label}. This is the color it carried all along.`;
+    const pct = Math.round(epsY * 100);
+    $('heatRead').textContent = a === 0
+      ? (t > 200 ? 'The glow is too faint to see; this is the colorant.' : `Cooled: ${GATHERS[cur].label}. This is the color it carried all along.`)
+      : cur === 'clear'
+        ? `Clear glass absorbs almost no visible light, so it gives almost none back: about ${pct}% of a black body's glow at this heat.${t > 1000 ? ' The sodium flare outshines it many times over.' : ''}`
+        : t > 1000 ? `In the glory hole. The gather glows in its own absorption bands, about ${pct}% as bright as a black body, and the sodium flare is brighter still.`
+        : t > 800 ? `Working heat. The glow comes from the bands that make the color, so you are reading temperature, not color (${pct}% of a black body).`
+        : 'Cooling through cherry red. The glow is dimming and the colorant starts to show.';
     press(cur);
   }
   lens.onChange = () => render(s.valueAsNumber);
-  onLamp(() => { body = colorOf([[cur, 1]], 1.4).rgb; lens.relight(); render(s.valueAsNumber); });
+  onLamp(() => { body = colorOf(GATHERS[cur].parts, GATHER_PATH).rgb; lens.relight(); compare.relight(); render(s.valueAsNumber); });
   s.addEventListener('input', () => { cancelAnimationFrame(raf); render(s.valueAsNumber); });
+  addEventListener('resize', () => compare.resize(s.valueAsNumber));
   render(HOT);
   // Play the cool-down once, when the scene first comes into view.
   if (!reduceMotion() && 'IntersectionObserver' in window) {
@@ -440,6 +475,39 @@ function heat() {
     }, { threshold: 0.5 });
     io.observe($('scene'));
   }
+}
+
+/* ---------- 04 the glory hole: Kirchhoff, three gathers side by side ---------- */
+// Each card: the gather cold on the light table, the same gather at the stage's temperature in the
+// dark, and its spectrum: a black body at that temperature (top), what this glass emits (bottom), and
+// its emissivity ε = 1 − T (line). The cold colour and the hot glow are one spectrum read both ways.
+function kirchhoff() {
+  const grid = $('kGrid'), CARDS = ['clear', 'cobalt', 'copper'];
+  const cards = CARDS.map((id) => {
+    const cold = h('div', { className: 'k-cold' }, h('b', {}, 'cold')), hot = h('div', { className: 'k-hot' }, h('b', {}, 'at heat'));
+    const canvas = h('canvas', { className: 'strip', 'aria-hidden': 'true' }), read = h('p', { className: 'readout' });
+    grid.appendChild(h('figure', { className: 'k-card' }, h('h4', { className: 'mono' }, GATHERS[id].label), h('div', { className: 'k-pair' }, cold, hot), canvas, read));
+    return { id, cold, hot, canvas, read, fade: Math.round(fadeOut(gatherEps[id]) / 5) * 5 };
+  });
+  const relight = () => { for (const c of cards) c.cold.style.setProperty('--c', colorOf(GATHERS[c.id].parts, GATHER_PATH).css); };
+  let last = null;
+  function render(t, force = false) {
+    const key = Math.round(t / 5);
+    if (key === last && !force) return;
+    last = key;
+    const tK = t + 273.15, B = planck(tK), peak = Math.max(...B), top = B.map((v) => v / peak);
+    for (const c of cards) {
+      const eps = gatherEps[c.id], { a, hot } = hotLook(c.id, t), epsY = luminousEmissivity(eps, tK);
+      c.hot.style.setProperty('--c', css(lerp(SOOT, hot, a)));
+      strip(c.canvas, eps, top, top.map((v, i) => v * eps[i]), eps);
+      const pct = epsY < 0.1 ? (epsY * 100).toFixed(1) : Math.round(epsY * 100);
+      c.read.textContent = a > 0
+        ? `At ${Math.round(t)} °C it glows ${pct}% as bright as a black body. Its glow fades from sight near ${c.fade} °C.`
+        : `Too cool to glow visibly; its glow fades from sight near ${c.fade} °C.`;
+    }
+  }
+  relight();
+  return Object.assign(render, { relight: () => { relight(); last = null; }, resize: (t) => render(t, true) });
 }
 
 /* ---------- 04 the glory hole: the glasses ---------- */
@@ -492,10 +560,12 @@ function glasses() {
     for (const b of box.querySelectorAll('button')) b.firstChild.style.setProperty('--c', lensData[b.dataset.id].roomCss);
   }
   const fireCache = new Map();
-  function fire(lensId, tK) { // glow multiplier and luminous transmission for a black body at tK
-    const key = `${lensId}:${Math.round(tK / 10)}`;
+  // ε on the 1 nm grid (visible only; xyz ignores the rest). Without ε, a black body (the glory hole's walls).
+  const fineEps = (eps) => na.FINE.map((w) => { if (w >= 780) return eps[80]; const i = Math.floor((w - 380) / 5), f = (w - 380) / 5 - i; return eps[i] + (eps[i + 1] - eps[i]) * f; });
+  function fire(lensId, tK, gather = null, eps = null) { // glow multiplier and luminous transmission for the gather's glow at tK
+    const key = `${lensId}:${gather}:${Math.round(tK / 10)}`;
     if (!fireCache.has(key)) {
-      const bb = na.planck(tK), k = 1 / na.xyz(bb)[1], bare = linOf(na.xyz(bb).map((v) => v * k)), thru = linOf(na.xyz(bb, lensData[lensId].T).map((v) => v * k));
+      const e = eps && fineEps(eps), bb = na.planck(tK).map((v, i) => (e ? v * e[i] : v)), k = 1 / na.xyz(bb)[1], bare = linOf(na.xyz(bb).map((v) => v * k)), thru = linOf(na.xyz(bb, lensData[lensId].T).map((v) => v * k));
       const lumT = na.luminousT(lensData[lensId].T, bb); // the eye adapts to the overall dimming, not to the hue shift
       fireCache.set(key, { mul: thru.map((v, i) => Math.min(3, v / bare[i] / lumT)), lumT });
     }
@@ -576,8 +646,8 @@ function glasses() {
     ctx.beginPath(); ctx.moveTo(x(vis), 0); ctx.lineTo(x(vis), hh); ctx.stroke(); ctx.setLineDash([]);
   }
 
-  function render({ t, a, body, hot, glowRgb, flare }) {
-    const d = lensData[cur], tK = t + 273.15, f = fire(cur, tK), fHot = fire(cur, HOT + 273.15);
+  function render({ t, a, body, hot, glowRgb, flare, gather, eps }) {
+    const d = lensData[cur], tK = t + 273.15, f = fire(cur, tK, gather, eps), fHot = fire(cur, HOT + 273.15);
     lensG.style.display = cur === 'none' ? 'none' : '';
     $('lens-name').textContent = d.label;
     $('lens-room-m').setAttribute('values', matrix(d.room));
@@ -594,7 +664,7 @@ function glasses() {
       for (const id of ['g-flare', 'g-flare2']) L(id).setAttribute('opacity', r / (1 + r));
       L('g-rig').setAttribute('transform', $('g-rig').getAttribute('transform'));
     }
-    const key = `${cur}:${Math.round(t / 10)}`;
+    const key = `${cur}:${gather}:${Math.round(t / 10)}`;
     if (key !== last) {
       last = key;
       for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur));
@@ -654,7 +724,163 @@ function strike() {
   onLamp(() => { renderGold(); renderGap(); });
 }
 
-/* ---------- 06 the cold shop: dichroic ---------- */
+/* ---------- 06 the lehr: frozen-in stress between polarizers ---------- */
+// Every colour is the polariscope's transmission spectrum (stress.js, Jones calculus) under the
+// page's lamp. The colour of a spectrum is linear in it, so each lamp gives one weight per wavelength
+// and a table of colours by retardation is a matrix product. The tint plate's colour also depends
+// on the stress direction, so it gets a second axis in angle.
+const VIEW_NOTES = {
+  plane: 'The dark cross is not unstressed glass. Along it the stress runs parallel and perpendicular to the polarizers, and light polarized along a principal stress passes through unchanged. Switch to circular to remove it.',
+  circular: 'Quarter-wave plates on either side make the light circular, so the direction of the stress no longer matters and the cross is gone. Only the size of the stress shows.',
+  tint: 'A full-wave plate makes the empty field magenta, the colour that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. This is how strain viewers in glassworks are set up.',
+};
+const RATE = (v) => 0.3 * 1000 ** (v / 1000); // °C per minute, log slider
+const G_MAX = 12000, G_STEP = 2, T_MAX = 3000, T_STEP = 10, T_PHI = 24; // nm, nm, nm, nm, angle bins over 180°
+function lehr() {
+  const canvas = $('polar'), edge = $('polarEdge'), an = $('analyzer'), sCool = $('cool'), sThick = $('thick');
+  let viewer = 'plane', luts = null, litBy = null, raf = 0;
+  const views = [['plane', 'crossed'], ['circular', 'circular'], ['tint', 'tint plate']].map(([id, label]) => {
+    const b = h('button', { className: 'chip chip-plain' }, label);
+    b.addEventListener('click', () => { viewer = id; queue(); });
+    $('polarView').appendChild(b);
+    return [id, b];
+  });
+
+  // Colour tables under the current lamp, in linear sRGB.
+  function build() {
+    const W = GRID.map((_, i) => underLamp(GRID.map((_, j) => (j === i ? 1 : 0)), lamp).lin);
+    const colour = (I) => { const c = [0, 0, 0]; I.forEach((v, i) => { c[0] += v * W[i][0]; c[1] += v * W[i][1]; c[2] += v * W[i][2]; }); return c; };
+    const S = []; // sin²(πΓ/λ): crossed at 45°, and circular at any angle
+    for (let G = 0; G <= G_MAX; G += G_STEP) S.push(colour(GRID.map((w) => Math.sin((Math.PI * G) / w) ** 2)));
+    luts = { S, high: colour(GRID.map(() => 0.5)), tint: null, colour };
+    litBy = lamp;
+  }
+  function tintLut() { // [angle bin][retardation bin], −T_MAX..T_MAX
+    if (!luts.tint) luts.tint = Array.from({ length: T_PHI }, (_, k) => {
+      const phi = (k * Math.PI) / T_PHI, row = [];
+      for (let G = -T_MAX; G <= T_MAX; G += T_STEP) row.push(luts.colour(st.polariscope('tint', phi, G)));
+      return row;
+    });
+    return luts.tint;
+  }
+  // Linear colour at retardation G (signed) with the slow axis at phi from the polarizer.
+  function look(G, phi) {
+    if (viewer === 'tint') {
+      const t = tintLut(), a = (((phi % Math.PI) + Math.PI) % Math.PI) / (Math.PI / T_PHI), k0 = Math.floor(a) % T_PHI, k1 = (k0 + 1) % T_PHI, f = a - Math.floor(a);
+      const j = Math.round((Math.min(T_MAX, Math.max(-T_MAX, G)) + T_MAX) / T_STEP), p = t[k0][j], q = t[k1][j];
+      return [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f, p[2] + (q[2] - p[2]) * f];
+    }
+    const g = Math.abs(G), c = g > G_MAX ? luts.high : luts.S[Math.round(g / G_STEP)];
+    if (viewer === 'circular') return c;
+    const k = Math.sin(2 * phi) ** 2;
+    return [c[0] * k, c[1] * k, c[2] * k];
+  }
+  const put = (px, o, c) => { px[o] = 255 * encode(c[0]); px[o + 1] = 255 * encode(c[1]); px[o + 2] = 255 * encode(c[2]); px[o + 3] = 255; };
+
+  // The light table from above: the scene is X mm either side of the disc's centre.
+  const X = 80, Y = 50, R = st.FOOT.R, pos = { x: 18, y: -6 }, AR = 40; // analyzer centre and radius, mm
+  const open = document.createElement('canvas'), shut = document.createElement('canvas');
+  const state = () => {
+    const rate = RATE(sCool.valueAsNumber), d = sThick.valueAsNumber;
+    return { rate, d, dT: st.frozenDifference(rate, d) };
+  };
+  function paintScene() {
+    const [, w, hh] = fit(canvas, Y / X), { d, dT } = state(), mm = (2 * X) / w;
+    for (const c of [open, shut]) { c.width = w; c.height = hh; }
+    const a = open.getContext('2d').createImageData(w, hh), b = shut.getContext('2d').createImageData(w, hh);
+    const paper = tColor(ONES).lin, field = look(0, 0), k = st.planRetardation(R, R, d, dT);
+    for (let j = 0; j < hh; j++) {
+      const y = Y - (j + 0.5) * mm;
+      for (let i = 0; i < w; i++) {
+        const x = -X + (i + 0.5) * mm, r = Math.hypot(x, y), o = 4 * (j * w + i);
+        put(a.data, o, paper);
+        put(b.data, o, r < R ? look(k * (r / R) ** 2, Math.atan2(y, x)) : field);
+      }
+    }
+    open.getContext('2d').putImageData(a, 0, 0); shut.getContext('2d').putImageData(b, 0, 0);
+  }
+  function compose() {
+    const ctx = canvas.getContext('2d'), w = canvas.width, hh = canvas.height, s = w / (2 * X), dpr = Math.min(2, devicePixelRatio || 1);
+    const sx = (x) => (x + X) * s, sy = (y) => (Y - y) * s;
+    ctx.drawImage(open, 0, 0);
+    ctx.save(); ctx.beginPath(); ctx.arc(sx(pos.x), sy(pos.y), AR * s, 0, 2 * Math.PI); ctx.clip(); ctx.drawImage(shut, 0, 0); ctx.restore();
+    ctx.lineWidth = dpr; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(sx(0), sy(0), R * s, 0, 2 * Math.PI); ctx.stroke();
+    an.style.left = `${(sx(pos.x) / w) * 100}%`; an.style.top = `${(sy(pos.y) / hh) * 100}%`; an.style.width = `${((2 * AR * s) / w) * 100}%`;
+    an.setAttribute('aria-valuetext', `second polarizer ${Math.round(Math.hypot(pos.x, pos.y))} mm from the centre of the foot`);
+  }
+
+  // The foot through its edge: a ray at offset x crosses the whole chord at height z.
+  const EX = 36, EZ = 10;
+  function paintEdge() {
+    const [ctx, w, hh] = fit(edge, EZ / EX), { d, dT } = state(), mm = (2 * EX) / w;
+    const img = ctx.createImageData(w, hh), field = look(0, Math.PI / 4), SUB = 4;
+    for (let j = 0; j < hh; j++) {
+      for (let i = 0; i < w; i++) {
+        const x = -EX + (i + 0.5) * mm, o = 4 * (j * w + i);
+        let c = [0, 0, 0], n = 0;
+        for (let k = 0; k < SUB; k++) { // average sub-rows, since fringes crowd near the faces
+          const z = EZ - (j + (k + 0.5) / SUB) * mm;
+          if (Math.abs(x) >= R || Math.abs(z) > d / 2) continue;
+          const g = look(st.edgeRetardation(x, z, R, d, dT), Math.PI / 4);
+          c[0] += g[0]; c[1] += g[1]; c[2] += g[2]; n++;
+        }
+        const f = n / SUB;
+        put(img.data, o, n ? c.map((v, m) => v / SUB + field[m] * (1 - f)) : field);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function words() {
+    const { rate, d, dT } = state(), face = -st.surfaceStress(d, dT), core = st.coreStress(d, dT);
+    const rim = Math.abs(st.planRetardation(R, R, d, dT)), through = Math.abs(st.edgeRetardation(0, d / 2, R, d, dT));
+    const mins = (st.GLASS.anneal - st.GLASS.strain) / rate;
+    const time = mins < 1 ? `${Math.round(mins * 60)} s` : mins < 90 ? `${Math.round(mins)} min` : `${(mins / 60).toFixed(1)} h`;
+    $('coolOut').textContent = `${rate < 10 ? rate.toFixed(1) : Math.round(rate)} °C/min`;
+    $('thickOut').textContent = `${d} mm`;
+    const bar = (v) => `${Math.min(100, Math.max(1.5, (Math.log10(Math.max(v, 1e-3)) + 2) * 25))}%`; // log scale, 0.01 to 100
+    const row = (name, val, v) => h('div', {}, h('dt', {}, name), h('dd', {}, val), h('i', { style: { '--v': bar(v), '--c': 'var(--ink)' } }));
+    const mpa = (v) => (v < 1 ? v.toFixed(2) : v < 10 ? v.toFixed(1) : Math.round(v)) + ' MPa';
+    $('lehrMeters').replaceChildren(
+      row('faces · compression', mpa(face), face),
+      row('core · tension', mpa(core), core),
+      row('rim, face on · retardation', `${rim < 10 ? rim.toFixed(1) : Math.round(rim)} nm`, rim / 6),
+      row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
+    const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot all but vanishes into the dark field.`
+      : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
+      : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal colour are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
+      : 'Past first-order red into blue at the rim. Each repeat of the colours is another wavelength of retardation: this piece is carrying real stress.';
+    const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colours collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
+    $('lehrRead').textContent = `${state_} ${VIEW_NOTES[viewer]}${sodium}`;
+    $('edgeRead').textContent = `Through the edge the foot shows what face on hides: compression of ${mpa(face)} in a band at each face, tension of ${mpa(core)} in the core, and between them a line where the stress passes through zero (dark between crossed polarizers), 58% of the way from the middle to each face. The light now crosses ${2 * R} mm of glass instead of ${d}, so the same stress gives up to ${through < 10 ? through.toFixed(1) : Math.round(through)} nm. Thickness counts twice: the frozen difference grows as its square.`;
+    for (const [id, b] of views) b.setAttribute('aria-pressed', String(id === viewer));
+  }
+
+  function render() {
+    raf = 0;
+    if (litBy !== lamp || !luts) build();
+    paintScene(); compose(); paintEdge(); words();
+  }
+  function queue() { if (!raf) raf = requestAnimationFrame(render); }
+
+  // Drag the second polarizer; it can hang off the table's edge by up to half its width.
+  const toMM = (e) => { const r = canvas.getBoundingClientRect(); return { x: ((e.clientX - r.left) / r.width) * 2 * X - X, y: Y - ((e.clientY - r.top) / r.width) * 2 * X }; };
+  const clampPos = () => { pos.x = Math.min(X, Math.max(-X, pos.x)); pos.y = Math.min(Y, Math.max(-Y, pos.y)); };
+  let drag = null;
+  an.addEventListener('pointerdown', (e) => { e.preventDefault(); an.setPointerCapture(e.pointerId); const p = toMM(e); drag = { id: e.pointerId, dx: pos.x - p.x, dy: pos.y - p.y }; });
+  an.addEventListener('pointermove', (e) => { if (!drag || e.pointerId !== drag.id) return; const p = toMM(e); pos.x = p.x + drag.dx; pos.y = p.y + drag.dy; clampPos(); compose(); });
+  const end = (e) => { if (drag && e.pointerId === drag.id) drag = null; };
+  an.addEventListener('pointerup', end); an.addEventListener('pointercancel', end);
+  an.addEventListener('keydown', (e) => {
+    const m = { ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 5], ArrowDown: [0, -5] }[e.key];
+    if (!m) return;
+    e.preventDefault(); pos.x += m[0]; pos.y += m[1]; clampPos(); compose();
+  });
+  sCool.addEventListener('input', queue); sThick.addEventListener('input', queue);
+  addEventListener('resize', queue); onLamp(() => { luts = null; queue(); });
+}
+
+/* ---------- 07 the cold shop: dichroic ---------- */
 function dichroic() {
   const s = $('angle');
   const set = (id, attrs) => { const el = document.getElementById(id); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); };
@@ -677,7 +903,7 @@ function dichroic() {
   s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
-/* ---------- 07 the rack: real supplier colours on hue shelves ---------- */
+/* ---------- 08 the rack: real supplier colours on hue shelves ---------- */
 function rack() {
   const items = JSON.parse($('rack-data').textContent);
   const MECH = [['all', 'everything'], ['ions', 'ions'], ['colloids', 'metal colloids'], ['bandgap', 'semiconductors'], ['structure', 'structure'], ['unknown', 'unclassified']];
@@ -795,7 +1021,7 @@ function rack() {
   });
 }
 
-/* ---------- 08 the showroom: uranium glass gives light back ---------- */
+/* ---------- 09 the showroom: uranium glass gives light back ---------- */
 function showroom() {
   const canvas = $('stripU');
   for (const id of ['black', 'daylight']) {
@@ -968,7 +1194,7 @@ function historyRail() {
   lanes(); addEventListener('resize', lanes);
 }
 
-/* ---------- 07 the rack, continued: the bench works a rod backwards to a melt ---------- */
+/* ---------- 08 the rack, continued: the bench works a rod backwards to a melt ---------- */
 const BENCH_LAMP = 'a tungsten bulb';
 function fitBench() {
   const fitter = makeFitter(optics, { lamp: 'incandescent' });
@@ -1050,5 +1276,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
 }

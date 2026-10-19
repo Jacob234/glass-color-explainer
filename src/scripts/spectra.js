@@ -58,6 +58,16 @@ export function radianceColor(L, spd, adapt = 1, scale = 1) {
   return { lin, rgb, css: css(rgb) };
 }
 
+// The same adaptation as radianceColor, as one matrix from XYZ (normalised so the lamp's white has
+// Y = 1) to linear sRGB, for images that integrate many spectra per pixel (raytrace.js).
+export function displayMatrix(spd, adapt = 1) {
+  const white = integrate(spd), src = mul(BRADFORD, white.map((v) => v / white[1])), dst = mul(BRADFORD, D65);
+  const gain = dst.map((d, i) => (d / src[i]) ** adapt);
+  const cols = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].map((e) => mul(XYZ_TO_SRGB, mul(BRADFORD_INV, mul(BRADFORD, e).map((v, i) => v * gain[i]))));
+  return [0, 1, 2].map((r) => cols.map((c) => c[r]));
+}
+export const CMF_GRID = CMF;
+
 // Optical density on the grid for a colorant's coarse absorptance curve.
 export const densityOnGrid = (wavelengths, absorbance) => toGrid(wavelengths, absorbance.map(toDensity));
 
@@ -86,12 +96,25 @@ export function transmission(parts, thickness = 1) {
 const C2 = 1.4388e7; // second radiation constant, nm·K
 export const planck = (T) => GRID.map((w) => w ** -5 / (Math.exp(C2 / (w * T)) - 1));
 
-// The colour and relative luminance of a glowing body at T kelvin. The colour is normalised so
-// its brightest channel is 1; luminance is relative to a body at Tref (1150 °C furnace glass).
-export function glow(T, Tref = 1423) {
-  const xyz = integrate(planck(T)), lin = mul(XYZ_TO_SRGB, xyz), peak = Math.max(...lin);
+// Kirchhoff's law (1860): in thermal equilibrium a body emits, at each wavelength, the fraction of a
+// black body's light that it would absorb there. For a slab of glass with internal transmission T,
+// spectral emissivity ε(λ) = 1 − T(λ), surface reflection ignored (it would scale both by about 0.92).
+export const emissivity = (T) => T.map((t) => 1 - t);
+
+// The colour and relative luminance of a glowing body at T kelvin with spectral emissivity eps
+// (on GRID; omitted, a black body). The colour is normalised so its brightest channel is 1;
+// luminance is relative to a black body at Tref (1150 °C furnace glass).
+export function glow(T, Tref = 1423, eps = null) {
+  const B = planck(T), L = eps ? B.map((b, i) => b * eps[i]) : B;
+  const xyz = integrate(L), lin = mul(XYZ_TO_SRGB, xyz), peak = Math.max(...lin, 1e-30);
   return { rgb: lin.map((v) => encode(Math.max(0, v) / peak)), luminance: xyz[1] / integrate(planck(Tref))[1] };
 }
+
+// Luminous emissivity: how bright a body glows at T relative to a black body at the same T.
+export const luminousEmissivity = (eps, T) => {
+  const B = planck(T);
+  return integrate(B.map((b, i) => b * eps[i]))[1] / integrate(B)[1];
+};
 
 // Perceived glow strength 0..1 from relative luminance, on a log scale (the eye is roughly
 // logarithmic, and luminance falls about five orders of magnitude from 1150 °C to the Draper point).
