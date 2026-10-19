@@ -1,10 +1,10 @@
 {
   "note": "The datasheet library: every source of data the explainer computes from or quotes, and sources worth adding. Status is not stored here; src/scripts/library.js works it out from usedBy at build time. A use without `pr` must be cited (its `find` text present) in that file on this tree, or `npm run check` fails. `reuse` is what the source states about copying (open, cite, unknown); `licence` gives the detail, read on the `checked` date. Links only: no PDFs are rehosted.",
   "stages": {
-    "engine": "colour engine",
+    "engine": "color engine",
     "lamps": "lamp switch",
     "glass": "00 what glass is",
-    "ions": "03 colour rod",
+    "ions": "03 color rod",
     "heat": "04 glory hole",
     "light": "07 cold shop",
     "prism": "07′ cold shop, cut",
@@ -19,10 +19,10 @@
       "title": "CIE 1931 colour-matching functions, 2 degree observer",
       "by": "International Commission on Illumination (CIE)", "date": "2019", "edition": "data set from CIE 018:2019, Table 6; DOI 10.25039/CIE.DS.xvudnb9b",
       "url": "https://doi.org/10.25039/CIE.DS.xvudnb9b",
-      "provides": "The standard observer at 1 nm: how strongly the eye's three colour channels respond to each wavelength. Every colour on the site is an integral against these curves.",
+      "provides": "The standard observer at 1 nm: how strongly the eye's three color channels respond to each wavelength. Every color on the site is an integral against these curves.",
       "reuse": "open", "licence": "CIE publishes its data sets under CC BY-SA 4.0 (read from the CIE D65 data set's metadata; share-alike means derived tables carry the same licence).",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/scripts/optics-core.js", "find": "CIE 1931 2° colour-matching functions", "stage": "engine" }]
+      "usedBy": [{ "file": "src/scripts/optics-core.js", "find": "CIE 1931 2° color-matching functions", "stage": "engine" }]
     },
     {
       "id": "wyman-2013", "kind": "method", "short": "Wyman, Sloan & Shirley",
@@ -79,7 +79,7 @@
       "title": "The CIEDE2000 color-difference formula: implementation notes, supplementary test data, and mathematical observations",
       "by": "Gaurav Sharma, Wencheng Wu and Edul N. Dalal", "date": "2005", "edition": "Color Research & Application 30(1), 21–30",
       "url": "https://doi.org/10.1002/col.20070",
-      "provides": "The colour-difference formula and test data the rack's recipe fits are scored with.",
+      "provides": "The color-difference formula and test data the rack's recipe fits are scored with.",
       "reuse": "cite", "licence": "Journal article; formula used with citation.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/scripts/fit.js", "find": "Sharma, Wu & Dalal", "stage": "rack" }]
@@ -97,10 +97,10 @@
     {
       "id": "bullseye-shop", "kind": "catalogue", "short": "Bullseye store",
       "title": "Bullseye Glass Co. online store",
-      "by": "Bullseye Glass Co., Portland, Oregon", "date": "live", "edition": "swept for the rack (328 colours, COE 90)",
+      "by": "Bullseye Glass Co., Portland, Oregon", "date": "live", "edition": "swept for the rack (328 colors, COE 90)",
       "url": "https://shop.bullseyeglass.com/",
       "provides": "Names, codes and product photos of Bullseye sheet, frit, rod and billet. Rack swatches are sampled from the photos; colorants are inferred from names.",
-      "reuse": "unknown", "licence": "No data licence stated. The repo keeps names, codes, links and one sampled colour per product, not the photos.",
+      "reuse": "unknown", "licence": "No data licence stated. The repo keeps names, codes, links and one sampled color per product, not the photos.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://shop.bullseyeglass.com", "stage": "rack" }]
     },
@@ -109,8 +109,8 @@
       "title": "Glass Alchemy online store",
       "by": "Glass Alchemy", "date": "live", "edition": "swept for the rack (borosilicate, COE 33)",
       "url": "https://glassalchemy.com/",
-      "provides": "Names and product photos of Glass Alchemy borosilicate colour rod. Swatches sampled from photos.",
-      "reuse": "unknown", "licence": "No data licence stated. Names, links and sampled colours only.",
+      "provides": "Names and product photos of Glass Alchemy borosilicate color rod. Swatches sampled from photos.",
+      "reuse": "unknown", "licence": "No data licence stated. Names, links and sampled colors only.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://glassalchemy.com", "stage": "rack" }]
     },
@@ -120,7 +120,7 @@
       "by": "Frantz Art Glass (a Perle di Vetro company)", "date": "live", "edition": "swept for Effetre, Reichenbach, CiM, Vetrofond, Double Helix, Northstar and TAG",
       "url": "https://www.frantzartglass.com/",
       "provides": "Catalogue codes, names and photos for seven lampwork rod brands a retailer resells. Swatches sampled from photos.",
-      "reuse": "unknown", "licence": "No data licence stated. Names, codes, links and sampled colours only.",
+      "reuse": "unknown", "licence": "No data licence stated. Names, codes, links and sampled colors only.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "tools/catalog-sweep/config/suppliers.toml", "find": "https://www.frantzartglass.com", "stage": "rack" }]
     },
@@ -251,7 +251,7 @@
       "title": "Authenticity screening of stained glass windows using optical spectroscopy",
       "by": "Wendy Meulebroeck, Hilde Wouters, Karin Nys and Hugo Thienpont", "date": "2016", "edition": "Scientific Reports 6, 37726",
       "url": "https://doi.org/10.1038/srep37726",
-      "provides": "Measured ultraviolet to near-infrared transmission of historical and modern coloured stained glass, with the absorption bands of cobalt, copper, iron, manganese and chromium identified.",
+      "provides": "Measured ultraviolet to near-infrared transmission of historical and modern colored stained glass, with the absorption bands of cobalt, copper, iron, manganese and chromium identified.",
       "would": "Real curves in place of the drawn ones for the common colorants, and an openly licensed set that can be copied into the repo.",
       "reuse": "open", "licence": "CC BY 4.0.",
       "checked": "2026-10-19", "usedBy": []
@@ -261,7 +261,7 @@
       "title": "SCHOTT optical filter glass data sheets and calculation program",
       "by": "SCHOTT AG", "date": "2026", "edition": "data sheets version June 2026 (169 pp); Excel calculation program with 2015 tutorial",
       "url": "https://www.schott.com/en-gb/products/optical-filter-glass-p1000266/downloads",
-      "provides": "Measured internal transmittance of coloured glasses, 200–5200 nm, at a reference thickness: cobalt blues (BG), coppers, ferrous heat absorbers (KG), selenium–cadmium long-pass reds and oranges (RG, OG), neutral densities (NG). The Excel tool rescales to any thickness.",
+      "provides": "Measured internal transmittance of colored glasses, 200–5200 nm, at a reference thickness: cobalt blues (BG), coppers, ferrous heat absorbers (KG), selenium–cadmium long-pass reds and oranges (RG, OG), neutral densities (NG). The Excel tool rescales to any thickness.",
       "would": "Industrial colored glass measured to datasheet standard, to check each drawn colorant curve and the Beer–Lambert thickness scaling against.",
       "reuse": "cite", "licence": "No reuse licence stated; values are \"reference values\". Use to check curves and quote individual numbers with citation, not to copy tables.",
       "checked": "2026-10-19", "usedBy": []
@@ -331,7 +331,7 @@
       "title": "Colour & Vision Research Laboratory database",
       "by": "Institute of Ophthalmology, University College London", "date": "live", "edition": "cvrl.org",
       "url": "http://www.cvrl.org/",
-      "provides": "Tabulated colour-matching functions (CIE 1931, Stiles–Burch, CIE 2006), cone fundamentals and luminous efficiency.",
+      "provides": "Tabulated color-matching functions (CIE 1931, Stiles–Burch, CIE 2006), cone fundamentals and luminous efficiency.",
       "would": "Tables to test the analytic observer against, and the CIE 2006 cone fundamentals if the page ever explains metamerism from the cones up.",
       "reuse": "unknown", "licence": "\"Provided free of charge as a service to the vision science community\"; no explicit reuse licence.",
       "checked": "2026-10-19", "usedBy": []
@@ -344,6 +344,6 @@
     { "what": "Surface reflection loss (4% a face) and thickness scaling", "file": "src/scripts/flare.js", "candidates": ["schott-tie35"] },
     { "what": "Sodium D line wavelengths", "file": "src/scripts/flare.js", "candidates": ["nist-asd"], "note": "Values are right; the citation is missing." },
     { "what": "Studio furnace and glory-hole temperatures", "file": "src/data/viscosity.json", "candidates": ["bullseye-annealing"], "note": "Kiln glass only; furnace practice still needs a source (PR #17)." },
-    { "what": "Rack swatch colours, sampled from product photos", "file": "src/data/catalog/index.json", "candidates": [], "note": "Needs measured transmission of the supplier glasses, which no source here publishes." }
+    { "what": "Rack swatch colors, sampled from product photos", "file": "src/data/catalog/index.json", "candidates": [], "note": "Needs measured transmission of the supplier glasses, which no source here publishes." }
   ]
 }

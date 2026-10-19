@@ -1,7 +1,7 @@
 // dispersion.js — refraction and dispersion in clear glass. Pure functions only: no DOM.
 // Index n(λ) from published Sellmeier or Cauchy fits (data/glasses.json), Snell's law and Fresnel
 // reflection at each surface, a 2D ray tracer for a convex piece of glass, and the thin-lens
-// achromat. The colours come from the same observer as the rest of the page (spectra.js).
+// achromat. The colors come from the same observer as the rest of the page (spectra.js).
 import data from '../data/glasses.json' with { type: 'json' };
 
 export const GLASSES = data.glasses;
@@ -147,7 +147,7 @@ export function discCdf(u) {
 // A thin black line of width bar on white paper, imaged by a lens of aperture radius a onto a card at
 // distance z. Each wavelength focuses at fl(λ), so it blurs into a disc of radius a|z − fl|/fl, never
 // smaller than the diffraction spot. Returns the share of each wavelength's light reaching position x
-// (same units as bar), ready to colour as a transmission spectrum.
+// (same units as bar), ready to color as a transmission spectrum.
 export function lineImage(fl, wavelengths, a, z, bar, x) {
   return wavelengths.map((nm) => {
     const F = fl(nm), r = Math.max((a * Math.abs(z - F)) / F, (1.22 * nm * 1e-6 * F) / (2 * a));

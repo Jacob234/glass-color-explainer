@@ -42,5 +42,5 @@ export function fluorescence(lampExt, thickness = 1) {
   return GRID.map((w, i) => (YIELD * TOWARD_EYE * photons * EMISSION[i]) / w);
 }
 
-// Transmission on GRID, for the colour the glass takes away.
+// Transmission on GRID, for the color the glass takes away.
 export const transmissionOnGrid = (thickness = 1) => GRID.map((w) => 10 ** -(density(w) * thickness));
