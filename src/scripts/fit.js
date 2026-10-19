@@ -1,9 +1,9 @@
-// fit.js — work backwards from a colour to a recipe. Pure functions only: no DOM.
+// fit.js — work backwards from a color to a recipe. Pure functions only: no DOM.
 // Given an sRGB swatch (sampled from a product photo), search Beer–Lambert mixes of the
-// colorants in optics.json for the ones whose transmitted colour under daylight comes closest,
-// measured by CIEDE2000. A colour is three numbers and a recipe is a whole spectrum, so many
+// colorants in optics.json for the ones whose transmitted color under daylight comes closest,
+// measured by CIEDE2000. A color is three numbers and a recipe is a whole spectrum, so many
 // recipes can match one swatch (metamerism); the fitter returns the runners-up too, and the
-// colour each recipe takes under a second lamp, where metamers stop agreeing.
+// color each recipe takes under a second lamp, where metamers stop agreeing.
 import { GRID, toGrid, colorantDensity, transmission, spectrumColor, encode } from './spectra.js';
 
 // Concentrations are relative to each curve as given (1 = the curve in optics.json). The upper
@@ -11,10 +11,10 @@ import { GRID, toGrid, colorantDensity, transmission, spectrumColor, encode } fr
 export const C_MIN = 0.01, C_MAX = 4;
 const MAX_PARTS = 3;
 // A mix "matches" a swatch within this ΔE00: about two just-noticeable differences, so a
-// match would pass for the same colour side by side.
+// match would pass for the same color side by side.
 export const MATCH = 2.5;
 
-/* ---------- colour difference ---------- */
+/* ---------- color difference ---------- */
 
 const SRGB_TO_XYZ = [[0.4124564, 0.3575761, 0.1804375], [0.2126729, 0.7151522, 0.072175], [0.0193339, 0.119192, 0.9503041]];
 const D65 = [0.95047, 1, 1.08883];
@@ -25,7 +25,7 @@ export const hexToLin = (hex) => [1, 3, 5].map((i) => decode(parseInt(hex.slice(
 export const linToHex = (lin) => '#' + lin.map((c) => Math.round(255 * encode(c)).toString(16).padStart(2, '0')).join('');
 
 // CIELAB (D65) from linear sRGB. Values outside the gamut are clipped first, so a fit is
-// judged on the colour the screen can actually show.
+// judged on the color the screen can actually show.
 export function linToLab(lin) {
   const xyz = mul(SRGB_TO_XYZ, lin.map((c) => Math.min(1, Math.max(0, c))));
   const f = (t) => (t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116);
@@ -147,7 +147,7 @@ export function makeFitter(optics, { lamp = 'incandescent' } = {}) {
 
   // Every set of up to three colorants is fitted. The headline recipe is the simplest set that
   // matches (fewest colorants, then the closest); if nothing matches, simply the closest.
-  // `matches` counts the sets that match, which is the honest measure of how little one colour
+  // `matches` counts the sets that match, which is the honest measure of how little one color
   // pins down a recipe. Alternatives are other matching sets, ranked by how far they part
   // company with the headline recipe under the second lamp.
   function fit(hex, { only } = {}) {

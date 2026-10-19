@@ -1,7 +1,7 @@
 // bands.js — colorants modelled as absorption bands rather than sampled curves.
 // Pure functions only: no DOM. The coarse curves in optics.json are sampled every 25 nm, which is
 // fine for broad absorbers but loses narrow ones: neodymium's 585 nm band falls between the 580 and
-// 605 nm samples. A band model can be evaluated on any grid, so the 5 nm colour engine (spectra.js)
+// 605 nm samples. A band model can be evaluated on any grid, so the 5 nm color engine (spectra.js)
 // and the 1 nm flare model (flare.js) see the same physics.
 
 const gauss = (x, c, fwhm) => Math.exp(-4 * Math.LN2 * ((x - c) / fwhm) ** 2);

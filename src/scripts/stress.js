@@ -7,7 +7,7 @@
 // Γ = C · (σ₁ − σ₂) · d (the stress-optic law, after Brewster; C is the stress-optic coefficient,
 // measured for glass by ASTM C770, Standard Test Method for Measurement of Glass Stress—Optical
 // Coefficient, and applied in ASTM F218 and C148). Between polarizers that
-// retardation becomes colour, because each wavelength is a different fraction of a cycle out of step.
+// retardation becomes color, because each wavelength is a different fraction of a cycle out of step.
 import { GRID } from './spectra.js';
 import { chord } from './vessel.js';
 

@@ -26,14 +26,14 @@ test('white paper is white under daylight, and tinted under a lamp the eye only 
   assert.ok(r > g && g > b, 'candlelight is warm');
 });
 
-test('partial adaptation runs between the lamp colour (0) and full adaptation (1)', () => {
+test('partial adaptation runs between the lamp color (0) and full adaptation (1)', () => {
   const spd = LAMP.tungsten.spd;
   assert.deepEqual(spectrumColor(ones, spd, 1).rgb, spectrumColor(ones, spd).rgb);
   const b = (d) => spectrumColor(ones, spd, d).rgb[2];
   assert.ok(b(0) < b(0.5) && b(0.5) < b(1));
 });
 
-test('under a sodium lamp there is no hue: every glass is the lamp colour, lighter or darker', () => {
+test('under a sodium lamp there is no hue: every glass is the lamp color, lighter or darker', () => {
   const ratio = (T) => { const [r, g] = underLamp(T, LAMP.sodium).lin; return g / r; };
   const ref = ratio(ones);
   for (const eV of [1.8, 2.1, 2.4]) {
@@ -49,7 +49,7 @@ test('didymium passes most daylight but almost none of a sodium street lamp', ()
   assert.ok(luminousT(T, fineSpd(LAMP.sodium)) < 0.05);
 });
 
-test('spectral upsampling reproduces a photo colour under daylight', () => {
+test('spectral upsampling reproduces a photo color under daylight', () => {
   for (const rgb of [[0.2, 0.4, 0.8], [0.9, 0.7, 0.1], [0.5, 0.5, 0.5], [0.8, 0.1, 0.3]]) {
     const back = spectrumColor(upsample(rgb, LAMP.daylight.spd), LAMP.daylight.spd).rgb;
     back.forEach((v, i) => assert.ok(Math.abs(v - rgb[i]) < 0.01, `${rgb} → ${back}`));

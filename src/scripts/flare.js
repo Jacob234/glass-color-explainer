@@ -10,7 +10,7 @@ export const FINE = Array.from({ length: 1021 }, (_, i) => 380 + i); // 380–14
 export const VIS_END = FINE.indexOf(780); // last visible sample
 const CMF = FINE.map((w) => (w <= 780 ? cmf(w) : [0, 0, 0]));
 
-// Absorption bands of the two "twins" in didymium glass live in bands.js, shared with the colour engine.
+// Absorption bands of the two "twins" in didymium glass live in bands.js, shared with the color engine.
 export { ND_BANDS, PR_BANDS };
 
 // Ferrous iron, the absorber in old "heat-absorbing" sage-green glass: one broad band centred in the
@@ -78,7 +78,7 @@ export function flareSpectrum(T, ratio) {
 const XYZ_TO_SRGB = [[3.2404542, -1.5371385, -0.4985314], [-0.969266, 1.8760108, 0.041556], [0.0556434, -0.2040259, 1.0572252]];
 const encode = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
 // Chromaticity of a light as displayable sRGB (0..1), normalised so the brightest channel is 1.
-// Out-of-gamut colours (a pure spectral line) are clipped toward the nearest displayable one.
+// Out-of-gamut colors (a pure spectral line) are clipped toward the nearest displayable one.
 export function lightColor(v) {
   const lin = XYZ_TO_SRGB.map((r) => Math.max(0, r[0] * v[0] + r[1] * v[1] + r[2] * v[2]));
   const peak = Math.max(...lin, 1e-12);

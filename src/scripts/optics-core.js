@@ -9,7 +9,7 @@
 const STEP = 5;
 const MAX_ABSORPTANCE = 0.999; // caps optical density at 3 so -log10 stays finite
 
-// CIE 1931 2° colour-matching functions, multi-lobe piecewise-Gaussian fit from
+// CIE 1931 2° color-matching functions, multi-lobe piecewise-Gaussian fit from
 // Wyman, Sloan & Shirley, "Simple Analytic Approximations to the CIE XYZ Color
 // Matching Functions", JCGT 2(2), 2013. Within ~1% of the tabulated CMFs.
 function lobe(w, mu, s1, s2) {

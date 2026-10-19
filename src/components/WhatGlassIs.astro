@@ -1,5 +1,5 @@
 ---
-// Stage 00: what glass is, before any colour. The network, the glass transition and the
+// Stage 00: what glass is, before any color. The network, the glass transition and the
 // viscosity curve the studio works by. Instruments in scripts/stage-glass.js, physics in
 // scripts/glass.js, data in data/viscosity.json.
 import vis from '../data/viscosity.json';
@@ -11,7 +11,7 @@ const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
   <div class="stage-body">
     <h2>Glass is a liquid that <i>stopped</i></h2>
     <div class="prose">
-      <p>Before any colour, the stuff itself. Cool most liquids and at one temperature their atoms drop into a repeating crystal. Cool a silicate melt and it only gets stiffer, smoothly, until it is too stiff to rearrange at all. What is left keeps the liquid's disorder and gains a solid's rigidity. Glass has no melting point, and everything a glassblower does depends on that slow stiffening.</p>
+      <p>Before any color, the stuff itself. Cool most liquids and at one temperature their atoms drop into a repeating crystal. Cool a silicate melt and it only gets stiffer, smoothly, until it is too stiff to rearrange at all. What is left keeps the liquid's disorder and gains a solid's rigidity. Glass has no melting point, and everything a glassblower does depends on that slow stiffening.</p>
     </div>
 
     <div class="mat" id="net">
@@ -74,7 +74,7 @@ const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
           </div>
         </div>
       </div>
-      <p class="aside"><b>Measured, then fitted.</b> The curve is the Fulcher fit to NBS standard glass No. 710, log₁₀ η [poise] = {vis.fulcher.A} + {vis.fulcher.B} / (T − {vis.fulcher.T0}) with T in °C, fitted to measurements from {vis.fulcher.fitMin} to {vis.fulcher.fitMax} °C by <a href={vis.source.url} rel="noopener">Napolitano and Hawkins (1964)</a>; it is drawn solid where it was fitted and dashed where it is extrapolated. Rings are the average of the laboratories' measured softening ({pt.softening.measured} °C), annealing ({pt.annealing.measured} °C) and strain ({pt.strain.measured} °C) points. The fit runs 25 °C hot at the strain point, the usual sign that a Fulcher curve rises too steeply below its range. The furnace and glory-hole marks are typical studio temperatures, not measurements, and studio colour glasses each have their own curve. The sag time, η / (ρgR) for a 10 cm gather of density 2.5 g/cm³, is an order of magnitude, not a prediction. The gather is drawn in its cold colour, clear glass with its trace of iron; how it glows is stage 04's subject.</p>
+      <p class="aside"><b>Measured, then fitted.</b> The curve is the Fulcher fit to NBS standard glass No. 710, log₁₀ η [poise] = {vis.fulcher.A} + {vis.fulcher.B} / (T − {vis.fulcher.T0}) with T in °C, fitted to measurements from {vis.fulcher.fitMin} to {vis.fulcher.fitMax} °C by <a href={vis.source.url} rel="noopener">Napolitano and Hawkins (1964)</a>; it is drawn solid where it was fitted and dashed where it is extrapolated. Rings are the average of the laboratories' measured softening ({pt.softening.measured} °C), annealing ({pt.annealing.measured} °C) and strain ({pt.strain.measured} °C) points. The fit runs 25 °C hot at the strain point, the usual sign that a Fulcher curve rises too steeply below its range. The furnace and glory-hole marks are typical studio temperatures, not measurements, and studio color glasses each have their own curve. The sag time, η / (ρgR) for a 10 cm gather of density 2.5 g/cm³, is an order of magnitude, not a prediction. The gather is drawn in its cold color, clear glass with its trace of iron; how it glows is stage 04's subject.</p>
     </div>
 
     <div class="mat" id="windows">

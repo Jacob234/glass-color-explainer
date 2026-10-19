@@ -40,7 +40,7 @@ test('a two-colorant glass is matched, and it is not the only match', () => {
   const hex = f.linToHex(f.referenceLin(optics, [['cobalt', 0.6], ['chromium', 1]]));
   const r = fitter.fit(hex);
   assert.ok(r.best.dE <= f.MATCH);
-  assert.ok(r.matches > 1, 'one colour should admit several recipes');
+  assert.ok(r.matches > 1, 'one color should admit several recipes');
   assert.ok(r.alternatives.length > 0);
   for (const a of r.alternatives) {
     assert.ok(a.dE <= f.MATCH);

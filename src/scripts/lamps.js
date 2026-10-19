@@ -37,23 +37,23 @@ export function lines(list) {
 // wavelength at all: with nothing to compare, there is no white to adapt to.
 export const LAMPS = [
   { id: 'daylight', label: 'daylight', ext: table('D65', EXT), adapt: 1,
-    note: 'CIE D65, the standard for average daylight. Every colour on the page was first computed under this light.' },
+    note: 'CIE D65, the standard for average daylight. Every color on the page was first computed under this light.' },
   { id: 'candle', label: 'candle', ext: planckOn(EXT, 1850), adapt: 0.6,
     note: 'A candle flame glows like a black body at about 1850 K. Almost no blue: cobalt goes dark and inky, and the yellows and reds look richer.' },
   { id: 'tungsten', label: 'tungsten', ext: planckOn(EXT, 2856), adapt: 0.7,
-    note: 'An incandescent bulb (CIE illuminant A, a black body at 2856 K). Warm, smooth, and with every wavelength present, so colours shift but none disappear.' },
+    note: 'An incandescent bulb (CIE illuminant A, a black body at 2856 K). Warm, smooth, and with every wavelength present, so colors shift but none disappear.' },
   { id: 'sodium', label: 'sodium street lamp', ext: noUV(lines(SODIUM_D)), lines: SODIUM_D, adapt: 0,
     note: 'A low-pressure sodium lamp emits almost only at 589 nm. With one wavelength there is nothing to compare, so there is no hue: each piece is the same orange, lighter or darker, and anything that absorbs 589 nm goes black.' },
   { id: 'led', label: 'white LED', ext: table('LED-B3', EXT), adapt: 0.8,
     note: 'CIE LED-B3: a blue chip at about 450 nm under a yellow phosphor. The dip near 480 nm and the weak deep red are where it differs from daylight.' },
   { id: 'tube', label: 'fluorescent tube', ext: table('FL11', EXT), adapt: 0.8,
-    note: 'CIE FL11, a tri-phosphor tube. Its light comes in three narrow bands near 435, 545 and 610 nm, so glass with narrow absorption lines, like neodymium, can change colour under it. CIE tabulates it from 380 nm, so its small mercury ultraviolet is left out.' },
+    note: 'CIE FL11, a tri-phosphor tube. Its light comes in three narrow bands near 435, 545 and 610 nm, so glass with narrow absorption lines, like neodymium, can change color under it. CIE tabulates it from 380 nm, so its small mercury ultraviolet is left out.' },
   { id: 'black', label: 'black light', ext: BLACK, adapt: 0, dark: true,
     note: 'A 365 nm ultraviolet torch in a dark room. There is almost no visible light for any glass to take away, so every piece goes dark. Except one: uranium glass absorbs the ultraviolet and gives it back as green. Sweep the torch across the table.' },
 ].map((l) => ({ ...l, spd: l.ext.slice(UV.length) }));
 export const LAMP = Object.fromEntries(LAMPS.map((l) => [l.id, l]));
 
-// The colour of the lamp's own light, brightest channel 1 (for a swatch of the lamp itself).
+// The color of the lamp's own light, brightest channel 1 (for a swatch of the lamp itself).
 export function lampColor(spd) {
   const xyz = [0, 0, 0];
   GRID.forEach((w, i) => { const c = cmf(w); for (let k = 0; k < 3; k++) xyz[k] += spd[i] * c[k]; });
@@ -62,8 +62,8 @@ export function lampColor(spd) {
   return css(lin.map((v) => encode(v / peak)));
 }
 
-// Colour of transmission T under a lamp, after the eye's partial adaptation. When the lamp's own
-// white falls outside sRGB (a sodium lamp is a single spectral colour), everything is dimmed by the
+// Color of transmission T under a lamp, after the eye's partial adaptation. When the lamp's own
+// white falls outside sRGB (a sodium lamp is a single spectral color), everything is dimmed by the
 // same factor so the white just fits, rather than clipping toward a different hue.
 // emitted is light the glass gives out itself (uranium.js fluorescence), on GRID.
 // A dark lamp (the black light) has no white to set the eye by, so the eye is set by the brightest

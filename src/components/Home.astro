@@ -7,6 +7,7 @@ import history from '../data/history.json';
 import Slab from './Slab.astro';
 import Dispersion from './Dispersion.astro';
 import WhatGlassIs from './WhatGlassIs.astro';
+import Labs from './Labs.astro';
 import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -80,7 +81,7 @@ const pins = history.pins.map((p) => {
         <p class="readout" id="ironRead"></p>
       </div>
     </div>
-    <p class="aside"><b>Beer–Lambert.</b> Absorption compounds with distance: if 1 mm lets through 99% of some colour, 50 mm lets through 0.99⁵⁰, about 60%. Thickness and concentration play the same role, which is why the edge and a heavily dosed batch look alike.</p>
+    <p class="aside"><b>Beer–Lambert.</b> Absorption compounds with distance: if 1 mm lets through 99% of some color, 50 mm lets through 0.99⁵⁰, about 60%. Thickness and concentration play the same role, which is why the edge and a heavily dosed batch look alike.</p>
     <p class="more"><a href={page(map.anchorSlug)}>Read: color in glass →</a></p>
   </div>
 </section>
@@ -110,7 +111,7 @@ const pins = history.pins.map((p) => {
   <div class="stage-body">
     <h2>A few atoms eat <i>one</i> band of light</h2>
     <div class="prose">
-      <p>Transition-metal ions are the workhorse colorants. Their outer d-electrons can be lifted between energy levels by light of particular colours, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod and watch which part of the spectrum goes missing.</p>
+      <p>Transition-metal ions are the workhorse colorants. Their outer d-electrons can be lifted between energy levels by light of particular colors, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod and watch which part of the spectrum goes missing.</p>
     </div>
     <div class="chips" id="rods" role="group" aria-label="colorant"></div>
     <div class="bench bench-tight">
@@ -130,13 +131,13 @@ const pins = history.pins.map((p) => {
     <div class="vessel" id="vessel">
       <h3>Now <i>blow</i> it</h3>
       <div class="prose">
-        <p>A rod's colour is not the colour of the finished piece. Melted onto a gather and blown out, the same glass becomes a wall that is thin at the rim and heavy at the foot, and every part of it is coloured by its own thickness. This is the windowpane edge from the batch, spread over a whole object.</p>
+        <p>A rod's color is not the color of the finished piece. Melted onto a gather and blown out, the same glass becomes a wall that is thin at the rim and heavy at the foot, and every part of it is colored by its own thickness. This is the windowpane edge from the batch, spread over a whole object.</p>
         <p>The bowl is drawn in half section, the way a glass drawing shows it. On the left the near half is cut away: the cut wall is tinted by its thickness, and behind it you see the inside of the far wall. On the right is the bowl as you would see it held up to the light. It uses the rod and amount chosen above.</p>
       </div>
       <div class="bench bench-top">
-        <div class="lightbox"><canvas id="bowl" aria-label="a blown bowl in half section, coloured by the glass each ray crosses"></canvas></div>
+        <div class="lightbox"><canvas id="bowl" aria-label="a blown bowl in half section, colored by the glass each ray crosses"></canvas></div>
         <div class="controls">
-          <div class="chips" id="build" role="group" aria-label="how the colour is put on"></div>
+          <div class="chips" id="build" role="group" aria-label="how the color is put on"></div>
           <div class="ctl"><label class="mono" for="wall">wall thickness <output id="wallOut"></output></label>
             <input id="wall" type="range" min="-100" max="100" value="0" /><div class="ends"><span>blown thin</span><span>heavy</span></div></div>
           <dl class="meters" id="bowlMeters"></dl>
@@ -144,7 +145,7 @@ const pins = history.pins.map((p) => {
         </div>
       </div>
       <div class="prose">
-        <p>Glassblowers get around this by casing. They put the colour on as a thin skin of strong glass and blow clear glass inside it, so every part of the piece crosses about the same amount of colour however unevenly the clear behind it was blown. Switch to cased and the foot stops going dark.</p>
+        <p>Glassblowers get around this by casing. They put the color on as a thin skin of strong glass and blow clear glass inside it, so every part of the piece crosses about the same amount of color however unevenly the clear behind it was blown. Switch to cased and the foot stops going dark.</p>
       </div>
       <h4 class="mono">the same rule in a cane</h4>
       <div class="bench bench-top">
@@ -152,8 +153,8 @@ const pins = history.pins.map((p) => {
           <div class="strip-key"><span>slice, end on</span><span>cane, side on</span></div></div>
         <p class="readout" id="caneRead"></p>
       </div>
-      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the colour was only ever half a millimetre deep.</p>
-      <p class="aside"><b>Model.</b> The bowl is a solid of revolution 170 mm across and 100 mm tall. Its wall runs from 1.1 mm at the rim to about 6 mm at the base and sits on a 6 mm floor, all scaled by the slider; the 8 mm foot is a separate gather and stays fixed. On the right each point's colour is Beer–Lambert through the glass a straight ray crosses there, front wall and back. On the left the cut wall is tinted by its thickness at right angles to the surface, and the floor and foot by the whole stack a ray straight up from the table would cross. Each rod is dosed so a 3 mm solid wall passes about 60% of daylight at amount ×1, since colorants differ in strength by an order of magnitude. The cased skin is 0.5 mm at six times that concentration, so face on it holds the same colorant as a 3 mm solid wall. The cane is 12 mm across with the same 0.5 mm skin, and the slice is 3 mm thick. Refraction at the curved surfaces, which bends real outlines, is ignored.</p>
+      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the color was only ever half a millimetre deep.</p>
+      <p class="aside"><b>Model.</b> The bowl is a solid of revolution 170 mm across and 100 mm tall. Its wall runs from 1.1 mm at the rim to about 6 mm at the base and sits on a 6 mm floor, all scaled by the slider; the 8 mm foot is a separate gather and stays fixed. On the right each point's color is Beer–Lambert through the glass a straight ray crosses there, front wall and back. On the left the cut wall is tinted by its thickness at right angles to the surface, and the floor and foot by the whole stack a ray straight up from the table would cross. Each rod is dosed so a 3 mm solid wall passes about 60% of daylight at amount ×1, since colorants differ in strength by an order of magnitude. The cased skin is 0.5 mm at six times that concentration, so face on it holds the same colorant as a 3 mm solid wall. The cane is 12 mm across with the same 0.5 mm skin, and the slice is 3 mm thick. Refraction at the curved surfaces, which bends real outlines, is ignored.</p>
     </div>
   </div>
 </section>
@@ -179,7 +180,7 @@ const pins = history.pins.map((p) => {
           <radialGradient id="g-na" cx=".5" cy=".62" r=".55"><stop offset="0" stop-color="#fffbe8" /><stop offset=".3" stop-color="#ffe7a0" /><stop offset=".62" stop-color="var(--na)" stop-opacity=".9" /><stop offset="1" stop-color="var(--na)" stop-opacity="0" /></radialGradient>
           <radialGradient id="g-na2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff3b4" /><stop offset=".6" stop-color="#ffd468" /><stop offset=".8" stop-color="var(--na)" stop-opacity=".85" /><stop offset="1" stop-color="var(--na)" stop-opacity="0" /></radialGradient>
           <filter id="g-fl" x="-40%" y="-40%" width="180%" height="180%"><feTurbulence type="fractalNoise" baseFrequency="0.016 0.04" numOctaves="2" seed="4" /><feDisplacementMap in="SourceGraphic" scale="46" xChannelSelector="R" yChannelSelector="G" /><feGaussianBlur stdDeviation="4" /></filter>
-          <!-- the lens view: the same scene again, clipped to the glasses and recoloured by home.js -->
+          <!-- the lens view: the same scene again, clipped to the glasses and recolored by home.js -->
           <filter id="lens-room" color-interpolation-filters="linearRGB"><feColorMatrix id="lens-room-m" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" /></filter>
           <filter id="lens-fire" color-interpolation-filters="linearRGB"><feColorMatrix id="lens-fire-m" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" /></filter>
           <clipPath id="lens-clip"><ellipse cx="-90" cy="0" rx="82" ry="62" /><ellipse cx="90" cy="0" rx="82" ry="62" /></clipPath>
@@ -222,7 +223,7 @@ const pins = history.pins.map((p) => {
           <p class="readout" id="heatRead"></p>
         </div>
       </div>
-      <p class="aside"><b>Computed, not painted.</b> The glow is Planck's law times the gather's emissivity, integrated against the colour-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
+      <p class="aside"><b>Computed, not painted.</b> The glow is Planck's law times the gather's emissivity, integrated against the color-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
 
       <p class="more"><a href={`${base}/forming-lab/`}>Work a gather yourself in the forming lab: sag, blow, swing and cool it →</a></p>
 
@@ -236,7 +237,7 @@ const pins = history.pins.map((p) => {
         <div class="strip-key"><span>top: black body · bottom: this glass</span><span>line: emissivity, 1 − T</span></div>
         <p class="aside"><b>And inside the glory hole?</b> Hold any gather in a chamber whose walls are at its own temperature and it vanishes. What it fails to emit, it lets through from the wall behind, and emission plus transmission add up to the wall's own black-body light. Only out in the dark shop does a gather show its own glow. This follows from the law; it is not a separate measurement.</p>
         <p class="aside"><b>Sources.</b> G. Kirchhoff, "Ueber das Verhältniss zwischen dem Emissionsvermögen und dem Absorptionsvermögen der Körper für Wärme und Licht", <i>Annalen der Physik</i> 109 (1860) 275–301; Balfour Stewart reached a version of it independently in 1858 (D. M. Siegel, "Balfour Stewart and Gustav Robert Kirchhoff: Two Independent Approaches to 'Kirchhoff's Radiation Law'", <i>Isis</i> 67, 1976). Kirchhoff's first step, in October 1859, was the sodium line: a sodium flame in the path of sunlight darkened the solar D lines, because the flame absorbs exactly where it emits ("Über die Fraunhofer'schen Linien", <i>Monatsberichte der Berliner Akademie</i>, 1859, 662–665). That is the same doublet the glasses below are built to stop. For glass itself, R. Gardon, "The Emissivity of Transparent Materials", <i>J. Am. Ceram. Soc.</i> 39 (1956) 278–285, works out the emissivity of transparent sheets from their thickness and absorption: the familiar total emissivity of window glass, about 0.91, holds only for sheets thick enough, from 3/16 in at 200 °C to as much as 8 in at 1000 °C, and a 3/16 in sheet at 1000 °C has an emissivity of only 0.59.</p>
-        <p class="aside"><b>Model.</b> Emissivity is 1 − T(λ) for the path through the gather, the same path whose colour the cooled gather shows; reflection at the surface (about 4% on each side) is ignored, and so is the flame's light scattered in the glass. Clear glass is a trace of ferrous and ferric iron at an illustrative level, not a measured batch, and the colorant spectra are the page's illustrative ones. The "fades from sight" temperature is where the glow reaches the bottom of this page's strength scale, which puts a black body's fade at about the Draper point; it is a comparison, not a measured visibility threshold.</p>
+        <p class="aside"><b>Model.</b> Emissivity is 1 − T(λ) for the path through the gather, the same path whose color the cooled gather shows; reflection at the surface (about 4% on each side) is ignored, and so is the flame's light scattered in the glass. Clear glass is a trace of ferrous and ferric iron at an illustrative level, not a measured batch, and the colorant spectra are the page's illustrative ones. The "fades from sight" temperature is where the glow reaches the bottom of this page's strength scale, which puts a black body's fade at about the Draper point; it is a comparison, not a measured visibility threshold.</p>
         <p class="aside"><b>Not modelled: absorption changes with heat.</b> The spectra here are room-temperature spectra. At working heat, ligand-field bands broaden and shift, the balance between Fe²⁺ and Fe³⁺ moves with temperature, and the ultraviolet edge creeps toward the visible, so a real hot gather, clear ones included, absorbs and therefore glows more than shown (direction from general physics; size unverified). Band-gap colors move most: a semiconductor's gap narrows as it heats (Y. P. Varshni, "Temperature dependence of the energy gap in semiconductors", <i>Physica</i> 34 (1967) 149–154), so the cadmium yellows and reds absorb further toward the red when hot than they do cold.</p>
       </div>
 
@@ -290,7 +291,7 @@ const pins = history.pins.map((p) => {
         <p class="more"><a href={page('selenium-ruby')}>Read: selenium ruby →</a></p>
       </div>
     </div>
-    <p class="aside"><b>Models.</b> The over-strike is drawn as the gold band shifting about 30 nm to the red and broadening as particles grow and clump, the direction Mie theory gives for larger spheres; the size of the shift is a guess. It computes to a dull purple. Glassmakers also describe over-struck ruby as "livery" and brown, and in one laboratory study (<a href="https://doi.org/10.1007/s10751-006-9246-0" rel="noopener">Haslbeck et al., 2005</a>) fewer, larger particles gave purple-red while tin-rich glasses with many small ones went brown, so the end colour depends on the glass; no measured spectrum of over-struck gold ruby has been found to check the model against. The band edge is an idealized step at λ = 1240 / E<sub>g</sub>. Selenium narrows the gap, and very small crystals widen it again (quantum confinement, first recognised in glass by <a href="http://www.jetpletters.ru/ps/1517/article_23187.shtml" rel="noopener">Ekimov and Onushchenko, 1981</a>), which is why the strike temperature matters.</p>
+    <p class="aside"><b>Models.</b> The over-strike is drawn as the gold band shifting about 30 nm to the red and broadening as particles grow and clump, the direction Mie theory gives for larger spheres; the size of the shift is a guess. It computes to a dull purple. Glassmakers also describe over-struck ruby as "livery" and brown, and in one laboratory study (<a href="https://doi.org/10.1007/s10751-006-9246-0" rel="noopener">Haslbeck et al., 2005</a>) fewer, larger particles gave purple-red while tin-rich glasses with many small ones went brown, so the end color depends on the glass; no measured spectrum of over-struck gold ruby has been found to check the model against. The band edge is an idealized step at λ = 1240 / E<sub>g</sub>. Selenium narrows the gap, and very small crystals widen it again (quantum confinement, first recognised in glass by <a href="http://www.jetpletters.ru/ps/1517/article_23187.shtml" rel="noopener">Ekimov and Onushchenko, 1981</a>), which is why the strike temperature matters.</p>
   </div>
 </section>
 
@@ -301,7 +302,7 @@ const pins = history.pins.map((p) => {
     <div class="prose">
       <p>A finished piece cannot just be set down. Its outside cools first. Around 550 °C the skin stiffens while the inside is still soft enough to flow, and when the inside catches up and shrinks it pulls the stiff skin into compression and is left in tension itself. That stress stays in the glass when it is cold (the standard account of annealing, set out by Adams and Williamson in 1920; see below). In an uneven shape it is enough to crack a piece on the shelf hours or weeks later.</p>
       <p>The lehr, the annealing oven, prevents it. The piece goes in hot, soaks at the annealing point until the stress relaxes, and is cooled slowly through the range where glass stops flowing and starts holding stress. Only that range matters. Above it the glass still flows. Below the strain point it is stiff enough that the stress of further cooling is elastic, and it goes away again once the piece is evenly cold.</p>
-      <p>Stress cannot be seen, but it makes glass birefringent. Light polarized along one principal stress travels a little slower than light polarized along the other, and after crossing the glass the two are out of step by a <i>retardation</i>. Between crossed polarizers that retardation becomes colour, because the same retardation is a different fraction of a cycle for every wavelength. The piece here is the foot of the bowl from stage 03, a disc 64 mm across, on a light table that gives out polarized light. Drag the second polarizer over it.</p>
+      <p>Stress cannot be seen, but it makes glass birefringent. Light polarized along one principal stress travels a little slower than light polarized along the other, and after crossing the glass the two are out of step by a <i>retardation</i>. Between crossed polarizers that retardation becomes color, because the same retardation is a different fraction of a cycle for every wavelength. The piece here is the foot of the bowl from stage 03, a disc 64 mm across, on a light table that gives out polarized light. Drag the second polarizer over it.</p>
     </div>
     <div class="bench bench-top">
       <div class="lightbox polar-box">
@@ -330,7 +331,7 @@ const pins = history.pins.map((p) => {
     <p class="aside"><b>Try it.</b> A laptop or phone screen gives out polarized light, and polarized sunglasses are the second polarizer. Hold a glass or a clear plastic box in front of a white screen and look through the sunglasses, turning your head. Tempered car windows show a pattern of dark spots through polarized sunglasses for the same reason: the air jets that tempered them froze stress in unevenly.</p>
     <p class="aside"><b>Tempered glass is this on purpose.</b> The profile through the edge is the one that makes toughened glass strong: the faces are held in compression, so a scratch has to overcome it before it can open. Tempering quenches evenly and hard; a blown piece is uneven, so its stress is uneven too, and it is the tension at the junctions and in the core that breaks it.</p>
     <p class="aside"><b>History.</b> David Brewster reported in 1816 that squeezing or unevenly heating glass gives it the double refraction of a crystal ("On the communication of the structure of doubly refracting crystals to glass, muriate of soda, fluor spar, and other substances, by mechanical compression and dilatation", <a href="https://doi.org/10.1098/rstl.1816.0011" rel="noopener">Phil. Trans. 106, 156–178</a>). Annealing became a schedule rather than a craft rule after L. H. Adams and E. D. Williamson at the Carnegie Institution's Geophysical Laboratory measured how stress decays in hot glass, during the wartime push for optical glass ("The annealing of glass", <a href="https://doi.org/10.1016/S0016-0032(20)90856-6" rel="noopener">J. Franklin Inst. 190, 597–631 and 835–870, 1920</a>; "A note on the annealing of optical glass", <a href="https://doi.org/10.1364/JOSA.4.000213" rel="noopener">JOSA 4, 213, 1920</a>). Their law is that the rate of relief goes as the square of the stress remaining, dσ/dt = −Aσ², so 1/σ − 1/σ₀ = At. Retardation is read as stress through the stress-optic law Γ = C·(σ₁ − σ₂)·d, with C measured by <a href="https://store.astm.org/c0770-16r20.html" rel="noopener">ASTM C770</a>.</p>
-    <p class="aside"><b>Model.</b> The reference points are the measured averages for NBS standard soda-lime glass No. 710 (<a href="https://doi.org/10.6028/jres.068A.042" rel="noopener">Napolitano and Hawkins, 1964</a>): strain point 504 °C, annealing point 546 °C, softening point 724 °C. The other material figures are for soda-lime float glass from <a href="https://www.pilkington.com:443/-/media/pilkington/site-content/usa/window-manufacturers/technical-bulletins/ats129propertiesofglass20130114.pdf" rel="noopener">Pilkington's ATS-129 bulletin</a> (2013 edition), a close but not identical glass: E = 72 GPa, ν = 0.23 (the 09/2026 edition gives 0.22, which would lower the stress here by about 1%), α = 8.3 × 10⁻⁶ /°C, thermal diffusivity 0.43 mm²/s from its conductivity, density and heat capacity, and a stress-optic coefficient of 2.62 nm per mm per MPa from its strain-viewing rule. Studio furnace glasses are other recipes and anneal at their own temperatures. Stress is frozen in by "instant freezing": cooling at a steady rate q through the annealing range sets a parabolic difference ΔT = qd²/8D between core and faces, which becomes stress Eα(T − T̄)/(1 − ν) when cold. That overstates real stress, since glass sets over a range rather than at once. Face on, only the in-plane pattern shows; it is modelled as a disc whose rim set first, with a rim-to-centre difference equal to ΔT, which is a guess at its shape and size. "On the bench" is about 300 °C/min, an estimate for an 8 mm piece radiating at 550 °C. Polarizers and plates are ideal and the same at every wavelength; the tint plate is a 550 nm full-wave plate, and its colours are held fixed beyond 3000 nm of retardation. Each colour is the polariscope's transmission spectrum, computed by Jones calculus at every wavelength, under the page's lamp.</p>
+    <p class="aside"><b>Model.</b> The reference points are the measured averages for NBS standard soda-lime glass No. 710 (<a href="https://doi.org/10.6028/jres.068A.042" rel="noopener">Napolitano and Hawkins, 1964</a>): strain point 504 °C, annealing point 546 °C, softening point 724 °C. The other material figures are for soda-lime float glass from <a href="https://www.pilkington.com:443/-/media/pilkington/site-content/usa/window-manufacturers/technical-bulletins/ats129propertiesofglass20130114.pdf" rel="noopener">Pilkington's ATS-129 bulletin</a> (2013 edition), a close but not identical glass: E = 72 GPa, ν = 0.23 (the 09/2026 edition gives 0.22, which would lower the stress here by about 1%), α = 8.3 × 10⁻⁶ /°C, thermal diffusivity 0.43 mm²/s from its conductivity, density and heat capacity, and a stress-optic coefficient of 2.62 nm per mm per MPa from its strain-viewing rule. Studio furnace glasses are other recipes and anneal at their own temperatures. Stress is frozen in by "instant freezing": cooling at a steady rate q through the annealing range sets a parabolic difference ΔT = qd²/8D between core and faces, which becomes stress Eα(T − T̄)/(1 − ν) when cold. That overstates real stress, since glass sets over a range rather than at once. Face on, only the in-plane pattern shows; it is modelled as a disc whose rim set first, with a rim-to-centre difference equal to ΔT, which is a guess at its shape and size. "On the bench" is about 300 °C/min, an estimate for an 8 mm piece radiating at 550 °C. Polarizers and plates are ideal and the same at every wavelength; the tint plate is a 550 nm full-wave plate, and its colors are held fixed beyond 3000 nm of retardation. Each color is the polariscope's transmission spectrum, computed by Jones calculus at every wavelength, under the page's lamp.</p>
   </div>
 </section>
 
@@ -360,8 +361,8 @@ const pins = history.pins.map((p) => {
         <div class="strip-key"><span>380 nm</span><span>top: reflected · bottom: transmitted</span><span>780 nm</span></div>
       </div>
     </div>
-    <p class="aside"><b>Model.</b> One reflection band, 80 nm wide at 90% peak, centred at λ₀√(1 − sin²θ / n²) with λ₀ = 640 nm and an effective index of 1.8. Real coatings have several bands and a thicker stack. Opal glass is the other structural color: particles about the size of a wavelength scatter all colours, so it reads white.</p>
-    <p class="more"><a href={page(structure.targetSlug, structure.anchor)}>Read: structure and scattering →</a></p>
+    <p class="aside"><b>Model.</b> One reflection band, 80 nm wide at 90% peak, centred at λ₀√(1 − sin²θ / n²) with λ₀ = 640 nm and an effective index of 1.8. Real coatings have several bands and a thicker stack. Opal glass is the other structural color: particles about the size of a wavelength scatter all colors, so it reads white.</p>
+    <p class="more"><a href={page(structure.targetSlug, structure.anchor)}>Read: structure and scattering →</a><a href={`${base}/light-lab/`}>Bend light instead of reflecting it: rays through prisms and lenses in the Light Lab →</a></p>
   </div>
 </section>
 
@@ -483,9 +484,9 @@ const pins = history.pins.map((p) => {
       {reading.map((c) => (
         <li><a href={page(c.id)}><span class="mono">{c.data.mechanism}</span><strong>{c.data.title}</strong><span>{c.data.summary}</span></a></li>
       ))}
-      <li><a href={`${base}/mixing-lab/`}><span class="mono">instrument</span><strong>mixing lab</strong><span>Melt up to four colorants, set the wall thickness, and see the color the batch would make.</span></a></li>
-      <li><a href={`${base}/forming-lab/`}><span class="mono">instrument</span><strong>forming lab</strong><span>Keep a gather on the pipe: viscosity from a measured glass, sag, blowing and cooling computed.</span></a></li>
     </ol>
+    <h3 class="labs-head" id="labs">The <i>labs</i></h3>
+    <Labs />
   </div>
 </section>
 
@@ -493,6 +494,7 @@ const pins = history.pins.map((p) => {
 <div class="lampbar" role="group" aria-label="lamp: the light the whole page is lit by">
   <span class="mono">lamp</span>
   <canvas id="lampSpark" aria-hidden="true"></canvas>
+  <button class="lamp lamp-toggle" id="lampToggle" type="button" aria-expanded="false" aria-controls="lamps"></button>
   <div class="lamps" id="lamps"></div>
 </div>
 
