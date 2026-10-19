@@ -223,6 +223,8 @@ const pins = history.pins.map((p) => {
       </div>
       <p class="aside"><b>Computed, not painted.</b> The glow is Planck's law times the gather's emissivity, integrated against the colour-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
 
+      <p class="more"><a href={`${base}/forming-lab/`}>Work a gather yourself in the forming lab: sag, blow, swing and cool it →</a></p>
+
       <div class="kirchhoff" id="kirchhoff">
         <h3>The page's rule, <i>run backwards</i></h3>
         <div class="prose">
@@ -439,6 +441,7 @@ const pins = history.pins.map((p) => {
         <li><a href={page(c.id)}><span class="mono">{c.data.mechanism}</span><strong>{c.data.title}</strong><span>{c.data.summary}</span></a></li>
       ))}
       <li><a href={`${base}/mixing-lab/`}><span class="mono">instrument</span><strong>mixing lab</strong><span>Melt up to four colorants, set the wall thickness, and see the color the batch would make.</span></a></li>
+      <li><a href={`${base}/forming-lab/`}><span class="mono">instrument</span><strong>forming lab</strong><span>Keep a gather on the pipe: viscosity from a measured glass, sag, blowing and cooling computed.</span></a></li>
     </ol>
   </div>
 </section>
