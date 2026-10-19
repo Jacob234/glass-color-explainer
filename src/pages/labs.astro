@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Labs from '../components/Labs.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Labs" description="The glass explainer's instruments: a spectral light tracer, a forming simulator, a glass-transition simulator with atoms, a colorant mixing lab, and the datasheet library.">
+  <article class="concept labs-page">
+    <p class="detail-type">Labs</p>
+    <h1>Work the glass yourself</h1>
+    <p class="summary">
+      The home page walks one piece of glass from batch to showroom. These are the instruments behind
+      it, each opened up so you can push it past where the page stops: bend light through it, blow it,
+      cool it atom by atom, melt your own colors, and check every number against its source.
+    </p>
+    <Labs />
+    <p class="back"><a href={`${base}/`}>← back to the start</a></p>
+  </article>
+</Base>
+<style>
+  .labs-page { max-width: 72rem; }
+  .labs-page .summary { max-width: 46rem; }
+</style>
