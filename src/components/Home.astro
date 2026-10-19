@@ -8,6 +8,7 @@ import Slab from './Slab.astro';
 import Dispersion from './Dispersion.astro';
 import WhatGlassIs from './WhatGlassIs.astro';
 import '../styles/home.css';
+import '../styles/stage-batch.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const page = (slug: string, anchor?: string) => `${base}/concepts/${slug}/${anchor ? `#${anchor}` : ''}`;
@@ -81,6 +82,28 @@ const pins = history.pins.map((p) => {
       </div>
     </div>
     <p class="aside"><b>Beer–Lambert.</b> Absorption compounds with distance: if 1 mm lets through 99% of some colour, 50 mm lets through 0.99⁵⁰, about 60%. Thickness and concentration play the same role, which is why the edge and a heavily dosed batch look alike.</p>
+
+    <div class="vessel oxides" id="oxides">
+      <h3>What each <i>oxide</i> does</h3>
+      <div class="prose">
+        <p>Iron is a trace. The batch itself is mostly three oxides: silica, the network former; soda, the flux that breaks the network so it melts at a temperature a furnace can reach; and lime, which mends enough of it that the glass does not dissolve in rain. Every other glass on this page is a variation on that recipe, and each change moves the properties the later stages depend on: how long the gather stays workable, how strongly a cut piece bends and splits light, how much stress the lehr has to take out, and which way the iron leans.</p>
+        <p>Pick a glass, or move one oxide at a time. Silica makes up the rest. The dashed curve and the open dot are window glass, for comparison.</p>
+      </div>
+      <div class="chips" id="bPresets" role="group" aria-label="start from a glass"></div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="plot" id="bViscSvg" viewBox="0 0 640 380" role="img" aria-label="viscosity against temperature for this batch, with window glass dashed for comparison"></svg></div>
+        <div class="controls ox-sliders" id="bSliders"></div>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="plot" id="bAbbeSvg" viewBox="0 0 640 380" role="img" aria-label="refractive index against Abbe number: this batch among the optical glasses of the cold shop"></svg></div>
+        <div class="controls">
+          <dl class="meters" id="bMeters"></dl>
+          <Slab id="bSlab" class="slab-small" />
+        </div>
+      </div>
+      <p class="readout prose" id="bRead" aria-live="polite"></p>
+      <p class="aside"><b>Models, not measurements.</b> Each property comes from a published composition model: an equation fitted by its authors to many measured glasses, good inside the range it was fitted to and a guess outside it. Viscosity is <a href="https://glassproperties.com/viscosity/Viscosity_2006_AFluegel.pdf" rel="noopener">Fluegel's (2007)</a> fit to more than 2,200 measured silicate glasses, which gives the temperatures at 10<sup>1.5</sup>, 10<sup>6.6</sup> and 10<sup>12</sup> Pa·s; a Fulcher curve is drawn through the three. His data span about 42 to 89 mol% silica, and the bench warns when a batch leaves that range. The text of the paper was read by machine, and three coefficients that came out unreadable were refitted so the model reproduces the paper's own predictions for four standard glasses within 2 °C. Index and Abbe number use <a href="https://nvlpubs.nist.gov/nistpubs/jres/25/jresv25n6p759_a1b.pdf" rel="noopener">Young and Finn (1940)</a>, who found specific refraction and dispersion additive by weight; the index also needs a density, taken from <a href="http://glassproperties.com/density/DensityCTE_GlassMelts_2006.pdf" rel="noopener">Fluegel's melt density model</a> at 1200 °C and scaled so window glass is 2.50 g/cm³ cold, the weakest step here. Expansion uses <a href="http://glassproperties.com/expansion/Old-Thermal-Expansion-Models.htm" rel="noopener">Appen's additive factors</a>, which put window glass at about 9 ppm/K against Pilkington's measured 8.3. Lehr stress is scaled by expansion alone, with stiffness held at window glass's. The temperature jump a sheet survives is Pilkington's mean breaking strength for annealed float glass, 41 MPa, over its thermal stress of 0.62 MPa per °C, scaled the same way: an order of magnitude, not a rating, since real breakage depends on edges and flaws. Iron uses the composition terms of <a href="https://doi.org/10.1007/BF00374720" rel="noopener">Sack and colleagues (1980)</a>, fitted to lavas, not to soda glass, and blind to lead and boron: read it for direction, not degree. The furnace is held fixed so window glass keeps the 60:40 split the slab above uses.</p>
+    </div>
     <p class="more"><a href={page(map.anchorSlug)}>Read: color in glass →</a></p>
   </div>
 </section>
