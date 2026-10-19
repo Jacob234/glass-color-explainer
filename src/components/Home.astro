@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import map from '../data/map.json';
 import history from '../data/history.json';
 import Slab from './Slab.astro';
+import Dispersion from './Dispersion.astro';
 import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -36,7 +37,7 @@ const at = (year: number) => {
   const [[y0, p0], [y1, p1]] = [BREAKS[i - 1], BREAKS[i]];
   return p0 + ((year - y0) / (y1 - y0)) * (p1 - p0);
 };
-const STAGES: Record<string, string> = { batch: '01 · the batch', melt: '02 · the melt', ions: '03 · the color rod', glasses: '04 · the glory hole', strike: '05 · the reheat', light: '06 · the cold shop', rack: '07 · the rack', showroom: '08 · the showroom' };
+const STAGES: Record<string, string> = { batch: '01 · the batch', melt: '02 · the melt', ions: '03 · the color rod', glasses: '04 · the glory hole', strike: '05 · the reheat', light: '06 · the cold shop', prism: '06′ · the cold shop, cut', rack: '07 · the rack', showroom: '08 · the showroom' };
 const TICKS = [[-2000, '2000 BCE'], [0, '1 CE'], [1000, '1000'], [1800, '1800'], [1900, '1900'], [1950, '1950']] as const;
 // Labels take turns between lanes above and below the line so neighbours never overlap.
 const LANES = ['up1', 'down1', 'up2', 'down2'], LABEL = 12, laneEnd: Record<string, number> = {};
@@ -303,6 +304,8 @@ const pins = history.pins.map((p) => {
     <p class="more"><a href={page(structure.targetSlug, structure.anchor)}>Read: structure and scattering →</a></p>
   </div>
 </section>
+
+<Dispersion />
 
 <section class="wrap stage" id="rack">
   <div class="stage-rail"><div class="stage-num">07</div><span class="mono">the rack</span></div>

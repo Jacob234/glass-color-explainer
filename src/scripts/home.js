@@ -10,6 +10,7 @@ import * as na from './flare.js';
 import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
 import * as u from './uranium.js';
+import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -1049,5 +1050,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
 }
