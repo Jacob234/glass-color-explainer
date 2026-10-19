@@ -1,4 +1,4 @@
-/* Home page: the light table and the seven studio stages. Global (not scoped) because the
+/* Home page: the light table and the studio stages. Global (not scoped) because the
    instruments in scripts/home.js build some of these elements at runtime. */
 
 /* ---- hero: the light table ---- */
@@ -293,6 +293,19 @@ body:has(.lampbar) .site-footer { padding-bottom: 6rem; }
 .upane { aspect-ratio: 16 / 9; transition: box-shadow .4s; }
 .upane.lit { box-shadow: 0 0 30px 4px var(--glow), 0 0 90px 10px var(--glow); }
 
+/* ---- 06 the lehr: a polarized light table and a second polarizer to drag over it ---- */
+.polar-wrap { position: relative; overflow: hidden; border-radius: 2px; }
+.analyzer { position: absolute; transform: translate(-50%, -50%); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--ink);
+  cursor: grab; touch-action: none; outline: none; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .45); }
+.analyzer:active { cursor: grabbing; }
+.analyzer:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.analyzer span { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); font: 500 0.6rem/1 var(--mono); letter-spacing: .08em;
+  text-transform: uppercase; color: #f3f4f1; white-space: nowrap; pointer-events: none; mix-blend-mode: difference; }
+.lehr h4 { margin: 2.2rem 0 0.6rem; font-weight: 400; }
+.lehr .meters dt { color: var(--ink-2); }
+.lehr .meters dd { font-size: 1.3rem; }
+.lehr .meters i { background: var(--paper-2); }
+.polar-edge canvas { border-radius: 2px; }
 /* ---- 04 Kirchhoff: three gathers, cold and hot ---- */
 .kirchhoff { margin-top: 3rem; border-top: 1px solid #3a2d25; padding-top: 1.5rem; }
 .kirchhoff h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3.5vw, 2.3rem); margin: 0 0 0.8rem; line-height: 1.1; }

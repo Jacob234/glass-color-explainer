@@ -11,6 +11,7 @@ import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
 import * as u from './uranium.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
+import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -722,7 +723,163 @@ function strike() {
   onLamp(() => { renderGold(); renderGap(); });
 }
 
-/* ---------- 06 the cold shop: dichroic ---------- */
+/* ---------- 06 the lehr: frozen-in stress between polarizers ---------- */
+// Every colour is the polariscope's transmission spectrum (stress.js, Jones calculus) under the
+// page's lamp. The colour of a spectrum is linear in it, so each lamp gives one weight per wavelength
+// and a table of colours by retardation is a matrix product. The tint plate's colour also depends
+// on the stress direction, so it gets a second axis in angle.
+const VIEW_NOTES = {
+  plane: 'The dark cross is not unstressed glass. Along it the stress runs parallel and perpendicular to the polarizers, and light polarized along a principal stress passes through unchanged. Switch to circular to remove it.',
+  circular: 'Quarter-wave plates on either side make the light circular, so the direction of the stress no longer matters and the cross is gone. Only the size of the stress shows.',
+  tint: 'A full-wave plate makes the empty field magenta, the colour that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. This is how strain viewers in glassworks are set up.',
+};
+const RATE = (v) => 0.3 * 1000 ** (v / 1000); // °C per minute, log slider
+const G_MAX = 12000, G_STEP = 2, T_MAX = 3000, T_STEP = 10, T_PHI = 24; // nm, nm, nm, nm, angle bins over 180°
+function lehr() {
+  const canvas = $('polar'), edge = $('polarEdge'), an = $('analyzer'), sCool = $('cool'), sThick = $('thick');
+  let viewer = 'plane', luts = null, litBy = null, raf = 0;
+  const views = [['plane', 'crossed'], ['circular', 'circular'], ['tint', 'tint plate']].map(([id, label]) => {
+    const b = h('button', { className: 'chip chip-plain' }, label);
+    b.addEventListener('click', () => { viewer = id; queue(); });
+    $('polarView').appendChild(b);
+    return [id, b];
+  });
+
+  // Colour tables under the current lamp, in linear sRGB.
+  function build() {
+    const W = GRID.map((_, i) => underLamp(GRID.map((_, j) => (j === i ? 1 : 0)), lamp).lin);
+    const colour = (I) => { const c = [0, 0, 0]; I.forEach((v, i) => { c[0] += v * W[i][0]; c[1] += v * W[i][1]; c[2] += v * W[i][2]; }); return c; };
+    const S = []; // sin²(πΓ/λ): crossed at 45°, and circular at any angle
+    for (let G = 0; G <= G_MAX; G += G_STEP) S.push(colour(GRID.map((w) => Math.sin((Math.PI * G) / w) ** 2)));
+    luts = { S, high: colour(GRID.map(() => 0.5)), tint: null, colour };
+    litBy = lamp;
+  }
+  function tintLut() { // [angle bin][retardation bin], −T_MAX..T_MAX
+    if (!luts.tint) luts.tint = Array.from({ length: T_PHI }, (_, k) => {
+      const phi = (k * Math.PI) / T_PHI, row = [];
+      for (let G = -T_MAX; G <= T_MAX; G += T_STEP) row.push(luts.colour(st.polariscope('tint', phi, G)));
+      return row;
+    });
+    return luts.tint;
+  }
+  // Linear colour at retardation G (signed) with the slow axis at phi from the polarizer.
+  function look(G, phi) {
+    if (viewer === 'tint') {
+      const t = tintLut(), a = (((phi % Math.PI) + Math.PI) % Math.PI) / (Math.PI / T_PHI), k0 = Math.floor(a) % T_PHI, k1 = (k0 + 1) % T_PHI, f = a - Math.floor(a);
+      const j = Math.round((Math.min(T_MAX, Math.max(-T_MAX, G)) + T_MAX) / T_STEP), p = t[k0][j], q = t[k1][j];
+      return [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f, p[2] + (q[2] - p[2]) * f];
+    }
+    const g = Math.abs(G), c = g > G_MAX ? luts.high : luts.S[Math.round(g / G_STEP)];
+    if (viewer === 'circular') return c;
+    const k = Math.sin(2 * phi) ** 2;
+    return [c[0] * k, c[1] * k, c[2] * k];
+  }
+  const put = (px, o, c) => { px[o] = 255 * encode(c[0]); px[o + 1] = 255 * encode(c[1]); px[o + 2] = 255 * encode(c[2]); px[o + 3] = 255; };
+
+  // The light table from above: the scene is X mm either side of the disc's centre.
+  const X = 80, Y = 50, R = st.FOOT.R, pos = { x: 18, y: -6 }, AR = 40; // analyzer centre and radius, mm
+  const open = document.createElement('canvas'), shut = document.createElement('canvas');
+  const state = () => {
+    const rate = RATE(sCool.valueAsNumber), d = sThick.valueAsNumber;
+    return { rate, d, dT: st.frozenDifference(rate, d) };
+  };
+  function paintScene() {
+    const [, w, hh] = fit(canvas, Y / X), { d, dT } = state(), mm = (2 * X) / w;
+    for (const c of [open, shut]) { c.width = w; c.height = hh; }
+    const a = open.getContext('2d').createImageData(w, hh), b = shut.getContext('2d').createImageData(w, hh);
+    const paper = tColor(ONES).lin, field = look(0, 0), k = st.planRetardation(R, R, d, dT);
+    for (let j = 0; j < hh; j++) {
+      const y = Y - (j + 0.5) * mm;
+      for (let i = 0; i < w; i++) {
+        const x = -X + (i + 0.5) * mm, r = Math.hypot(x, y), o = 4 * (j * w + i);
+        put(a.data, o, paper);
+        put(b.data, o, r < R ? look(k * (r / R) ** 2, Math.atan2(y, x)) : field);
+      }
+    }
+    open.getContext('2d').putImageData(a, 0, 0); shut.getContext('2d').putImageData(b, 0, 0);
+  }
+  function compose() {
+    const ctx = canvas.getContext('2d'), w = canvas.width, hh = canvas.height, s = w / (2 * X), dpr = Math.min(2, devicePixelRatio || 1);
+    const sx = (x) => (x + X) * s, sy = (y) => (Y - y) * s;
+    ctx.drawImage(open, 0, 0);
+    ctx.save(); ctx.beginPath(); ctx.arc(sx(pos.x), sy(pos.y), AR * s, 0, 2 * Math.PI); ctx.clip(); ctx.drawImage(shut, 0, 0); ctx.restore();
+    ctx.lineWidth = dpr; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(sx(0), sy(0), R * s, 0, 2 * Math.PI); ctx.stroke();
+    an.style.left = `${(sx(pos.x) / w) * 100}%`; an.style.top = `${(sy(pos.y) / hh) * 100}%`; an.style.width = `${((2 * AR * s) / w) * 100}%`;
+    an.setAttribute('aria-valuetext', `second polarizer ${Math.round(Math.hypot(pos.x, pos.y))} mm from the centre of the foot`);
+  }
+
+  // The foot through its edge: a ray at offset x crosses the whole chord at height z.
+  const EX = 36, EZ = 10;
+  function paintEdge() {
+    const [ctx, w, hh] = fit(edge, EZ / EX), { d, dT } = state(), mm = (2 * EX) / w;
+    const img = ctx.createImageData(w, hh), field = look(0, Math.PI / 4), SUB = 4;
+    for (let j = 0; j < hh; j++) {
+      for (let i = 0; i < w; i++) {
+        const x = -EX + (i + 0.5) * mm, o = 4 * (j * w + i);
+        let c = [0, 0, 0], n = 0;
+        for (let k = 0; k < SUB; k++) { // average sub-rows, since fringes crowd near the faces
+          const z = EZ - (j + (k + 0.5) / SUB) * mm;
+          if (Math.abs(x) >= R || Math.abs(z) > d / 2) continue;
+          const g = look(st.edgeRetardation(x, z, R, d, dT), Math.PI / 4);
+          c[0] += g[0]; c[1] += g[1]; c[2] += g[2]; n++;
+        }
+        const f = n / SUB;
+        put(img.data, o, n ? c.map((v, m) => v / SUB + field[m] * (1 - f)) : field);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function words() {
+    const { rate, d, dT } = state(), face = -st.surfaceStress(d, dT), core = st.coreStress(d, dT);
+    const rim = Math.abs(st.planRetardation(R, R, d, dT)), through = Math.abs(st.edgeRetardation(0, d / 2, R, d, dT));
+    const mins = (st.GLASS.anneal - st.GLASS.strain) / rate;
+    const time = mins < 1 ? `${Math.round(mins * 60)} s` : mins < 90 ? `${Math.round(mins)} min` : `${(mins / 60).toFixed(1)} h`;
+    $('coolOut').textContent = `${rate < 10 ? rate.toFixed(1) : Math.round(rate)} °C/min`;
+    $('thickOut').textContent = `${d} mm`;
+    const bar = (v) => `${Math.min(100, Math.max(1.5, (Math.log10(Math.max(v, 1e-3)) + 2) * 25))}%`; // log scale, 0.01 to 100
+    const row = (name, val, v) => h('div', {}, h('dt', {}, name), h('dd', {}, val), h('i', { style: { '--v': bar(v), '--c': 'var(--ink)' } }));
+    const mpa = (v) => (v < 1 ? v.toFixed(2) : v < 10 ? v.toFixed(1) : Math.round(v)) + ' MPa';
+    $('lehrMeters').replaceChildren(
+      row('faces · compression', mpa(face), face),
+      row('core · tension', mpa(core), core),
+      row('rim, face on · retardation', `${rim < 10 ? rim.toFixed(1) : Math.round(rim)} nm`, rim / 6),
+      row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
+    const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot all but vanishes into the dark field.`
+      : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
+      : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal colour are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
+      : 'Past first-order red into blue at the rim. Each repeat of the colours is another wavelength of retardation: this piece is carrying real stress.';
+    const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colours collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
+    $('lehrRead').textContent = `${state_} ${VIEW_NOTES[viewer]}${sodium}`;
+    $('edgeRead').textContent = `Through the edge the foot shows what face on hides: compression of ${mpa(face)} in a band at each face, tension of ${mpa(core)} in the core, and between them a line where the stress passes through zero (dark between crossed polarizers), 58% of the way from the middle to each face. The light now crosses ${2 * R} mm of glass instead of ${d}, so the same stress gives up to ${through < 10 ? through.toFixed(1) : Math.round(through)} nm. Thickness counts twice: the frozen difference grows as its square.`;
+    for (const [id, b] of views) b.setAttribute('aria-pressed', String(id === viewer));
+  }
+
+  function render() {
+    raf = 0;
+    if (litBy !== lamp || !luts) build();
+    paintScene(); compose(); paintEdge(); words();
+  }
+  function queue() { if (!raf) raf = requestAnimationFrame(render); }
+
+  // Drag the second polarizer; it can hang off the table's edge by up to half its width.
+  const toMM = (e) => { const r = canvas.getBoundingClientRect(); return { x: ((e.clientX - r.left) / r.width) * 2 * X - X, y: Y - ((e.clientY - r.top) / r.width) * 2 * X }; };
+  const clampPos = () => { pos.x = Math.min(X, Math.max(-X, pos.x)); pos.y = Math.min(Y, Math.max(-Y, pos.y)); };
+  let drag = null;
+  an.addEventListener('pointerdown', (e) => { e.preventDefault(); an.setPointerCapture(e.pointerId); const p = toMM(e); drag = { id: e.pointerId, dx: pos.x - p.x, dy: pos.y - p.y }; });
+  an.addEventListener('pointermove', (e) => { if (!drag || e.pointerId !== drag.id) return; const p = toMM(e); pos.x = p.x + drag.dx; pos.y = p.y + drag.dy; clampPos(); compose(); });
+  const end = (e) => { if (drag && e.pointerId === drag.id) drag = null; };
+  an.addEventListener('pointerup', end); an.addEventListener('pointercancel', end);
+  an.addEventListener('keydown', (e) => {
+    const m = { ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 5], ArrowDown: [0, -5] }[e.key];
+    if (!m) return;
+    e.preventDefault(); pos.x += m[0]; pos.y += m[1]; clampPos(); compose();
+  });
+  sCool.addEventListener('input', queue); sThick.addEventListener('input', queue);
+  addEventListener('resize', queue); onLamp(() => { luts = null; queue(); });
+}
+
+/* ---------- 07 the cold shop: dichroic ---------- */
 function dichroic() {
   const s = $('angle');
   const set = (id, attrs) => { const el = document.getElementById(id); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); };
@@ -745,7 +902,7 @@ function dichroic() {
   s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
-/* ---------- 07 the rack: real supplier colours on hue shelves ---------- */
+/* ---------- 08 the rack: real supplier colours on hue shelves ---------- */
 function rack() {
   const items = JSON.parse($('rack-data').textContent);
   const MECH = [['all', 'everything'], ['ions', 'ions'], ['colloids', 'metal colloids'], ['bandgap', 'semiconductors'], ['structure', 'structure'], ['unknown', 'unclassified']];
@@ -863,7 +1020,7 @@ function rack() {
   });
 }
 
-/* ---------- 08 the showroom: uranium glass gives light back ---------- */
+/* ---------- 09 the showroom: uranium glass gives light back ---------- */
 function showroom() {
   const canvas = $('stripU');
   for (const id of ['black', 'daylight']) {
@@ -1036,7 +1193,7 @@ function historyRail() {
   lanes(); addEventListener('resize', lanes);
 }
 
-/* ---------- 07 the rack, continued: the bench works a rod backwards to a melt ---------- */
+/* ---------- 08 the rack, continued: the bench works a rod backwards to a melt ---------- */
 const BENCH_LAMP = 'a tungsten bulb';
 function fitBench() {
   const fitter = makeFitter(optics, { lamp: 'incandescent' });
@@ -1118,5 +1275,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
 }
