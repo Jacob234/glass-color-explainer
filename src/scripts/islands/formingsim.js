@@ -39,15 +39,15 @@ export function initFormingSim(root) {
     trail = []; show();
   }
 
-  // ---- colour ----
+  // ---- color ----
   // The gather's visible emissivity for the path a sight line takes through it (both walls at the
-  // middle), in optics.json's reference thickness (10 mm), and its cold colour under daylight.
+  // middle), in optics.json's reference thickness (10 mm), and its cold color under daylight.
   function looks() {
     const path = Math.max(0.05, (2 * f.wall(g) * 1000) / 10), T = transmission(batch.parts.map(([id, c]) => [DENS[id], c]), path);
     return { eps: emissivity(T), cold: spectrumColor(T, LAMP.daylight.spd).rgb };
   }
-  // A shell's colour at t °C: its glow (strength on the page's log scale times the cube root of its
-  // luminous emissivity, as at the glory hole) over the faint cold colour the shop lamps show.
+  // A shell's color at t °C: its glow (strength on the page's log scale times the cube root of its
+  // luminous emissivity, as at the glory hole) over the faint cold color the shop lamps show.
   function shade(t, { eps, cold }, bg = null) {
     const tK = t + 273.15, gl = glow(tK, 1423, eps), epsY = luminousEmissivity(eps, tK);
     const a = glowStrength(gl.luminance) * epsY ** (1 / 3);

@@ -26,7 +26,7 @@ test('stress grows with cooling rate and with the square of thickness', () => {
   assert.ok(near(s.frozenDifference(10, 16), 4 * s.frozenDifference(10, 8)));
 });
 
-test('a lehr-cooled foot is near zero retardation face on, a bench-cooled one reaches first-order colours', () => {
+test('a lehr-cooled foot is near zero retardation face on, a bench-cooled one reaches first-order colors', () => {
   const { R, d } = s.FOOT;
   const slow = Math.abs(s.planRetardation(R, R, d, s.frozenDifference(1, d)));
   const fast = Math.abs(s.planRetardation(R, R, d, s.frozenDifference(300, d)));

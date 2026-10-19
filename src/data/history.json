@@ -1,9 +1,9 @@
 {
-  "note": "The history rail on the home page. Each pin is coloured by the same engine as the stages: parts are [colorantId, concentration] pairs through Beer–Lambert at the given thickness, or a dichroic band at an angle, or uranium glass through the showroom's absorption-and-emission model. A pin with no colour is one the engine cannot model yet. stage is the id of the home-page section that explains it.",
+  "note": "The history rail on the home page. Each pin is colored by the same engine as the stages: parts are [colorantId, concentration] pairs through Beer–Lambert at the given thickness, or a dichroic band at an angle, or uranium glass through the showroom's absorption-and-emission model. A pin with no color is one the engine cannot model yet. stage is the id of the home-page section that explains it.",
   "pins": [
     {
       "id": "cobalt", "short": "Cobalt blue", "year": -1400, "when": "c. 1400 BCE", "title": "Cobalt blue in Egypt",
-      "text": "Glass of Egypt's 18th Dynasty is already coloured with cobalt, the same ion as in a modern blue rod. Cobalt was used as a blue on pottery of the same period too.",
+      "text": "Glass of Egypt's 18th Dynasty is already colored with cobalt, the same ion as in a modern blue rod. Cobalt was used as a blue on pottery of the same period too.",
       "color": { "parts": [["cobalt", 0.9]], "thickness": 1.2 },
       "stage": "ions",
       "sources": [
@@ -13,7 +13,7 @@
     },
     {
       "id": "lycurgus", "short": "Lycurgus cup", "year": 300, "when": "c. 290–325 CE", "title": "The Lycurgus cup",
-      "text": "A Roman cage cup that looks jade green in reflected light and glows red when lit from inside. About 330 ppm of silver and 40 ppm of gold sit in it as particles about 70 nm across. The pin shows the transmitted colour; the green is scattered light, which this engine does not model.",
+      "text": "A Roman cage cup that looks jade green in reflected light and glows red when lit from inside. About 330 ppm of silver and 40 ppm of gold sit in it as particles about 70 nm across. The pin shows the transmitted color; the green is scattered light, which this engine does not model.",
       "color": { "parts": [["gold-colloid", 0.7], ["silver-colloid", 0.3]], "thickness": 1.4 },
       "stage": "strike",
       "sources": [["Wikipedia: Lycurgus Cup (British Museum 1958,1202.1)", "https://en.wikipedia.org/wiki/Lycurgus_Cup"]]
@@ -27,7 +27,7 @@
     },
     {
       "id": "cristallo", "short": "Cristallo", "year": 1450, "when": "c. 1450", "title": "Venetian cristallo",
-      "text": "Angelo Barovier of Murano is credited with a nearly colourless glass. Small additions of manganese oxide cancel the iron's tint: manganese absorbs in the green, iron at the ends, and together they take a little of everything, which reads as clear.",
+      "text": "Angelo Barovier of Murano is credited with a nearly colorless glass. Small additions of manganese oxide cancel the iron's tint: manganese absorbs in the green, iron at the ends, and together they take a little of everything, which reads as clear.",
       "color": { "parts": [["iron-ferrous", 0.04], ["iron-ferric", 0.03], ["manganese", 0.03]], "thickness": 4 },
       "stage": "batch",
       "sources": [["Wikipedia: Cristallo", "https://en.wikipedia.org/wiki/Cristallo"]]
