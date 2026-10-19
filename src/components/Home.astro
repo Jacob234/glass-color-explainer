@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import map from '../data/map.json';
 import history from '../data/history.json';
 import Slab from './Slab.astro';
+import WhatGlassIs from './WhatGlassIs.astro';
 import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -60,6 +61,8 @@ const pins = history.pins.map((p) => {
   </div>
   <p class="lamp-note" id="lampNote" aria-live="polite"></p>
 </section>
+
+<WhatGlassIs />
 
 <section class="wrap stage" id="batch">
   <div class="stage-rail"><div class="stage-num">01</div><span class="mono">the batch</span></div>

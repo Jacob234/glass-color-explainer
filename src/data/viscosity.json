@@ -1,0 +1,28 @@
+{
+  "note": "Viscosity of one standard soda-lime-silica glass, NBS Standard Glass No. 710, measured at NBS and seven other laboratories. The Fulcher constants are the combined fit to Laboratory A's five samples (Table 4), log10 η in poise with T in °C, fitted from 560 to 1400 °C; viscosity in Pa·s is poise / 10. Fixed points are the ASTM softening, annealing and strain points reported in Table 10. Studio temperatures are typical practice, not measured for this glass. `fitted` is their Table 5 (log10 poise, °C), which this fit reproduces within 3 °C.",
+  "glass": "NBS Standard Glass No. 710 (soda-lime-silica)",
+  "source": {
+    "label": "Napolitano and Hawkins, Viscosity of a standard soda-lime-silica glass, J. Res. NBS 68A (1964) 439",
+    "url": "https://doi.org/10.6028/jres.068A.042"
+  },
+  "compositionWt": { "SiO2": 70.5, "Na2O": 8.7, "K2O": 7.7, "CaO": 11.6, "Sb2O3": 1.1, "SO3": 0.2, "R2O3": 0.2 },
+  "fulcher": { "A": -1.626, "B": 4239, "T0": 265.7, "units": "log10 poise, °C", "fitMin": 560, "fitMax": 1400 },
+  "fitted": [[2.1, 1400.5], [3.0, 1180.8], [4.0, 1018.8], [6.0, 821.7], [8.0, 706.3], [10.0, 630.5], [12.0, 576.9]],
+  "points": [
+    { "id": "melting", "label": "melting", "logPas": 1, "definition": "10 Pa·s: runny enough to fine out bubbles" },
+    { "id": "working", "label": "working", "logPas": 3, "definition": "1000 Pa·s: stiff enough to hold a shape on the pipe" },
+    { "id": "softening", "label": "softening", "logPas": 6.6, "measured": 727, "definition": "Littleton point: a hanging fibre stretches under its own weight" },
+    { "id": "annealing", "label": "annealing", "logPas": 12, "measured": 546, "definition": "stress relaxes in minutes" },
+    { "id": "strain", "label": "strain", "logPas": 13.5, "measured": 503, "definition": "stress takes hours to relax; below it, nothing moves" }
+  ],
+  "studio": [
+    { "id": "furnace", "label": "furnace", "stage": "melt", "T": 1150, "note": "a studio furnace held for gathering (typical, unverified)" },
+    { "id": "glory", "label": "glory hole", "stage": "heat", "T": 1100, "note": "reheating on the pipe (typical, unverified)" },
+    { "id": "lehr", "label": "lehr", "T": 546, "note": "soaked at the annealing point, then cooled slowly past the strain point" }
+  ],
+  "maxwell": {
+    "Ginf": 3e10,
+    "note": "Infinite-frequency shear modulus, about 30 GPa, used by Zanotto (1998) to turn viscosity into a relaxation time τ = η / G∞.",
+    "source": { "label": "Zanotto, Do cathedral glasses flow?, Am. J. Phys. 66 (1998) 392", "url": "https://osiris.df.unipi.it/~leporini/DFWebSite/ReviewsTg/CathedralGlasses.pdf" }
+  }
+}

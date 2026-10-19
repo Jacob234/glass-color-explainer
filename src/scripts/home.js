@@ -11,6 +11,7 @@ import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
 import * as u from './uranium.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
+import { glassStage } from './stage-glass.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -1049,5 +1050,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
 }
