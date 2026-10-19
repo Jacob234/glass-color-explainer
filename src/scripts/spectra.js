@@ -42,9 +42,16 @@ function integrate(spectrum) {
 // white; 0 = no adaptation, so the lamp's own colour shows. In between, each cone's von Kries gain is
 // raised to the power D (CIECAM02 blends the gains linearly instead, which turns warm lamps pink here).
 export function spectrumColor(T, spd, adapt = 1) {
-  const white = integrate(spd), norm = white[1];
-  const xyz = integrate(spd.map((s, i) => s * T[i])).map((v) => v / norm);
-  const src = mul(BRADFORD, white.map((v) => v / norm)), dst = mul(BRADFORD, D65);
+  return radianceColor(spd.map((s, i) => s * T[i]), spd, adapt);
+}
+
+// Colour of light L reaching the eye (on GRID, in the lamp's units) under illuminant spd: the same as
+// spectrumColor, but L may hold light the glass gives out itself (fluorescence) as well as light it
+// passes. scale multiplies the result, for scenes where the eye is set by something other than white.
+export function radianceColor(L, spd, adapt = 1, scale = 1) {
+  const white = integrate(spd), norm = white[1] / scale;
+  const xyz = integrate(L).map((v) => v / norm);
+  const src = mul(BRADFORD, white.map((v) => v / white[1])), dst = mul(BRADFORD, D65);
   const gain = dst.map((d, i) => (d / src[i]) ** adapt);
   const lin = mul(XYZ_TO_SRGB, mul(BRADFORD_INV, mul(BRADFORD, xyz).map((v, i) => v * gain[i])));
   const rgb = lin.map(encode);

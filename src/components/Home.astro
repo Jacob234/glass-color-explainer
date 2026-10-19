@@ -296,6 +296,32 @@ const structure = map.mechanisms.find((m) => m.id === 'structure')!.anchorTarget
   </div>
 </section>
 
+<section class="wrap stage" id="showroom">
+  <div class="stage-rail"><div class="stage-num">08</div><span class="mono">the showroom</span></div>
+  <div class="stage-body">
+    <h2>One glass gives light <i>back</i></h2>
+    <div class="prose">
+      <p>Everything so far has been subtraction: light goes in, the glass takes some away, and the rest is its color. Uranium glass breaks the rule. The uranyl ion absorbs ultraviolet and violet, and instead of turning that energy into heat it sends much of it back out as green light. That green is not in the lamp, so no amount of taking away could have made it.</p>
+      <p>In daylight the effect is a faint cast on a pale canary yellow. Under a black light, which gives almost nothing visible for any glass to filter, every other piece goes dark and uranium glass blazes.</p>
+    </div>
+    <div class="bench">
+      <div>
+        <div class="pane upane" id="uPane"><b id="uTag"></b></div>
+      </div>
+      <div class="controls">
+        <div class="chips" id="uLamps" role="group" aria-label="lamp shortcuts"></div>
+        <div>
+          <canvas class="strip" id="stripU" aria-label="spectrum of the lamp and of the light leaving the uranium glass, from 300 nm"></canvas>
+          <div class="strip-key"><span>300 nm</span><span>hatched: ultraviolet · top: lamp · bottom: light out</span><span>780 nm</span></div>
+        </div>
+        <p class="readout" id="uRead"></p>
+      </div>
+    </div>
+    <p class="aside"><b>History.</b> Uranium was identified by Martin Heinrich Klaproth in 1789. Franz Xaver Riedel made yellow and green uranium glass in Bohemia from 1830 to 1848 and named the colors <i>annagelb</i> and <i>annagrün</i> after his daughter Anna. It was most popular from the 1880s to the 1920s. In the United States the government took control of uranium for the Manhattan Project from 1942 to 1958, and production stopped. Most uranium glass holds about 2% uranium by weight.</p>
+    <p class="aside"><b>Model.</b> Absorption is a strong edge near 400 nm with weak bands at 418–472 nm, drawn to the published shape rather than measured. Emission is uranyl's vibronic comb: peaks evenly spaced in energy, about 830 cm⁻¹ apart (the O=U=O stretch), with the strongest at 527 nm, where a measured uranium-glass marble peaks. Half of the absorbed photons are re-emitted and half of those leave toward you; both numbers are illustrative. Under the black light the eye is set by the glowing glass itself, since there is no white in the room to adapt to.</p>
+  </div>
+</section>
+
 <section class="wrap stage" id="read">
   <div class="stage-rail"><div class="stage-num">→</div><span class="mono">the long read</span></div>
   <div class="stage-body">

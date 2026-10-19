@@ -8,9 +8,11 @@ import {
 import * as na from './flare.js';
 import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
+import * as u from './uranium.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
+DENS.uranium = GRID.map(u.density); // uranium.js: the one colorant that also gives light out
 const ONES = GRID.map(() => 1);
 const $ = (id) => document.getElementById(id);
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,6 +26,13 @@ const lampLight = () => { const m = Math.max(...lamp.spd); return lamp.spd.map((
 const tColor = (T) => underLamp(T, lamp);
 const mixT = (parts, thickness = 1) => transmission(parts.map(([id, c]) => [DENS[id], c]), thickness);
 const colorOf = (parts, thickness = 1) => tColor(mixT(parts, thickness));
+// Uranium glass: what it passes plus what it gives out. glow is the fluorescence's share of the light.
+function uraniumOf(thickness = 1) {
+  const T = u.transmissionOnGrid(thickness), F = u.fluorescence(lamp.ext, thickness);
+  const all = underLamp(T, lamp, F), lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  const glowOnly = underLamp(GRID.map(() => 0), lamp, F);
+  return { ...all, T, F, glow: lum(glowOnly.lin) / Math.max(1e-9, lum(all.lin)), glowCss: glowOnly.css };
+}
 
 // A spectrum strip: light in (top band) and light out (bottom band), with curve drawn on the bottom.
 // Without bands given, the light in is the current lamp and the light out is that lamp through T.
@@ -95,6 +104,7 @@ function lightTable() {
     { lab: 'copper', parts: [['copper', 1]], x: 0.07, y: 0.62, s: 0.20, r: '6px' },
     { lab: 'manganese', parts: [['manganese', 1.3]], x: 0.82, y: 0.10, s: 0.18, r: '50%' },
     { lab: 'neodymium', parts: [['neodymium', 1]], x: 0.38, y: 0.56, s: 0.17, clip: shard('50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%') },
+    { lab: 'uranium', uranium: true, x: 0.74, y: 0.56, s: 0.2, clip: shard('25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%') },
   ];
   let z = 10;
   const els = pieces.map((p) => {
@@ -107,10 +117,53 @@ function lightTable() {
   });
   // The table is lit by the lamp too (see paint() below), and the screen multiplies each piece over
   // it, so a piece is drawn as its colour divided by the table's: the product is the computed colour.
+  // A glowing piece can be brighter than the table under it, which multiply cannot draw; it switches
+  // to screen, which adds light: screen(paper, x) = c when x = 1 − (1 − c) / (1 − paper).
   onLamp(() => {
     const paper = tColor(ONES).rgb;
-    for (const { g, p } of els) g.style.setProperty('--c', css(colorOf(p.parts).rgb.map((v, i) => Math.min(1, v / Math.max(paper[i], 1e-3)))));
+    for (const { el, g, p } of els) {
+      const c = p.uranium ? uraniumOf() : colorOf(p.parts), lit = c.rgb.some((v, i) => v > paper[i] + 0.01);
+      g.style.setProperty('--c', css(c.rgb.map((v, i) => (lit
+        ? Math.max(0, 1 - (1 - v) / Math.max(1e-3, 1 - paper[i]))
+        : Math.min(1, v / Math.max(paper[i], 1e-3))))));
+      el.classList.toggle('lit', lit);
+      if (lit) el.style.setProperty('--glow', c.glowCss);
+    }
+    torch.toggle(!!lamp.dark);
   });
+
+  // Under the black light the table is a dark room and the light is a torch: a dark layer over the
+  // pieces with a hole where the beam falls. It follows the pointer, and sweeps once on its own.
+  const shade = h('div', { className: 'shade', 'aria-hidden': 'true' });
+  table.appendChild(shade);
+  const torch = (() => {
+    let raf = 0, on = false;
+    const aim = (x, y) => { shade.style.setProperty('--x', `${x}px`); shade.style.setProperty('--y', `${y}px`); };
+    const target = () => { const t = els.find((e) => e.p.uranium).el; return [t.offsetLeft + t.offsetWidth / 2, t.offsetTop + t.offsetHeight / 2]; };
+    table.addEventListener('pointermove', (e) => {
+      if (!on) return;
+      cancelAnimationFrame(raf);
+      const r = table.getBoundingClientRect(); aim(e.clientX - r.left, e.clientY - r.top);
+    });
+    return {
+      toggle(next) {
+        if (next === on) return;
+        on = next; table.classList.toggle('dark', on); cancelAnimationFrame(raf);
+        if (!on) return;
+        const [tx, ty] = target(), w = table.clientWidth, hh = table.clientHeight;
+        if (reduceMotion()) return aim(tx, ty);
+        // a sweep from the left edge, across the table, coming to rest on the uranium glass
+        const t0 = performance.now(), dur = 3200;
+        const tick = (now) => {
+          const f = Math.min(1, (now - t0) / dur), e = 1 - (1 - f) ** 3;
+          const x = -0.1 * w + (tx + 0.1 * w) * e, y = hh * 0.35 + (ty - hh * 0.35) * e + Math.sin(f * Math.PI * 2) * hh * 0.18 * (1 - f);
+          aim(x, y);
+          if (f < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+    };
+  })();
   function layout() {
     const w = table.clientWidth, h = table.clientHeight, base = Math.min(w * 0.9, h * 1.25);
     for (const { el, p } of els) {
@@ -608,10 +661,66 @@ function rack() {
   });
 }
 
+/* ---------- 08 the showroom: uranium glass gives light back ---------- */
+function showroom() {
+  const canvas = $('stripU');
+  for (const id of ['black', 'daylight']) {
+    const b = h('button', { className: 'chip' }, h('i', { style: { '--c': lampColor(LAMP[id].spd) } }), `switch on ${LAMP[id].label}`);
+    b.addEventListener('click', () => setLamp(LAMP[id]));
+    $('uLamps').appendChild(b);
+  }
+  // The strip runs from 300 nm so the ultraviolet shows: hatched, because the eye cannot see it.
+  function draw(top, bottom, curve) {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), hh = Math.max(1, Math.round(r.height * dpr));
+    if (canvas.width !== w || canvas.height !== hh) { canvas.width = w; canvas.height = hh; }
+    const ctx = canvas.getContext('2d'), n = u.EXT.length, nUV = u.UV.length;
+    const half = Math.round(hh * 0.42), gap = Math.round(hh * 0.08);
+    const color = (i, v) => (i < nUV ? `rgba(150, 110, 255, ${0.08 + 0.85 * v})` : css(SPECTRAL[i - nUV].map((c) => encode(c * v))));
+    ctx.clearRect(0, 0, w, hh);
+    for (let i = 0; i < n; i++) {
+      const x0 = Math.floor((i / n) * w), x1 = Math.ceil(((i + 1) / n) * w);
+      ctx.fillStyle = color(i, top[i]); ctx.fillRect(x0, 0, x1 - x0, half);
+      ctx.fillStyle = color(i, bottom[i]); ctx.fillRect(x0, half + gap, x1 - x0, hh - half - gap);
+    }
+    const xv = (nUV / n) * w; // hatch the invisible part
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, xv, hh); ctx.clip();
+    ctx.strokeStyle = 'rgba(0, 0, 0, .35)'; ctx.lineWidth = 1 * dpr;
+    for (let x = -hh; x < xv; x += 6 * dpr) { ctx.beginPath(); ctx.moveTo(x, hh); ctx.lineTo(x + hh, 0); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.2 * dpr; ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const x = ((i + 0.5) / n) * w, y = hh - 3 * dpr - curve[i] * (hh - half - gap - 6 * dpr);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+  }
+  function render() {
+    const c = uraniumOf(), Text = u.EXT.map((w) => 10 ** -u.density(w));
+    const out = u.EXT.map((w, i) => lamp.ext[i] * Text[i] + (i < u.UV.length ? 0 : c.F[i - u.UV.length]));
+    const peak = (a) => Math.max(...a, 1e-30);
+    draw(lamp.ext.map((v) => v / peak(lamp.ext)), out.map((v) => v / peak(out)), Text);
+    $('uPane').style.setProperty('--c', c.css);
+    $('uPane').style.setProperty('--glow', c.glowCss);
+    $('uPane').classList.toggle('lit', c.glow > 0.5);
+    const pct = c.glow * 100, share = pct < 0.1 ? 'under 0.1%' : pct < 10 ? `${pct.toFixed(1)}%` : `${Math.round(pct)}%`;
+    $('uTag').textContent = `${share} of this light is glow`;
+    $('uRead').textContent = lamp.dark
+      ? 'The torch puts out almost nothing you can see, so there is nothing to take away. The glass absorbs the ultraviolet and sends a share of it back out as green: all the light you see from it is light it made.'
+      : lamp.lines
+        ? 'The sodium lamp has no ultraviolet and no blue, so there is nothing for the uranium to absorb or to re-emit. It looks like plain glass, the same orange as everything else.'
+        : `Under ${lamp.label} the glass is mostly a filter: it takes away violet and blue and looks yellow. The ultraviolet in the light makes ${share} of what you see from it, a faint green cast on top.`;
+  }
+  addEventListener('resize', render); onLamp(render);
+}
+
 /* ---------- the lamp switch: one light for the whole page ---------- */
 // The page's paper, table and rules are lit by the lamp too: each base colour is multiplied by the
 // colour white paper takes on under it.
 const BASE = { '--paper': '#f3f4f1', '--paper-2': '#e9eae5', '--rule': '#d6d8d2', '--panel': '#fafaf8' };
+// When the paper goes nearly black (the black light), the page needs light ink and visible rules.
+const DARK = { '--rule': '#2d2838', '--paper-2': '#17131f', '--panel': '#110e18' };
+let setLamp = () => {};
 function lampSwitch() {
   const bar = $('lamps'), spark = $('lampSpark'), root = document.documentElement;
   const hex = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16) / 255);
@@ -636,8 +745,10 @@ function lampSwitch() {
   function set(l) {
     lamp = l;
     const tint = tColor(ONES).rgb;
-    for (const [k, v] of Object.entries(BASE)) root.style.setProperty(k, css(hex(v).map((c, i) => c * tint[i])));
+    const dark = 0.2126 * tint[0] + 0.7152 * tint[1] + 0.0722 * tint[2] < 0.2;
+    for (const [k, v] of Object.entries(BASE)) root.style.setProperty(k, dark && DARK[k] ? DARK[k] : css(hex(v).map((c, i) => c * tint[i])));
     root.style.setProperty('--tint', css(tint));
+    root.toggleAttribute('data-dark', dark);
     for (const [b, x] of buttons) b.setAttribute('aria-pressed', String(x === l));
     $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
     $('lampNote').textContent = l.note;
@@ -645,6 +756,7 @@ function lampSwitch() {
     for (const fn of relight) fn();
   }
   addEventListener('resize', sparkline);
+  setLamp = set;
   set(lamp);
 }
 
@@ -730,5 +842,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack(); lampSwitch();
+  lightTable(); batch(); redox(); ions(); heat(); strike(); dichroic(); rack(); showroom(); lampSwitch();
 }

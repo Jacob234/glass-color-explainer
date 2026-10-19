@@ -212,3 +212,14 @@ body:has(.lampbar) .site-footer { padding-bottom: 6rem; }
   .lampbar { left: 12px; right: 12px; transform: none; max-width: none; padding-left: 0.7rem; }
   .lampbar canvas { display: none; }
 }
+
+/* ---- the black light: the page as a dark room, uranium glass as the only light ---- */
+:root[data-dark] { --ink: #ece8f4; --ink-2: #a8a2b8; --ink-3: #6f6982; color-scheme: dark; }
+.piece.lit { mix-blend-mode: screen; filter: drop-shadow(0 0 14px var(--glow)) drop-shadow(0 0 40px var(--glow)); }
+.shade { position: absolute; inset: 0; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity .5s;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0 70px, rgba(4, 3, 8, .96) 150px); }
+.table.dark .shade { opacity: 1; }
+.table { isolation: isolate; } /* keeps the torch shade below the lamp bar */
+.table.dark { cursor: crosshair; }
+.upane { aspect-ratio: 16 / 9; transition: box-shadow .4s; }
+.upane.lit { box-shadow: 0 0 30px 4px var(--glow), 0 0 90px 10px var(--glow); }
