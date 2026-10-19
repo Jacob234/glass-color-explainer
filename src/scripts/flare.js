@@ -22,7 +22,10 @@ export const FE_BAND = [9100, 6500, 1.6];
 
 export const bandDensity = (bands) => wavelengthBands(bands, FINE);
 
-const FRESNEL = 0.92; // two glass–air surfaces at normal incidence, ~4% each
+// Two glass–air surfaces at normal incidence, ~4% each for n ≈ 1.5: R = ((n − 1)/(n + 1))², and the
+// reflection factor (1 − R)² ≈ 0.92 that turns internal into external transmittance (SCHOTT TIE-35,
+// Transmittance of optical glass). Multiple reflections between the faces are ignored.
+const FRESNEL = 0.92;
 const ND = bandDensity(ND_BANDS), PR = bandDensity(PR_BANDS), FE = energyBands([FE_BAND], FINE);
 
 // Lens transmission on FINE. Densities add (Beer–Lambert) across the absorbers in a stack.
@@ -33,7 +36,8 @@ export const LENSES = {
 };
 export const DENSITY = { nd: ND, pr: PR, fe: FE };
 
-// The sodium D doublet (D2 588.995 nm, D1 589.592 nm, intensity about 2 : 1 in a flame), spread onto
+// The sodium D doublet (D2 588.995 nm, D1 589.592 nm in air: NIST Atomic Spectra Database v5.12,
+// doi:10.18434/T4W30F; intensity about 2 : 1 in a flame), spread onto
 // the 1 nm grid so each line's energy is split between its two neighbouring samples.
 export const SODIUM_D = [[588.995, 2 / 3], [589.592, 1 / 3]];
 export function lineSpectrum(lines = SODIUM_D) {

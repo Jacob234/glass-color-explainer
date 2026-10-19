@@ -23,6 +23,6 @@
   "maxwell": {
     "Ginf": 3e10,
     "note": "Infinite-frequency shear modulus, about 30 GPa, used by Zanotto (1998) to turn viscosity into a relaxation time τ = η / G∞.",
-    "source": { "label": "Zanotto, Do cathedral glasses flow?, Am. J. Phys. 66 (1998) 392", "url": "https://osiris.df.unipi.it/~leporini/DFWebSite/ReviewsTg/CathedralGlasses.pdf" }
+    "source": { "label": "Zanotto, Do cathedral glasses flow?, Am. J. Phys. 66 (1998) 392", "url": "https://doi.org/10.1119/1.19026" }
   }
 }

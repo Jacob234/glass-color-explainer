@@ -4,13 +4,16 @@
 //
 // Glass under stress is birefringent: light polarized along the two principal stresses travels at
 // slightly different speeds, and after crossing a path d the two fall out of step by a retardation
-// Γ = C · (σ₁ − σ₂) · d (Brewster's law, with C the stress-optic coefficient). Between polarizers that
+// Γ = C · (σ₁ − σ₂) · d (the stress-optic law, after Brewster; C is the stress-optic coefficient,
+// measured for glass by ASTM C770, Standard Test Method for Measurement of Glass Stress—Optical
+// Coefficient, and applied in ASTM F218 and C148). Between polarizers that
 // retardation becomes colour, because each wavelength is a different fraction of a cycle out of step.
 import { GRID } from './spectra.js';
 import { chord } from './vessel.js';
 
 // Soda-lime-silica glass. Elastic, thermal and optical figures are for float glass from Pilkington,
-// "Properties of Soda-Lime Silica Float Glass", technical bulletin ATS-129 (2013). C is its
+// "Properties of Soda-Lime Silica Float Glass", technical bulletin ATS-129 (edition of 2013-01-14; the
+// 09/2026 edition gives ν = 0.22, which would lower every stress here by about 1%). C is its
 // stress-optical rule, σ(psi) = 2.18 Γ(nm) / d(in), converted: 1 / (2.18 × 0.006895 MPa × 25.4 mm)
 // = 2.62 nm per mm per MPa (2.62 brewsters). The reference points are the measured averages for NBS
 // standard soda-lime glass No. 710 (Napolitano and Hawkins, J. Res. NBS 68A, 439, 1964, Table 10),
@@ -65,7 +68,7 @@ export const edgeRetardation = (x, z, R, d, dT) => GLASS.C * chord(R, x) * faceS
 // analyzer at 90°. Each element is a linear retarder: an axis angle and a retardation in nm.
 // Retardations are taken as the same at every wavelength (no dispersion of C or of the plates).
 const QUARTER = 'quarter'; // an ideal quarter-wave plate: a quarter cycle at every wavelength
-const TINT = 550; // a first-order ("sensitive tint", full-wave) plate
+const TINT = 550; // a first-order ("sensitive tint", full-wave) plate; ASTM C148 specifies a nominal 565 nm
 
 // Field reaching the analyzer, as [re, im] pairs for x and y, for retarder elements in order.
 function through(elements, lambda) {
