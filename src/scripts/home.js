@@ -10,6 +10,7 @@ import * as na from './flare.js';
 import { LAMPS, LAMP, underLamp, lampColor, fineSpd } from './lamps.js';
 import { makeFitter, MATCH, C_MAX } from './fit.js';
 import * as u from './uranium.js';
+import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
@@ -1275,5 +1276,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
 }
