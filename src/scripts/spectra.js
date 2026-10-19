@@ -58,6 +58,16 @@ export function radianceColor(L, spd, adapt = 1, scale = 1) {
   return { lin, rgb, css: css(rgb) };
 }
 
+// The same adaptation as radianceColor, as one matrix from XYZ (normalised so the lamp's white has
+// Y = 1) to linear sRGB, for images that integrate many spectra per pixel (raytrace.js).
+export function displayMatrix(spd, adapt = 1) {
+  const white = integrate(spd), src = mul(BRADFORD, white.map((v) => v / white[1])), dst = mul(BRADFORD, D65);
+  const gain = dst.map((d, i) => (d / src[i]) ** adapt);
+  const cols = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].map((e) => mul(XYZ_TO_SRGB, mul(BRADFORD_INV, mul(BRADFORD, e).map((v, i) => v * gain[i]))));
+  return [0, 1, 2].map((r) => cols.map((c) => c[r]));
+}
+export const CMF_GRID = CMF;
+
 // Optical density on the grid for a colorant's coarse absorptance curve.
 export const densityOnGrid = (wavelengths, absorbance) => toGrid(wavelengths, absorbance.map(toDensity));
 
