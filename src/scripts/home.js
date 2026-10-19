@@ -3,7 +3,7 @@
 import optics from '../data/optics.json';
 import history from '../data/history.json';
 import {
-  GRID, colorantDensity, transmission, glow, glowStrength,
+  GRID, colorantDensity, transmission, glow, glowStrength, emissivity, luminousEmissivity, planck,
   SPECTRAL, bandEdge, dichroicBand, encode, css, upsample,
 } from './spectra.js';
 import * as na from './flare.js';
@@ -81,7 +81,7 @@ function h(tag, props = {}, ...children) {
   return el;
 }
 
-function chips(box, ids, label, onPick) {
+function chips(box, ids, label, onPick, parts = (id) => [[id, 1]]) {
   const swatches = ids.map((id) => {
     const i = h('i'), b = h('button', { className: 'chip' }, i, label(id));
     b.dataset.id = id;
@@ -89,7 +89,7 @@ function chips(box, ids, label, onPick) {
     box.appendChild(b);
     return [i, id];
   });
-  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf([[id, 1]], 1.2).css); };
+  const paint = () => { for (const [i, id] of swatches) i.style.setProperty('--c', colorOf(parts(id), 1.2).css); };
   paint(); onLamp(paint);
   return (cur) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur)); };
 }
@@ -384,44 +384,77 @@ function vessel() {
   };
 }
 
-/* ---------- 04 the glory hole: incandescence hides colour ---------- */
+/* ---------- 04 the glory hole: hot glass glows where it absorbs ---------- */
 const HOT = 1150; // °C, soda-lime furnace
 const toLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const lum = (lin) => 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
-// The sodium flare's brightness relative to the gather's own glow (illustrative): strong in the
-// glory hole's flame, gone once the gather is out of it and below working heat.
+// The sodium flare's brightness relative to a black body's glow (illustrative): strong in the
+// glory hole's flame, gone once the gather is out of it and below working heat. The flame does not
+// care what the gather is, so against a gather that glows less than a black body the flare wins by more.
 const flareRatio = (t) => { const x = Math.min(1, Math.max(0, (t - 820) / 180)); return 6 * x * x * (3 - 2 * x); };
 
+// The gathers. Each is seen through the same path (in optics.json's units), so the colour it shows
+// cold and the light it gives out hot come from one transmission spectrum. Clear is a trace of iron.
+const GATHERS = {
+  clear: { label: 'Clear (trace iron)', parts: [['iron-ferrous', 0.03], ['iron-ferric', 0.03]] },
+  ...Object.fromEntries(['cobalt', 'copper', 'chromium', 'manganese'].map((id) => [id, { label: COLORANT[id].label, parts: [[id, 1]] }])),
+};
+const GATHER_PATH = 1.4;
+const gatherT = (id) => mixT(GATHERS[id].parts, GATHER_PATH);
+const gatherEps = Object.fromEntries(Object.keys(GATHERS).map((id) => [id, emissivity(gatherT(id))]));
+const SOOT = [0.06, 0.045, 0.035];
+const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+// What a glowing gather looks like at t °C: its glow colour, its strength, and the hottest glass pushed
+// toward yellow-orange the way an overexposed glow reads. Strength is the log visibility scale (zero
+// once the glow is too faint to see) times the cube root of its luminous emissivity, Stevens's
+// brightness exponent, so a glass that emits a thirtieth of a black body's light looks about a third as bright.
+function hotLook(id, t) {
+  const tK = t + 273.15, g = glow(tK, 1423, gatherEps[id]);
+  const a = glowStrength(g.luminance) * luminousEmissivity(gatherEps[id], tK) ** (1 / 3);
+  return { g, a, hot: lerp(g.rgb, [1, 0.82, 0.45], a ** 3 * 0.45) };
+}
+// The lowest temperature (°C) at which a gather's glow is still visible on the page's strength scale.
+// For a black body that is the Draper point; a glass that emits less fades out hotter.
+function fadeOut(eps) {
+  let lo = 300, hi = 1150;
+  for (let n = 0; n < 30; n++) { const mid = (lo + hi) / 2; glowStrength(glow(mid + 273.15, 1423, eps).luminance) > 0 ? (hi = mid) : (lo = mid); }
+  return hi;
+}
+
 function heat() {
-  const s = $('temp'), ids = ['cobalt', 'copper', 'chromium', 'manganese'];
-  let cur = 'cobalt', body = colorOf([[cur, 1]], 1.4).rgb, raf = 0;
-  const press = chips($('heatRods'), ids, (id) => id, (id) => { cur = id; body = colorOf([[id, 1]], 1.4).rgb; render(s.valueAsNumber); });
-  const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  const s = $('temp'), ids = Object.keys(GATHERS);
+  let cur = 'cobalt', body = colorOf(GATHERS[cur].parts, GATHER_PATH).rgb, raf = 0;
+  const press = chips($('heatRods'), ids, (id) => (id === 'clear' ? 'clear' : id), (id) => { cur = id; body = colorOf(GATHERS[id].parts, GATHER_PATH).rgb; render(s.valueAsNumber); }, (id) => GATHERS[id].parts);
   const el = (id) => document.getElementById(id);
   const lens = glasses();
+  const compare = kirchhoff();
   function render(t) {
-    const g = glow(t + 273.15), a = glowStrength(g.luminance);
-    const hot = lerp(g.rgb, [1, 0.82, 0.45], a ** 3 * 0.45); // the hottest glass reads yellow-orange
-    const col = css(lerp(body, hot, a)), flare = flareRatio(t);
+    const { g, a, hot } = hotLook(cur, t), epsY = luminousEmissivity(gatherEps[cur], t + 273.15);
+    const col = css(lerp(body, hot, a)), flare = flareRatio(t) / Math.max(0.01, epsY);
     el('g-body').setAttribute('fill', col);
     el('g-cast').setAttribute('fill', col); el('g-cast').setAttribute('opacity', 0.2 + a * 0.5);
     el('g-halo').setAttribute('fill', css(g.rgb)); el('g-halo').setAttribute('opacity', a * 0.85);
     el('g-rim').setAttribute('opacity', 1 - a * 0.9); // hot glass glows from within; the dark rim appears as it cools
     for (const id of ['g-flare', 'g-flare2']) el(id).setAttribute('opacity', flare / (1 + flare));
     el('g-rig').setAttribute('transform', `translate(${-(1 - t / HOT) * 330} 0)`);
-    lens.render({ t, a, body, hot, glowRgb: g.rgb, flare });
+    lens.render({ t, a, body, hot, glowRgb: g.rgb, flare, gather: cur, eps: gatherEps[cur] });
+    compare(t);
     $('tempOut').textContent = String(Math.round(t));
     s.setAttribute('aria-valuetext', `${Math.round(t)} degrees Celsius`);
-    $('heatRead').textContent = t > 1000 ? 'In the glory hole. The gather is brighter than any color it carries, and the sodium flare is brighter still.'
-      : t > 800 ? 'Working heat. Still orange: you are reading temperature, not color.'
-      : t > 525 ? 'Cooling through cherry red. The glow is dimming and the colorant starts to show.'
-      : t > 200 ? 'Past the Draper point. The glow is too faint to see; this is the colorant.'
-      : `Cooled: ${COLORANT[cur].label}. This is the color it carried all along.`;
+    const pct = Math.round(epsY * 100);
+    $('heatRead').textContent = a === 0
+      ? (t > 200 ? 'The glow is too faint to see; this is the colorant.' : `Cooled: ${GATHERS[cur].label}. This is the color it carried all along.`)
+      : cur === 'clear'
+        ? `Clear glass absorbs almost no visible light, so it gives almost none back: about ${pct}% of a black body's glow at this heat.${t > 1000 ? ' The sodium flare outshines it many times over.' : ''}`
+        : t > 1000 ? `In the glory hole. The gather glows in its own absorption bands, about ${pct}% as bright as a black body, and the sodium flare is brighter still.`
+        : t > 800 ? `Working heat. The glow comes from the bands that make the color, so you are reading temperature, not color (${pct}% of a black body).`
+        : 'Cooling through cherry red. The glow is dimming and the colorant starts to show.';
     press(cur);
   }
   lens.onChange = () => render(s.valueAsNumber);
-  onLamp(() => { body = colorOf([[cur, 1]], 1.4).rgb; lens.relight(); render(s.valueAsNumber); });
+  onLamp(() => { body = colorOf(GATHERS[cur].parts, GATHER_PATH).rgb; lens.relight(); compare.relight(); render(s.valueAsNumber); });
   s.addEventListener('input', () => { cancelAnimationFrame(raf); render(s.valueAsNumber); });
+  addEventListener('resize', () => compare.resize(s.valueAsNumber));
   render(HOT);
   // Play the cool-down once, when the scene first comes into view.
   if (!reduceMotion() && 'IntersectionObserver' in window) {
@@ -439,6 +472,39 @@ function heat() {
     }, { threshold: 0.5 });
     io.observe($('scene'));
   }
+}
+
+/* ---------- 04 the glory hole: Kirchhoff, three gathers side by side ---------- */
+// Each card: the gather cold on the light table, the same gather at the stage's temperature in the
+// dark, and its spectrum: a black body at that temperature (top), what this glass emits (bottom), and
+// its emissivity ε = 1 − T (line). The cold colour and the hot glow are one spectrum read both ways.
+function kirchhoff() {
+  const grid = $('kGrid'), CARDS = ['clear', 'cobalt', 'copper'];
+  const cards = CARDS.map((id) => {
+    const cold = h('div', { className: 'k-cold' }, h('b', {}, 'cold')), hot = h('div', { className: 'k-hot' }, h('b', {}, 'at heat'));
+    const canvas = h('canvas', { className: 'strip', 'aria-hidden': 'true' }), read = h('p', { className: 'readout' });
+    grid.appendChild(h('figure', { className: 'k-card' }, h('h4', { className: 'mono' }, GATHERS[id].label), h('div', { className: 'k-pair' }, cold, hot), canvas, read));
+    return { id, cold, hot, canvas, read, fade: Math.round(fadeOut(gatherEps[id]) / 5) * 5 };
+  });
+  const relight = () => { for (const c of cards) c.cold.style.setProperty('--c', colorOf(GATHERS[c.id].parts, GATHER_PATH).css); };
+  let last = null;
+  function render(t, force = false) {
+    const key = Math.round(t / 5);
+    if (key === last && !force) return;
+    last = key;
+    const tK = t + 273.15, B = planck(tK), peak = Math.max(...B), top = B.map((v) => v / peak);
+    for (const c of cards) {
+      const eps = gatherEps[c.id], { a, hot } = hotLook(c.id, t), epsY = luminousEmissivity(eps, tK);
+      c.hot.style.setProperty('--c', css(lerp(SOOT, hot, a)));
+      strip(c.canvas, eps, top, top.map((v, i) => v * eps[i]), eps);
+      const pct = epsY < 0.1 ? (epsY * 100).toFixed(1) : Math.round(epsY * 100);
+      c.read.textContent = a > 0
+        ? `At ${Math.round(t)} °C it glows ${pct}% as bright as a black body. Its glow fades from sight near ${c.fade} °C.`
+        : `Too cool to glow visibly; its glow fades from sight near ${c.fade} °C.`;
+    }
+  }
+  relight();
+  return Object.assign(render, { relight: () => { relight(); last = null; }, resize: (t) => render(t, true) });
 }
 
 /* ---------- 04 the glory hole: the glasses ---------- */
@@ -491,10 +557,12 @@ function glasses() {
     for (const b of box.querySelectorAll('button')) b.firstChild.style.setProperty('--c', lensData[b.dataset.id].roomCss);
   }
   const fireCache = new Map();
-  function fire(lensId, tK) { // glow multiplier and luminous transmission for a black body at tK
-    const key = `${lensId}:${Math.round(tK / 10)}`;
+  // ε on the 1 nm grid (visible only; xyz ignores the rest). Without ε, a black body (the glory hole's walls).
+  const fineEps = (eps) => na.FINE.map((w) => { if (w >= 780) return eps[80]; const i = Math.floor((w - 380) / 5), f = (w - 380) / 5 - i; return eps[i] + (eps[i + 1] - eps[i]) * f; });
+  function fire(lensId, tK, gather = null, eps = null) { // glow multiplier and luminous transmission for the gather's glow at tK
+    const key = `${lensId}:${gather}:${Math.round(tK / 10)}`;
     if (!fireCache.has(key)) {
-      const bb = na.planck(tK), k = 1 / na.xyz(bb)[1], bare = linOf(na.xyz(bb).map((v) => v * k)), thru = linOf(na.xyz(bb, lensData[lensId].T).map((v) => v * k));
+      const e = eps && fineEps(eps), bb = na.planck(tK).map((v, i) => (e ? v * e[i] : v)), k = 1 / na.xyz(bb)[1], bare = linOf(na.xyz(bb).map((v) => v * k)), thru = linOf(na.xyz(bb, lensData[lensId].T).map((v) => v * k));
       const lumT = na.luminousT(lensData[lensId].T, bb); // the eye adapts to the overall dimming, not to the hue shift
       fireCache.set(key, { mul: thru.map((v, i) => Math.min(3, v / bare[i] / lumT)), lumT });
     }
@@ -575,8 +643,8 @@ function glasses() {
     ctx.beginPath(); ctx.moveTo(x(vis), 0); ctx.lineTo(x(vis), hh); ctx.stroke(); ctx.setLineDash([]);
   }
 
-  function render({ t, a, body, hot, glowRgb, flare }) {
-    const d = lensData[cur], tK = t + 273.15, f = fire(cur, tK), fHot = fire(cur, HOT + 273.15);
+  function render({ t, a, body, hot, glowRgb, flare, gather, eps }) {
+    const d = lensData[cur], tK = t + 273.15, f = fire(cur, tK, gather, eps), fHot = fire(cur, HOT + 273.15);
     lensG.style.display = cur === 'none' ? 'none' : '';
     $('lens-name').textContent = d.label;
     $('lens-room-m').setAttribute('values', matrix(d.room));
@@ -593,7 +661,7 @@ function glasses() {
       for (const id of ['g-flare', 'g-flare2']) L(id).setAttribute('opacity', r / (1 + r));
       L('g-rig').setAttribute('transform', $('g-rig').getAttribute('transform'));
     }
-    const key = `${cur}:${Math.round(t / 10)}`;
+    const key = `${cur}:${gather}:${Math.round(t / 10)}`;
     if (key !== last) {
       last = key;
       for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.id === cur));

@@ -158,9 +158,10 @@ const pins = history.pins.map((p) => {
   <section class="wrap stage" id="heat">
     <div class="stage-rail"><div class="stage-num">04</div><span class="mono">the glory hole</span></div>
     <div class="stage-body">
-      <h2>At heat, every glass <i>glows</i> the same</h2>
+      <h2>At heat, glass gives back what it <i>takes</i></h2>
       <div class="prose">
-        <p>Pull a gather from the furnace and you cannot tell cobalt from copper. At 1100 °C the glass is a black-body emitter, and its own orange light swamps whatever it absorbs. Below about 525 °C, the Draper point, the glow is too faint to see and the colorant finally shows. Glassblowers learn to work colors they cannot see.</p>
+        <p>Pull a gather from the furnace and the color is gone: cobalt and copper both come out glowing orange. The reason is a law Gustav Kirchhoff published in 1860. At a given temperature, a body gives out at each wavelength exactly the share of a black body's light that it would absorb there. Cold, cobalt glass is blue because it takes away orange and red. Hot, it gives orange and red back. The blue it lets through it hardly emits, and at 1150 °C a black body has almost no blue to give anyway. Every colorant glows in its own absorption bands, so what you see at heat is the furnace's temperature written in the glass's absorption, not the color it will be.</p>
+        <p>Below about 525 °C, the Draper point, even a black body's glow is too faint to see, and the colorant finally shows. Glassblowers learn to work colors they cannot see.</p>
       </div>
       <svg class="scene" id="scene" viewBox="0 0 900 300" aria-hidden="true">
         <defs>
@@ -217,7 +218,21 @@ const pins = history.pins.map((p) => {
           <p class="readout" id="heatRead"></p>
         </div>
       </div>
-      <p class="aside"><b>Computed, not painted.</b> The glow colour is Planck's law integrated against the colour-matching functions, and its strength is the black body's luminance on a log scale, so it fades the way the eye sees it fade.</p>
+      <p class="aside"><b>Computed, not painted.</b> The glow is Planck's law times the gather's emissivity, integrated against the colour-matching functions. Its strength is that luminance on a log scale, so it fades the way the eye sees it fade, times the cube root of how much of a black body's light the glass gives (Stevens's exponent for brightness), so a dimmer emitter looks dimmer at the same heat.</p>
+
+      <div class="kirchhoff" id="kirchhoff">
+        <h3>The page's rule, <i>run backwards</i></h3>
+        <div class="prose">
+          <p>Everywhere else on this page, glass is colored by what it takes away. In the glory hole the same spectrum runs the other way. Below, three gathers share one temperature. Each card shows the gather cold on the light table, then hot in the dark, then its spectrum: a black body at that temperature on top, what this glass gives out underneath, and the line is its emissivity, one minus its transmission.</p>
+          <p>The surprise is clear glass. It absorbs almost nothing you can see, so it gives almost nothing back. Beside cobalt, which absorbs nearly all of the orange and red a black body sends, a clear gather is a dim ghost, and its glow fades from sight well above the Draper point. Its heat leaves instead as infrared beyond the visible, where every glass absorbs.</p>
+        </div>
+        <div class="k-grid" id="kGrid"></div>
+        <div class="strip-key"><span>top: black body · bottom: this glass</span><span>line: emissivity, 1 − T</span></div>
+        <p class="aside"><b>And inside the glory hole?</b> Hold any gather in a chamber whose walls are at its own temperature and it vanishes. What it fails to emit, it lets through from the wall behind, and emission plus transmission add up to the wall's own black-body light. Only out in the dark shop does a gather show its own glow. This follows from the law; it is not a separate measurement.</p>
+        <p class="aside"><b>Sources.</b> G. Kirchhoff, "Ueber das Verhältniss zwischen dem Emissionsvermögen und dem Absorptionsvermögen der Körper für Wärme und Licht", <i>Annalen der Physik</i> 109 (1860) 275–301; Balfour Stewart reached a version of it independently in 1858 (D. M. Siegel, "Balfour Stewart and Gustav Robert Kirchhoff: Two Independent Approaches to 'Kirchhoff's Radiation Law'", <i>Isis</i> 67, 1976). Kirchhoff's first step, in October 1859, was the sodium line: a sodium flame in the path of sunlight darkened the solar D lines, because the flame absorbs exactly where it emits ("Über die Fraunhofer'schen Linien", <i>Monatsberichte der Berliner Akademie</i>, 1859, 662–665). That is the same doublet the glasses below are built to stop. For glass itself, R. Gardon, "The Emissivity of Transparent Materials", <i>J. Am. Ceram. Soc.</i> 39 (1956) 278–285, works out the emissivity of transparent sheets from their thickness and absorption: the familiar total emissivity of window glass, about 0.91, holds only for sheets thick enough, from 3/16 in at 200 °C to as much as 8 in at 1000 °C, and a 3/16 in sheet at 1000 °C has an emissivity of only 0.59.</p>
+        <p class="aside"><b>Model.</b> Emissivity is 1 − T(λ) for the path through the gather, the same path whose colour the cooled gather shows; reflection at the surface (about 4% on each side) is ignored, and so is the flame's light scattered in the glass. Clear glass is a trace of ferrous and ferric iron at an illustrative level, not a measured batch, and the colorant spectra are the page's illustrative ones. The "fades from sight" temperature is where the glow reaches the bottom of this page's strength scale, which puts a black body's fade at about the Draper point; it is a comparison, not a measured visibility threshold.</p>
+        <p class="aside"><b>Not modelled: absorption changes with heat.</b> The spectra here are room-temperature spectra. At working heat, ligand-field bands broaden and shift, the balance between Fe²⁺ and Fe³⁺ moves with temperature, and the ultraviolet edge creeps toward the visible, so a real hot gather, clear ones included, absorbs and therefore glows more than shown (direction from general physics; size unverified). Band-gap colors move most: a semiconductor's gap narrows as it heats (Y. P. Varshni, "Temperature dependence of the energy gap in semiconductors", <i>Physica</i> 34 (1967) 149–154), so the cadmium yellows and reds absorb further toward the red when hot than they do cold.</p>
+      </div>
 
       <div class="glasses" id="glasses">
         <h3>Put the <i>glasses</i> on</h3>
