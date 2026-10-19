@@ -122,7 +122,7 @@ export function initLightSim(root) {
   $('preset').addEventListener('change', () => { ({ beam, pieces } = PRESETS[$('preset').value]()); $('rot').value = Math.round((pieces[0].rot * 180) / Math.PI); reset(); });
   for (const n of ['glass', 'colorant', 'conc', 'lamp']) $(n).addEventListener('input', reset);
   for (const [id, g] of Object.entries(GLASSES)) $('glass').add(new Option(g.label, id));
-  $('glass').value = 'flint';
+  $('glass').value = 'nsf11';
   $('rot').value = Math.round((pieces[0].rot * 180) / Math.PI);
   addEventListener('resize', resize);
   resize();
