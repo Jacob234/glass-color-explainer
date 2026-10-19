@@ -2,6 +2,7 @@
 // colour is the slab, the same iron as the slab above with its Fe²⁺ share set by this batch.
 // Composition models live in batch.js.
 import * as b from './batch.js';
+import * as m from './measured.js';
 import { GLASSES, index, abbe, LINES } from './dispersion.js';
 
 const $ = (id) => document.getElementById(id);
@@ -122,6 +123,24 @@ export function batchStage({ colorOf, onLamp }) {
   const alive = svgEl('g');
   as.replaceChildren(A.frame, fixed, alive);
 
+  /* measured melts from SciGlass, fetched once the bench is near the screen */
+  let sg = null, sgState = 'idle';
+  const loadMeasured = () => {
+    if (sgState !== 'idle') return;
+    sgState = 'loading';
+    fetch(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/data/sciglass/bench.json`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((d) => { sg = d; sgState = 'ready'; render(); })
+      .catch(() => { sgState = 'failed'; render(); });
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); loadMeasured(); } }, { rootMargin: '600px' });
+    io.observe($('oxides'));
+  } else loadMeasured();
+  const cross = (x, y, r, cls) => svgEl('path', { d: `M${x - r} ${y - r}L${x + r} ${y + r}M${x - r} ${y + r}L${x + r} ${y - r}`, class: cls });
+  const vGlass = svgEl('g'), aGlass = svgEl('g');
+  vs.insertBefore(vGlass, live); as.insertBefore(aGlass, alive);
+
   /* the slab */
   const slabSvg = $('bSlab'), face = slabSvg.querySelector('.face'), cast = slabSvg.querySelector('.cast'), edges = slabSvg.querySelectorAll('.edge');
 
@@ -143,6 +162,14 @@ export function batchStage({ colorOf, onLamp }) {
     items.push(svgEl('line', { x1: xs, x2: xw, y1: yr, y2: yr, class: 'ln bold' }),
       svgEl('text', { x: (xs + xw) / 2, y: yr - 8, class: 'lab', 'text-anchor': 'middle' }, `working range ${Math.round(p.range)} °C`));
     live.replaceChildren(...items);
+
+    // measured melts: crosses at each nearby glass's measured points, the nearest drawn heavier
+    const nearV = sg ? m.nearest(mol, sg, { has: ['visc'] }) : [], nearA = sg ? m.nearest(mol, sg, { has: ['nd', 'vd'] }) : [];
+    vGlass.replaceChildren(...nearV.toReversed().flatMap((g) => g.visc.filter(([, T]) => T >= VX0 && T <= VX1)
+      .map(([L, T]) => cross(V.sx(T), V.sy(L), g === nearV[0] ? 5 : 3.5, g === nearV[0] ? 'x' : 'x faint'))));
+    aGlass.replaceChildren(...nearA.toReversed().filter((g) => g.vd <= AX0 && g.vd >= AX1 && g.nd >= AY0 && g.nd <= AY1)
+      .map((g) => cross(A.sx(g.vd), A.sy(g.nd), g === nearA[0] ? 5 : 3.5, g === nearA[0] ? 'x' : 'x faint')));
+    $('bMeasured').textContent = measuredText(nearV, nearA);
 
     // Abbe
     alive.replaceChildren(
@@ -176,6 +203,23 @@ export function batchStage({ colorOf, onLamp }) {
       : `Against window glass its melting point moves ${signed(p.melting - base.melting)} °C, its annealing point ${signed(p.annealing - base.annealing)} °C, its working range ${signed(p.range - base.range)} °C and its index ${signed(p.nd - base.nd, 3)}.`;
     $('bRead').textContent = `${lead} ${cmp} A sheet of it would survive a sudden temperature jump of about ${Math.round(shock)} °C.${warn}`;
   }
+  function measuredText(nearV, nearA) {
+    if (sgState === 'loading' || sgState === 'idle') return 'Fetching measured melts from SciGlass…';
+    if (sgState === 'failed') return 'The measured melts from SciGlass did not load, so the models stand alone here.';
+    if (!nearV.length) return 'SciGlass holds no measured viscosity for a melt of only these oxides within 3 mol% of this batch, so the curve has nothing beside it to check against.';
+    const g = nearV[0], gaps = m.viscGaps(g, b.viscosity(m.molOf(g, sg.oxides))).filter((x) => Number.isFinite(x.gap));
+    const abs = gaps.map((x) => Math.abs(x.gap)).sort((p, q) => p - q), worst = gaps.reduce((w, x) => (Math.abs(x.gap) > Math.abs(w.gap) ? x : w), gaps[0]);
+    const median = abs[Math.floor(abs.length / 2)];
+    let t = `The crosses are measured melts from SciGlass within 3 mol% of this batch, ${nearV.length === 6 ? 'the nearest six' : nearV.length === 1 ? 'one glass' : `${nearV.length} glasses`}. The heavy ones are ${m.cite(sg, g)}, ${g.d < 0.05 ? 'this batch itself' : `${g.d.toFixed(1)} mol% away`}. Run on that glass's own composition, the model misses its ${gaps.length === 1 ? 'one measured point' : `${gaps.length} measured points`} by ${gaps.length === 1 ? `${signed(worst.gap)} °C` : `${Math.round(median)} °C at the median and ${signed(worst.gap)} °C at worst, at 10${sup(worst.L)} Pa·s`}.`;
+    if (nearA.length) {
+      const a = nearA[0], o = b.optics(m.molOf(a, sg.oxides));
+      t += ` On the index plot the nearest measured glass is ${m.cite(sg, a)}: n = ${a.nd.toFixed(3)} measured against ${o.nd.toFixed(3)} from the model, Abbe number ${Math.round(a.vd)} against ${Math.round(o.vd)}.`;
+    }
+    return t;
+  }
+  const SUP = { '-': '⁻', '.': '·', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = (L) => String(L).split('').map((c) => SUP[c] ?? c).join('');
+
   iron.addEventListener('input', render); onLamp(render);
   render();
 }

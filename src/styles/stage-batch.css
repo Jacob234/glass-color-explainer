@@ -7,3 +7,5 @@
 .oxides .meters { gap: 0.55rem; }
 .oxides .meters dd { font-size: 1.3rem; }
 .oxides .slab-small { max-width: 16rem; margin-top: 1rem; }
+.oxides .plot .x { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+.oxides .plot .x.faint { stroke: var(--ink-3); stroke-width: 1.2; }

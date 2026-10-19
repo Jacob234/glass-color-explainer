@@ -270,12 +270,17 @@
     {
       "id": "sciglass", "kind": "database", "short": "SciGlass",
       "title": "SciGlass",
-      "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "MS Access release; browsable at sciglass.uni-jena.de",
+      "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared.",
-      "would": "Measured spectra for uranium and didymium glass, and composition–property data for a formers-and-modifiers stage.",
-      "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading.",
-      "checked": "2026-10-19", "usedBy": []
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py.",
+      "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
+      "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
+      "checked": "2026-10-19",
+      "usedBy": [
+        { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
+        { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" }
+      ],
+      "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
     },
     {
       "id": "schott-tie29", "kind": "datasheet", "short": "SCHOTT TIE-29",
