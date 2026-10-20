@@ -27,8 +27,8 @@ const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id)
     </svg>
     <div class="spx-swatch" title="transmitted color"></div>
   </div>
-  <figcaption><span class="spx-why"></span></figcaption>
-  <p class="island-footnote">Curves are illustrative approximations, not measured spectra. The swatch integrates them against the CIE 1931 observer under daylight.</p>
+  <figcaption><span class="spx-why"></span> <span class="spx-basis"></span></figcaption>
+  <p class="island-footnote">Cobalt, chromium, iron, copper and silver curves are measured; the rest are illustrative, drawn from the shape of published spectra. The swatch integrates each curve against the CIE 1931 observer under daylight.</p>
 </figure>
 <script>
   import optics from '../../data/optics.json';
@@ -50,5 +50,6 @@ const selected = optics.colorants.filter((c) => (ids.length ? ids.includes(c.id)
   .spx-swatch { width: 3.4rem; height: 3.4rem; border-radius: 10px; border: 2px solid var(--edge);
     box-shadow: inset 0 0 12px rgba(255,255,255,0.35); }
   figcaption { margin-top: 0.5rem; font-size: 0.88rem; color: var(--muted); }
+  .spx-basis { display: block; margin-top: 0.25rem; font-size: 0.75rem; color: var(--faint); }
   .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
 </style>

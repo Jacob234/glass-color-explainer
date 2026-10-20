@@ -107,7 +107,7 @@
               disabled={!inMelt && melt.length >= MAX}
               aria-pressed={inMelt}
               onclick={() => toggle(c.id)}>
-              <span class="dot" style:background={chipColor[c.id]}></span>{c.label}
+              <span class="dot" style:background={chipColor[c.id]}></span>{c.label}{#if c.basis !== 'illustrative'}<span class="measured" title={c.basis === 'measured' ? 'measured' : 'measured shape'}> ●</span>{/if}
             </button>
           {/each}
         </div>
@@ -170,7 +170,8 @@
 
   <figcaption>{caption}</figcaption>
   <p class="island-footnote">
-    Curves are illustrative approximations, not measured spectra. The swatch integrates them
+    Cobalt, chromium, iron, copper and silver curves are measured (marked ●); the rest are
+    illustrative, drawn from the shape of published spectra. The swatch integrates them
     against the CIE 1931 observer under daylight. Mixing follows Beer–Lambert: optical densities
     add, scaled by concentration and thickness. Real melts also involve redox interactions
     between colorants that this model ignores.
@@ -197,6 +198,7 @@
   .chip:hover:not(:disabled) { color: var(--text); border-color: var(--faint); }
   .chip.active { background: var(--node-hi); color: var(--text); border-color: var(--accent); }
   .chip:disabled { opacity: 0.35; cursor: not-allowed; }
+  .measured { font-size: 0.6rem; color: var(--faint); }
   .dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 1px solid var(--edge); flex: none; }
   .cap-note { font-size: 0.72rem; color: var(--faint); margin: 0.3rem 0 0; font-style: italic; }
 
