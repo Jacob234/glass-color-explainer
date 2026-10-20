@@ -14,9 +14,9 @@ test('history pins run oldest first with unique ids', () => {
   for (let i = 1; i < history.pins.length; i++) assert.ok(history.pins[i].year >= history.pins[i - 1].year, ids[i]);
 });
 
-test('every pin is coloured by a known colorant, a dichroic angle or uranium, or says it cannot be', () => {
+test('every pin is colored by a known colorant, a dichroic angle or uranium, or says it cannot be', () => {
   for (const p of history.pins) {
-    if (p.color === null) { assert.match(p.text, /cannot/, `${p.id} has no colour and should say why`); continue; }
+    if (p.color === null) { assert.match(p.text, /cannot/, `${p.id} has no color and should say why`); continue; }
     if (p.color.uranium) { assert.equal(p.stage, 'showroom', p.id); continue; }
     if ('dichroic' in p.color) { assert.ok(p.color.dichroic >= 0 && p.color.dichroic <= 70, p.id); continue; }
     for (const [id, c] of p.color.parts) { assert.ok(colorants.has(id), `${p.id}: unknown colorant ${id}`); assert.ok(c > 0); }

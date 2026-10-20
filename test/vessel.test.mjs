@@ -28,7 +28,7 @@ test('seen against the light, the outline crosses more glass than the middle', (
   assert.equal(v.bowlPath(20, y, { back: true }), v.bowlPath(20, y) / 2);
 });
 
-test('casing evens out the colour: rim and base cross about the same skin', () => {
+test('casing evens out the color: rim and base cross about the same skin', () => {
   const rim = v.bowlPath(0, v.BOWL.H - 1, { cased: true }), low = v.bowlPath(0, v.BOWL.foot + 15, { cased: true });
   assert.ok(Math.abs(rim - low) / rim < 0.5, `${rim} vs ${low}`);
   const solidRim = v.bowlPath(0, v.BOWL.H - 1), solidLow = v.bowlPath(0, v.BOWL.foot + 15);
