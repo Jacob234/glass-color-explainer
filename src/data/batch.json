@@ -90,5 +90,17 @@
     "d": { "SiO2": -2.15036, "Al2O3": -8.35163, "MgO": -5.43639, "CaO": 0.073113, "Na2O": 3.54148, "K2O": 4.18688 },
     "asSilica": ["B2O3", "PbO"],
     "floatFerrous": 0.6
+  },
+  "durability": {
+    "note": "Weight a glass loses as grains boiled for an hour in water (the Sheffield test of 1919–1929), as floor + 100 / (1 + exp(−(F − F0)/w)) per cent, where F = Na2O + K2O − Σ c·C + B2O3²·b2 in mol% is the soda the other oxides have not taken up. Each c is how many mol% of soda one mol% of that oxide cancels. Fitted here by tools/sciglass/fit_durability.py to 53 glasses Turner's laboratory measured, read from SciGlass; potash never appears in them and is counted as soda, an assumption. Each oxide's c rests on one series of glasses in which it replaced soda at about 75 mol% silica.",
+    "source": "sciglass",
+    "F0": 25.935,
+    "w": 2.219,
+    "floor": 0.206,
+    "cancels": {"CaO": 1.093, "MgO": 1.525, "Al2O3": 2.316, "PbO": 0.985, "B2O3": 0.836},
+    "B2O3^2": 0.03525,
+    "grain": {"590-840": -0.365, "421-635": -0.542},
+    "fit": {"glasses": 53, "medianLog": 0.099, "heldOutLog": 0.138},
+    "range": {"R2O": [12, 33], "CaO": 12.5, "MgO": 5.2, "Al2O3": 8, "PbO": 9.5, "B2O3": 41}
   }
 }
