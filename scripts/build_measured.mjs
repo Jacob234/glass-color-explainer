@@ -20,7 +20,7 @@ const measured = JSON.parse(readFileSync(path('src/data/measured.json'), 'utf8')
 const check = process.argv.includes('--check');
 
 const s = await import('../src/scripts/spectra.js');
-const m = await import('../src/scripts/measured.js');
+const m = await import('../src/scripts/measured-spectra.js');
 const DAY = s.toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
 const f = await import('../src/scripts/fit.js');
 const lin = (dens) => s.spectrumColor(s.transmission([[dens, 1]]), DAY).lin;

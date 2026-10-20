@@ -1,61 +1,51 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import optics from '../src/data/optics.json' with { type: 'json' };
-import measured from '../src/data/measured.json' with { type: 'json' };
-import library from '../src/data/library.json' with { type: 'json' };
+import { readFileSync } from 'node:fs';
 import * as m from '../src/scripts/measured.js';
-import * as s from '../src/scripts/spectra.js';
-import { linToLab } from '../src/scripts/fit.js';
+import * as b from '../src/scripts/batch.js';
 
-const near = (a, b, tol, what = '') => assert.ok(Math.abs(a - b) <= tol, `${what} ${a} vs ${b}`);
-const DAY = s.toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id === 'daylight').spd);
-const colorant = (id) => optics.colorants.find((c) => c.id === id);
+const sg = JSON.parse(readFileSync(new URL('../public/data/sciglass/bench.json', import.meta.url), 'utf8'));
 
-test("Volotinen's band widths are σ: her Fe³⁺ bands sum to her stated 1.19 (cm·mol%)⁻¹ at 380 nm", () => {
-  near(m.sigmaBands(measured.colorants['iron-ferric'].bands, 380), 1.19, 0.01);
-});
-
-test('every colorant says where its curve comes from, and measured ones cite a library source', () => {
-  const ids = new Set(library.sources.map((x) => x.id));
-  for (const c of optics.colorants) {
-    assert.ok(['measured', 'measured-shape', 'illustrative'].includes(c.basis), c.id);
-    if (c.basis !== 'illustrative') assert.ok(ids.has(c.source), `${c.id}: ${c.source}`);
-    assert.equal(c.basis !== 'illustrative', Boolean(measured.colorants[c.id]), c.id);
+test('the extract carries its licence and only the bench oxides', () => {
+  assert.equal(sg.licence.name, 'ODbL 1.0');
+  assert.match(sg.licence.notice, /SciGlass/);
+  assert.deepEqual(sg.oxides, b.IDS);
+  for (const g of sg.glasses.slice(0, 500)) {
+    const s = g.mol.reduce((a, x) => a + x, 0);
+    assert.ok(Math.abs(s - 100) < 0.1, `${g.id} sums to ${s}`);
+    assert.ok(sg.sources[String(g.src)], `${g.id} has a source`);
   }
 });
 
-test('the coarse curves in optics.json are the measured curves, resampled', () => {
-  for (const id of Object.keys(measured.colorants)) {
-    const model = m.MEASURED_MODELS[id](optics.wavelengths).map((d) => 1 - 10 ** -d);
-    colorant(id).absorbance.forEach((a, i) => near(a, model[i], 0.001, `${id} ${optics.wavelengths[i]} nm`));
+test('nearest finds a glass at its own composition first', () => {
+  const g = sg.glasses.find((x) => x.visc);
+  const near = m.nearest(m.molOf(g, sg.oxides), sg, { has: ['visc'] });
+  assert.ok(near.length >= 1 && near[0].d < 0.05);
+  for (let i = 1; i < near.length; i++) assert.ok(Math.round(near[i].d * 20) >= Math.round(near[i - 1].d * 20));
+  assert.ok(near.every((x) => x.d <= 3 && x.visc));
+});
+
+test('NBS 710 sits on its own measured curve: Napolitano and Hawkins 1964 within 10 °C from melt to 10¹¹ Pa·s', () => {
+  const near = m.nearest(b.PRESET.nbs710.mol, sg, { has: ['visc'], within: 0.05, k: 20 });
+  const nh = near.find((g) => /^Napolitano and Hawkins 1964/.test(m.cite(sg, g)));
+  assert.ok(nh, 'the NBS paper is in the extract');
+  const gaps = m.viscGaps(nh, b.viscosity(m.molOf(nh, sg.oxides))).filter((x) => x.L <= 11);
+  assert.ok(gaps.length >= 8);
+  for (const x of gaps) assert.ok(Math.abs(x.gap) < 10, `10^${x.L} Pa·s: ${x.gap.toFixed(1)} °C`);
+});
+
+test('the model stays near the measured soda-lime melts', () => {
+  const gaps = [];
+  for (const g of sg.glasses) {
+    const c = m.molOf(g, sg.oxides);
+    if (!g.visc || c.PbO > 1 || c.B2O3 > 1 || c.Al2O3 > 3 || c.CaO + c.MgO < 3 || c.Na2O + c.K2O < 5) continue;
+    for (const x of m.viscGaps(g, b.viscosity(c))) if (Number.isFinite(x.gap)) gaps.push(Math.abs(x.gap));
   }
+  gaps.sort((p, q) => p - q);
+  assert.ok(gaps.length > 5000);
+  assert.ok(gaps[Math.floor(gaps.length / 2)] < 15, `median ${gaps[Math.floor(gaps.length / 2)]}`);
 });
 
-test('the 5 nm engine uses the measured curves', () => {
-  for (const id of Object.keys(measured.colorants)) {
-    const d = s.colorantDensity(colorant(id), optics.wavelengths), want = m.MEASURED_MODELS[id](s.GRID);
-    d.forEach((v, i) => near(v, want[i], 1e-12, id));
-  }
-});
-
-test("the iron taken out of the cobalt glass leaves cobalt's own bands, clear where cobalt is clear", () => {
-  const { coefficients } = m.background('cobalt'), clean = m.cleaned('cobalt');
-  assert.ok(coefficients.every((k) => k >= 0) && coefficients.some((k) => k > 0), `${coefficients}`);
-  m.MEASURED_WAVELENGTHS.forEach((w, i) => { if (w <= 450 || w >= 720) assert.ok(clean[i] < 0.04, `${w} nm: ${clean[i]}`); });
-  const peak = m.MEASURED_WAVELENGTHS[clean.indexOf(Math.max(...clean))];
-  assert.ok(peak >= 590 && peak <= 650, `peak at ${peak} nm`);
-});
-
-test('measured ferric iron is a faint yellow-green, measured copper a pale blue', () => {
-  const lab = (id) => linToLab(s.spectrumColor(s.transmission([[s.colorantDensity(colorant(id), optics.wavelengths), 1]]), DAY).lin);
-  const [, a, b] = lab('iron-ferric');
-  assert.ok(b > 0 && a < 0, `Fe³⁺ a* ${a}, b* ${b}`);
-  const [, a2, b2] = lab('copper');
-  assert.ok(b2 < 0 && a2 < 0, `Cu²⁺ a* ${a2}, b* ${b2}`);
-});
-
-test('each basis line names its source and, for absolute curves, the amount at ×1', () => {
-  assert.match(m.basisLine('copper'), /Volotinen 2007.*0\.11 mol% Cu²⁺ through 10 mm/);
-  assert.match(m.basisLine('cobalt'), /Meulebroeck et al\. 2016/);
-  assert.match(m.basisLine('manganese'), /^Illustrative/);
+test('a lead crystal batch has no bench-only melt within 3 mol%', () => {
+  assert.equal(m.nearest(b.PRESET.lead.mol, sg, { has: ['visc'] }).length, 0);
 });

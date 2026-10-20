@@ -14,7 +14,7 @@ import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
-import { basisLine } from './measured.js';
+import { basisLine } from './measured-spectra.js';
 import { batchStage } from './stage-batch.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));

@@ -1,7 +1,7 @@
 // SpectrumExplorer: colorant buttons -> absorption curve over a spectrum gradient
 // -> transmitted-color swatch. Color science lives in ../optics-core.js.
 import { transmittedColor } from '../optics-core.js';
-import { basisLine } from '../measured.js';
+import { basisLine } from '../measured-spectra.js';
 export { transmittedColor };
 
 export function initSpectrumExplorer(root, optics) {
