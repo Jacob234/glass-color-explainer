@@ -31,10 +31,8 @@ export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 1
 // red: the red leak is real, but it sits where the eye is nearly blind, so the glass reads blue.
 
 // Decadic density on a wavelength grid, for each colorant that has a band model or a measured curve,
-// at the page's reference amount (c = 1). For neodymium that is an art glass with three times the
-// working lens's density (illustrative): narrow bands take little light, so a lens-strength piece is
-// barely lilac. The measured curves (cobalt, chromium, iron, copper, silver) come from measured-spectra.js.
-export const BAND_MODELS = {
-  neodymium: (grid) => wavelengthBands(ND_BANDS, grid).map((d) => 3 * d),
-  ...MEASURED_MODELS,
-};
+// at the page's reference amount (c = 1). Every entry now comes from a measured curve
+// (measured-spectra.js): cobalt, chromium, iron, copper, silver and neodymium. Neodymium art glass
+// uses its measured soda-lime curve; the didymium lenses above keep their own band model, since
+// a lens is Nd and Pr together and is drawn on flare.js's 1 nm grid.
+export const BAND_MODELS = { ...MEASURED_MODELS };

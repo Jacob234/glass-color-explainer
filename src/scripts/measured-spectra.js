@@ -84,11 +84,16 @@ export const measuredEntry = (id) => data.colorants[id];
 export const MEASURED = data;
 
 // One line for the page on where a colorant's curve comes from.
-const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016' };
+const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016', 'chimalawong-2010': 'Chimalawong et al. 2010' };
+const TRACED = {
+  'meulebroeck-2016': 'traced from a stained-glass spectrum',
+  'chimalawong-2010': 'traced from soda-lime glasses melted with 1–3 mol% Nd₂O₃',
+};
 const ION = { 'iron-ferrous': 'Fe²⁺', 'iron-ferric': 'Fe³⁺', copper: 'Cu²⁺' };
 export function basisLine(id) {
   const e = data.colorants[id];
   if (!e) return 'Illustrative curve, drawn from the shape of published spectra.';
   if (e.kind === 'bands') return `Measured: bands fitted to soda-lime glass of known composition (${CITE[e.source]}). ×1 is ${e.amount} mol% ${ION[id]} through 10 mm.`;
-  return `Measured shape, traced from a stained-glass spectrum (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
+  if (e.source === 'chimalawong-2010') return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). ×1 is scaled to the color the old drawn curve gave; read as plotted, that is about ${(e.scale * 0.3).toFixed(1)} mol% Nd₂O₃ through 10 mm.`;
+  return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
 }
