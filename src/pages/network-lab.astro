@@ -81,7 +81,7 @@ const binary = binaryQn(data.glasses.soda.x);
         rate. A liquid's structure is more disordered the hotter it is, and a glass keeps the structure
         of the liquid at the temperature where it stopped rearranging. A simulation cools so fast that
         it stops rearranging hundreds of degrees hotter than a real glass, and keeps that hotter
-        liquid's disorder. Tenfold slower barely moves it here: the gap to the furnace is a factor of
+        liquid's disorder. Cooling tenfold slower moves it only a little here: the gap to the furnace is a factor of
         10¹⁴, and a factor of ten is a small step along it.
       </p>
 
@@ -98,8 +98,8 @@ const binary = binaryQn(data.glasses.soda.x);
       </p>
       <NetworkCharts chart="cooling" />
       <p class="caption">
-        Density of each run as it was cooled from 4000 K at one atmosphere, averaged over every
-        picosecond. The short bars at the left are the measured room-temperature densities: the
+        Density of each run as it was cooled, averaged over every picosecond: silica from 4000 K at one
+        atmosphere, soda silica from 3000 K with the pressure let down from 1,000 atmospheres. The short bars at the left are the measured room-temperature densities: the
         medians of SciGlass entries for pure silica (2.20 g/cm³, 258 glasses) and for sodium silicates
         at 25 mol% Na₂O (2.43 g/cm³, 100 glasses).
       </p>
@@ -108,9 +108,13 @@ const binary = binaryQn(data.glasses.soda.x);
         network stops rearranging and the curve flattens: that is the glass transition at simulation
         speed, far above the real one near 1460 K (1190 °C, the median of 16 SciGlass entries). Below
         it the glass hardly contracts at all, which is real silica's famous near-zero expansion. The
-        soda silica keeps shrinking all the way down, as an ordinary glass does, and its bend, where
-        the slope eases, falls near 1500 K, again far above the measured 745 K. The ring sizes
-        respond to the rate too, and to the sodium:
+        soda silica's curves are harder to read. Its liquid boils at 4000 K and one atmosphere in this
+        model, so, as the potential's authors did, it was melted at the measured glass density and
+        cooled from 3000 K at a pressure let down from 1,000 atmospheres to one along the way. The
+        falling pressure lets the glass expand as it cools and hides the bend; the curves show only
+        that the faster quench ends less dense, {nf.density.toFixed(2)} against
+        {ns.density.toFixed(2)} g/cm³, and that the slower one lands on the measured 2.43. The ring
+        sizes respond to the rate too, and to the sodium:
       </p>
       <NetworkCharts chart="rings" />
       <p class="caption">
@@ -134,9 +138,11 @@ const binary = binaryQn(data.glasses.soda.x);
         says "make tetrahedra"; the tetrahedra form because the charges and sizes favor them.
       </p>
       <p>
-        Each run started from atoms scattered at random in a box, melted at 6000 K, settled at
-        4000 K and one atmosphere, then cooled in a straight line to 300 K and held there for 30
-        picoseconds. The two runs of each glass start from the same liquid and differ only in the
+        Each run started from atoms scattered at random in a box and melted at 6000 K. Silica was
+        settled at 4000 K and one atmosphere; the soda silica at 3000 K, first at the measured glass
+        density and then at 1,000 atmospheres, because at one atmosphere and 4000 K the model liquid
+        boils away. Each was then cooled in a straight line to 300 K, the soda silica's pressure
+        falling to one atmosphere as it went, and held there for 30 picoseconds. The two runs of each glass start from the same liquid and differ only in the
         cooling rate. The analysis on this page, which atoms are bonded, the Qⁿ counts and the rings,
         is computed from the stored positions by this site's own code, with a bond being any Si–O pair
         closer than 2.2 Å. The input files and the analysis are in the repository, so every number

@@ -28,7 +28,8 @@ const qRows = [
   { label: 'binary model', qn: binaryQn(data.glasses.soda.x) },
   { label: data.reference.nmr.label, qn: data.reference.nmr.qn },
 ];
-const QW = 640, QL = 196, QR = 12, QH = 26, QG = 12, QT = 26;
+// each row's label sits above its bar, so the bars keep the full width on a phone
+const QW = 640, QL = 24, QR = 26, QH = 26, QG = 30, QT = 50;
 const qx = (f: number) => QL + f * (QW - QL - QR);
 // each row as stacked segments, Q⁴ first; tiny slivers dropped, labels only where they fit
 const qBars = qRows.map((row, i) => {
@@ -60,13 +61,13 @@ const cooled = data.runs.filter((r) => r.cooling.length >= 2);
 const measured = { silica: 2.202, soda: 2.43 };
 ---
 {chart === 'qn' && (
-  <svg class="nc" viewBox={`0 0 ${QW} ${QT + qRows.length * (QH + QG)}`} role="img" aria-label="Fractions of Q4, Q3, Q2 and Q1 silicon in each glass, the binary model and NMR measurement">
+  <svg class="nc" viewBox={`0 0 ${QW} ${QT + qRows.length * (QH + QG) - QG + 4}`} role="img" aria-label="Fractions of Q4, Q3, Q2 and Q1 silicon in each glass, the binary model and NMR measurement">
     {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-      <g><line class="ax faint" x1={qx(f)} x2={qx(f)} y1={QT - 6} y2={QT + qRows.length * (QH + QG) - QG} /><text class="tk" x={qx(f)} y={QT - 10} text-anchor="middle">{Math.round(f * 100)}%</text></g>
+      <g><line class="ax faint" x1={qx(f)} x2={qx(f)} y1={QT - 24} y2={QT + qRows.length * (QH + QG) - QG} /><text class="tk" x={qx(f)} y={QT - 30} text-anchor="middle">{Math.round(f * 100)}%</text></g>
     ))}
     {qBars.map((row) => (
       <g>
-        <text class="lb" x={QL - 10} y={row.y + QH / 2 + 4} text-anchor="end">{row.label}</text>
+        <text class="lb" x={QL} y={row.y - 8}>{row.label}</text>
         {row.segs.map((g) => (
           <g>
             <rect x={g.x} y={row.y} width={g.w} height={QH} fill={Q_FILL[g.n]} class="bar" />
