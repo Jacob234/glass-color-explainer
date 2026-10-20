@@ -101,6 +101,52 @@ export function prism(cx, cy, s, deg) {
   });
 }
 
+/* ---------- a cut piece: total internal reflection ---------- */
+const DEG = Math.PI / 180;
+
+// Past the critical angle, sin θ_c = 1/n, light inside the glass cannot get out into air at all.
+export const criticalAngle = (n) => Math.asin(1 / n) / DEG;
+
+// The section of a brilliant-cut piece through its axis, girdle radius R, centered on the girdle's
+// top edge at (cx, cy), y downward: a flat table on top, crown facets sloping down to the girdle at
+// crown°, a thin girdle, and pavilion facets meeting at the culet at pavilion° to the girdle plane.
+// The default proportions are Tolkowsky's (1919) for diamond: table 53% of the width, crown 34.5°.
+export function brilliant(cx, cy, R, pavilion, { table = 0.53, crown = 34.5, girdle = 0.02 } = {}) {
+  const t = table * R, hc = (R - t) * Math.tan(crown * DEG), g = girdle * R, d = R * Math.tan(pavilion * DEG);
+  return [[-t, -hc], [t, -hc], [R, 0], [R, g], [0, g + d], [-R, g], [-R, 0]].map(([x, y]) => [cx + x, cy + y]);
+}
+
+// Pavilion angles that send a ray coming straight down the axis back up after two total reflections,
+// in this section: the first pavilion facet meets it at the pavilion angle α, so α must pass θ_c; the
+// ray then crosses to the opposite facet and meets it at 180° − 3α, which must pass θ_c too.
+export const returnWindow = (n) => { const c = criticalAngle(n); return [c, (180 - c) / 3]; };
+
+// Light falling on the piece along dir as a beam of parallel rays wide enough to cover it, count
+// rays across. Each ray is traced at index n and sorted by where it leaves: up (through the table
+// or crown, back toward a viewer above), down (through the pavilion or girdle), or not at all.
+// Shares are of the light that meets the piece; what each surface reflects partially (Fresnel)
+// is lost, counted in neither. only: [x0, x1] limits the beam to rays aimed between those x at y = cy.
+export function beamFate(poly, n, dir, count, { cy = 0, only = null, rays = false } = {}) {
+  const perp = [-dir[1], dir[0]], s = poly.map((p) => dot(p, perp)), far = 1e3;
+  const c = poly.reduce((a, p) => [a[0] + p[0] / poly.length, a[1] + p[1] / poly.length], [0, 0]);
+  let lo = Math.min(...s), hi = Math.max(...s);
+  if (only) {
+    // a ray through (x, cy) along dir sits at x·perp[0] + cy·perp[1] across the beam
+    const a = only[0] * perp[0] + cy * perp[1], b = only[1] * perp[0] + cy * perp[1];
+    lo = Math.min(a, b); hi = Math.max(a, b);
+  }
+  const back = dot(c, dir) - far, w = (hi - lo) / count, out = { up: 0, down: 0, list: rays ? [] : null };
+  for (let k = 0; k < count; k++) {
+    const q = lo + (k + 0.5) * w, o = [q * perp[0] + back * dir[0], q * perp[1] + back * dir[1]];
+    const r = trace(poly, n, o, dir, 12);
+    if (r.pts.length < 2) continue;
+    const exit = r.pts[r.pts.length - 1], up = r.out && exit[1] <= cy + 1e-9;
+    if (r.out) out[up ? 'up' : 'down'] += r.T / count;
+    if (rays) out.list.push({ r, up, w });
+  }
+  return out;
+}
+
 // Deviation of a ray, in degrees, from its incoming direction.
 export const deviation = (din, dout) => (Math.acos(Math.max(-1, Math.min(1, dot(din, dout)))) * 180) / Math.PI;
 

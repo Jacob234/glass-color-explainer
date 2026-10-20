@@ -38,7 +38,7 @@ const sources = data.glasses.map((g) => g.source);
         <p>So dispersion also comes from absorption, in the ultraviolet where we cannot see it. A glass whose ultraviolet absorption sits closer to the visible has a steeper curve and a stronger fan.</p>
       </div>
       <div class="bench bench-top">
-        <div class="lightbox"><svg class="scene" id="nChart" viewBox="0 0 640 340" role="img" aria-label="refractive index against wavelength for six glasses"></svg></div>
+        <div class="lightbox"><svg class="scene" id="nChart" viewBox="0 0 640 340" role="img" aria-label="refractive index against wavelength for seven glasses"></svg></div>
         <div class="controls">
           <dl class="meters" id="glassMeters"></dl>
           <p class="readout" id="glassRead"></p>
@@ -54,6 +54,40 @@ const sources = data.glasses.map((g) => g.source);
         <p>Other ions can do the same. Schott's N-SF11 replaces the lead in SF11 with titanium, another ion with absorption close to the visible, and reaches the same index and nearly the same Abbe number. The two curves above lie almost on top of each other.</p>
       </div>
       <p class="aside"><b>History.</b> George Ravenscroft took a seven-year patent in 1674 for a clear "flint" glass and soon added lead to cure its crizzling, which gave English glass its weight, ring and brilliance (<a href="https://allaboutglass.cmog.org/definition/lead-glass" rel="noopener">Corning Museum of Glass: lead glass</a>; the museum dates the larger lead addition to 1676). The name flint glass has stuck to lead glass ever since. Today EU law (<a href="https://eur-lex.europa.eu/eli/dir/1969/493" rel="noopener">Directive 69/493/EEC</a>) lets glass be sold as lead crystal from 24% lead oxide and as full lead crystal from 30%, with a refractive index n<sub>D</sub> of at least 1.545.</p>
+    </div>
+
+    <div class="sub" id="fire">
+      <h3>Facets that send light <i>back</i></h3>
+      <div class="prose">
+        <p>Light leaving glass for air bends away from the normal to the surface. Past a certain slant it cannot leave at all: Snell's law would need the sine of the outgoing angle to exceed 1, and instead the surface reflects all of the light back into the glass. This is total internal reflection. It starts at the critical angle, θ<sub>c</sub> = arcsin(1/n), which falls as the index rises: 41.0° for window glass, 38.1° for F2, 34.1° for SF11. A polished surface met head on reflects about 4% of the light; past the critical angle it reflects all of it.</p>
+        <p>A cut piece is shaped to use this. Below the girdle, its widest edge, the pavilion facets slope down to a point, the culet. In this section through the axis, light coming straight down through the table meets one pavilion facet at the pavilion angle α, the facet's slope from the girdle plane. If α exceeds θ<sub>c</sub> the light is reflected across to the opposite facet, which it meets at 180° − 3α. If that too exceeds θ<sub>c</sub>, it is reflected again and goes back up and out of the top. So the light comes back when θ<sub>c</sub> &lt; α &lt; (180° − θ<sub>c</sub>)/3. That window is 5.3° wide for window glass, 9.2° for F2 and 14.6° for SF11. A higher index makes the cut less exacting, and keeps returning light when it comes in at a slant.</p>
+        <p>The light that comes back leaves through the table and the sloping crown facets, and each exit face acts as a prism, so the colors part. A high index returns more of the light, and a high dispersion spreads it further; lead raises both. The colored spots this throws, which move as the piece or the light moves, are what cutters call fire. The piece below is cut to Tolkowsky's proportions for diamond, with the pavilion at 40.75°: in window glass, whose critical angle is 41.0°, most of the light falls out of the back. Pick LLF1 or F2 and it comes back.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox">
+          <svg class="scene" id="fireScene" viewBox="-400 -300 800 640" role="img" aria-label="white light falling on the section of a cut piece; rays of each color reflected inside the facets and leaving through the top or the back"></svg>
+        </div>
+        <div class="controls">
+          <div class="chips" id="firePick" role="group" aria-label="glass"></div>
+          <div class="ctl"><label class="mono" for="pavilion">pavilion angle <output id="pavOut"></output></label>
+            <input id="pavilion" type="range" min="30" max="52" step="0.25" value="40.75" /><div class="ends"><span>shallow</span><span>deep</span></div></div>
+          <div class="ctl"><label class="mono" for="tilt">light from overhead, tilted <output id="tiltOut"></output></label>
+            <input id="tilt" type="range" min="-35" max="35" step="1" value="8" /><div class="ends"><span>from the left</span><span>from the right</span></div></div>
+          <div>
+            <canvas class="strip fire-strip" id="fireUp" aria-label="the light thrown on a ceiling a meter above the piece, computed from every wavelength that lands at each point"></canvas>
+            <div class="strip-key"><span>−1.2 m</span><span>ceiling, 1 m up, room dark</span><span>+1.2 m</span></div>
+            <canvas class="strip fire-strip" id="fireDown" aria-label="the light thrown on a table a meter below the piece"></canvas>
+            <div class="strip-key"><span></span><span>floor, 1 m down</span><span></span></div>
+          </div>
+          <p class="readout" id="fireRead" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="lightbox window-box">
+        <svg class="scene" id="windowChart" viewBox="0 0 700 250" role="img" aria-label="for each glass and for diamond, the pavilion angles at which light coming straight down through the table comes back out of the top"></svg>
+      </div>
+      <p class="aside"><b>Reading the chart.</b> Each bar is traced, not drawn from the formula: a beam coming straight down through the table at the d line, its share coming back out of the top shaded from none (paper) to all (ink). The bar starts at the critical angle and ends near (180° − θ<sub>c</sub>)/3. For SF11 the start is soft: below about 36.5° the returning ray meets the table past the critical angle too, and part of it is reflected inside again. Diamond (n<sub>D</sub> 2.417, θ<sub>c</sub> 24° 26′, both from Tolkowsky) has a window more than 27° wide, so for diamond the cut is chosen for brightness and fire, not to keep the light in at all.</p>
+      <p class="aside"><b>History.</b> Marcel Tolkowsky worked out the proportions of the round brilliant in <a href="https://www.folds.net/diamond_design/" rel="noopener"><i>Diamond Design</i></a> (1919) with this same analysis of a section through the axis: rays coming straight down reflected twice by the pavilion, oblique rays once, and the crown sized so the returning light leaves at a slant and disperses. His answer for diamond was a pavilion at 40° 45′, a crown at 34° 30′ and a table 53% of the width; the piece here uses that crown and table.</p>
+      <p class="aside"><b>Model.</b> A two-dimensional section of a piece 20 mm across, with Tolkowsky's crown and table and a girdle 2% of the width thick. A real brilliant has 57 or 58 facets arranged around the axis, and most rays through it are skew to any one section, so the window above holds exactly only in the section. Light arrives as parallel rays; the share each surface reflects partially (Fresnel) is counted as lost, not followed. The ceiling and floor strips add up every wavelength at 1 nm steps and share one exposure, set by the brightest spot on either. Tableware lead crystal has no dispersion formula in these sources, so SCHOTT's LLF1 light flint, n<sub>d</sub> 1.548, stands in for it: EU law (Directive 69/493/EEC) requires n<sub>D</sub> ≥ 1.545, and real lead crystal varies with its lead content.</p>
     </div>
 
     <div class="sub">
@@ -83,6 +117,6 @@ const sources = data.glasses.map((g) => g.source);
 
     <p class="aside"><b>Models.</b> The index curves are the published dispersion formulas, not illustrations: Sellmeier fits from Schott's catalog for the optical glasses and from Malitson for fused silica, and Rubin's Cauchy fit for window glass. The ultraviolet resonance quoted is the Sellmeier term nearest the visible; a fitted term behaves like a resonance but is not a measured absorption line. Rays are traced in two dimensions with Snell's law at each face, unpolarized Fresnel losses, and total internal reflection; the card adds up every wavelength that lands at each point, so the white middle and colored edges of a near card are computed. The beam is 8 mm wide and the prism 60 mm on a side. Spectral colors lie outside what a screen can show and are drawn as near as sRGB allows. The lenses are thin lenses of 100 mm focal length at f/4, with the focus stretched along the axis in the drawing; a real achromat is bent to correct other aberrations too.</p>
     <p class="aside"><b>Sources.</b> {sources.map(([label, url], i) => <>{i ? ' · ' : ''}<a href={url} rel="noopener">{label}</a></>)}</p>
-    <p class="more"><a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/light-lab/`}>Trace the fan yourself: six of these glasses as prisms and lenses, ray by ray, in the Light Lab →</a></p>
+    <p class="more"><a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/light-lab/`}>Trace the fan yourself: these seven glasses as prisms and lenses, ray by ray, in the Light Lab →</a></p>
   </div>
 </section>
