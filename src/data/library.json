@@ -258,7 +258,7 @@
       "by": "Marcel Tolkowsky", "date": "1919", "edition": "E. & F. N. Spon, London; World Wide Web edition ed. Jasper Paulsen (folds.net, 2001)",
       "url": "https://www.folds.net/diamond_design/",
       "provides": "The ray analysis of a brilliant's axial section: diamond's index 2.417 and critical angle 24° 26′, rays coming straight down reflected twice by the pavilion, and the proportions pavilion 40° 45′, crown 34° 30′, table 53%.",
-      "reuse": "cite", "licence": "The 1919 text is public domain in the US (published before 1929), not necessarily elsewhere; the web edition's transcription, figures 38–39 and editor's notes are copyright Jasper Paulsen. Cited and linked; no figures copied.",
+      "reuse": "cite", "license": "The 1919 text is public domain in the US (published before 1929), not necessarily elsewhere; the web edition's transcription, figures 38–39 and editor's notes are copyright Jasper Paulsen. Cited and linked; no figures copied.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/scripts/dispersion.js", "find": "Tolkowsky's (1919)", "stage": "prism" }, { "file": "src/components/Dispersion.astro", "find": "folds.net/diamond_design", "stage": "prism" }]
     },

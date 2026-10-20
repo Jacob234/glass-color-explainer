@@ -30,7 +30,7 @@ const PICK = ['sodalime', 'llf1', 'f2', 'sf11'];
 const DIAMOND = { id: 'diamond', label: 'diamond', formula: 'cauchy', coef: [2.417, 0, 0] };
 const TOLKOWSKY = 40.75; // 40° 45′, his pavilion angle for diamond
 
-// Geometry in millimetres: a piece 20 mm across, drawn at K units to the millimetre.
+// Geometry in millimeters: a piece 20 mm across, drawn at K units to the millimeter.
 const R = 10, K = 15, CEIL = 1000, SPAN = 1200, BINS = 240, ACROSS = 120;
 
 export function initFire({ getLamp, onLamp }) {
