@@ -722,7 +722,7 @@
       "reuse": "cite", "license": "Journal article, author's copy; no reuse license stated. Coefficients are quoted with citation.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-viscosity-2007", "stage": "batch" }],
-      "caution": "Coefficients are as printed in the PDF's text layer (read again 2026-10-20, JBK-1002); with them the bench reproduces Table 12 for all five standards within 0.5 °C. An earlier machine reading had the CaO term at 10^1.5 wrong (−16.843, a neighbouring cell, for −17.453) and three entries unreadable. The bench adds an Al2O3×MgO correction of its own, fitted to SciGlass (JBK-1011); it is labelled as not Fluegel's."
+      "caution": "Coefficients are as printed in the PDF's text layer (read again 2026-10-20, JBK-1002); with them the bench reproduces Table 12 for all five standards within 0.5 °C. An earlier machine reading had the CaO term at 10^1.5 wrong (−16.843, a neighboring cell, for −17.453) and three entries unreadable. The bench adds an Al2O3×MgO correction of its own, fitted to SciGlass (JBK-1011); it is labeled as not Fluegel's."
     },
     {
       "id": "fluegel-melt-density-2008", "kind": "method", "short": "Fluegel et al. melt density",
