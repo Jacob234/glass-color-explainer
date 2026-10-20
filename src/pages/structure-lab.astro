@@ -103,6 +103,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         beside it shows what fewer bridges do: the network rearranges at a lower temperature and the glass
         melts, works and anneals cooler.
       </p>
+      <p class="howto">
+        <strong>How this was computed.</strong> Binary glasses from 0 to 60 mol% alkali in steps of half a
+        percent, each frozen at its own 10¹² Pa·s temperature from the bench's viscosity model. Modifier is
+        added a hundredth of a non-bridging oxygen per silicon at a time, and each step is shared among
+        Q⁴…Q¹ by the weights above. The miss is the root mean square over every species of every measured
+        glass. Code: <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/src/scripts/qn.js" rel="noopener">qn.js</a>; enthalpies and NMR rows:
+        <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/src/data/qn.json" rel="noopener">qn.json</a>, read from the data files by
+        <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/tools/qn/extract_nmr.mjs" rel="noopener">tools/qn/extract_nmr.mjs</a>; the quoted
+        figures, including the 800 K check: <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/tools/qn/validate.mjs" rel="noopener">tools/qn/validate.mjs</a>.
+      </p>
 
       <h2>Simulation is fast, the furnace is slow</h2>
       <p>
