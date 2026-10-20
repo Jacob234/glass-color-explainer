@@ -14,7 +14,7 @@ A is fixed at −2.93, the high-temperature limit Zheng et al. (2011) found comm
 liquids, so every melt is fitted for Tg and m alone. Left free, A wanders to −6 on curves that stop
 short of the melting end, and m moves with it; fixing it keeps the fitted m comparable.
 
-Needs pandas and scipy. The output is a derived database under ODbL 1.0; keep its `license` block.
+Needs pandas and scipy. The output is a derived database under ODbL 1.0; keep its `licence` block.
 """
 
 import json
@@ -95,7 +95,7 @@ def main(src, out):
                  "viscosity in Pa·s, temperature °C]; fit gives log10 η∞ (Pa·s), Tg (°C, where η = 10^12 "
                  "Pa·s), fragility m and the rms misfit in decades, with log10 η∞ "
                  f"fixed at {A_FIXED} (Zheng et al. 2011). src keys `sources`, each [short citation, full citation].",
-        "license": {
+        "licence": {
             "name": "ODbL 1.0",
             "url": "https://opendatacommons.org/licenses/odbl/1-0/",
             "notice": "Contains information from SciGlass (EPAM Systems, 2019), made available under "
