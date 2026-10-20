@@ -15,7 +15,7 @@ sliders that have moved: exact for one slider, an approximation for several, sin
 the oxides interact. (A cubic fitted to GlassNet over the whole slider box was tried first; it
 missed GlassNet by 40 to 60 °C rms, too coarse to show anything.) It writes:
 
-- `named`: GlassNet itself at each preset;
+- `named`: GlassNet itself at each preset, as the bench's sliders set it;
 - `sweeps`: GlassNet along each slider from each preset, and `additivity`, how far the summed
   changes stray from GlassNet itself on batches with two or three sliders moved;
 - `melts`: GlassNet run on every measured melt in public/data/sciglass/bench.json, for scoring it
@@ -184,8 +184,10 @@ def main(out):
     digits = lambda k: 4 if k in ("nd", "rho") else 2 if k == "vd" else 1
     keys = [k for k, _ in PROPS.values()]
 
-    # GlassNet itself at each preset.
-    yn = predict(model, [preset_mol(p) for p in BATCH["presets"]])
+    # GlassNet itself at each preset, as the bench sets it: slider settings rounded to 0.1 wt% and no
+    # iron, which the bench treats as a colorant. GlassNet is touchy enough that the 0.04 mol% of iron
+    # and the rounding move float glass's liquidus by tens of degrees, so the sweeps must start here.
+    yn = predict(model, [mol_from_wt(preset_wt(p)) for p in BATCH["presets"]])
     named = {p["id"]: {k: round(float(yn[k][i]), digits(k)) for k in keys} for i, p in enumerate(BATCH["presets"])}
 
     # Along each slider from each preset.

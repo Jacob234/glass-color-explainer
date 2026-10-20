@@ -3,6 +3,7 @@
 // Composition models live in batch.js.
 import * as b from './batch.js';
 import * as m from './measured.js';
+import * as gn from './glassnet.js';
 import { GLASSES, index, abbe, LINES } from './dispersion.js';
 
 const $ = (id) => document.getElementById(id);
@@ -49,7 +50,7 @@ export function batchStage({ colorOf, onLamp }) {
   const iron = $('iron');
   const round = (x) => Math.round(x * 10) / 10;
   const presetWt = (p) => Object.fromEntries(MOVED.map((o) => [o.id, round(p.wt[o.id] ?? 0)]));
-  let wt = presetWt(b.BASE), preset = 'float', touched = null;
+  let wt = presetWt(b.BASE), preset = 'float', origin = 'float', touched = null;
   const molOf = (w) => b.fromWt(w);
   const base = b.properties(molOf(presetWt(b.BASE)));
 
@@ -75,7 +76,7 @@ export function batchStage({ colorOf, onLamp }) {
   const chipButtons = b.PRESETS.map((p) => {
     const btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'chip chip-plain'; btn.textContent = p.label; btn.dataset.id = p.id;
-    btn.addEventListener('click', () => { wt = presetWt(p); preset = p.id; touched = null; render(); });
+    btn.addEventListener('click', () => { wt = presetWt(p); preset = origin = p.id; touched = null; render(); });
     chipBox.append(btn);
     return btn;
   });
@@ -123,23 +124,27 @@ export function batchStage({ colorOf, onLamp }) {
   const alive = svgEl('g');
   as.replaceChildren(A.frame, fixed, alive);
 
-  /* measured melts from SciGlass, fetched once the bench is near the screen */
-  let sg = null, sgState = 'idle';
+  /* measured melts from SciGlass and GlassNet's predictions, fetched once the bench is near the screen */
+  let sg = null, sgState = 'idle', net = null, netState = 'idle';
+  const fetchJson = (f) => fetch(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/data/${f}`).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
   const loadMeasured = () => {
     if (sgState !== 'idle') return;
-    sgState = 'loading';
-    fetch(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/data/sciglass/bench.json`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    sgState = 'loading'; netState = 'loading';
+    fetchJson('sciglass/bench.json')
       .then((d) => { sg = d; sgState = 'ready'; render(); })
       .catch(() => { sgState = 'failed'; render(); });
+    fetchJson('glassnet.json')
+      .then((d) => { net = d; netState = 'ready'; render(); })
+      .catch(() => { netState = 'failed'; render(); });
   };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); loadMeasured(); } }, { rootMargin: '600px' });
     io.observe($('oxides'));
   } else loadMeasured();
   const cross = (x, y, r, cls) => svgEl('path', { d: `M${x - r} ${y - r}L${x + r} ${y + r}M${x - r} ${y + r}L${x + r} ${y - r}`, class: cls });
-  const vGlass = svgEl('g'), aGlass = svgEl('g');
+  const vGlass = svgEl('g'), aGlass = svgEl('g'), vNet = svgEl('g'), aNet = svgEl('g');
   vs.insertBefore(vGlass, live); as.insertBefore(aGlass, alive);
+  vs.insertBefore(vNet, vGlass); as.insertBefore(aNet, aGlass);
 
   /* the slab */
   const slabSvg = $('bSlab'), face = slabSvg.querySelector('.face'), cast = slabSvg.querySelector('.cast'), edges = slabSvg.querySelectorAll('.edge');
@@ -178,6 +183,31 @@ export function batchStage({ colorOf, onLamp }) {
     aGlass.replaceChildren(...nearA.toReversed().filter((g) => g.vd <= AX0 && g.vd >= AX1 && g.nd >= AY0 && g.nd <= AY1)
       .map((g) => cross(A.sx(g.vd), A.sy(g.nd), g === nearA[0] ? 5 : 3.5, g === nearA[0] ? 'x' : 'x faint')));
     $('bMeasured').textContent = measuredText(nearV, nearA);
+
+    // GlassNet: its own viscosity curve, dotted; its liquidus, a vertical line; measured liquidus
+    // temperatures of nearby SciGlass melts as crosses along the top; its index and Abbe number, a square.
+    const g = net ? gn.predict(net, wt, origin) : null, nearL = sg ? m.nearest(mol, sg, { has: ['liq'] }) : [];
+    const netItems = [], aItems = [];
+    if (g) {
+      const pts = [];
+      for (let i = 0; i <= 110; i++) { const L = 1 + (11 * i) / 110, T = g.viscosity.tempAt(L); if (T >= VX0 && T <= VX1) pts.push([V.sx(T), V.sy(L)]); }
+      const x1 = V.box.W - V.box.R, y = V.box.T + 30;
+      netItems.push(svgEl('path', { d: pathOf(pts), class: 'ln net' }),
+        svgEl('line', { x1: x1 - 30, x2: x1, y1: y, y2: y, class: 'ln net' }),
+        svgEl('text', { x: x1 - 38, y: y + 4, class: 'lab', 'text-anchor': 'end' }, 'GlassNet'));
+      const xl = V.sx(g.liquidus);
+      if (g.liquidus >= VX0 && g.liquidus <= VX1) {
+        netItems.push(svgEl('line', { x1: xl, x2: xl, y1: V.sy(VY1), y2: V.sy(VY0), class: 'ln liq' }),
+          svgEl('text', { x: xl - 7, y: V.sy(VY1) + 12, class: 'lab', 'text-anchor': 'end' }, `liquidus ${Math.round(g.liquidus)} °C`));
+      }
+      if (g.vd <= AX0 && g.vd >= AX1 && g.nd >= AY0 && g.nd <= AY1) {
+        const x = A.sx(g.vd), y2 = A.sy(g.nd);
+        aItems.push(svgEl('rect', { x: x - 4.5, y: y2 - 4.5, width: 9, height: 9, class: 'net-sq' }));
+      }
+    }
+    for (const q of nearL.toReversed()) if (q.liq >= VX0 && q.liq <= VX1) netItems.push(cross(V.sx(q.liq), V.sy(13.1), q === nearL[0] ? 5 : 3.5, q === nearL[0] ? 'x' : 'x faint'));
+    vNet.replaceChildren(...netItems); aNet.replaceChildren(...aItems);
+    $('bNet').textContent = netText(p, g, nearL);
 
     // Abbe
     alive.replaceChildren(
@@ -227,6 +257,24 @@ export function batchStage({ colorOf, onLamp }) {
       const a = nearA[0], o = b.optics(m.molOf(a, sg.oxides));
       t += ` On the index plot the nearest measured glass is ${m.cite(sg, a)}: n = ${a.nd.toFixed(3)} measured against ${o.nd.toFixed(3)} from the model, Abbe number ${Math.round(a.vd)} against ${Math.round(o.vd)}.`;
     }
+    return t;
+  }
+  function netText(p, g, nearL) {
+    if (netState === 'loading' || netState === 'idle') return 'Fetching GlassNet\'s predictions…';
+    if (netState === 'failed' || !g) return 'GlassNet\'s predictions did not load, so the bench has no second opinion here.';
+    const w = g.viscosity.tempAt(3), mBench = p.working - g.liquidus;
+    const label = b.PRESET[g.anchor].label;
+    const where = !g.moved.length ? 'GlassNet, run on this glass,' : g.moved.length === 1 ? `GlassNet, run along this slider from ${label},` : `GlassNet (from ${label}, adding up the change each moved slider makes alone)`;
+    let t = `${where} puts the working point at ${Math.round(w)} °C against the bench's ${Math.round(p.working)} °C, and the annealing point at ${Math.round(g.T12)} °C against ${Math.round(p.annealing)} °C. It also gives what the bench's models cannot: a liquidus of ${Math.round(g.liquidus)} °C, the temperature below which crystals can grow in the melt. `;
+    const mNet = w - g.liquidus, own = Math.sign(mNet) === Math.sign(mBench) ? '' : ` (by GlassNet's own working point it is ${Math.round(Math.abs(mNet))} °C ${mNet >= 0 ? 'above' : 'below'}: the two models disagree on which side of the line this glass sits)`;
+    t += mBench >= 0
+      ? `At the bench's working point this batch is ${Math.round(mBench)} °C above that liquidus${own}, so no crystal is stable while it is shaped; below the liquidus crystals could grow, but the glass stiffens so fast as it cools that they get little time.`
+      : `At the bench's working point this batch is ${Math.round(-mBench)} °C below that liquidus${own}: crystals can grow in the gather while it is shaped, and the glass clouds unless it is worked fast or hot.`;
+    if (g.moved.length > 1) t += ` With several sliders moved these numbers are summed one-slider changes, which ignore how the oxides interact: tested against GlassNet itself they stray a median ${Math.round(net.additivity.T3.median)} °C at the working point and ${Math.round(net.additivity.liquidus.median)} °C at the liquidus, which bends sharply where one crystal gives way to another.`;
+    if (nearL.length) {
+      const q = nearL[0];
+      t += ` The crosses along the top are measured liquidus temperatures from SciGlass within 3 mol%; the nearest, ${m.cite(sg, q)}, ${q.d < 0.05 ? 'this batch itself' : `${q.d.toFixed(1)} mol% away`}, melted clear above ${q.liq} °C, and GlassNet put it at ${net.melts[q.id]?.[2] ?? '?'} °C.`;
+    } else t += ' SciGlass holds no measured liquidus within 3 mol% of this batch.';
     return t;
   }
   const SUP = { '-': '⁻', '.': '·', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };

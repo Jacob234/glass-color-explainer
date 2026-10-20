@@ -31,7 +31,7 @@ export const PRESET = Object.fromEntries(PRESETS.map((p) => [p.id, p]));
 export const BASE = PRESET.float;
 
 // Evaluate a polynomial whose terms are written "A", "A^2", "A*B" or "A*B*C" over amounts C.
-function poly(b0, terms, C) {
+export function poly(b0, terms, C) {
   let s = b0;
   for (const [k, b] of Object.entries(terms)) {
     const p = k.includes('^') ? (C[k.split('^')[0]] ?? 0) ** Number(k.split('^')[1]) : k.split('*').reduce((a, o) => a * (C[o] ?? 0), 1);
