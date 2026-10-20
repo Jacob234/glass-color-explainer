@@ -15,7 +15,7 @@ test('neodymium keeps its 583 nm band on the 5 nm grid', () => {
   assert.ok(d[at(610)] > 0.05 * d[at(585)]); // but its long-wavelength wing reaches the tube's red line
 });
 
-// JBK-951: real neodymium glass is lilac in daylight, pink under a bulb and blue-grey under a
+// JBK-951: real neodymium glass is lilac in daylight, pink under a bulb and blue-gray under a
 // tri-phosphor tube. Hue in CIELAB (a*, b*) of the history pin's glass under each lamp.
 test('neodymium turns blue under the fluorescent tube, lilac in daylight, pink under tungsten', async () => {
   const { LAMP, underLamp } = await import('../src/scripts/lamps.js');
