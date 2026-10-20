@@ -56,10 +56,10 @@
       "title": "Colour (colour-science)",
       "by": "Colour Developers", "date": "2025", "edition": "v0.4.7",
       "url": "https://github.com/colour-science/colour",
-      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json, and the CIE 1964 10° table, Stockman & Sharpe fundamentals and CIE 2015 functions behind observers.json.",
+      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json, and the CIE 1964 10° table, Stockman & Sharpe fundamentals and CIE 2015 functions behind observers.json. It is also the test oracle for the color engine: npm test checks every colorant's color under five lamps against values it computed.",
       "reuse": "open", "license": "BSD 3-Clause.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }, { "file": "scripts/build_observers.py", "find": "colour-science", "stage": "eyes" }]
+      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }, { "file": "scripts/build_observers.py", "find": "colour-science", "stage": "eyes" }, { "file": "scripts/build_oracle.py", "find": "colour-science", "stage": "engine" }]
     },
     {
       "id": "taran-2009", "kind": "measurement", "short": "Taran et al. 2009",
