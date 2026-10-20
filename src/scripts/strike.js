@@ -57,7 +57,7 @@ export function struck(id, t, recipe = RECIPES[id], s = SCHEDULE) {
 export const phase = (t) => (t < 0.12 ? 'unstruck' : t < 0.5 ? 'striking' : t < 0.68 ? 'struck' : 'over-struck');
 
 // The Lycurgus Cup: silver-gold alloy particles 50–100 nm across, about 300 ppm silver and 40 ppm
-// gold in the glass (Freestone et al. 2007), modelled as 70:30 alloy spheres with Rioux et al.'s
+// gold in the glass (Freestone et al. 2007), modeled as 70:30 alloy spheres with Rioux et al.'s
 // optical constants. How much of the metal sits in particles, and the wall thickness, are not
 // reported there; share and mm are assumptions.
 export const LYCURGUS = { id: 'Au30Ag70', ppm: 340, share: 0.06, r: 30, sigma: 1.3, mm: 5 };

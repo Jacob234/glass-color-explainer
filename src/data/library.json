@@ -213,8 +213,8 @@
       "title": "refractiveindex.info database",
       "by": "Mikhail Polyanskiy", "date": "2026", "edition": "release v.2026-05-24",
       "url": "https://github.com/polyanskiy/refractiveindex.info-database",
-      "provides": "Optical constants of thousands of materials as YAML, including the SCHOTT, Ohara and Hoya catalogues. The source of every Sellmeier coefficient the site uses, and of the Johnson & Christy and Rioux metal constants behind the struck colors.",
-      "reuse": "open", "licence": "CC0 1.0 (public domain dedication).",
+      "provides": "Optical constants of thousands of materials as YAML, including the SCHOTT, Ohara and Hoya catalogs. The source of every Sellmeier coefficient the site uses, and of the Johnson & Christy and Rioux metal constants behind the struck colors.",
+      "reuse": "open", "license": "CC0 1.0 (public domain dedication).",
       "checked": "2026-10-19",
       "usedBy": [
         { "file": "src/data/glasses.json", "find": "refractiveindex.info", "stage": "prism" },
@@ -289,7 +289,7 @@
       "by": "P. B. Johnson and R. W. Christy", "date": "1972", "edition": "Physical Review B 6(12), 4370–4379",
       "url": "https://doi.org/10.1103/PhysRevB.6.4370",
       "provides": "Measured n and k of copper, silver and gold films from 0.5 to 6.5 eV. The page's struck gold, silver and copper colors are computed from these, through Mie theory.",
-      "reuse": "open", "licence": "The article is cited; the tabulated values are copied from the refractiveindex.info database (CC0).",
+      "reuse": "open", "license": "The article is cited; the tabulated values are copied from the refractiveindex.info database (CC0).",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/data/metals.json", "find": "johnson-christy-1972", "stage": "strike" }, { "file": "src/components/Home.astro", "find": "PhysRevB.6.4370", "stage": "strike" }]
     },
@@ -298,8 +298,8 @@
       "title": "An analytic model for the dielectric function of Au, Ag, and their alloys",
       "by": "D. Rioux, S. Vallières, S. Besner, P. Muñoz, E. Mazur and M. Meunier", "date": "2014", "edition": "Advanced Optical Materials 2(2), 176–182",
       "url": "https://doi.org/10.1002/adom.201300457",
-      "provides": "A model fitted to ellipsometry of gold, silver and three alloy films, tabulated for any composition. The Lycurgus Cup's particles are modelled with its 30% gold, 70% silver alloy.",
-      "reuse": "open", "licence": "The article is cited; the tabulated alloy values come from the refractiveindex.info database (CC0).",
+      "provides": "A model fitted to ellipsometry of gold, silver and three alloy films, tabulated for any composition. The Lycurgus Cup's particles are modeled with its 30% gold, 70% silver alloy.",
+      "reuse": "open", "license": "The article is cited; the tabulated alloy values come from the refractiveindex.info database (CC0).",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/data/metals.json", "find": "rioux-2014", "stage": "concepts" }]
     },
@@ -309,7 +309,7 @@
       "by": "Gustav Mie", "date": "1908", "edition": "Annalen der Physik 330(3), 377–445",
       "url": "https://doi.org/10.1002/andp.19083300302",
       "provides": "The exact solution of Maxwell's equations for a sphere, worked out to explain the colors of colloidal gold.",
-      "reuse": "open", "licence": "Public domain by age.",
+      "reuse": "open", "license": "Public domain by age.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/scripts/mie.js", "find": "Mie's 1908 solution", "stage": "strike" }]
     },
@@ -319,7 +319,7 @@
       "by": "Craig F. Bohren and Donald R. Huffman", "date": "1983", "edition": "Wiley (reprinted 1998)",
       "url": "https://doi.org/10.1002/9783527618156",
       "provides": "Mie theory and the BHMIE algorithm (appendix A) that mie.js follows: logarithmic derivative by downward recurrence, Riccati–Bessel functions by upward recurrence, efficiencies and asymmetry parameter.",
-      "reuse": "cite", "licence": "Book; the method is reimplemented, no code copied.",
+      "reuse": "cite", "license": "Book; the method is reimplemented, no code copied.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/scripts/mie.js", "find": "Bohren & Huffman", "stage": "strike" }]
     },
@@ -329,7 +329,7 @@
       "by": "Uwe Kreibig and Michael Vollmer", "date": "1995", "edition": "Springer Series in Materials Science 25",
       "url": "https://doi.org/10.1007/978-3-662-09109-8",
       "provides": "The surface-scattering correction γ(r) = γ_bulk + A·v_F / r for electrons in small metal particles, and the spread of reported A values.",
-      "reuse": "cite", "licence": "Book; the formula is used, no text or data copied.",
+      "reuse": "cite", "license": "Book; the formula is used, no text or data copied.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/scripts/mie.js", "find": "Kreibig & Vollmer 1995", "stage": "strike" }]
     },
@@ -339,7 +339,7 @@
       "by": "Scott Prahl", "date": "2024", "edition": "Python package",
       "url": "https://github.com/scottprahl/miepython",
       "provides": "Reference values the tests check mie.js against (efficiencies, backscatter, asymmetry).",
-      "reuse": "open", "licence": "MIT. Only numbers it computed are in the tests; no code copied.",
+      "reuse": "open", "license": "MIT. Only numbers it computed are in the tests; no code copied.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "test/mie.test.mjs", "find": "miepython", "stage": "strike" }]
     },
@@ -349,7 +349,7 @@
       "by": "L. E. Brus", "date": "1984", "edition": "Journal of Chemical Physics 80(9), 4403–4409",
       "url": "https://doi.org/10.1063/1.447218",
       "provides": "The effective-mass estimate of how a semiconductor crystal's band gap rises as it shrinks, used for the selenium ruby striking slider.",
-      "reuse": "cite", "licence": "Journal article; the formula is used.",
+      "reuse": "cite", "license": "Journal article; the formula is used.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/scripts/strike.js", "find": "Brus 1984", "stage": "concepts" }]
     },
