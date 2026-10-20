@@ -536,6 +536,16 @@
       "usedBy": [{ "file": "src/data/measured.json", "find": "meulebroeck-2016", "stage": "ions" }]
     },
     {
+      "id": "chimalawong-2010", "kind": "measurement", "short": "Chimalawong et al. 2010",
+      "title": "Optical investigation and electronic polarizability of Nd³⁺ doped soda-lime-silicate glasses",
+      "by": "P. Chimalawong, J. Kaewkhao and P. Limsuwan", "date": "2010", "edition": "Energy Research Journal 1(2), 176–181",
+      "url": "https://doi.org/10.3844/erjsp.2010.176.181",
+      "provides": "Absorption of (65−x)SiO₂·25Na₂O·10CaO·xNd₂O₃ glasses (x = 0–5 mol%), 3 mm thick, 300–700 nm (Fig. 3), with the Nd³⁺ bands assigned: 4G5/2+2G7/2 at 583 nm, 4G7/2+4G9/2+2K13/2 near 525 nm, 4F9/2 near 680 nm. The page traces x = 1, 2 and 3 for neodymium's shape, which turns the glass blue-gray under the fluorescent tube.",
+      "reuse": "open", "license": "CC BY 4.0 (stated on the article page). The traced curve in measured.json is an adaptation, credited there and here.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/data/measured.json", "find": "chimalawong-2010", "stage": "ions" }, { "file": "src/components/Home.astro", "find": "erjsp.2010.176.181", "stage": "showroom" }]
+    },
+    {
       "id": "volotinen-2007", "kind": "measurement", "short": "Volotinen 2007",
       "title": "Mathematical description of absorbance spectra for Fe and Cu doped soda-lime-silica glasses",
       "by": "Tarja T. Volotinen", "date": "2007", "edition": "PhD thesis, University of Sheffield (White Rose eTheses 6086)",
