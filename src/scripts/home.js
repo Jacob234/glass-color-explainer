@@ -1,5 +1,5 @@
-// home.js — the instruments on the home page. Every glass colour is computed from absorption
-// spectra in optics.json through spectra.js; nothing here is a hand-picked colour.
+// home.js — the instruments on the home page. Every glass color is computed from absorption
+// spectra in optics.json through spectra.js; nothing here is a hand-picked color.
 import optics from '../data/optics.json';
 import history from '../data/history.json';
 import {
@@ -122,7 +122,7 @@ function lightTable() {
     return { el, g, p };
   });
   // The table is lit by the lamp too (see paint() below), and the screen multiplies each piece over
-  // it, so a piece is drawn as its colour divided by the table's: the product is the computed colour.
+  // it, so a piece is drawn as its color divided by the table's: the product is the computed color.
   // A glowing piece can be brighter than the table under it, which multiply cannot draw; it switches
   // to screen, which adds light: screen(paper, x) = c when x = 1 − (1 − c) / (1 − paper).
   onLamp(() => {
@@ -213,7 +213,7 @@ function batch() {
     draw(colorOf(parts, 0.5).css, colorOf(parts, 20).css);
     $('ironOut').textContent = c < 0.02 ? 'almost none' : c < 0.12 ? 'a trace' : c < 0.3 ? 'window glass' : 'a lot';
     $('ironRead').textContent = c < 0.02
-      ? 'Low-iron glass stays nearly colourless even edge on. It is used where the green would show: display cases, solar panels, aquariums.'
+      ? 'Low-iron glass stays nearly colorless even edge on. It is used where the green would show: display cases, solar panels, aquariums.'
       : 'Face on, the light crosses a thin sheet and barely changes. Edge on, it crosses forty times as much glass, and the same iron reads as green.';
   };
   s.addEventListener('input', render); onLamp(render);
@@ -233,13 +233,13 @@ function redox() {
   s.addEventListener('input', render); onLamp(render);
 }
 
-/* ---------- 03 the colour rod: ions ---------- */
+/* ---------- 03 the color rod: ions ---------- */
 const ROD_NOTES = {
   cobalt: 'Co²⁺ absorbs across yellow, orange and red in three overlapping bands, near 534, 596 and 640 nm in soda glass. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
   copper: 'Cu²⁺ absorbs a broad band in the red and near infrared, leaving turquoise to blue.',
-  chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial colour of the later 19th century; older bottle green is iron.',
+  chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial color of the later 19th century; older bottle green is iron.',
   manganese: "Mn³⁺ absorbs in the green and lets red and blue through: amethyst. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
-  neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The colour shifts with the light it is viewed under.',
+  neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The color shifts with the light it is viewed under.',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
 };
 function ions(onRod) {
@@ -258,7 +258,7 @@ function ions(onRod) {
   s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
-/* ---------- 03 the colour rod, blown: wall thickness in a bowl and a cane ---------- */
+/* ---------- 03 the color rod, blown: wall thickness in a bowl and a cane ---------- */
 // Colorants differ in strength by an order of magnitude, so each rod is dosed to pass WALL_Y of
 // daylight through a 3 mm wall at amount ×1. A cased skin carries six times the colorant, so face
 // on 0.5 mm of it holds as much as a 3 mm solid wall.
@@ -278,7 +278,7 @@ function fit(canvas, aspect) {
 function vessel() {
   const bowl = $('bowl'), cane = $('cane'), wall = $('wall');
   let rod = 'cobalt', k = 1, cased = false, lut = [], unit = 1, raf = 0, litBy = null;
-  const builds = [['solid', 'solid colour'], ['cased', 'cased in colour']].map(([id, label]) => {
+  const builds = [['solid', 'solid color'], ['cased', 'cased in color']].map(([id, label]) => {
     const b = h('button', { className: 'chip chip-plain' }, label);
     b.addEventListener('click', () => { cased = id === 'cased'; queue(); });
     $('build').appendChild(b);
@@ -293,7 +293,7 @@ function vessel() {
     let lo = 0, hi = 50; // bisect for the rod's dose per 3 mm wall, always in daylight
     for (let n = 0; n < 40; n++) { const mid = (lo + hi) / 2; lum(underLamp(mixT([[rod, 1]], mid), LAMP.daylight).lin) > WALL_Y ? (lo = mid) : (hi = mid); }
     unit = lo;
-    litBy = lamp; // the colours themselves are under the page's lamp
+    litBy = lamp; // the colors themselves are under the page's lamp
     lut = Array.from({ length: LUT_N }, (_, i) => tColor(mixT([[rod, 1]], unit * LUT_MAX * (i / (LUT_N - 1)) ** 2)));
   }
 
@@ -361,17 +361,17 @@ function vessel() {
     const read = bowlReadings({ blow: blow(), cased });
     const rows = [['rim', read.rim], ['wall', read.wall], ['base', read.base]].map(([name, t]) => {
       const col = look(dose(t)), pct = Math.round(100 * lum(col.lin));
-      return h('div', {}, h('dt', {}, `${name} · ${t.toFixed(1)} mm${cased ? ' of colour' : ''}`), h('dd', {}, `${pct}%`),
+      return h('div', {}, h('dt', {}, `${name} · ${t.toFixed(1)} mm${cased ? ' of color' : ''}`), h('dd', {}, `${pct}%`),
         h('i', { style: { '--v': `${pct}%`, '--c': col.css } }));
     });
     $('bowlMeters').replaceChildren(...rows);
     $('wallOut').textContent = `×${blow().toFixed(2)}`;
     $('bowlRead').textContent = cased
-      ? 'Cased: the colour lives in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
-      : 'Solid colour: the rim is blown thinnest and is palest, and the heavy foot is darkest. The outline darkens too, because there your line of sight runs along the wall instead of across it.';
+      ? 'Cased: the color lives in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
+      : 'Solid color: the rim is blown thinnest and is palest, and the heavy foot is darkest. The outline darkens too, because there your line of sight runs along the wall instead of across it.';
     $('caneRead').textContent = cased
-      ? 'Cased cane is darkest at its edges and palest down the middle, like a tube, because the middle crosses only the skin twice. Cut end on, the colour is a ring.'
-      : 'Solid cane is darkest down the middle, where a ray crosses the most glass, and pales toward its edges. Cut end on, the slice is one even colour.';
+      ? 'Cased cane is darkest at its edges and palest down the middle, like a tube, because the middle crosses only the skin twice. Cut end on, the color is a ring.'
+      : 'Solid cane is darkest down the middle, where a ray crosses the most glass, and pales toward its edges. Cut end on, the slice is one even color.';
   }
 
   function render() {
@@ -397,7 +397,7 @@ const lum = (lin) => 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
 // care what the gather is, so against a gather that glows less than a black body the flare wins by more.
 const flareRatio = (t) => { const x = Math.min(1, Math.max(0, (t - 820) / 180)); return 6 * x * x * (3 - 2 * x); };
 
-// The gathers. Each is seen through the same path (in optics.json's units), so the colour it shows
+// The gathers. Each is seen through the same path (in optics.json's units), so the color it shows
 // cold and the light it gives out hot come from one transmission spectrum. Clear is a trace of iron.
 const GATHERS = {
   clear: { label: 'Clear (trace iron)', parts: [['iron-ferrous', 0.03], ['iron-ferric', 0.03]] },
@@ -408,7 +408,7 @@ const gatherT = (id) => mixT(GATHERS[id].parts, GATHER_PATH);
 const gatherEps = Object.fromEntries(Object.keys(GATHERS).map((id) => [id, emissivity(gatherT(id))]));
 const SOOT = [0.06, 0.045, 0.035];
 const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
-// What a glowing gather looks like at t °C: its glow colour, its strength, and the hottest glass pushed
+// What a glowing gather looks like at t °C: its glow color, its strength, and the hottest glass pushed
 // toward yellow-orange the way an overexposed glow reads. Strength is the log visibility scale (zero
 // once the glow is too faint to see) times the cube root of its luminous emissivity, Stevens's
 // brightness exponent, so a glass that emits a thirtieth of a black body's light looks about a third as bright.
@@ -481,7 +481,7 @@ function heat() {
 /* ---------- 04 the glory hole: Kirchhoff, three gathers side by side ---------- */
 // Each card: the gather cold on the light table, the same gather at the stage's temperature in the
 // dark, and its spectrum: a black body at that temperature (top), what this glass emits (bottom), and
-// its emissivity ε = 1 − T (line). The cold colour and the hot glow are one spectrum read both ways.
+// its emissivity ε = 1 − T (line). The cold color and the hot glow are one spectrum read both ways.
 function kirchhoff() {
   const grid = $('kGrid'), CARDS = ['clear', 'cobalt', 'copper'];
   const cards = CARDS.map((id) => {
@@ -512,7 +512,7 @@ function kirchhoff() {
 }
 
 /* ---------- 04 the glory hole: the glasses ---------- */
-// A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recoloured by
+// A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recolored by
 // each lens's transmission: the room by the lens under the page's lamp, the glowing parts by the lens
 // against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
 // lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
@@ -623,7 +623,7 @@ function glasses() {
     if (canvas.width !== w || canvas.height !== hh) { canvas.width = w; canvas.height = hh; }
     const ctx = canvas.getContext('2d'), n = na.FINE.length, x = (i) => (i / (n - 1)) * w, vis = na.VIS_END;
     ctx.clearRect(0, 0, w, hh);
-    // colour band: the spectrum through the lens (visible), a dim red wash for the infrared
+    // color band: the spectrum through the lens (visible), a dim red wash for the infrared
     for (let i = 0; i < n; i++) {
       const g = Math.round(((na.FINE[i] - 380) / 5)), T = lensT[i];
       ctx.fillStyle = i <= vis ? css(SPECTRAL[Math.min(80, g)].map((v) => encode(v * T))) : `rgba(201, 120, 106, ${0.08 + 0.32 * T})`;
@@ -654,7 +654,7 @@ function glasses() {
     $('lens-room-m').setAttribute('values', matrix(d.room));
     $('lens-fire-m').setAttribute('values', matrix(fHot.mul));
     if (cur !== 'none') {
-      // through the lens: body lit by the room, glow recoloured by the lens, then mixed as outside
+      // through the lens: body lit by the room, glow recolored by the lens, then mixed as outside
       const b = body.map((v, i) => encode(toLin(v) * d.room[i])), hh = hot.map((v, i) => encode(toLin(v) * f.mul[i]));
       const col = css(b.map((v, i) => v + (hh[i] - v) * a));
       L('g-body').setAttribute('fill', col); L('g-cast').setAttribute('fill', col);
@@ -710,7 +710,7 @@ function strike() {
     $('goldTag').textContent = lab; $('goldOut').textContent = lab;
     $('goldRead').textContent = t < 0.15 ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
       : t < 0.7 ? 'Particles have formed. Their electrons resonate with green light (a surface plasmon) and absorb it; red and some blue pass.'
-      : 'Particles grow and clump. The band shifts toward longer wavelengths and broadens, and the ruby goes dull and brown.';
+      : 'Particles grow and clump. The band shifts toward longer wavelengths and broadens, and the ruby goes dull and purple (a model; real over-struck glass can also go brown).';
   };
   const renderGap = () => {
     const eV = sE.valueAsNumber / 100, edge = 1240 / eV, T = bandEdge(eV);
@@ -726,14 +726,14 @@ function strike() {
 }
 
 /* ---------- 06 the lehr: frozen-in stress between polarizers ---------- */
-// Every colour is the polariscope's transmission spectrum (stress.js, Jones calculus) under the
-// page's lamp. The colour of a spectrum is linear in it, so each lamp gives one weight per wavelength
-// and a table of colours by retardation is a matrix product. The tint plate's colour also depends
+// Every color is the polariscope's transmission spectrum (stress.js, Jones calculus) under the
+// page's lamp. The color of a spectrum is linear in it, so each lamp gives one weight per wavelength
+// and a table of colors by retardation is a matrix product. The tint plate's color also depends
 // on the stress direction, so it gets a second axis in angle.
 const VIEW_NOTES = {
   plane: 'The dark cross is not unstressed glass. Along it the stress runs parallel and perpendicular to the polarizers, and light polarized along a principal stress passes through unchanged. Switch to circular to remove it.',
   circular: 'Quarter-wave plates on either side make the light circular, so the direction of the stress no longer matters and the cross is gone. Only the size of the stress shows.',
-  tint: 'A full-wave plate makes the empty field magenta, the colour that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. This is how strain viewers in glassworks are set up.',
+  tint: 'A full-wave plate makes the empty field magenta, the color that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. The ASTM test for glass containers (C148) uses such a plate, nominally 565 nm; the model uses 550 nm.',
 };
 const RATE = (v) => 0.3 * 1000 ** (v / 1000); // °C per minute, log slider
 const G_MAX = 12000, G_STEP = 2, T_MAX = 3000, T_STEP = 10, T_PHI = 24; // nm, nm, nm, nm, angle bins over 180°
@@ -747,24 +747,24 @@ function lehr() {
     return [id, b];
   });
 
-  // Colour tables under the current lamp, in linear sRGB.
+  // Color tables under the current lamp, in linear sRGB.
   function build() {
     const W = GRID.map((_, i) => underLamp(GRID.map((_, j) => (j === i ? 1 : 0)), lamp).lin);
-    const colour = (I) => { const c = [0, 0, 0]; I.forEach((v, i) => { c[0] += v * W[i][0]; c[1] += v * W[i][1]; c[2] += v * W[i][2]; }); return c; };
+    const color = (I) => { const c = [0, 0, 0]; I.forEach((v, i) => { c[0] += v * W[i][0]; c[1] += v * W[i][1]; c[2] += v * W[i][2]; }); return c; };
     const S = []; // sin²(πΓ/λ): crossed at 45°, and circular at any angle
-    for (let G = 0; G <= G_MAX; G += G_STEP) S.push(colour(GRID.map((w) => Math.sin((Math.PI * G) / w) ** 2)));
-    luts = { S, high: colour(GRID.map(() => 0.5)), tint: null, colour };
+    for (let G = 0; G <= G_MAX; G += G_STEP) S.push(color(GRID.map((w) => Math.sin((Math.PI * G) / w) ** 2)));
+    luts = { S, high: color(GRID.map(() => 0.5)), tint: null, color };
     litBy = lamp;
   }
   function tintLut() { // [angle bin][retardation bin], −T_MAX..T_MAX
     if (!luts.tint) luts.tint = Array.from({ length: T_PHI }, (_, k) => {
       const phi = (k * Math.PI) / T_PHI, row = [];
-      for (let G = -T_MAX; G <= T_MAX; G += T_STEP) row.push(luts.colour(st.polariscope('tint', phi, G)));
+      for (let G = -T_MAX; G <= T_MAX; G += T_STEP) row.push(luts.color(st.polariscope('tint', phi, G)));
       return row;
     });
     return luts.tint;
   }
-  // Linear colour at retardation G (signed) with the slow axis at phi from the polarizer.
+  // Linear color at retardation G (signed) with the slow axis at phi from the polarizer.
   function look(G, phi) {
     if (viewer === 'tint') {
       const t = tintLut(), a = (((phi % Math.PI) + Math.PI) % Math.PI) / (Math.PI / T_PHI), k0 = Math.floor(a) % T_PHI, k1 = (k0 + 1) % T_PHI, f = a - Math.floor(a);
@@ -849,9 +849,9 @@ function lehr() {
       row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
     const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot all but vanishes into the dark field.`
       : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
-      : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal colour are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
-      : 'Past first-order red into blue at the rim. Each repeat of the colours is another wavelength of retardation: this piece is carrying real stress.';
-    const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colours collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
+      : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal color are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
+      : 'Past first-order red into blue at the rim. Each repeat of the colors is another wavelength of retardation: this piece is carrying real stress.';
+    const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colors collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
     $('lehrRead').textContent = `${state_} ${VIEW_NOTES[viewer]}${sodium}`;
     $('edgeRead').textContent = `Through the edge the foot shows what face on hides: compression of ${mpa(face)} in a band at each face, tension of ${mpa(core)} in the core, and between them a line where the stress passes through zero (dark between crossed polarizers), 58% of the way from the middle to each face. The light now crosses ${2 * R} mm of glass instead of ${d}, so the same stress gives up to ${through < 10 ? through.toFixed(1) : Math.round(through)} nm. Thickness counts twice: the frozen difference grows as its square.`;
     for (const [id, b] of views) b.setAttribute('aria-pressed', String(id === viewer));
@@ -904,7 +904,7 @@ function dichroic() {
   s.addEventListener('input', render); addEventListener('resize', render); onLamp(render);
 }
 
-/* ---------- 08 the rack: real supplier colours on hue shelves ---------- */
+/* ---------- 08 the rack: real supplier colors on hue shelves ---------- */
 function rack() {
   const items = JSON.parse($('rack-data').textContent);
   const MECH = [['all', 'everything'], ['ions', 'ions'], ['colloids', 'metal colloids'], ['bandgap', 'semiconductors'], ['structure', 'structure'], ['unknown', 'unclassified']];
@@ -1008,7 +1008,7 @@ function rack() {
   }
 
   // Relighting: the swatches are photos, not spectra, so each gets a smooth spectrum that reproduces
-  // its daylight colour (spectra.js upsample), fitted the first time the lamp changes.
+  // its daylight color (spectra.js upsample), fitted the first time the lamp changes.
   let fitted = false;
   onLamp(() => {
     if (lamp === LAMP.daylight && !fitted) return;
@@ -1076,18 +1076,25 @@ function showroom() {
 }
 
 /* ---------- the lamp switch: one light for the whole page ---------- */
-// The page's paper, table and rules are lit by the lamp too: each base colour is multiplied by the
-// colour white paper takes on under it.
+// The page's paper, table and rules are lit by the lamp too: each base color is multiplied by the
+// color white paper takes on under it.
 const BASE = { '--paper': '#f3f4f1', '--paper-2': '#e9eae5', '--rule': '#d6d8d2', '--panel': '#fafaf8' };
 // When the paper goes nearly black (the black light), the page needs light ink and visible rules.
 const DARK = { '--rule': '#2d2838', '--paper-2': '#17131f', '--panel': '#110e18' };
 let setLamp = () => {};
 function lampSwitch() {
   const bar = $('lamps'), spark = $('lampSpark'), root = document.documentElement;
+  // On a phone the bar folds to one chip naming the lamp, so it covers no text while reading;
+  // tapping it opens every lamp, and choosing one folds it again.
+  const toggle = $('lampToggle'), shell = bar.parentElement;
+  const fold = (open) => { shell.classList.toggle('open', open); toggle.setAttribute('aria-expanded', String(open)); };
+  toggle.addEventListener('click', () => fold(!shell.classList.contains('open')));
+  document.addEventListener('click', (e) => { if (!shell.contains(e.target)) fold(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fold(false); });
   const hex = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16) / 255);
   const buttons = LAMPS.map((l) => {
     const b = h('button', { className: 'lamp', 'aria-pressed': String(l === lamp) }, h('i', { style: { '--c': lampColor(l.spd) } }), l.label);
-    b.addEventListener('click', () => set(l));
+    b.addEventListener('click', () => { set(l); fold(false); });
     bar.appendChild(b);
     return [b, l];
   });
@@ -1111,6 +1118,8 @@ function lampSwitch() {
     root.style.setProperty('--tint', css(tint));
     root.toggleAttribute('data-dark', dark);
     for (const [b, x] of buttons) b.setAttribute('aria-pressed', String(x === l));
+    toggle.replaceChildren(h('i', { style: { '--c': lampColor(l.spd) } }), l.label);
+    toggle.setAttribute('aria-label', `lamp: ${l.label}. Choose another`);
     $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
     $('lampNote').textContent = l.note;
     sparkline();
@@ -1124,7 +1133,7 @@ function lampSwitch() {
 /* ---------- ← the record: the history rail ---------- */
 function historyRail() {
   const box = $('history');
-  // a pin's colour comes from the same engine as the stage it links to, under the page's lamp
+  // a pin's color comes from the same engine as the stage it links to, under the page's lamp
   const pinColor = (c) => (c.uranium ? uraniumOf(c.thickness ?? 1)
     : c.dichroic != null ? tColor(dichroicBand(c.dichroic).R.map((r) => 1 - r)) : colorOf(c.parts, c.thickness ?? 1)).css;
   onLamp(() => {

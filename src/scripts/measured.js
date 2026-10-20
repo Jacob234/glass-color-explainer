@@ -90,5 +90,5 @@ export function basisLine(id) {
   const e = data.colorants[id];
   if (!e) return 'Illustrative curve, drawn from the shape of published spectra.';
   if (e.kind === 'bands') return `Measured: bands fitted to soda-lime glass of known composition (${CITE[e.source]}). ×1 is ${e.amount} mol% ${ION[id]} through 10 mm.`;
-  return `Measured shape, traced from a stained-glass spectrum (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the colour the old drawn curve gave.`;
+  return `Measured shape, traced from a stained-glass spectrum (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
 }

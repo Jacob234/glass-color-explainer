@@ -6,10 +6,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const current = Astro.url.pathname;
 const navLinks = [
   { href: `${base}/#read`, label: 'read' },
-  { href: `${base}/mixing-lab/`, label: 'mixing lab' },
-  { href: `${base}/structure-lab/`, label: 'structure lab' },
+  { href: `${base}/labs/`, label: 'labs' },
   { href: `${base}/library/`, label: 'library' },
 ];
+// the lab pages light up "labs" in the nav
+const labPages = ['light-lab', 'forming-lab', 'structure-lab', 'mixing-lab'];
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +29,7 @@ const navLinks = [
   <nav class="site-nav wrap" aria-label="Site">
     <a class="brand" href={`${base}/`}>Why glass has color</a>
     {navLinks.map((l) => (
-      <a href={l.href} aria-current={current === l.href ? 'page' : undefined}>{l.label}</a>
+      <a href={l.href} aria-current={current === l.href || (l.label === 'labs' && labPages.some((p) => current.startsWith(`${base}/${p}/`))) ? 'page' : undefined}>{l.label}</a>
     ))}
   </nav>
   <slot />

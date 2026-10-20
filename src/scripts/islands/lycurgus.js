@@ -3,7 +3,7 @@ const MODES = {
   front: {
     cup: 'radial-gradient(circle at 45% 35%, #6aa87a, #2c5a3a 70%)',
     bg: '#1c1c22',
-    caption: 'Front-lit: the ~70 nm gold-silver particles scatter green light back at you — the cup reads opaque pea-green.',
+    caption: 'Front-lit: the 50–100 nm silver-gold particles scatter green light back at you — the cup reads opaque pea-green.',
   },
   back: {
     cup: 'radial-gradient(circle at 50% 45%, #ff7a6a, #8a1420 75%)',

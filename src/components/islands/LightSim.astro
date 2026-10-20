@@ -13,7 +13,7 @@ const lamps = LAMPS.filter((l) => !l.dark);
     <label>amount <input type="range" name="conc" min="0" max="100" value="40" /></label>
     <label>turn <input type="range" name="rot" min="-180" max="180" value="0" /></label>
   </div>
-  <p class="island-footnote"><span class="ls-count mono"></span> Drag the glass. A model: light in one plane, each ray one wavelength, Fresnel reflection averaged over polarisation, refractive index from SCHOTT Sellmeier fits, absorption from the page's illustrative colorant spectra.</p>
+  <p class="island-footnote"><span class="ls-count mono"></span> Drag the glass. A model: light in one plane, each ray one wavelength, Fresnel reflection averaged over polarisation, refractive index from SCHOTT Sellmeier fits (Zemax catalogue 2017-01-20b, via refractiveindex.info), absorption from the page's illustrative colorant spectra.</p>
 </figure>
 <script>
   import { initLightSim } from '../../scripts/islands/lightsim.js';

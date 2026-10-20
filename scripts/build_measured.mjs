@@ -2,10 +2,10 @@
 // For each measured colorant: settle its reference amount, then write its 25 nm absorptance curve
 // and its `basis` into optics.json, so islands that read the coarse curves see the measurement too.
 //
-// The reference amount (c = 1) is the amount whose daylight colour comes closest (CIEDE2000) to the
-// colour the drawn curve gave at c = 1, so recipes, the mixing lab and the rack fitter keep their
+// The reference amount (c = 1) is the amount whose daylight color comes closest (CIEDE2000) to the
+// color the drawn curve gave at c = 1, so recipes, the mixing lab and the rack fitter keep their
 // scale, and what difference is left comes from the shape of the measured curve. `match` records
-// that target colour, read once from the drawn curve. A 'bands' entry's amount is rounded to two
+// that target color, read once from the drawn curve. A 'bands' entry's amount is rounded to two
 // significant figures and kept as a stated physical amount; a 'digitised' entry's scale is kept as
 // computed (its units are arbitrary).
 // Run: node scripts/build_measured.mjs [--check]   (--check: fail if optics.json is out of date)
