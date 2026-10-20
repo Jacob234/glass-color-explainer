@@ -165,7 +165,7 @@ export function initNetworkViewer(root, tints) {
     }));
     const rate = state.rate === 'fast' ? '10¹⁴' : '10¹³';
     read.textContent = state.glass === 'silica'
-      ? `Pure silica cooled at ${rate} K/s. Every silicon shares all four corners: the network is unbroken, and every oxygen is a bridge.`
+      ? `Pure silica cooled at ${rate} K/s. ${pct(sum.qn[4])} of the silicons share all four corners and ${pct(sum.bo)} of the oxygens are bridges: the network is all but unbroken. The few defects, a silicon with a loose oxygen, are frozen in by the fast cooling.`
       : `Na₂O·3SiO₂ cooled at ${rate} K/s. Each Na₂O brought an oxygen the network had no bridge for, so ${pct(sum.nbo)} of the oxygens now hang off a single silicon, drawn open, with the sodium beside them.`;
   }
 
