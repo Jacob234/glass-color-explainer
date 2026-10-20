@@ -24,15 +24,15 @@
       "source": "fluegel-glasses", "about": "Typical low-expansion borosilicate of the Pyrex and Duran type." }
   ],
   "viscosity": {
-    "note": "Fluegel (2007), Tables 4–6: isokom temperature T (°C) at log10 η [Pa·s] = 1.5, 6.6 and 12.0 as b0 + Σ b·C over mol% C of every component but silica, with square, cube and cross terms. Only the terms for this bench's oxides are kept (lithium, barium, titania and others dropped). The coefficients were read from the PDF by text extraction; three entries were unreadable and are reconstructed so the model reproduces the paper's own Table 12 predictions for the standards 710, 710A, 711 and DGG I within 2 °C: Na2O·CaO at 1.5 (0.103), the sign of (Na2O)³ at 12.0, and Na2O·K2O at 12.0 (0.060). See `reconstructed`.",
+    "note": "Fluegel (2007), Tables 4–6: isokom temperature T (°C) at log10 η [Pa·s] = 1.5, 6.6 and 12.0 as b0 + Σ b·C over mol% C of every component but silica, with square, cube and cross terms. Only the terms for this bench's oxides are kept (lithium, barium, titania and others dropped). Coefficients as printed in the author's copy of the paper (glassproperties.com), checked by reproducing his Table 12 predictions for the standards 710, 710A, 711, 717A and DGG I within 0.5 °C (see `check`, which carries the coefficients for the standards' other oxides). `correction` is not Fluegel's.",
     "source": "fluegel-viscosity-2007",
     "isokoms": {
       "1.5": { "b0": 1824.497, "terms": {
-        "Al2O3": 19.341, "B2O3": -22.347, "B2O3^2": 0.60376, "CaO": -16.843, "CaO^2": 0.12038, "Fe2O3": -13.611,
+        "Al2O3": 19.341, "B2O3": -22.347, "B2O3^2": 0.60376, "CaO": -17.453, "CaO^2": 0.12038, "Fe2O3": -13.611,
         "K2O": -31.907, "K2O^2": 0.61234, "K2O^3": -0.006662, "MgO": -5.038, "K2O*MgO": 0.59449,
         "Na2O": -30.61, "Na2O^2": 0.27887, "PbO": -21.349,
         "B2O3*Na2O": -0.28237, "B2O3*K2O": -0.2789, "Al2O3*Na2O": -0.23085, "Al2O3*MgO": -0.44589, "Al2O3*CaO": -0.93909,
-        "Na2O*K2O": 0.58773, "Na2O*CaO": 0.103, "K2O*CaO": 0.29628, "MgO*CaO": -0.17394, "Al2O3*Na2O*CaO": 0.03362 } },
+        "Na2O*K2O": 0.58773, "Na2O*CaO": 0.19254, "K2O*CaO": 0.29628, "MgO*CaO": -0.17394, "Al2O3*Na2O*CaO": 0.03362 } },
       "6.6": { "b0": 939.479, "terms": {
         "Al2O3": 5.812, "B2O3": -4.366, "B2O3^2": -0.17367, "CaO": -1.791, "Fe2O3": -11.013,
         "K2O": -20.659, "K2O^2": 0.58116, "K2O^3": -0.00937, "MgO": 0.93, "Na2O": -19.051, "Na2O^2": 0.32209, "Na2O^3": -0.00208,
@@ -43,18 +43,27 @@
         "Al2O3": 4.929, "B2O3": -1.121, "CaO": 6.84, "CaO^2": -0.08269, "Fe2O3": -8.453,
         "K2O": -12.46, "K2O^2": 0.39706, "K2O^3": -0.005382, "MgO": 1.141, "Na2O": -12.854, "Na2O^2": 0.35785, "Na2O^3": -0.004179,
         "PbO": -4.349, "B2O3*Na2O": 0.38413, "B2O3*CaO": -0.20958, "B2O3*Al2O3": -0.3338, "Al2O3*CaO": -0.13741,
-        "Na2O*K2O": 0.06, "Na2O*CaO": -0.10283, "K2O*MgO": 0.27425, "K2O*CaO": 0.2247, "MgO*CaO": -0.21563, "Al2O3*Na2O*CaO": 0.013868 } }
+        "Na2O*K2O": 0.06169, "Na2O*CaO": -0.10283, "K2O*MgO": 0.27425, "K2O*CaO": 0.2247, "MgO*CaO": -0.21563, "Al2O3*Na2O*CaO": 0.013868 } }
     },
-    "reconstructed": [
-      { "level": "1.5", "term": "Na2O*CaO", "value": 0.103, "why": "unreadable in the extracted text; fitted to Table 12" },
-      { "level": "12.0", "term": "Na2O^3", "value": -0.004179, "why": "sign lost in extraction; negative reproduces Table 12" },
-      { "level": "12.0", "term": "Na2O*K2O", "value": 0.06, "why": "unreadable in the extracted text; fitted to Table 12" }
-    ],
+    "correction": {
+      "note": "Fluegel's data predate the magnesia-rich sodium aluminosilicates of modern cover glass; run on such SciGlass melts his model is tens of degrees too cold. This term, c·Al2O3·MgO in mol%, is added to each isokom. It is not Fluegel's: it was fitted here to SciGlass melts with alumina short of charge balance by tools/sciglass/fit_viscosity.mjs.",
+      "source": "sciglass",
+      "terms": { "1.5": { "Al2O3*MgO": 0.3879 }, "6.6": { "Al2O3*MgO": 0.8582 }, "12.0": { "Al2O3*MgO": 0.849 } }
+    },
     "check": {
-      "note": "Fluegel's Table 1 compositions (mol%, trace TiO2, ZnO, SO3 and Sb2O3 left out) and his Table 12 model predictions, °C at 1.5, 6.6, 12.0.",
-      "710": { "mol": { "Al2O3": 0.11, "Na2O": 8.7, "K2O": 5.07, "CaO": 12.82, "Fe2O3": 0.01 }, "model": [1294, 732, 564] },
-      "711": { "mol": { "Al2O3": 0.51, "Na2O": 3.76, "K2O": 5.55, "PbO": 18.9 }, "model": [1172, 614, 445] },
-      "DGG I": { "mol": { "Al2O3": 0.72, "Na2O": 14.34, "K2O": 0.21, "MgO": 6.16, "CaO": 7.13, "Fe2O3": 0.07 }, "model": [1303, 715, 535] }
+      "note": "Fluegel's Table 1 compositions (mol%; Sb2O3 is in no model table and is left out) and his Table 12 model predictions, °C at 1.5, 6.6, 12.0. `other` holds his coefficients for the standards' oxides the bench drops, used only for this check.",
+      "other": {
+        "1.5": { "TiO2": -10.323, "ZnO": -6.28, "SO3": -13.908, "Li2O": -30.336, "Li2O^2": 0.22499, "B2O3*Li2O": -0.16843, "Al2O3*Li2O": -0.38421, "Na2O*Li2O": 0.20691, "K2O*Li2O": 0.24924 },
+        "6.6": { "TiO2": -2.862, "ZnO": -1.065, "Li2O": -25.075, "Li2O^2": 0.46012, "B2O3*Li2O": 0.39626, "Na2O*Li2O": 0.20781, "K2O*Li2O": 0.46938 },
+        "12.0": { "TiO2": 3.864, "Li2O": -11.571, "Li2O^2": 0.27802, "Li2O^3": -0.002576, "Na2O*Li2O": 0.08558, "K2O*Li2O": 0.17538, "CaO*Li2O": -0.8817 }
+      },
+      "standards": {
+        "710": { "mol": { "Al2O3": 0.11, "Na2O": 8.7, "K2O": 5.07, "CaO": 12.82, "SO3": 0.15, "Fe2O3": 0.01 }, "model": [1294, 732, 564] },
+        "710A": { "mol": { "Al2O3": 1.31, "Na2O": 8.25, "K2O": 6.27, "CaO": 9.62, "TiO2": 0.32, "ZnO": 2.81 }, "model": [1314, 729, 551] },
+        "711": { "mol": { "Al2O3": 0.51, "Na2O": 3.76, "K2O": 5.55, "PbO": 18.9 }, "model": [1172, 614, 445] },
+        "717A": { "mol": { "Al2O3": 2.19, "Na2O": 1.03, "K2O": 5.42, "B2O3": 16.97, "Li2O": 2.14 }, "model": [1378, 731, 520] },
+        "DGG I": { "mol": { "Al2O3": 0.72, "Na2O": 14.34, "K2O": 0.21, "MgO": 6.16, "CaO": 7.13, "SO3": 0.32, "Fe2O3": 0.07, "TiO2": 0.1 }, "model": [1303, 715, 535] }
+      }
     }
   },
   "expansion": {
@@ -69,11 +78,11 @@
     "q": { "SiO2": 30.5, "Na2O": 49.5, "K2O": 42.0, "CaO": 49.4, "MgO": 45.0, "Al2O3": 42, "B2O3": null, "PbO": 66.0, "Fe2O3": null }
   },
   "density": {
-    "note": "Fluegel et al. (2008), Table 2, melt density at 1200 °C in g/cm³, linear in mol% with a (PbO)² term. Room-temperature density is taken as 2.50 g/cm³ (Pilkington's float glass figure) times the batch's melt density over float glass's: one contraction factor for every batch, which is the model's weakest step.",
-    "source": "fluegel-melt-density-2008",
-    "b0": 2.23531,
-    "terms": { "B2O3": -0.00409, "Al2O3": 0.00156, "K2O": -0.00163, "MgO": 0.00678, "CaO": 0.01028, "PbO": 0.05784, "PbO^2": 0.000139 },
-    "floatRT": 2.5
+    "note": "Room-temperature density in g/cm³ as b0 + Σ b·C over mol% C, with PbO², B2O3² and boron–alkali cross terms (BO₃ turns into denser BO₄ as alkali is added). Fitted here by least squares to 7,452 SciGlass glasses of only this bench's oxides, from 1,369 sources, by tools/sciglass/fit_density.py. Held out by source, it misses by a median 0.017 g/cm³ (soda-lime 0.013, borosilicate 0.033, lead 0.039), against 0.049 for the scaled melt density it replaces.",
+    "source": "sciglass",
+    "b0": 2.25219,
+    "terms": { "Na2O": 0.00682, "K2O": 0.006141, "CaO": 0.01295, "MgO": 0.007452, "Al2O3": 0.003088, "B2O3": -0.002185, "PbO": 0.06368, "Fe2O3": 0.02615,
+      "PbO^2": 0.0002104, "B2O3^2": -0.0001604, "B2O3*Na2O": 0.0005809, "B2O3*K2O": 0.00068 }
   },
   "iron": {
     "note": "Sack, Carmichael, Rivers and Ghiorso (1980), Table 3: ln(X_Fe2O3 / X_FeO) = a ln fO2 + b/T + c + Σ d·X over mole fractions X. Holding the furnace (fO2, T) fixed, only Σ d·X changes from batch to batch. Fitted to natural lavas melted at 1200–1430 °C, with less soda than any glass on this bench; lead and boric oxide are not in the model and are counted as silica.",
