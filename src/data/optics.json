@@ -23,8 +23,8 @@
       "absorbance": [0.98, 0.98, 0.98, 0.97, 0.96, 0.94, 0.90, 0.75, 0.35, 0.08, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
     { "id": "cdse", "label": "CdSe-rich crystals", "basis": "illustrative", "group": "bandgap", "why": "Selenium-rich crystals move the edge to ~640 nm, giving the signal red of selenium ruby.",
       "absorbance": [0.98, 0.98, 0.98, 0.98, 0.97, 0.96, 0.95, 0.92, 0.88, 0.75, 0.40, 0.10, 0.04, 0.03, 0.02, 0.02, 0.02] },
-    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "illustrative", "group": "ions", "why": "Shielded 4f electrons absorb in narrow bands (green, yellow, near-IR), giving a lilac that changes with the light source.",
-      "absorbance": [0.10, 0.08, 0.10, 0.12, 0.15, 0.30, 0.70, 0.25, 0.90, 0.30, 0.12, 0.10, 0.15, 0.25, 0.75, 0.30, 0.10] }
+    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "measured-shape", "source": "chimalawong-2010", "group": "ions", "why": "Shielded 4f electrons absorb in narrow bands (green, yellow, near-IR), giving a lilac that changes with the light source.",
+      "absorbance": [0, 0, 0.096, 0.033, 0.169, 0.309, 0.704, 0.008, 0.993, 0.568, 0, 0, 0.126, 0, 0, 0, 0] }
   ],
   "illuminants": [
     { "id": "daylight", "label": "Daylight (≈D65)",

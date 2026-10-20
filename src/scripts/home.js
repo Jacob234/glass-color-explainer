@@ -241,7 +241,7 @@ const ROD_NOTES = {
   copper: 'Cu²⁺ absorbs a broad band in the red and near infrared, leaving turquoise to blue.',
   chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial color of the later 19th century; older bottle green is iron.',
   manganese: "Mn³⁺ absorbs in the green and lets red and blue through: amethyst. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
-  neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The color shifts with the light it is viewed under.',
+  neodymium: 'Nd³⁺ absorbs in narrow bands, the strongest at 583 nm in the yellow and a weaker one at 525 nm in the green. Daylight leaves lilac; switch the lamp to the fluorescent tube and the same rod turns blue-gray (the showroom shows why).',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
 };
 function ions(onRod) {
@@ -1077,6 +1077,46 @@ function showroom() {
   addEventListener('resize', render); onLamp(render);
 }
 
+/* ---------- 09 the showroom: one neodymium glass under three lamps at once ---------- */
+// Unlike the rest of the page, these panes ignore the page's lamp: each is lit by its own, side by
+// side, so the change can be seen without switching. Picking one lights the whole page with it.
+const ND_LAMPS = ['daylight', 'tungsten', 'tube'];
+const ND_AMOUNT = 1.6; // the history rail's neodymium pin
+// Where each lamp puts its light, in bands the readout names (nm, inclusive).
+const ND_BANDS_SEEN = [['blue', 400, 470], ['green', 535, 555], ['orange', 575, 600], ['red', 605, 615], ['yellow', 565, 600]];
+function ndLamps() {
+  const box = $('ndTrio'), T = mixT([['neodymium', ND_AMOUNT]]);
+  const cells = ND_LAMPS.map((id) => {
+    const l = LAMP[id], pane = h('div', { className: 'pane' }, h('b', {}, l.label));
+    const canvas = h('canvas', { className: 'strip', 'aria-label': `the spectrum of ${l.label}, and what the glass lets through` });
+    const b = h('button', { className: 'nd-cell', title: `light the page with ${l.label}` }, pane, canvas);
+    b.addEventListener('click', () => setLamp(l));
+    box.appendChild(b);
+    return { l, pane, canvas, b };
+  });
+  // Share of the lamp's power in a band that the glass passes.
+  const kept = (l, lo, hi) => {
+    let a = 0, b = 0;
+    GRID.forEach((w, i) => { if (w >= lo && w <= hi) { a += l.spd[i] * T[i]; b += l.spd[i]; } });
+    return a / b;
+  };
+  const pct = (x) => `${Math.round(100 * x)}%`;
+  function render() {
+    for (const c of cells) {
+      c.pane.style.setProperty('--c', underLamp(T, c.l).css);
+      const m = Math.max(...c.l.spd), top = c.l.spd.map((v) => v / m);
+      strip(c.canvas, T, top);
+      c.b.classList.toggle('on', c.l === lamp);
+    }
+    const tube = LAMP.tube, k = Object.fromEntries(ND_BANDS_SEEN.map(([n, lo, hi]) => [n, kept(tube, lo, hi)]));
+    const day = Object.fromEntries(ND_BANDS_SEEN.map(([n, lo, hi]) => [n, kept(LAMP.daylight, lo, hi)]));
+    $('ndRead').textContent = `Under the tube the glass passes ${pct(k.blue)} of the blue light, ${pct(k.green)} of the green line at 545 nm, `
+      + `${pct(k.red)} of the red line at 611 nm and ${pct(k.orange)} of the orange lines: short of red, the rest reads blue. `
+      + `From daylight it takes the yellow (it passes ${pct(day.yellow)} of 565–600 nm) and a little green, and what is left of a smooth spectrum, red with blue, reads lilac.`;
+  }
+  addEventListener('resize', render); onLamp(render);
+}
+
 /* ---------- the lamp switch: one light for the whole page ---------- */
 // The page's paper, table and rules are lit by the lamp too: each base color is multiplied by the
 // color white paper takes on under it.
@@ -1288,5 +1328,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); initEyes({ getLamp: () => lamp, onLamp }); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); ndLamps(); initEyes({ getLamp: () => lamp, onLamp }); historyRail(); lampSwitch();
 }

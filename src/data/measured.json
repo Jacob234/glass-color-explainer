@@ -21,6 +21,13 @@
       "sample": "Silver nanoparticles grown in the glass surface by firing a silver stain (radius about 2–6 nm by the authors' estimate). The figure ends at 650 nm; the last value is held to 780 nm.",
       "relative": [0.38, 0.419, 0.475, 0.565, 0.697, 0.837, 0.934, 0.974, 0.984, 0.967, 0.819, 0.658, 0.548, 0.468, 0.411, 0.368, 0.332, 0.302, 0.277, 0.254, 0.233, 0.216, 0.197, 0.182, 0.167, 0.156, 0.143, 0.133, 0.121, 0.112, 0.105, 0.098, 0.09, 0.084, 0.079, 0.072, 0.069, 0.063, 0.061, 0.058, 0.055, 0.052, 0.049, 0.046, 0.039, 0.041, 0.04, 0.04, 0.04, 0.037, 0.037, 0.035, 0.035, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033, 0.033]
     },
+    "neodymium": {
+      "kind": "digitized", "source": "chimalawong-2010", "match": "#dfc0fa", "scale": 3.649,
+      "figure": "Fig. 3: (65−x)SiO₂·25Na₂O·10CaO·xNd₂O₃ glasses, x = 1, 2, 3 mol%, 3 mm thick",
+      "sample": "Soda-lime-silica glasses melted from reagent-grade oxides (no iron to remove), measured 300–700 nm on a Hitachi U-1800. Each curve sits on a flat offset that grows with Nd₂O₃; a straight baseline through 440–452, 548–560, 615–660 and 694–699 nm is taken away, each curve is divided by its mol% and the three are averaged. The figure ends at 700 nm, so the weak 740 and 800 nm bands, where the eye is nearly blind, are left out (0).",
+      "unit": "absorbance (as plotted) per 3 mm per mol% Nd₂O₃",
+      "relative": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.004, 0.012, 0.004, 0, 0, 0, 0.004, 0.015, 0.022, 0.022, 0.022, 0.022, 0.009, 0.004, 0.012, 0.022, 0.044, 0.083, 0.1, 0.118, 0.148, 0.145, 0.106, 0.043, 0.013, 0.001, 0.001, 0.021, 0.073, 0.172, 0.354, 0.585, 0.645, 0.458, 0.288, 0.189, 0.1, 0.047, 0.022, 0.003, 0.001, 0, 0, 0, 0, 0, 0, 0, 0, 0.002, 0.005, 0.016, 0.021, 0.016, 0.005, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
     "iron-ferrous": {
       "kind": "bands", "source": "volotinen-2007", "match": "#8de3f3", "amount": 0.43,
       "table": "Table 5.4.1: Fe²⁺ in octahedral and tetrahedral sites, with its ultraviolet peak",
