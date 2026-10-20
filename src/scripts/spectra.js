@@ -58,7 +58,7 @@ export function radianceColor(L, spd, adapt = 1, scale = 1) {
   return { lin, rgb, css: css(rgb) };
 }
 
-// The same adaptation as radianceColor, as one matrix from XYZ (normalised so the lamp's white has
+// The same adaptation as radianceColor, as one matrix from XYZ (normalized so the lamp's white has
 // Y = 1) to linear sRGB, for images that integrate many spectra per pixel (raytrace.js).
 export function displayMatrix(spd, adapt = 1) {
   const white = integrate(spd), src = mul(BRADFORD, white.map((v) => v / white[1])), dst = mul(BRADFORD, D65);
@@ -102,7 +102,7 @@ export const planck = (T) => GRID.map((w) => w ** -5 / (Math.exp(C2 / (w * T)) -
 export const emissivity = (T) => T.map((t) => 1 - t);
 
 // The color and relative luminance of a glowing body at T kelvin with spectral emissivity eps
-// (on GRID; omitted, a black body). The color is normalised so its brightest channel is 1;
+// (on GRID; omitted, a black body). The color is normalized so its brightest channel is 1;
 // luminance is relative to a black body at Tref (1150 °C furnace glass).
 export function glow(T, Tref = 1423, eps = null) {
   const B = planck(T), L = eps ? B.map((b, i) => b * eps[i]) : B;
@@ -128,7 +128,7 @@ export const SPECTRAL = GRID.map((w, i) => {
   return lin.map((v) => (v / peak) * k);
 });
 
-// An idealised semiconductor absorption edge: photons above the band gap (eV) are absorbed.
+// An idealized semiconductor absorption edge: photons above the band gap (eV) are absorbed.
 export const bandEdge = (eV, width = 8) => {
   const edge = 1240 / eV;
   return GRID.map((w) => 1 - 0.97 / (1 + Math.exp((w - edge) / width)));

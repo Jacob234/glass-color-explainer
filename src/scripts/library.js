@@ -13,14 +13,14 @@ export const KINDS = {
   database: 'Database',
   measurement: 'Measurement',
   method: 'Method',
-  catalogue: 'Supplier catalogue',
+  catalog: 'Supplier catalog',
   reference: 'Reference work',
 };
 
 // Reuse terms, from most to least open. `copy` means numbers or files may be copied into the
 // repo with attribution; `cite` means facts may be used and cited but files are not rehosted.
 export const REUSE = {
-  open: 'Open licence: data may be copied with attribution',
+  open: 'Open license: data may be copied with attribution',
   cite: 'Cite and link; do not rehost',
   unknown: 'Terms not stated; link only',
 };
@@ -53,7 +53,7 @@ export function validateLibrary(lib, read) {
     if (!s.id || !/^[a-z0-9-]+$/.test(s.id)) errors.push(`${at}: id must be lower-case kebab`);
     if (ids.has(s.id)) errors.push(`${at}: duplicate id`);
     ids.add(s.id);
-    for (const k of ['title', 'by', 'date', 'url', 'provides', 'kind', 'reuse', 'licence', 'checked']) {
+    for (const k of ['title', 'by', 'date', 'url', 'provides', 'kind', 'reuse', 'license', 'checked']) {
       if (!s[k]) errors.push(`${at}: missing ${k}`);
     }
     if (s.url && !/^https?:\/\//.test(s.url)) errors.push(`${at}: url must be a web address`);

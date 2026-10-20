@@ -20,6 +20,6 @@
   "surfaceTension": { "value": 0.3, "units": "N/m", "note": "Typical of soda-lime melts near working heat (unverified)." },
   "convection": { "value": 15, "units": "W/(m²·K)", "note": "Assumed natural-convection coefficient for a gather turning in still shop air." },
   "air": { "value": 25, "units": "°C" },
-  "breath": { "min": 0.5, "max": 5, "default": 2, "units": "kPa", "flow": 0.5, "note": "Assumed range for a blower's sustained mouth pressure, and an assumed most they can exhale (flow, litres per second) while holding it; not measured. Adults can push roughly 10 kPa at maximum effort (unverified)." },
+  "breath": { "min": 0.5, "max": 5, "default": 2, "units": "kPa", "flow": 0.5, "note": "Assumed range for a blower's sustained mouth pressure, and an assumed most they can exhale (flow, liters per second) while holding it; not measured. Adults can push roughly 10 kPa at maximum effort (unverified)." },
   "gather": { "radius": 0.035, "bore": 0.003, "units": "m", "note": "A first gather about 7 cm across, on a pipe whose bore leaves a 3 mm pocket of air at the tip (assumed sizes)." }
 }

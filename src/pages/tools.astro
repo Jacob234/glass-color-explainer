@@ -9,13 +9,13 @@ const gapAt = (job, route) => d.gaps.filter((g) => g.job === job && g.route === 
 const count = (s) => d.tools.filter((t) => t.status === s).length;
 const host = (url) => new URL(url).hostname.replace(/^www\./, '');
 ---
-<Base title="Tools" description="Open software, models and data for glass science: what each does, its licence, whether it can run in a web page, and where nothing open exists yet.">
+<Base title="Tools" description="Open software, models and data for glass science: what each does, its license, whether it can run in a web page, and where nothing open exists yet.">
   <article class="concept tools" id="tools" data-show="all">
     <p class="detail-type">Tools</p>
     <h1>Software and data for glass</h1>
     <p class="summary">
       The open databases, models and programs that compute glass properties, placed by the job
-      each does and by how it can be used on a web page. Each entry gives its licence and whether
+      each does and by how it can be used on a web page. Each entry gives its license and whether
       this site uses it. Three cells mark jobs that no open tool does yet.
     </p>
 
@@ -72,7 +72,7 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
               <p class="by">{t.by}</p>
               <p class="what">{t.what}</p>
               <p class="here"><b>On this site.</b> {t.here}</p>
-              <p class="licence"><b>Licence</b> {t.licence} · <span class="host">{host(t.url)}</span></p>
+              <p class="license"><b>License</b> {t.license} · <span class="host">{host(t.url)}</span></p>
             </li>
           ))}
           {d.gaps.filter((g) => g.job === j.id).map((g) => (
@@ -87,9 +87,9 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
     ))}
 
     <p class="aside">
-      <b>How this map was made.</b> Licences and update dates were read from each project's own
+      <b>How this map was made.</b> Licenses and update dates were read from each project's own
       repository or page on {d.checked}. "Runs in a web page" means the tool is small enough for a
-      browser and its licence lets it ship with a page; GPL code is listed under "run offline"
+      browser and its license lets it ship with a page; GPL code is listed under "run offline"
       because a page that bundled it would itself have to be GPL. Corrections and missing tools are
       welcome as an issue on <a href="https://github.com/Jacob234/glass-color-explainer/issues" rel="noopener">GitHub</a>.
       The sources this site computes from are listed in the <a href={`${base}/library/`}>library</a>.
@@ -154,8 +154,8 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
   .by { margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--ink-2); }
   .what, .here { margin: 0 0 0.6rem; font-size: 0.92rem; }
   .here b { font-weight: 600; }
-  .licence { margin: auto 0 0; padding-top: 0.4rem; font-size: 0.8rem; color: var(--ink-2); border-top: 1px dotted var(--rule); }
-  .licence b { color: var(--ink); font-weight: 500; margin-right: 0.3rem; }
+  .license { margin: auto 0 0; padding-top: 0.4rem; font-size: 0.8rem; color: var(--ink-2); border-top: 1px dotted var(--rule); }
+  .license b { color: var(--ink); font-weight: 500; margin-right: 0.3rem; }
   .host { font-family: var(--mono); font-size: 0.74rem; }
   .card.s-not { background: transparent; }
   .gapcard { background: transparent; border: 1px dashed var(--ink-2); }
