@@ -793,7 +793,7 @@
       "by": "Daniel R. Cassar", "date": "2021", "edition": "Acta Materialia 206, 116602; arXiv 2007.03719; run through GlassPy 0.6.0 (github.com/drcassar/glasspy)",
       "url": "https://doi.org/10.1016/j.actamat.2020.116602",
       "provides": "A small neural network (35 composition features, two hidden layers) that outputs the three MYEGA parameters, log10 η∞, Tg and fragility m, trained on SciGlass viscosity data. The fragility stage's curves for the bench presets, silica, B2O3, one-oxide sweeps and 834 measured melts come from it, precomputed in a GitHub Actions job (tools/fragility/viscnet.py).",
-      "reuse": "cite", "licence": "Paper: journal article (preprint on arXiv). GlassPy code and the trained weights (Zenodo 13625981): GPL-3.0-or-later. The site ships only numbers computed with them, not the code or weights.",
+      "reuse": "cite", "license": "Paper: journal article (preprint on arXiv). GlassPy code and the trained weights (Zenodo 13625981): GPL-3.0-or-later. The site ships only numbers computed with them, not the code or weights.",
       "checked": "2026-10-20",
       "usedBy": [
         { "file": "public/data/viscnet.json", "find": "ViscNet", "stage": "fragility" },
@@ -807,7 +807,7 @@
       "by": "John C. Mauro, Yuanzheng Yue, Adam J. Ellison, Prabhat K. Gupta, Douglas C. Allan", "date": "2009", "edition": "PNAS 106(47), 19780–19784",
       "url": "https://doi.org/10.1073/pnas.0911705106",
       "provides": "The three-parameter viscosity equation every curve in the fragility stage uses: log10 η in terms of η∞, Tg and fragility m, derived from Adam–Gibbs with a temperature-dependent count of topological constraints.",
-      "reuse": "cite", "licence": "Journal article; the equation is quoted with citation.",
+      "reuse": "cite", "license": "Journal article; the equation is quoted with citation.",
       "checked": "2026-10-20",
       "usedBy": [
         { "file": "src/scripts/fragility.js", "find": "MYEGA (Mauro et al. 2009)", "stage": "fragility" }
@@ -819,7 +819,7 @@
       "by": "Qiuju Zheng, John C. Mauro, Adam J. Ellison, Marcel Potuzak, Yuanzheng Yue", "date": "2011", "edition": "Physical Review B 83, 212202",
       "url": "https://doi.org/10.1103/PhysRevB.83.212202",
       "provides": "The finding that silicate liquids share a high-temperature viscosity limit, log10 η∞ ≈ −2.93 Pa·s (value confirmed in secondary citations, e.g. Cassetta et al. 2021, Sci. Rep.). The fragility stage holds η∞ at this value in its fits to SciGlass melts and in its fixed-Tg working-range plot.",
-      "reuse": "cite", "licence": "Journal article; the value is quoted with citation.",
+      "reuse": "cite", "license": "Journal article; the value is quoted with citation.",
       "checked": "2026-10-20",
       "usedBy": [
         { "file": "src/scripts/fragility.js", "find": "Zheng et al. (2011)", "stage": "fragility" }
@@ -831,7 +831,7 @@
       "by": "C. Austen Angell", "date": "1995", "edition": "Science 267(5206), 1924–1935",
       "url": "https://doi.org/10.1126/science.267.5206.1924",
       "provides": "The strong–fragile classification of liquids and the plot of log viscosity against Tg/T that the fragility stage draws.",
-      "reuse": "cite", "licence": "Journal article; cited only.",
+      "reuse": "cite", "license": "Journal article; cited only.",
       "checked": "2026-10-20",
       "usedBy": [
         { "file": "src/components/Fragility.astro", "find": "science.267.5206.1924", "stage": "fragility" }
