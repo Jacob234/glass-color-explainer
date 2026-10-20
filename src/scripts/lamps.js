@@ -39,7 +39,7 @@ export const LAMPS = [
   { id: 'daylight', label: 'daylight', ext: table('D65', EXT), adapt: 1,
     note: 'CIE D65, the standard for average daylight. Every color on the page was first computed under this light.' },
   { id: 'candle', label: 'candle', ext: planckOn(EXT, 1850), adapt: 0.6,
-    note: 'A candle flame glows like a black body at about 1850 K. Almost no blue: cobalt goes dark and inky, and the yellows and reds look richer.' },
+    note: 'A candle flame glows like a black body at about 1850 K. Almost no blue: cobalt goes dark, and yellows and reds look stronger.' },
   { id: 'tungsten', label: 'tungsten', ext: planckOn(EXT, 2856), adapt: 0.7,
     note: 'An incandescent bulb (CIE illuminant A, a black body at 2856 K). Warm, smooth, and with every wavelength present, so colors shift but none disappear.' },
   { id: 'sodium', label: 'sodium street lamp', ext: noUV(lines(SODIUM_D)), lines: SODIUM_D, adapt: 0,

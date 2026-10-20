@@ -230,7 +230,7 @@ function redox() {
     $('redoxOut').textContent = `${Math.round(r * 100)}% Fe²⁺`;
     $('redoxRead').textContent = r > 0.65 ? 'Reducing flame: most iron is Fe²⁺, absorbing in the red and near infrared. Blue-green.'
       : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing the violet strongly and the green and red faintly. A pale yellow-green face on; edge on, those faint bands add up to bottle green.'
-      : 'A mix of both ions. Each subtracts its own band, and the result is a muddy olive.';
+      : 'A mix of both ions. Each subtracts its own band, and the result is olive.';
   };
   s.addEventListener('input', render); onLamp(render);
 }
@@ -369,7 +369,7 @@ function vessel() {
     $('bowlMeters').replaceChildren(...rows);
     $('wallOut').textContent = `×${blow().toFixed(2)}`;
     $('bowlRead').textContent = cased
-      ? 'Cased: the color lives in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
+      ? 'Cased: the color is in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
       : 'Solid color: the rim is blown thinnest and is palest, and the heavy foot is darkest. The outline darkens too, because there your line of sight runs along the wall instead of across it.';
     $('caneRead').textContent = cased
       ? 'Cased cane is darkest at its edges and palest down the middle, like a tube, because the middle crosses only the skin twice. Cut end on, the color is a ring.'
@@ -519,7 +519,7 @@ function kirchhoff() {
 // against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
 // lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
 const LENS_NOTES = {
-  none: 'Without protection the flare is several times brighter than the glass inside it. The gather is a shape in a yellow blaze.',
+  none: 'Without protection the flare is several times brighter than the glass inside it. The gather is hard to make out inside the yellow glare.',
   didymium: 'Neodymium and praseodymium cut a notch across 580–595 nm. The flare drops to about 1% and the gather shows through, slightly pink because a little yellow is gone. The near infrared passes almost untouched.',
   shade: 'A second, iron-bearing glass behind the didymium. Fe²⁺ absorbs broadly in the near infrared, the same ion that turns a window edge green, so it costs little visible light but stops most of the heat.',
 };
@@ -679,7 +679,7 @@ function glasses() {
         meter(`room light (${lamp.label})`, d.lampT, lampColor(lamp.spd)),
       );
       $('lensRead').textContent = LENS_NOTES[cur] + (lamp.lines && cur !== 'none'
-        ? ' Under the sodium street lamp the trick runs backwards: the notch that removes the flare removes almost all the light there is, and the room goes nearly black.' : '');
+        ? ' Under the sodium street lamp this works against you: the notch that removes the flare removes almost all the lamp’s light, and the room goes nearly black.' : '');
       drawStrip(d.T, tK, flare);
     }
   }
@@ -720,7 +720,7 @@ function strike() {
     strip($('stripGap'), T);
     $('gapOut').textContent = `${eV.toFixed(2)} eV · edge ${Math.round(edge)} nm`;
     $('gapTag').textContent = eV > 2.3 ? 'yellow' : eV > 2.05 ? 'orange' : eV > 1.85 ? 'red' : 'deep red';
-    $('gapRead').textContent = `Every photon above ${eV.toFixed(2)} eV (shorter than ${Math.round(edge)} nm) is absorbed; everything longer passes. A sharp edge gives these colors their clean, saturated look.`;
+    $('gapRead').textContent = `Every photon above ${eV.toFixed(2)} eV (shorter than ${Math.round(edge)} nm) is absorbed; everything longer passes. The sharp edge is what makes these colors so saturated.`;
   };
   sG.addEventListener('input', renderGold); sE.addEventListener('input', renderGap);
   addEventListener('resize', () => { renderGold(); renderGap(); });
@@ -849,10 +849,10 @@ function lehr() {
       row('core · tension', mpa(core), core),
       row('rim, face on · retardation', `${rim < 10 ? rim.toFixed(1) : Math.round(rim)} nm`, rim / 6),
       row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
-    const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot all but vanishes into the dark field.`
+    const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot is nearly as dark as the field around it.`
       : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
       : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal color are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
-      : 'Past first-order red into blue at the rim. Each repeat of the colors is another wavelength of retardation: this piece is carrying real stress.';
+      : 'Past first-order red into blue at the rim. Each repeat of the colors is another wavelength of retardation: this piece holds substantial stress.';
     const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colors collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
     $('lehrRead').textContent = `${state_} ${VIEW_NOTES[viewer]}${sodium}`;
     $('edgeRead').textContent = `Through the edge the foot shows what face on hides: compression of ${mpa(face)} in a band at each face, tension of ${mpa(core)} in the core, and between them a line where the stress passes through zero (dark between crossed polarizers), 58% of the way from the middle to each face. The light now crosses ${2 * R} mm of glass instead of ${d}, so the same stress gives up to ${through < 10 ? through.toFixed(1) : Math.round(through)} nm. Thickness counts twice: the frozen difference grows as its square.`;
@@ -1216,7 +1216,7 @@ function fitBench() {
     dE <= 1 ? 'Side by side you could not tell them apart.'
     : dE <= MATCH ? 'Close enough to pass for the same color side by side.'
     : dE <= 6 ? 'Near, but visibly off. The twelve curves cannot quite reach this color.'
-    : 'Far off. No melt of these colorants makes this color, so something else is going on.';
+    : 'Far off. No melt of these colorants makes this color.';
   // A melt in the mixing lab: concentrations up to 1 at a wall up to 4× thick, so scale the
   // wall to fit the strongest colorant and divide it back out.
   const labLink = (parts) => {

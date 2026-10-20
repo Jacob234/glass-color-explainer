@@ -7,7 +7,7 @@
     {
       "id": "ions",
       "label": "dissolved ions",
-      "blurb": "Metal ions dissolved like dye — broad, host-sensitive absorption.",
+      "blurb": "Metal ions dissolved in the glass, with broad absorption bands that depend on the host.",
       "slugs": ["transition-metal-colorants", "rare-earth-colorants"],
       "theme": "#5b6ee1",
       "artifacts": [
@@ -20,7 +20,7 @@
     {
       "id": "colloids",
       "label": "metal colloids",
-      "blurb": "Gold, copper, or silver nanoparticles — plasmon resonance, struck by reheat.",
+      "blurb": "Gold, copper or silver nanoparticles that absorb by plasmon resonance, grown by a reheat.",
       "slugs": ["colloidal-color", "silver-stain"],
       "theme": "#c1486b",
       "artifacts": [
@@ -32,7 +32,7 @@
     {
       "id": "bandgap",
       "label": "band-gap crystals",
-      "blurb": "Semiconductor microcrystals — a razor absorption edge, the purest warm colors.",
+      "blurb": "Semiconductor microcrystals with a sharp absorption edge, giving saturated yellows, oranges and reds.",
       "slugs": ["selenium-ruby"],
       "theme": "#d07a2a",
       "artifacts": [
@@ -43,7 +43,7 @@
     {
       "id": "structure",
       "label": "structure & scattering",
-      "blurb": "No chromophore at all — second phases scatter, films interfere.",
+      "blurb": "No absorber: second phases scatter light and thin films interfere.",
       "slugs": [],
       "anchorTarget": { "targetSlug": "color-in-glass", "anchor": "structure-and-scattering" },
       "theme": "#7d8a96",

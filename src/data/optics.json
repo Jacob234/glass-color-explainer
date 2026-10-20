@@ -1,29 +1,29 @@
 {
   "wavelengths": [380, 405, 430, 455, 480, 505, 530, 555, 580, 605, 630, 655, 680, 705, 730, 755, 780],
   "colorants": [
-    { "id": "cobalt", "label": "Cobalt Co²⁺", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs in three bands across the yellow, orange and red — a fraction of a percent gives a deep blue.",
+    { "id": "cobalt", "label": "Cobalt Co²⁺", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs in three bands across the yellow, orange and red; a fraction of a percent makes a dark blue.",
       "absorbance": [0.116, 0.032, 0, 0, 0.107, 0.514, 0.841, 0.811, 0.916, 0.96, 0.965, 0.964, 0.769, 0.242, 0.071, 0, 0] },
     { "id": "chromium", "label": "Chromium Cr³⁺/Cr⁶⁺", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "ions", "why": "Cr⁶⁺ takes the violet edge and Cr³⁺ a band in the orange-red; between them a green window gets through.",
       "absorbance": [0.999, 0.95, 0.842, 0.76, 0.579, 0.264, 0.044, 0.072, 0.356, 0.651, 0.828, 0.894, 0.908, 0.917, 0.908, 0.897, 0.889] },
-    { "id": "manganese", "label": "Manganese Mn³⁺", "basis": "illustrative", "group": "ions", "why": "A broad absorption centered in the green leaves purple — the amethyst of decolorized glass gone purple.",
+    { "id": "manganese", "label": "Manganese Mn³⁺", "basis": "illustrative", "group": "ions", "why": "A broad band centered in the green leaves purple, the color that manganese-decolorized glass can turn.",
       "absorbance": [0.30, 0.25, 0.30, 0.45, 0.70, 0.90, 0.85, 0.65, 0.45, 0.35, 0.30, 0.25, 0.20, 0.18, 0.15, 0.12, 0.10] },
     { "id": "iron-ferrous", "label": "Iron Fe²⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "A strong absorption rising into the red and near-IR gives the blue-green edge tint of ordinary window glass.",
       "absorbance": [0.809, 0.436, 0.189, 0.078, 0.034, 0.019, 0.026, 0.066, 0.163, 0.327, 0.538, 0.738, 0.878, 0.953, 0.984, 0.995, 0.998] },
-    { "id": "iron-ferric", "label": "Iron Fe³⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "Absorbs mostly in the ultraviolet, with weak bands in the violet and two fainter ones in the green and red: a faint yellow-green. Same element as Fe²⁺, different color: that's redox.",
+    { "id": "iron-ferric", "label": "Iron Fe³⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "Absorbs mostly in the ultraviolet, with weak bands in the violet and two fainter ones in the green and red, which leaves a faint yellow-green. It is the same element as Fe²⁺ in a higher oxidation state; the furnace's redox sets the balance.",
       "absorbance": [0.717, 0.343, 0.392, 0.336, 0.265, 0.24, 0.232, 0.241, 0.259, 0.282, 0.304, 0.315, 0.31, 0.288, 0.252, 0.21, 0.167] },
-    { "id": "copper", "label": "Copper Cu²⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "Strong red absorption leaves turquoise — the Egyptian-faience lineage.",
+    { "id": "copper", "label": "Copper Cu²⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "Strong red absorption leaves turquoise, the color of copper in Egyptian faience.",
       "absorbance": [0.008, 0, 0.001, 0.004, 0.015, 0.048, 0.117, 0.225, 0.361, 0.498, 0.617, 0.708, 0.771, 0.812, 0.836, 0.85, 0.855] },
-    { "id": "gold-colloid", "label": "Gold colloid", "basis": "illustrative", "group": "colloids", "why": "Surface plasmon resonance near 530 nm devours the green — the transmitted remainder is gold-ruby red.",
+    { "id": "gold-colloid", "label": "Gold colloid", "basis": "illustrative", "group": "colloids", "why": "Surface plasmon resonance near 530 nm absorbs the green, and what is transmitted is gold-ruby red.",
       "absorbance": [0.50, 0.48, 0.47, 0.50, 0.58, 0.80, 0.95, 0.85, 0.55, 0.30, 0.18, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05] },
-    { "id": "silver-colloid", "label": "Silver colloid", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "colloids", "why": "Silver's plasmon sits near 420 nm, in the violet-blue — transmitting the yellow of silver stain.",
+    { "id": "silver-colloid", "label": "Silver colloid", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "colloids", "why": "Silver's plasmon resonance sits near 420 nm, in the violet-blue, so it transmits the yellow of silver stain.",
       "absorbance": [0.662, 0.909, 0.904, 0.651, 0.486, 0.36, 0.259, 0.186, 0.145, 0.111, 0.1, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09] },
-    { "id": "cds", "label": "CdS crystals", "basis": "illustrative", "group": "bandgap", "why": "A 2.4 eV band gap absorbs everything bluer than ~515 nm with a razor edge — brilliant yellow.",
+    { "id": "cds", "label": "CdS crystals", "basis": "illustrative", "group": "bandgap", "why": "A 2.4 eV band gap absorbs everything shorter than ~515 nm, with a sharp edge, leaving a saturated yellow.",
       "absorbance": [0.98, 0.98, 0.97, 0.95, 0.90, 0.55, 0.12, 0.05, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
-    { "id": "cdsse", "label": "CdS–Se crystals", "basis": "illustrative", "group": "bandgap", "why": "Swap sulfur for selenium and the edge slides — the same chemistry tuned to orange.",
+    { "id": "cdsse", "label": "CdS–Se crystals", "basis": "illustrative", "group": "bandgap", "why": "Replacing some sulfur with selenium narrows the gap and moves the edge toward the red, giving orange.",
       "absorbance": [0.98, 0.98, 0.98, 0.97, 0.96, 0.94, 0.90, 0.75, 0.35, 0.08, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
-    { "id": "cdse", "label": "CdSe-rich crystals", "basis": "illustrative", "group": "bandgap", "why": "Selenium-rich crystals push the edge to ~640 nm — the saturated signal red of the selenium ruby.",
+    { "id": "cdse", "label": "CdSe-rich crystals", "basis": "illustrative", "group": "bandgap", "why": "Selenium-rich crystals move the edge to ~640 nm, giving the signal red of selenium ruby.",
       "absorbance": [0.98, 0.98, 0.98, 0.98, 0.97, 0.96, 0.95, 0.92, 0.88, 0.75, 0.40, 0.10, 0.04, 0.03, 0.02, 0.02, 0.02] },
-    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "illustrative", "group": "ions", "why": "Shielded 4f electrons absorb in narrow pickets (green, yellow, near-IR) — a lilac that changes with the light source.",
+    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "illustrative", "group": "ions", "why": "Shielded 4f electrons absorb in narrow bands (green, yellow, near-IR), giving a lilac that changes with the light source.",
       "absorbance": [0.10, 0.08, 0.10, 0.12, 0.15, 0.30, 0.70, 0.25, 0.90, 0.30, 0.12, 0.10, 0.15, 0.25, 0.75, 0.30, 0.10] }
   ],
   "illuminants": [
@@ -38,7 +38,7 @@
       { "t": 0.25, "label": "nucleation — first faint blush", "color": "#eed7d4" },
       { "t": 0.5, "label": "growth — the ruby strikes", "color": "#9b1b3c" },
       { "t": 0.75, "label": "peak ruby", "color": "#7a1530" },
-      { "t": 1.0, "label": "over-struck — coarsened, livery gray-purple", "color": "#5b4350" }
+      { "t": 1.0, "label": "over-struck: coarsened, dull gray-purple", "color": "#5b4350" }
     ],
     "selenium": [
       { "t": 0.0, "label": "dissolved — colorless", "color": "#f2f0ec" },
@@ -52,7 +52,7 @@
     {
       "id": "decolorize",
       "label": "Decolorize",
-      "story": "Manganese's purple absorbs where iron's green transmits — they cancel toward gray, the old glassmaker's trick. It only works for the faint tint of trace iron: a pinch of each nearly vanishes, while more of both just makes the glass dark. (The real trick also involves redox chemistry this model can't show.)",
+      "story": "Manganese absorbs in the green, where iron's tint transmits, so together they absorb a little of everything and read as gray. Glassmakers used this to decolorize. It only works for the faint tint of trace iron: a pinch of each nearly vanishes, while more of both makes the glass dark. (The real trick also involves redox chemistry this model can't show.)",
       "melt": [
         { "colorant": "iron-ferrous", "c": 0.1 },
         { "colorant": "manganese", "c": 0.05 }
@@ -61,7 +61,7 @@
     {
       "id": "deep-teal",
       "label": "Deep teal",
-      "story": "Cobalt devours the orange and red; chromium devours the violet and red — stack them and only a blue-green window survives.",
+      "story": "Cobalt absorbs the orange and red; chromium absorbs the violet and red. Together they leave only a blue-green window.",
       "melt": [
         { "colorant": "cobalt", "c": 0.6 },
         { "colorant": "chromium", "c": 1 }
@@ -70,7 +70,7 @@
     {
       "id": "amber-ish",
       "label": "Amber-ish",
-      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a grey brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this palette does not have.",
+      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a grey brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this model does not have.",
       "melt": [
         { "colorant": "iron-ferric", "c": 1 },
         { "colorant": "manganese", "c": 0.12 }
