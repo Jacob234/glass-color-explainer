@@ -623,7 +623,7 @@
       "title": "SciGlass",
       "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py).",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 12,513 melts made only of its nine oxides, with measured viscosity points, index, Abbe number and liquidus temperature, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py).",
       "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
       "reuse": "open", "license": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT license. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
       "checked": "2026-10-19",
@@ -833,6 +833,20 @@
         { "file": "src/components/Fragility.astro", "find": "ViscNet (Cassar 2021)", "stage": "fragility" }
       ],
       "caution": "GlassPy 0.6.0 divides the features by their means instead of their standard deviations (_BaseViscNet sets x_std = x_mean); the script restores the standard deviations, which cuts the median Tg miss against the measured fits from 53 to 22 K. Pure silica is still badly wrong: Tg about 650 °C too low. ViscNet was trained on SciGlass, so comparing it with SciGlass melts is not an independent test."
+    },
+    {
+      "id": "glassnet-2023", "kind": "method", "short": "GlassNet (Cassar 2023)",
+      "title": "GlassNet: A multitask deep neural network for predicting many glass properties",
+      "by": "Daniel R. Cassar", "date": "2023", "edition": "Ceramics International 49(22B), 36013–36024; arXiv 2303.15538; run through GlassPy 0.6.0 (github.com/drcassar/glasspy)",
+      "url": "https://doi.org/10.1016/j.ceramint.2023.08.281",
+      "provides": "A multitask neural network trained on more than 218,000 SciGlass compositions that predicts 85 properties, among them the isokom temperatures, liquidus, Tg, index, Abbe number and density. Stage 01's dotted second-opinion viscosity curve, liquidus line and index square come from it, run at each preset and along each slider from each preset, and on every SciGlass melt the bench compares against, precomputed in a GitHub Actions job (tools/glassnet/glassnet.py).",
+      "reuse": "cite", "license": "Paper: journal article (preprint on arXiv). GlassPy code and the trained weights (Zenodo 13625981): GPL-3.0-or-later. The site ships only numbers computed with them, not the code or weights.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "public/data/glassnet.json", "find": "GlassNet", "stage": "batch" },
+        { "file": "src/components/Home.astro", "find": "GlassNet (Cassar 2023)", "stage": "batch" }
+      ],
+      "caution": "Trained on SciGlass, so scoring it on SciGlass melts is mostly in-sample; its own holdout scores the same. On the bench's melts it misses viscosity by a median 20 °C (the bench's Fluegel-based model: 16 °C) and liquidus by 48 °C. It jumps when an oxide first appears, because its features include the minimum and maximum of element properties over the elements present: in float glass 0.2 wt% alumina drops its liquidus 40 °C and 0.04 mol% iron raised it 30 °C. Several sliders moved are summed one-slider changes, which stray from GlassNet itself by a median 18 °C at the working point and 39 °C at the liquidus."
     },
     {
       "id": "myega-2009", "kind": "method", "short": "MYEGA (Mauro et al. 2009)",

@@ -185,7 +185,7 @@ export function batchStage({ colorOf, onLamp }) {
     $('bMeasured').textContent = measuredText(nearV, nearA);
 
     // GlassNet: its own viscosity curve, dotted; its liquidus, a vertical line; measured liquidus
-    // temperatures of nearby SciGlass melts as crosses along the top; its index and Abbe number, a square.
+    // temperatures of nearby SciGlass melts as crosses beside its label; its index and Abbe number, a square.
     const g = net ? gn.predict(net, wt, origin) : null, nearL = sg ? m.nearest(mol, sg, { has: ['liq'] }) : [];
     const netItems = [], aItems = [];
     if (g) {
@@ -198,14 +198,14 @@ export function batchStage({ colorOf, onLamp }) {
       const xl = V.sx(g.liquidus);
       if (g.liquidus >= VX0 && g.liquidus <= VX1) {
         netItems.push(svgEl('line', { x1: xl, x2: xl, y1: V.sy(VY1), y2: V.sy(VY0), class: 'ln liq' }),
-          svgEl('text', { x: xl - 7, y: V.sy(VY1) + 12, class: 'lab', 'text-anchor': 'end' }, `liquidus ${Math.round(g.liquidus)} °C`));
+          svgEl('text', { x: xl + 7, y: V.sy(10.4), class: 'lab' }, `liquidus ${Math.round(g.liquidus)} °C`));
       }
       if (g.vd <= AX0 && g.vd >= AX1 && g.nd >= AY0 && g.nd <= AY1) {
         const x = A.sx(g.vd), y2 = A.sy(g.nd);
         aItems.push(svgEl('rect', { x: x - 4.5, y: y2 - 4.5, width: 9, height: 9, class: 'net-sq' }));
       }
     }
-    for (const q of nearL.toReversed()) if (q.liq >= VX0 && q.liq <= VX1) netItems.push(cross(V.sx(q.liq), V.sy(13.1), q === nearL[0] ? 5 : 3.5, q === nearL[0] ? 'x' : 'x faint'));
+    for (const q of nearL.toReversed()) if (q.liq >= VX0 && q.liq <= VX1) netItems.push(cross(V.sx(q.liq), V.sy(9.4), q === nearL[0] ? 5 : 3.5, q === nearL[0] ? 'x' : 'x faint'));
     vNet.replaceChildren(...netItems); aNet.replaceChildren(...aItems);
     $('bNet').textContent = netText(p, g, nearL);
 
@@ -273,7 +273,7 @@ export function batchStage({ colorOf, onLamp }) {
     if (g.moved.length > 1) t += ` With several sliders moved these numbers are summed one-slider changes, which ignore how the oxides interact: tested against GlassNet itself they stray a median ${Math.round(net.additivity.T3.median)} °C at the working point and ${Math.round(net.additivity.liquidus.median)} °C at the liquidus, which bends sharply where one crystal gives way to another.`;
     if (nearL.length) {
       const q = nearL[0];
-      t += ` The crosses along the top are measured liquidus temperatures from SciGlass within 3 mol%; the nearest, ${m.cite(sg, q)}, ${q.d < 0.05 ? 'this batch itself' : `${q.d.toFixed(1)} mol% away`}, melted clear above ${q.liq} °C, and GlassNet put it at ${net.melts[q.id]?.[2] ?? '?'} °C.`;
+      t += ` The crosses beside the liquidus label are measured liquidus temperatures from SciGlass within 3 mol%; the nearest, ${m.cite(sg, q)}, ${q.d < 0.05 ? 'this batch itself' : `${q.d.toFixed(1)} mol% away`}, has a measured liquidus of ${q.liq} °C; GlassNet puts it at ${net.melts[q.id]?.[2] ?? '?'} °C.`;
     } else t += ' SciGlass holds no measured liquidus within 3 mol% of this batch.';
     return t;
   }
