@@ -1,0 +1,53 @@
+---
+// Stage 02′, long and short glasses: fragility and the Angell plot. Instruments in
+// scripts/stage-fragility.js, MYEGA in scripts/fragility.js. Curve parameters are precomputed:
+// ViscNet runs in the "ViscNet" GitHub Actions workflow (tools/fragility/viscnet.py) and the
+// measured fits come from tools/fragility/fit_sciglass.py.
+import '../styles/fragility.css';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<section class="wrap stage" id="fragility">
+  <div class="stage-rail"><div class="stage-num">02′</div><span class="mono">the melt, long and short</span></div>
+  <div class="stage-body">
+    <h2>Some glasses are <i>long</i>, some <i>short</i></h2>
+    <div class="prose">
+      <p>A glassblower calls a glass long when it stays workable over a wide span of temperature after it leaves the glory hole, and short when it sets soon after. Every glass passes through the same viscosities as it cools, from about 10³ Pa·s, where it is gathered and blown, to 10⁶·⁶ Pa·s, where it no longer sags under its own weight. What differs is how many degrees that takes.</p>
+      <p>Part of the answer is where a glass sits on the temperature scale, and part is the shape of its curve. To separate the two, C. Austen Angell plotted each liquid's viscosity against its own glass transition divided by temperature, Tg/T. On that axis every curve reaches 10¹² Pa·s at Tg/T = 1 and they differ only in how they get there. A liquid whose curve is close to a straight line is called strong; one that stays runny until near Tg and then stiffens steeply is called fragile. The slope where the curve meets Tg is the fragility index, m.</p>
+    </div>
+    <div class="chips" id="fGlasses" role="group" aria-label="glass"></div>
+    <div class="lightbox"><svg class="plot" id="fAngell" viewBox="0 0 640 400" role="img" aria-label="Angell plot: log viscosity against Tg over T for several glasses, the chosen one bold, with measured melts as crosses"></svg></div>
+    <p class="readout prose" id="fRead" aria-live="polite"></p>
+
+    <div class="vessel">
+      <h3>What <i>m</i> does to working time</h3>
+      <div class="prose">
+        <p>Hold the glass transition fixed at window glass's and change only the fragility. The span between the working and softening points shrinks as m rises: a fragile glass stays fluid longer as it cools and then sets over a few degrees.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="plot" id="fWork" viewBox="0 0 640 340" role="img" aria-label="viscosity against temperature for a glass with window glass's Tg and the chosen fragility, with the working range marked"></svg></div>
+        <div class="controls">
+          <div class="ctl"><label class="mono" for="fM">fragility <output id="fMOut"></output></label>
+            <input id="fM" type="range" min="15" max="80" step="1" value="35" /><div class="ends"><span>strong</span><span>fragile</span></div></div>
+          <p class="readout" id="fWorkRead" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="vessel">
+      <h3>What each <i>oxide</i> does to m</h3>
+      <div class="prose">
+        <p>Start from window glass, as the stage 01 bench does, and put one oxide in place of silica. The bold line is ViscNet's prediction with its own spread outlined; the dashed line is the bench's viscosity model, read for its slope at Tg. Faint lines are the other oxides.</p>
+      </div>
+      <div class="chips" id="fOxides" role="group" aria-label="oxide"></div>
+      <div class="bench bench-top">
+        <div class="lightbox"><svg class="plot" id="fSweep" viewBox="0 0 640 340" role="img" aria-label="fragility against mol% of one oxide added to window glass, from ViscNet and from the bench's model"></svg></div>
+        <div class="lightbox"><svg class="plot" id="fCompare" viewBox="0 0 440 400" role="img" aria-label="ViscNet's fragility against the fragility fitted to each measured melt"></svg></div>
+      </div>
+      <p class="readout prose" id="fSweepRead" aria-live="polite"></p>
+      <p class="readout prose" id="fCompareRead" aria-live="polite"></p>
+    </div>
+
+    <p class="aside"><b>Models, and what they rest on.</b> Every curve here is the MYEGA equation of <a href="https://doi.org/10.1073/pnas.0911705106" rel="noopener">Mauro and colleagues (2009)</a>, log₁₀ η = log₁₀ η∞ + (12 − log₁₀ η∞)(Tg/T) exp[(m/(12 − log₁₀ η∞) − 1)(Tg/T − 1)], which ties the rise of viscosity on cooling to the loss of configurational entropy (the Adam–Gibbs picture) and needs only three numbers. With η∞ fixed, the straight line is the least fragile curve the equation allows, m = 12 − log₁₀ η∞. The predictions come from <a href="https://doi.org/10.1016/j.actamat.2020.116602" rel="noopener">ViscNet (Cassar 2021)</a>, a small neural network that outputs those three numbers from composition, trained on SciGlass; it runs in <a href="https://github.com/drcassar/glasspy" rel="noopener">GlassPy</a>, which is GPL-licensed, so the site ships only its numbers (<a href={`${base}/data/viscnet.json`}>viscnet.json</a>), computed once at build time. The crosses and the measured m are fits of the same equation to melts in <a href="https://github.com/epam/SciGlass" rel="noopener">SciGlass</a> made only of the bench's nine oxides (<a href={`${base}/data/sciglass/fragility.json`}>fragility.json</a>, ODbL). SciGlass stores each melt's curve as temperatures at whole decades of viscosity interpolated from the source's own points, and the fit uses those. Each fit holds log₁₀ η∞ at −2.93 Pa·s, the value <a href="https://doi.org/10.1103/PhysRevB.83.212202" rel="noopener">Zheng and colleagues (2011)</a> found common to silicate liquids, and fits Tg and m; a melt is kept if it has five or more points, reaches 10⁹ Pa·s and goes below 10⁶ Pa·s, and the equation follows it within 0.15 decades. The words long and short are glassblowers' terms, not defined quantities; reading them as the working-point to softening-point span is this page's choice.</p>
+    <p class="aside" id="fNotes"><b>Strong and fragile.</b> Angell introduced the classification in the 1980s and set out the plot in its usual form in <a href="https://doi.org/10.1126/science.267.5206.1924" rel="noopener">Science (1995)</a>. Fragility in this sense is about the liquid's viscosity, not about how easily the cold glass breaks.</p>
+  </div>
+</section>

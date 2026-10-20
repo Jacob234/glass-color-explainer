@@ -17,6 +17,7 @@ import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
 import { basisLine } from './measured-spectra.js';
 import { batchStage } from './stage-batch.js';
+import { fragilityStage } from './stage-fragility.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -1288,5 +1289,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); initEyes({ getLamp: () => lamp, onLamp }); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); fragilityStage(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); initEyes({ getLamp: () => lamp, onLamp }); historyRail(); lampSwitch();
 }

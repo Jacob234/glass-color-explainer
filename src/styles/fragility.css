@@ -1,0 +1,8 @@
+/* Stage 02′, long and short glasses: ink diagrams on the light box, no glass color. */
+#fragility .lightbox svg { display: block; width: 100%; height: auto; }
+#fragility .chips { margin: 0.4rem 0 0.6rem; }
+#fragility .plot .x { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+#fragility .plot .x.faint { stroke: var(--ink-3); stroke-width: 1.2; }
+#fragility .plot .spread { fill: var(--paper-2); stroke: var(--ink-3); stroke-width: 0.8; }
+#fragility .plot .speck { fill: var(--ink); fill-opacity: 0.45; }
+#fragility .vessel .bench-top { margin-top: 0.5rem; }
