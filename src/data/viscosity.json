@@ -11,7 +11,7 @@
   "points": [
     { "id": "melting", "label": "melting", "logPas": 1, "definition": "10 Pa·s: runny enough to fine out bubbles" },
     { "id": "working", "label": "working", "logPas": 3, "definition": "1000 Pa·s: stiff enough to hold a shape on the pipe" },
-    { "id": "softening", "label": "softening", "logPas": 6.6, "measured": 724, "definition": "Littleton point: a hanging fibre stretches under its own weight" },
+    { "id": "softening", "label": "softening", "logPas": 6.6, "measured": 724, "definition": "Littleton point: a hanging fiber stretches under its own weight" },
     { "id": "annealing", "label": "annealing", "logPas": 12, "measured": 546, "definition": "stress relaxes in minutes" },
     { "id": "strain", "label": "strain", "logPas": 13.5, "measured": 504, "definition": "stress takes hours to relax; below it, nothing moves" }
   ],

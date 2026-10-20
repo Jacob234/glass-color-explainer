@@ -14,7 +14,7 @@ export const meltColor = (melt) =>
 // glass: the piece's melt. Mixing shows two melts and, where they overlap, both in one path.
 export const LABS = [
   { slug: 'light-lab', name: 'Light Lab', kicker: 'refraction, ray by ray', shape: 'prism',
-    blurb: 'Rake a beam across a dark table through prisms and lenses of six glasses, each ray bent by its own index.',
+    blurb: 'Rake a beam across a dark table through prisms and lenses of seven glasses, each ray bent by its own index.',
     glass: [['cobalt', 0.5]] },
   { slug: 'forming-lab', name: 'Forming lab', kicker: 'viscosity at the pipe', shape: 'gather',
     blurb: 'Keep a gather on the pipe: viscosity from a measured glass, sag, blowing and cooling computed.',
@@ -26,7 +26,7 @@ export const LABS = [
     blurb: 'Melt up to four colorants, set the wall thickness, and see the color the batch would make.',
     glass: [['copper', 1]], second: [['cds', 1]] },
   { slug: 'library', name: 'Library', kicker: 'where the numbers come from', shape: 'slides',
-    blurb: 'Every datasheet, standard table and measurement the site computes from, and what each licence allows.',
+    blurb: 'Every datasheet, standard table and measurement the site computes from, and what each license allows.',
     glass: [['neodymium', 1]] },
 ].map((lab) => ({
   ...lab,

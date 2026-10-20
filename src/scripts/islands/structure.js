@@ -114,7 +114,7 @@ export function initStructureSim(root) {
     for (let v = 0; v <= ymax; v += ymax > 6 ? 2 : 1) e.push(svgEl('text', { x: GL - 8, y: sy2(v) + 4, class: 'tk', 'text-anchor': 'end' }, String(v)));
     e.push(svgEl('line', { x1: GL, x2: GW - GR, y1: sy2(1), y2: sy2(1), class: 'ax faint' }));
     e.push(svgEl('text', { x: GW - GR, y: GH - GB - 8, class: 'lb', 'text-anchor': 'end' }, 'distance, σ →'));
-    e.push(svgEl('text', { x: 6, y: 14, class: 'lb' }, 'g(r): neighbours at each distance, against a gas'));
+    e.push(svgEl('text', { x: 6, y: 14, class: 'lb' }, 'g(r): neighbors at each distance, against a gas'));
     if (liquidG) e.push(svgEl('path', { d: pathOf(liquidG.r.map((v, b) => [sx2(v), sy2(Math.min(ymax, liquidG.g[b]))])), class: 'ghost' }));
     e.push(svgEl('path', { d: pathOf(r.map((v, b) => [sx2(v), sy2(Math.min(ymax, g[b]))])), class: 'live' }));
     rdfSvg.replaceChildren(...e);
@@ -134,7 +134,7 @@ export function initStructureSim(root) {
     read.textContent = phase === 'melting' && pending ? 'Melting first, so every run starts from the same liquid; cooling starts when it is molten.'
       : phase === 'melting' ? 'Melting: the atoms diffuse, and any order from the last run is being lost.'
       : phase === 'liquid' ? `A liquid at ${T_HI} ε/k. Choose a cooling rate and press cool.`
-      : phase === 'cooling' ? (cf > 0.25 ? 'Ordered patches are growing: the liquid is crystallising as it cools.' : T > 0.6 ? 'Cooling. The atoms still swap places freely; watch for solid patches to appear.' : 'The atoms have almost stopped swapping places. Whatever order exists now is being frozen in.')
+      : phase === 'cooling' ? (cf > 0.25 ? 'Ordered patches are growing: the liquid is crystallizing as it cools.' : T > 0.6 ? 'Cooling. The atoms still swap places freely; watch for solid patches to appear.' : 'The atoms have almost stopped swapping places. Whatever order exists now is being frozen in.')
       : cf > 0.75 ? `A crystal, with ${m === 0 ? 'every atom alike' : 'both sizes'} packed into hexagonal order. Melt it and quench, then compare the curves.`
       : cf > 0.35 ? 'Part crystal, part glass: ordered grains separated by disordered seams. A slower cool usually gives bigger grains.'
       : 'A glass: the atoms are as disordered as in the liquid, but they no longer move. Compare its g(r) with the faint liquid curve.';

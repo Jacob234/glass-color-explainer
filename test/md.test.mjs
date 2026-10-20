@@ -63,7 +63,7 @@ test('g(r) of a liquid tends to 1 at long range and is empty inside the core', (
 });
 
 // The three regimes the page describes, on fixed seeds.
-test('identical atoms crystallise even when quenched', () => {
+test('identical atoms crystallize even when quenched', () => {
   assert.ok(quenchRun(0, 0.3, 1) > 0.6);
 });
 

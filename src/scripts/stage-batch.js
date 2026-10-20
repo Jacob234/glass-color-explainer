@@ -35,13 +35,13 @@ const signed = (x, digits = 0) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(
 const MOVED = b.OXIDES.filter((o) => o.max);
 const SILICA_MIN = 40; // wt%
 const ROLE = {
-  Na2O: 'Soda is the flux. It breaks the silica network into non-bridging oxygens, so the batch melts at a temperature a furnace can reach; the broken network also expands more when heated and is attacked faster by water. In the iron model an alkaline melt favours Fe³⁺, so more soda pales the green toward yellow.',
+  Na2O: 'Soda is the flux. It breaks the silica network into non-bridging oxygens, so the batch melts at a temperature a furnace can reach; the broken network also expands more when heated and is attacked faster by water. In the iron model an alkaline melt favors Fe³⁺, so more soda pales the green toward yellow.',
   K2O: 'Potash acts like soda, a little more strongly. Soda and potash together soften the glass at low temperature more than either alone, the mixed-alkali effect, which lengthens the working range. Medieval forest glass was fluxed with potash from wood and fern ash.',
   CaO: 'Lime mends the network soda broke: without it a soda-silica glass dissolves in water. In Fluegel\'s model a mol% of lime in place of silica lowers the melting end of the curve (−17 °C at 10¹·⁵ Pa·s) but raises the annealing end (+7 °C at 10¹² Pa·s). The curve steepens and the gather sets fast. Glassmakers call this a short glass.',
   MgO: 'Magnesia comes in with dolomite, which float glass uses for part of its lime. It stiffens the annealing end far less than lime does, and float makers use it partly to keep crystals from forming as the sheet cools.',
   Al2O3: 'Alumina joins the network as tetrahedra, each taking an alkali ion to balance its charge, so it mends the breaks soda made. The glass grows stiffer at every temperature and more durable. Bottle glass carries more of it than window glass.',
   B2O3: 'Boric oxide is a second network former. Borosilicate expands about a third as much as window glass, so it survives going from oven to cold water. Its effect is not simply additive: at first boron takes up the soda and stiffens the glass, and past a point it softens it again, the boron anomaly. Appen\'s boron factor follows this through the ratio of modifiers to boron.',
-  PbO: 'Lead oxide softens the glass over a long range, which is why lead crystal is easy to cut. Here the index rises because lead packs more matter into each cubic centimetre, not because it bends more light per gram: Young and Finn\'s specific refraction for PbO is the lowest of any oxide on this bench. Dispersion rises faster than index, so the Abbe number falls and cut lead crystal throws color (stage 07′).',
+  PbO: 'Lead oxide softens the glass over a long range, which is why lead crystal is easy to cut. Here the index rises because lead packs more matter into each cubic centimeter, not because it bends more light per gram: Young and Finn\'s specific refraction for PbO is the lowest of any oxide on this bench. Dispersion rises faster than index, so the Abbe number falls and cut lead crystal throws color (stage 07′).',
 };
 
 export function batchStage({ colorOf, onLamp }) {

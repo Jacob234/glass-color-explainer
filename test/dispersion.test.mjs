@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   GLASSES, GLASS, LINES, index, abbe, uvResonance, fresnel, refract, trace, prism, deviation, focal, discCdf, lineImage,
+  criticalAngle, returnWindow, brilliant, beamFate,
 } from '../src/scripts/dispersion.js';
 
 test('the dispersion formulas reproduce each datasheet n_d and V_d', () => {
@@ -78,4 +79,51 @@ test('the blurred line image conserves light and is darkest on the line', () => 
   const f = focal(100, GLASS.bk7), at = (x) => lineImage(f, [550], 12.5, 100, 0.06, x)[0];
   assert.ok(at(0) < at(0.1) && at(0.1) <= at(0.3) + 1e-12);
   assert.ok(at(1) > 0.999);
+});
+
+// The cut piece (stage 07′, fire.js): a brilliant section with Tolkowsky's crown and table.
+const d = (g) => index(GLASS[g], LINES.d);
+const tableUp = (id, a) => beamFate(brilliant(0, 0, 10, a), d(id), [0, 1], 40, { only: [-5, 5] }).up;
+
+test('the critical angles the page quotes, and the return windows', () => {
+  assert.equal(criticalAngle(d('sodalime')).toFixed(1), '41.0');
+  assert.equal(criticalAngle(d('f2')).toFixed(1), '38.1');
+  assert.equal(criticalAngle(d('sf11')).toFixed(1), '34.1');
+  const width = (id) => { const [a, b] = returnWindow(d(id)); return (b - a).toFixed(1); };
+  assert.deepEqual(['sodalime', 'f2', 'sf11'].map(width), ['5.3', '9.2', '14.6']);
+  // Tolkowsky's diamond: n 2.417, critical angle 24° 26′
+  assert.ok(Math.abs(criticalAngle(2.417) - (24 + 26 / 60)) < 0.01);
+  assert.ok(index(GLASS.llf1, LINES.d) > 1.545, 'the lead-crystal stand-in meets the EU index');
+});
+
+test('the traced section returns straight-down light just where the window says', () => {
+  for (const id of ['sodalime', 'llf1', 'f2']) {
+    const [lo, hi] = returnWindow(d(id));
+    assert.ok(tableUp(id, lo - 0.3) < 0.01, `${id} leaks below the critical angle`);
+    assert.ok(tableUp(id, lo + 0.3) > 0.85, `${id} returns just above it`);
+    assert.ok(tableUp(id, hi - 0.3) > 0.85, `${id} returns just below the upper limit`);
+    assert.ok(tableUp(id, hi + 0.3) < 0.01, `${id} leaks past the upper limit`);
+  }
+  // every returned ray took exactly two total reflections
+  const f = beamFate(brilliant(0, 0, 10, 43), d('sodalime'), [0, 1], 20, { only: [-5, 5], rays: true });
+  assert.ok(f.list.every(({ r, up }) => up && r.tir === 2));
+});
+
+test("Tolkowsky's diamond pavilion loses window glass's light out of the back, and lead glass keeps it", () => {
+  const fate = (id) => beamFate(brilliant(0, 0, 10, 40.75), d(id), [0, 1], 200);
+  assert.ok(fate('sodalime').down > 0.15);
+  assert.ok(fate('f2').down < 0.01 && fate('f2').up > 0.8);
+  // shares never exceed the light that went in
+  for (const id of ['sodalime', 'llf1', 'f2', 'sf11']) { const f = fate(id); assert.ok(f.up + f.down <= 1 + 1e-9); }
+});
+
+test('light leaving the crown fans wider in a dense flint than in window glass', () => {
+  const spread = (id) => {
+    let worst = 0;
+    const poly = brilliant(0, 0, 10, 42), dir = [Math.sin(0.2), Math.cos(0.2)];
+    const b = beamFate(poly, index(GLASS[id], 430), dir, 40, { rays: true }).list, r = beamFate(poly, index(GLASS[id], 650), dir, 40, { rays: true }).list;
+    b.forEach((x, k) => { if (x.up && r[k].up && x.r.tir === r[k].r.tir) worst = Math.max(worst, deviation(x.r.dir, r[k].r.dir)); });
+    return worst;
+  };
+  assert.ok(spread('sf11') > 3 * spread('sodalime'), `${spread('sf11')} vs ${spread('sodalime')}`);
 });

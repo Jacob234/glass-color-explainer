@@ -1,15 +1,24 @@
-// LycurgusFlip: front-lit (scattering, opaque green) vs back-lit (transmission, glowing red).
-const MODES = {
-  front: {
-    cup: 'radial-gradient(circle at 45% 35%, #6aa87a, #2c5a3a 70%)',
-    bg: '#1c1c22',
-    caption: 'Front-lit: the 50–100 nm silver-gold particles scatter green light back toward you, so the cup looks opaque pea-green.',
-  },
-  back: {
-    cup: 'radial-gradient(circle at 50% 45%, #ff7a6a, #8a1420 75%)',
-    bg: '#f4ead8',
-    caption: 'Back-lit: light passing through is filtered by the colloid’s absorption, so the cup looks translucent red.',
-  },
+// LycurgusFlip: front-lit (light the particles scatter back) vs back-lit (light that gets through).
+// Both colors come from one Mie calculation for 70:30 silver-gold spheres (strike.js LYCURGUS):
+// R is the scattered light seen from the lamp's side, T the transmitted light. The cup's shading
+// uses thinner and thicker paths through the same glass, so it is computed too.
+import { LAMP, underLamp } from '../lamps.js';
+import { lycurgus, LYCURGUS } from '../strike.js';
+
+const day = (S) => underLamp(S, LAMP.daylight).css;
+
+export function lycurgusColors(mm = LYCURGUS.mm) {
+  const thin = lycurgus(mm * 0.5), mid = lycurgus(mm), thick = lycurgus(mm * 1.8);
+  const lift = (R) => R.map((v) => Math.min(1, v * 2.5)); // front-lit against black: brightened 2.5×
+  return {
+    front: { light: day(lift(thick.R)), dark: day(lift(thin.R)) },
+    back: { light: day(thin.T), dark: day(thick.T), mid: day(mid.T) },
+  };
+}
+
+const CAPTIONS = {
+  front: 'Front-lit: the 50–100 nm silver-gold particles scatter light back toward you, more of it green and yellow than red or blue, so the cup looks opaque and greenish. The model gives a sage green, paler than the jade of photographs.',
+  back: 'Back-lit: the same particles absorb and scatter the blue and green out of the light coming through, so the cup glows red.',
 };
 
 export function initLycurgusFlip(root) {
@@ -17,11 +26,15 @@ export function initLycurgusFlip(root) {
   const cup = root.querySelector('.lyc-cup');
   const caption = root.querySelector('.lyc-caption');
   const buttons = root.querySelectorAll('.lyc-buttons button');
+  const c = lycurgusColors();
+  const MODES = {
+    front: { cup: `radial-gradient(circle at 45% 35%, ${c.front.light}, ${c.front.dark} 75%)`, bg: '#141414' },
+    back: { cup: `radial-gradient(circle at 50% 45%, ${c.back.light}, ${c.back.mid} 45%, ${c.back.dark} 85%)`, bg: '#f4f4f0' },
+  };
   function select(id) {
-    const m = MODES[id];
-    stage.style.background = m.bg;
-    cup.style.background = m.cup;
-    caption.textContent = m.caption;
+    stage.style.background = MODES[id].bg;
+    cup.style.background = MODES[id].cup;
+    caption.textContent = CAPTIONS[id];
     buttons.forEach((b) => b.classList.toggle('active', b.dataset.id === id));
   }
   buttons.forEach((b) => b.addEventListener('click', () => select(b.dataset.id)));

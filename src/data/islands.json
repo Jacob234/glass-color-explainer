@@ -5,7 +5,7 @@
     "colloidal-color": "gold-colloid,silver-colloid",
     "selenium-ruby": "cds,cdsse,cdse"
   },
-  "striking": { "colloidal-color": "gold", "selenium-ruby": "selenium" },
+  "striking": { "colloidal-color": "metals", "selenium-ruby": "selenium" },
   "alexandrite": ["rare-earth-colorants"],
   "lycurgus": ["colloidal-color"]
 }

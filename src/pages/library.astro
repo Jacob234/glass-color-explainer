@@ -23,13 +23,13 @@ const count = (state) => sources.filter((s) => s.status.state === state).length;
 const stageLabel = (u) => lib.stages[u.stage] ?? u.stage;
 const host = (url) => new URL(url).hostname.replace(/^www\./, '');
 ---
-<Base title="Library" description="Every datasheet, standard table, database and measurement the glass explainer computes from, with what each provides, where it is used and what its licence allows.">
+<Base title="Library" description="Every datasheet, standard table, database and measurement the glass explainer computes from, with what each provides, where it is used and what its license allows.">
   <article class="concept library">
     <p class="detail-type">Library</p>
     <h1>Where the numbers come from</h1>
     <p class="summary">
       Every measured number on this site comes from one of these: a manufacturer's datasheet, a standard table, a database, or a paper that measured it. This shelf lists each
-      one with what it provides, where the page uses it, and what its licence allows. Sources are
+      one with what it provides, where the page uses it, and what its license allows. Sources are
       linked, not rehosted; the repo keeps only the numbers it computes from, with the citation beside them.
     </p>
 
@@ -61,7 +61,7 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
               )}
               {s.would && <p class="would"><b>Would give:</b> {s.would}</p>}
               {s.caution && <p class="caution"><b>Note.</b> {s.caution}</p>}
-              <p class="licence"><b>{REUSE[s.reuse]}.</b> {s.licence}</p>
+              <p class="license"><b>{REUSE[s.reuse]}.</b> {s.license}</p>
               <p class="foot"><a href={s.url} rel="noopener">{host(s.url)}</a> · checked {s.checked}</p>
             </li>
           ))}
@@ -86,7 +86,7 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
       </table>
     </section>
 
-    <p class="aside"><b>Not on this shelf.</b> Dates and stories on the history rail carry their own sources there; this shelf holds sources of data. Software and models for glass, including ones this site does not use, are mapped on the <a href={`${base}/tools/`}>tools</a> page. Licence notes summarise what each source states about reuse and were read on the date shown; they are not legal advice. The list lives in <code>src/data/library.json</code>, and <code>npm run check</code> fails if a source says it is used in a file that no longer cites it.</p>
+    <p class="aside"><b>Not on this shelf.</b> Dates and stories on the history rail carry their own sources there; this shelf holds sources of data. Software and models for glass, including ones this site does not use, are mapped on the <a href={`${base}/tools/`}>tools</a> page. License notes summarize what each source states about reuse and were read on the date shown; they are not legal advice. The list lives in <code>src/data/library.json</code>, and <code>npm run check</code> fails if a source says it is used in a file that no longer cites it.</p>
     <p class="back"><a href={`${base}/`}>← back to the start</a></p>
   </article>
 </Base>
@@ -118,8 +118,8 @@ const host = (url) => new URL(url).hostname.replace(/^www\./, '');
   .uses li.pr .stage::before { content: '◐ '; }
   .uses code { font-size: 0.78em; word-break: break-all; }
   .uses .pr { font-family: var(--mono); font-size: 0.72rem; margin-left: auto; }
-  .licence { margin: auto 0 0.4rem; padding-top: 0.5rem; font-size: 0.8rem; color: var(--ink-2); }
-  .licence b { color: var(--ink); font-weight: 500; }
+  .license { margin: auto 0 0.4rem; padding-top: 0.5rem; font-size: 0.8rem; color: var(--ink-2); }
+  .license b { color: var(--ink); font-weight: 500; }
   .foot { margin: 0; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); }
   .foot a { color: var(--ink-2); }
   .caution { margin: 0 0 0.6rem; font-size: 0.82rem; border-left: 2px solid var(--ink); padding-left: 0.6rem; }
