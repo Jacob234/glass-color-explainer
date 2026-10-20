@@ -37,6 +37,17 @@ const atoms = Array.from({ length: 34 }, (_, i) => {
               {atoms.map(([x, y]) => <circle cx={x} cy={y} r="2.4" class="atom" />)}
             </g>
           )}
+          {lab.shape === 'tetra' && (
+            <g>
+              <polygon points="40,20 128,14 132,80 36,84" fill={lab.color} class="edge" />
+              {[[58, 34], [84, 30], [108, 40], [70, 58], [98, 64], [118, 66], [50, 66]].map(([x, y], i, all) => (
+                <g>
+                  {all.slice(i + 1).filter(([u, v]) => Math.hypot(u - x, v - y) < 32).map(([u, v]) => <line x1={x} y1={y} x2={u} y2={v} class="ray" />)}
+                  <circle cx={x} cy={y} r="3.2" class="atom" />
+                </g>
+              ))}
+            </g>
+          )}
           {lab.shape === 'pair' && (
             <g>
               <defs><clipPath id="labs-pair"><circle cx="66" cy="48" r="32" /></clipPath></defs>
@@ -63,7 +74,7 @@ const atoms = Array.from({ length: 34 }, (_, i) => {
     </li>
   ))}
 </ul>
-<p class="labs-note">Each piece is a real melt from the site's colorant table, computed under daylight like every other color here: cobalt, gold ruby, trace iron, copper with cadmium sulfide (and both together where they overlap), neodymium.</p>
+<p class="labs-note">Each piece is a real melt from the site's colorant table, computed under daylight like every other color here: cobalt, gold ruby, trace iron, chromium, copper with cadmium sulfide (and both together where they overlap), neodymium.</p>
 
 <style>
   .labs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0 1.6rem; }

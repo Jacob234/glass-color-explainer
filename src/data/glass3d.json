@@ -1,0 +1,307 @@
+{
+  "note": "Four melt–quench molecular-dynamics runs behind the Network lab. Made offline with LAMMPS and the SHIK potential (scripts/md3d/quench.in, runs.sh); positions in src/data/glass3d/<id>.json, statistics computed from them by src/scripts/network.js (scripts/build_glass3d.mjs). Each run: 3,000 atoms in a periodic box, random start, 5 ps untangling, 30 ps at 6000 K and fixed volume, 40 ps at 4000 K and 1 bar, a linear quench to 300 K at 1 bar, 30 ps at 300 K; velocity Verlet at 1 fs with Nosé–Hoover thermostat and barostat. Runs of one glass share a seed, so they start from the same 4000 K liquid and differ only in how fast it was cooled.",
+  "potential": {
+    "name": "SHIK",
+    "form": "Buckingham plus a short r⁻²⁴ wall, A·exp(−Br) − C/r⁶ + D/r²⁴ (cut at 8 Å), and Coulomb between fixed partial charges, Wolf-truncated at 10 Å; both smoothed to zero with γ = 0.2 Å.",
+    "charges": {
+      "Si": 1.7755,
+      "Na": 0.6018,
+      "O": "set by neutrality: −0.8878 in silica, −0.9329 in Na₂O·3SiO₂"
+    }
+  },
+  "glasses": {
+    "silica": {
+      "name": "silica",
+      "formula": "SiO₂",
+      "atoms": "1,000 Si, 2,000 O"
+    },
+    "soda": {
+      "name": "soda silica",
+      "formula": "Na₂O·3SiO₂",
+      "atoms": "750 Si, 1,750 O, 500 Na",
+      "x": 0.25
+    }
+  },
+  "runs": [
+    {
+      "id": "silica-fast",
+      "glass": "silica",
+      "rate": 100,
+      "seed": 4127,
+      "cooling": [],
+      "summary": {
+        "atoms": {
+          "O": 1750,
+          "Si": 750,
+          "Na": 500
+        },
+        "density": 2.0878,
+        "qn": [
+          0.0013,
+          0.0147,
+          0.1147,
+          0.4027,
+          0.4467
+        ],
+        "siCoord": {
+          "3": 0.004,
+          "4": 0.98,
+          "5": 0.016
+        },
+        "nbo": 0.2966,
+        "bo": 0.6651,
+        "rings": {
+          "3": 0.2373,
+          "4": 0.2267,
+          "5": 0.2253,
+          "6": 0.188,
+          "7": 0.2,
+          "8": 0.16,
+          "9": 0.1427,
+          "10": 0.1
+        },
+        "angle": {
+          "mean": 131.7705,
+          "peak": 132.5,
+          "hist": [
+            121,
+            25,
+            3,
+            5,
+            28,
+            69,
+            111,
+            132,
+            143,
+            131,
+            118,
+            75,
+            66,
+            47,
+            49,
+            21,
+            18,
+            2
+          ]
+        },
+        "naO": 4.494
+      }
+    },
+    {
+      "id": "silica-slow",
+      "glass": "silica",
+      "rate": 10,
+      "seed": 4127,
+      "cooling": [],
+      "summary": {
+        "atoms": {
+          "O": 1750,
+          "Si": 750,
+          "Na": 500
+        },
+        "density": 2.0878,
+        "qn": [
+          0.0013,
+          0.0147,
+          0.1147,
+          0.4027,
+          0.4467
+        ],
+        "siCoord": {
+          "3": 0.004,
+          "4": 0.98,
+          "5": 0.016
+        },
+        "nbo": 0.2966,
+        "bo": 0.6651,
+        "rings": {
+          "3": 0.2373,
+          "4": 0.2267,
+          "5": 0.2253,
+          "6": 0.188,
+          "7": 0.2,
+          "8": 0.16,
+          "9": 0.1427,
+          "10": 0.1
+        },
+        "angle": {
+          "mean": 131.7705,
+          "peak": 132.5,
+          "hist": [
+            121,
+            25,
+            3,
+            5,
+            28,
+            69,
+            111,
+            132,
+            143,
+            131,
+            118,
+            75,
+            66,
+            47,
+            49,
+            21,
+            18,
+            2
+          ]
+        },
+        "naO": 4.494
+      }
+    },
+    {
+      "id": "soda-fast",
+      "glass": "soda",
+      "rate": 100,
+      "seed": 5231,
+      "cooling": [],
+      "summary": {
+        "atoms": {
+          "O": 1750,
+          "Si": 750,
+          "Na": 500
+        },
+        "density": 2.0878,
+        "qn": [
+          0.0013,
+          0.0147,
+          0.1147,
+          0.4027,
+          0.4467
+        ],
+        "siCoord": {
+          "3": 0.004,
+          "4": 0.98,
+          "5": 0.016
+        },
+        "nbo": 0.2966,
+        "bo": 0.6651,
+        "rings": {
+          "3": 0.2373,
+          "4": 0.2267,
+          "5": 0.2253,
+          "6": 0.188,
+          "7": 0.2,
+          "8": 0.16,
+          "9": 0.1427,
+          "10": 0.1
+        },
+        "angle": {
+          "mean": 131.7705,
+          "peak": 132.5,
+          "hist": [
+            121,
+            25,
+            3,
+            5,
+            28,
+            69,
+            111,
+            132,
+            143,
+            131,
+            118,
+            75,
+            66,
+            47,
+            49,
+            21,
+            18,
+            2
+          ]
+        },
+        "naO": 4.494
+      }
+    },
+    {
+      "id": "soda-slow",
+      "glass": "soda",
+      "rate": 10,
+      "seed": 5231,
+      "cooling": [],
+      "summary": {
+        "atoms": {
+          "O": 1750,
+          "Si": 750,
+          "Na": 500
+        },
+        "density": 2.0878,
+        "qn": [
+          0.0013,
+          0.0147,
+          0.1147,
+          0.4027,
+          0.4467
+        ],
+        "siCoord": {
+          "3": 0.004,
+          "4": 0.98,
+          "5": 0.016
+        },
+        "nbo": 0.2966,
+        "bo": 0.6651,
+        "rings": {
+          "3": 0.2373,
+          "4": 0.2267,
+          "5": 0.2253,
+          "6": 0.188,
+          "7": 0.2,
+          "8": 0.16,
+          "9": 0.1427,
+          "10": 0.1
+        },
+        "angle": {
+          "mean": 131.7705,
+          "peak": 132.5,
+          "hist": [
+            121,
+            25,
+            3,
+            5,
+            28,
+            69,
+            111,
+            132,
+            143,
+            131,
+            118,
+            75,
+            66,
+            47,
+            49,
+            21,
+            18,
+            2
+          ]
+        },
+        "naO": 4.494
+      }
+    }
+  ],
+  "reference": {
+    "nmr": {
+      "label": "measured, ²⁹Si NMR",
+      "by": "Maekawa et al. 1991, as plotted by Sundararaman et al. 2019",
+      "qn": [
+        0,
+        0,
+        0,
+        0.62,
+        0.38
+      ]
+    },
+    "shik": {
+      "label": "SHIK at 2.25 K/ps",
+      "by": "Sundararaman et al. 2019, 10,500–12,000 atoms",
+      "qn": [
+        0,
+        0,
+        0.09,
+        0.4,
+        0.47
+      ]
+    }
+  }
+}

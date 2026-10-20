@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+import NetworkViewer from '../components/islands/NetworkViewer.astro';
+import NetworkCharts from '../components/NetworkCharts.astro';
+import data from '../data/glass3d.json';
+import { binaryQn } from '../scripts/network.js';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const run = (id: string) => data.runs.find((r) => r.id === id)!.summary;
+const pct = (v: number) => `${Math.round(v * 100)}%`;
+const sf = run('silica-fast'), ss = run('silica-slow'), nf = run('soda-fast'), ns = run('soda-slow');
+const ringRange = (s: typeof sf) => Object.keys(s.rings).map(Number);
+const binary = binaryQn(data.glasses.soda.x);
+---
+<Base title="Network lab" description="Three thousand atoms of real silicate glass, melted and quenched in a molecular-dynamics simulation, to turn over and slice: the random network, its broken bridges, and its rings.">
+  <article class="concept nv-page">
+    <p class="detail-type">a simulation, run once and kept</p>
+    <h1>Network lab</h1>
+    <p class="summary">
+      A cube of glass three and a half nanometers on a side: three thousand atoms of silicon, oxygen
+      and, in one of the two glasses, sodium. They were melted and cooled in a research simulation,
+      and their final positions are kept here so you can turn the block over and slice it. Unlike the
+      disks of the <a href={`${base}/structure-lab/`}>Structure lab</a>, these atoms bond: every
+      silicon holds four oxygens at the corners of a tetrahedron, and the tetrahedra join corner to
+      corner into a network with no repeating pattern.
+    </p>
+
+    <NetworkViewer />
+
+    <div class="prose-col">
+      <h2>What to look for</h2>
+      <p>
+        <strong>Silica, a thin slice.</strong> Every silicon is inked black: it shares all four of its
+        oxygens with neighbors, which chemists write Q⁴. Every oxygen is a bridge between two
+        silicons. This is the picture W. H. Zachariasen drew in 1932, in two dimensions, before anyone
+        could check it: a network as connected as a crystal's, with the order taken out. X-ray
+        diffraction soon backed it, and the best of those measurements (Mozzi and Warren, 1969) found
+        the angle at each bridging oxygen spread from 120° all the way to 180°, most often near 144°.
+        In this simulated silica the commonest angle is {Math.round(ss.angle.peak)}° (to the nearest
+        5° bin), the spread runs as wide, and {pct(ss.siCoord[4])} of the silicons have exactly four
+        oxygens.
+      </p>
+      <p>
+        <strong>Rings.</strong> Follow bridges from one silicon around and back to it and you trace a
+        ring. In cristobalite, the crystal silica forms most easily, every smallest ring has six
+        tetrahedra. Turn on the rings and step through the sizes: the glass has rings from
+        {Math.min(...ringRange(ss))} to {Math.max(...ringRange(ss))} tetrahedra and beyond, most of them
+        five, six or seven. The variety of rings is what a crystal cannot have, and it is one way to
+        say exactly what "disordered" means for a network whose every atom still has its proper
+        neighbors.
+      </p>
+      <p>
+        <strong>Soda silica.</strong> Switch to the glass with sodium, which has the proportions of
+        Na₂O·3SiO₂, a quarter of the oxide units soda. Each Na₂O brings one oxygen and two sodium
+        ions. The extra oxygen cannot join the network as a bridge; instead one Si–O–Si bridge is
+        cut, and the two silicons each keep an oxygen that now hangs free, drawn open here. The
+        sodium ions, dashed rings, sit beside those loose oxygens, each surrounded by about
+        {nf.naO.toFixed(0)} of them, and hold the charge in balance. Cutting the network this way is
+        why soda lowers the melting temperature so far.
+      </p>
+
+      <h2>Where the breaks fall</h2>
+      <p>
+        Counting is enough to say how many bridges must break: in Na₂O·3SiO₂ there are two loose
+        oxygens for every three silicons. It does not say how they are shared out. The simplest
+        guess, the binary model, puts at most one loose oxygen on each tetrahedron, which makes the
+        glass {pct(binary[3])} Q³ and {pct(binary[4])} Q⁴. Nuclear magnetic resonance of ²⁹Si can
+        tell the Qⁿ species apart, and measurements of real sodium silicates (Maekawa and colleagues,
+        1991) find something close to the binary model with a little of the reaction
+        2Q³ ⇌ Q² + Q⁴ mixed in. The simulations spread the breaks much more widely:
+      </p>
+      <NetworkCharts chart="qn" />
+      <p class="caption">
+        Qⁿ is the number of a silicon's four oxygens that bridge to another silicon. The NMR row and
+        the 2.25 K/ps simulation by the authors of the potential are read from their figure 5
+        (Sundararaman et al., 2019), so they are good to a few percent.
+      </p>
+      <p>
+        The simulated glass has {pct(nf.qn[2])} Q² in the fast quench and {pct(ns.qn[2])} in the
+        slower one; the measured glass has almost none. The usual explanation, which the potential's
+        own authors give, is the cooling rate. A liquid's structure is more disordered the hotter it
+        is, and a glass keeps the structure of the liquid at the temperature where it stopped
+        rearranging. A simulation cools so fast that it stops rearranging hundreds of degrees hotter
+        than a real glass, and keeps that hotter liquid's disorder.
+      </p>
+
+      <h2>Simulation is fast, the furnace is slow</h2>
+      <p>
+        The two quench rates here are 100 and 10 kelvin per picosecond: 10¹⁴ and 10¹³ kelvin per
+        second. A lehr anneals glass at a few kelvin per minute, about 10⁻¹ K/s, so the gap is some
+        fourteen orders of magnitude. Simulations cannot close it: the slower run here took two and a
+        half hours on one processor for a few hundredths of a nanosecond of glass history, and each
+        tenfold slower cooling costs ten times as long. What they can do is show the trend. Vollmayr,
+        Kob and Binder (1996) cooled silica over two and a half decades of rate and found the glass
+        transition falling with the logarithm of the rate, and the density, the ring sizes and the
+        bond angles all moving toward the measured glass as the cooling slowed.
+      </p>
+      <NetworkCharts chart="cooling" />
+      <p class="caption">
+        Density of each run as it was cooled from 4000 K at one atmosphere, averaged over every
+        picosecond. The short bars at the left are the measured room-temperature densities: the
+        medians of SciGlass entries for pure silica (2.20 g/cm³, 258 glasses) and for sodium silicates
+        at 25 mol% Na₂O (2.43 g/cm³, 100 glasses).
+      </p>
+      <p>
+        Read the curves from the right. The liquid shrinks as it cools until, somewhere below
+        3000 K for silica, the network stops rearranging and the curve bends: that is the glass
+        transition at simulation speed, far above the real one near 1460 K (1190 °C, the median of 16
+        SciGlass entries for silica; 745 K for the soda silica). Silica does something few
+        liquids do: over part of its range it barely contracts on cooling, or even expands, because
+        its open tetrahedral network takes up more room as it orders. The ring sizes respond to the
+        rate too:
+      </p>
+      <NetworkCharts chart="rings" />
+      <p class="caption">
+        Rings per silicon atom, by the number of tetrahedra in the ring. A ring is counted for each
+        silicon and each pair of its bridges as the shortest closed path through them (King, 1967),
+        and each distinct ring once.
+      </p>
+
+      <h2>How the glass was made</h2>
+      <p>
+        Each glass is a run of LAMMPS, the molecular-dynamics code from Sandia, with the SHIK
+        potential (Sundararaman, Huang, Ispas and Kob, 2018 and 2019). SHIK treats the atoms as
+        charged spheres: silicon +{data.potential.charges.Si} e, sodium +{data.potential.charges.Na} e
+        and oxygen whatever balances them, smaller than the textbook ionic charges, because the bond is
+        partly covalent. Between each pair it adds a short-range repulsion and a weak attraction
+        (the Buckingham form) plus a steep wall that stops atoms falling into each other at high
+        temperature. Its parameters were fitted so that a simulated liquid matches one computed from
+        quantum mechanics and the glass matches the measured density and stiffness. Nothing in it
+        says "make tetrahedra"; the tetrahedra form because the charges and sizes favor them.
+      </p>
+      <p>
+        Each run started from atoms scattered at random in a box, melted at 6000 K, settled at
+        4000 K and one atmosphere, then cooled in a straight line to 300 K and held there for 30
+        picoseconds. The two runs of each glass start from the same liquid and differ only in the
+        cooling rate. The analysis on this page, which atoms are bonded, the Qⁿ counts and the rings,
+        is computed from the stored positions by this site's own code, with a bond being any Si–O pair
+        closer than 2.2 Å. The input files and the analysis are in the repository, so every number
+        here can be rerun.
+      </p>
+
+      <h2>What the model leaves out</h2>
+      <ul>
+        <li><strong>The cooling rate.</strong> Fourteen orders of magnitude too fast, as above. The Q² excess and the high glass transition are the visible cost.</li>
+        <li><strong>Electrons.</strong> The charges are fixed numbers, and the atoms cannot polarize or share electrons differently from place to place. A loose oxygen near a sodium is really more negative than a bridging one; here they carry the same charge.</li>
+        <li><strong>Size.</strong> Three thousand atoms in a box 3.5 nanometers wide that repeats in every direction. Anything larger than the box, such as sodium-rich channels on the scale Greaves (1985) proposed for alkali silicates, may not form properly in it.</li>
+        <li><strong>Statistics.</strong> One sample per glass and rate. Another random start would shift the percentages by a point or two; the authors of the potential averaged four samples of ten thousand atoms.</li>
+        <li><strong>The long-range forces.</strong> The electrostatic forces are cut off at 1 nanometer with Wolf's method, which the potential was fitted with, rather than summed over the whole repeating lattice.</li>
+      </ul>
+      <p>
+        Each glass is a model: what a particular, published approximation to the forces between
+        atoms produces when cooled impossibly fast. Where it can be checked, against density, the
+        bond angles and NMR, it is close, and it is wrong in the direction its fast quench predicts.
+      </p>
+
+      <section class="sources">
+        <h2>Sources</h2>
+        <ul>
+          <li>S. Sundararaman, L. Huang, S. Ispas and W. Kob, New optimization scheme to obtain interaction potentials for oxide glasses, <a href="https://doi.org/10.1063/1.5023707" rel="noopener">J. Chem. Phys. 148, 194504 (2018)</a>: the SHIK potential for silica.</li>
+          <li>S. Sundararaman, L. Huang, S. Ispas and W. Kob, New interaction potentials for alkali and alkaline-earth aluminosilicate glasses, <a href="https://doi.org/10.1063/1.5079663" rel="noopener">J. Chem. Phys. 150, 154505 (2019)</a> (<a href="https://arxiv.org/abs/1811.01284" rel="noopener">arXiv:1811.01284</a>): the sodium parameters and charges, and the Qⁿ comparison; LAMMPS pair style from <a href="https://github.com/compmatscirpi/SHIK-potential" rel="noopener">compmatscirpi/SHIK-potential</a>.</li>
+          <li>A. P. Thompson et al., LAMMPS: a flexible simulation tool for particle-based materials modeling at the atomic, meso, and continuum scales, <a href="https://doi.org/10.1016/j.cpc.2021.108171" rel="noopener">Comput. Phys. Commun. 271, 108171 (2022)</a>.</li>
+          <li>H. Maekawa, T. Maekawa, K. Kawamura and T. Yokokawa, The structural groups of alkali silicate glasses determined from ²⁹Si MAS-NMR, <a href="https://doi.org/10.1016/0022-3093(91)90400-Z" rel="noopener">J. Non-Cryst. Solids 127, 53–64 (1991)</a>.</li>
+          <li>W. H. Zachariasen, The atomic arrangement in glass, <a href="https://doi.org/10.1021/ja01349a006" rel="noopener">J. Am. Chem. Soc. 54, 3841–3851 (1932)</a>.</li>
+          <li>R. L. Mozzi and B. E. Warren, The structure of vitreous silica, <a href="https://doi.org/10.1107/S0021889869006868" rel="noopener">J. Appl. Cryst. 2, 164–172 (1969)</a>: Si–O 1.62 Å, Si–O–Si angles from 120° to 180° with the maximum at 144°.</li>
+          <li>S. V. King, Ring configurations in a random network model of vitreous silica, <a href="https://doi.org/10.1038/2131112a0" rel="noopener">Nature 213, 1112–1113 (1967)</a>: the ring definition used here.</li>
+          <li>K. Vollmayr, W. Kob and K. Binder, Cooling-rate effects in amorphous silica: a computer-simulation study, <a href="https://doi.org/10.1103/PhysRevB.54.15808" rel="noopener">Phys. Rev. B 54, 15808 (1996)</a>.</li>
+          <li>G. N. Greaves, EXAFS and the structure of glass, <a href="https://doi.org/10.1016/0022-3093(85)90289-3" rel="noopener">J. Non-Cryst. Solids 71, 203–217 (1985)</a>: the modified random network.</li>
+          <li>SciGlass, through D. R. Cassar's plain-text conversion (<a href="https://github.com/drcassar/SciGlass" rel="noopener">drcassar/SciGlass</a>): the measured densities.</li>
+        </ul>
+      </section>
+      <p class="back"><a href={`${base}/labs/`}>← all the labs</a></p>
+    </div>
+  </article>
+</Base>
+<style>
+  .nv-page { max-width: 72rem; }
+  .nv-page .summary { max-width: 46rem; }
+  .prose-col { max-width: 46rem; }
+  .caption { font-size: 0.8rem; color: var(--ink-3); margin-top: 0; }
+</style>
