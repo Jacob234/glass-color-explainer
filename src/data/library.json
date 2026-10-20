@@ -213,12 +213,13 @@
       "title": "refractiveindex.info database",
       "by": "Mikhail Polyanskiy", "date": "2026", "edition": "release v.2026-05-24",
       "url": "https://github.com/polyanskiy/refractiveindex.info-database",
-      "provides": "Optical constants of thousands of materials as YAML, including the SCHOTT, Ohara and Hoya catalogues. The source of every Sellmeier coefficient the site uses.",
+      "provides": "Optical constants of thousands of materials as YAML, including the SCHOTT, Ohara and Hoya catalogues. The source of every Sellmeier coefficient the site uses, and of the Johnson & Christy and Rioux metal constants behind the struck colors.",
       "reuse": "open", "licence": "CC0 1.0 (public domain dedication).",
       "checked": "2026-10-19",
       "usedBy": [
         { "file": "src/data/glasses.json", "find": "refractiveindex.info", "stage": "prism" },
-        { "file": "src/scripts/raytrace.js", "find": "refractiveindex.info", "stage": "lightlab" }
+        { "file": "src/scripts/raytrace.js", "find": "refractiveindex.info", "stage": "lightlab" },
+        { "file": "src/data/metals.json", "find": "refractiveindex.info", "stage": "strike" }
       ]
     },
     {
@@ -270,7 +271,7 @@
       "provides": "About 40 ppm gold and 300 ppm silver in the cup; particles 50–100 nm, about 7:3 silver to gold with some copper; only a handful of other Roman dichroic pieces; routine gold ruby from 17th-century Europe. Also summarises Brill's 1960s analyses (VII Int. Congress on Glass, Brussels 1965, paper 223, not seen directly).",
       "reuse": "cite", "licence": "Journal article (Springer, open access); no reuse licence checked.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "BF03215599", "stage": "concepts" }, { "file": "src/data/history.json", "find": "BF03215599", "stage": "strike" }]
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "BF03215599", "stage": "concepts" }, { "file": "src/data/history.json", "find": "BF03215599", "stage": "strike" }, { "file": "src/scripts/strike.js", "find": "Freestone et al. 2007", "stage": "concepts" }]
     },
     {
       "id": "haslbeck-2005", "kind": "measurement", "short": "Haslbeck et al. 2005",
@@ -280,7 +281,77 @@
       "provides": "Gold ruby glasses with 200 ppm gold and up to 2 wt% tin, struck around 600 °C: tin gives many small particles, and color runs from purple-red (little tin) to brown (much tin).",
       "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "s10751-006-9246-0", "stage": "concepts" }, { "file": "src/components/Home.astro", "find": "s10751-006-9246-0", "stage": "strike" }]
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "s10751-006-9246-0", "stage": "concepts" }, { "file": "src/components/Home.astro", "find": "s10751-006-9246-0", "stage": "strike" }, { "file": "src/scripts/strike.js", "find": "Haslbeck et al. 2005", "stage": "strike" }]
+    },
+    {
+      "id": "johnson-christy-1972", "kind": "measurement", "short": "Johnson & Christy 1972",
+      "title": "Optical constants of the noble metals",
+      "by": "P. B. Johnson and R. W. Christy", "date": "1972", "edition": "Physical Review B 6(12), 4370–4379",
+      "url": "https://doi.org/10.1103/PhysRevB.6.4370",
+      "provides": "Measured n and k of copper, silver and gold films from 0.5 to 6.5 eV. The page's struck gold, silver and copper colors are computed from these, through Mie theory.",
+      "reuse": "open", "licence": "The article is cited; the tabulated values are copied from the refractiveindex.info database (CC0).",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/data/metals.json", "find": "johnson-christy-1972", "stage": "strike" }, { "file": "src/components/Home.astro", "find": "PhysRevB.6.4370", "stage": "strike" }]
+    },
+    {
+      "id": "rioux-2014", "kind": "measurement", "short": "Rioux et al. 2014",
+      "title": "An analytic model for the dielectric function of Au, Ag, and their alloys",
+      "by": "D. Rioux, S. Vallières, S. Besner, P. Muñoz, E. Mazur and M. Meunier", "date": "2014", "edition": "Advanced Optical Materials 2(2), 176–182",
+      "url": "https://doi.org/10.1002/adom.201300457",
+      "provides": "A model fitted to ellipsometry of gold, silver and three alloy films, tabulated for any composition. The Lycurgus Cup's particles are modelled with its 30% gold, 70% silver alloy.",
+      "reuse": "open", "licence": "The article is cited; the tabulated alloy values come from the refractiveindex.info database (CC0).",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/data/metals.json", "find": "rioux-2014", "stage": "concepts" }]
+    },
+    {
+      "id": "mie-1908", "kind": "method", "short": "Mie 1908",
+      "title": "Beiträge zur Optik trüber Medien, speziell kolloidaler Metallösungen",
+      "by": "Gustav Mie", "date": "1908", "edition": "Annalen der Physik 330(3), 377–445",
+      "url": "https://doi.org/10.1002/andp.19083300302",
+      "provides": "The exact solution of Maxwell's equations for a sphere, worked out to explain the colors of colloidal gold.",
+      "reuse": "open", "licence": "Public domain by age.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/scripts/mie.js", "find": "Mie's 1908 solution", "stage": "strike" }]
+    },
+    {
+      "id": "bohren-huffman-1983", "kind": "method", "short": "Bohren & Huffman 1983",
+      "title": "Absorption and Scattering of Light by Small Particles",
+      "by": "Craig F. Bohren and Donald R. Huffman", "date": "1983", "edition": "Wiley (reprinted 1998)",
+      "url": "https://doi.org/10.1002/9783527618156",
+      "provides": "Mie theory and the BHMIE algorithm (appendix A) that mie.js follows: logarithmic derivative by downward recurrence, Riccati–Bessel functions by upward recurrence, efficiencies and asymmetry parameter.",
+      "reuse": "cite", "licence": "Book; the method is reimplemented, no code copied.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/scripts/mie.js", "find": "Bohren & Huffman", "stage": "strike" }]
+    },
+    {
+      "id": "kreibig-vollmer-1995", "kind": "reference", "short": "Kreibig & Vollmer 1995",
+      "title": "Optical Properties of Metal Clusters",
+      "by": "Uwe Kreibig and Michael Vollmer", "date": "1995", "edition": "Springer Series in Materials Science 25",
+      "url": "https://doi.org/10.1007/978-3-662-09109-8",
+      "provides": "The surface-scattering correction γ(r) = γ_bulk + A·v_F / r for electrons in small metal particles, and the spread of reported A values.",
+      "reuse": "cite", "licence": "Book; the formula is used, no text or data copied.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/scripts/mie.js", "find": "Kreibig & Vollmer 1995", "stage": "strike" }]
+    },
+    {
+      "id": "miepython", "kind": "method", "short": "miepython",
+      "title": "miepython: Mie scattering of light by perfect spheres",
+      "by": "Scott Prahl", "date": "2024", "edition": "Python package",
+      "url": "https://github.com/scottprahl/miepython",
+      "provides": "Reference values the tests check mie.js against (efficiencies, backscatter, asymmetry).",
+      "reuse": "open", "licence": "MIT. Only numbers it computed are in the tests; no code copied.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "test/mie.test.mjs", "find": "miepython", "stage": "strike" }]
+    },
+    {
+      "id": "brus-1984", "kind": "method", "short": "Brus 1984",
+      "title": "Electron–electron and electron-hole interactions in small semiconductor crystallites: the size dependence of the lowest excited electronic state",
+      "by": "L. E. Brus", "date": "1984", "edition": "Journal of Chemical Physics 80(9), 4403–4409",
+      "url": "https://doi.org/10.1063/1.447218",
+      "provides": "The effective-mass estimate of how a semiconductor crystal's band gap rises as it shrinks, used for the selenium ruby striking slider.",
+      "reuse": "cite", "licence": "Journal article; the formula is used.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/scripts/strike.js", "find": "Brus 1984", "stage": "concepts" }]
     },
     {
       "id": "cmog-glass-dictionary", "kind": "reference", "short": "Corning Museum of Glass",
@@ -685,11 +756,11 @@
     }
   ],
   "gaps": [
-    { "what": "Absorption curves of manganese, gold, the cadmium sulfoselenides and neodymium", "file": "src/data/optics.json", "candidates": ["schott-filter", "sciglass"], "note": "Cobalt, chromium, iron, copper and silver are measured (measured.json); cobalt, chromium and silver have measured shapes but no measured strength." },
+    { "what": "Absorption curves of manganese, gold, the cadmium sulfoselenides and neodymium", "file": "src/data/optics.json", "candidates": ["schott-filter", "sciglass"], "note": "Cobalt, chromium, iron, copper and silver are measured (measured.json); cobalt, chromium and silver have measured shapes but no measured strength. The gold colloid curve here (spectrum explorer, mixing lab) is still drawn; the striking instruments compute theirs (strike.js)." },
     { "what": "Uranyl absorption bands and emission comb strengths", "file": "src/scripts/uranium.js", "candidates": ["sciglass"] },
     { "what": "Neodymium and praseodymium band strengths", "file": "src/scripts/bands.js", "candidates": ["sciglass"], "note": "Peak positions are sourced; strengths are scaled by eye." },
     { "what": "Studio furnace and glory-hole temperatures", "file": "src/data/viscosity.json", "candidates": ["bullseye-annealing"], "note": "Kiln glass only; furnace practice still needs a source (PR #17)." },
-    { "what": "Transmission spectrum of over-struck gold ruby", "file": "src/scripts/home.js", "candidates": ["haslbeck-2005"], "note": "Stage 05 draws over-striking as a 30 nm red shift and broadening, a guess; a measured spectrum would settle whether it ends purple or brown." },
+    { "what": "Transmission spectrum of over-struck gold ruby", "file": "src/scripts/strike.js", "candidates": ["haslbeck-2005"], "note": "Stage 05 now computes over-striking with Mie theory (purple then blue in transmission, orange-brown scatter); a measured spectrum would test it, and the brown of tin-rich glasses that it does not reproduce." },
     { "what": "Rack swatch colors, sampled from product photos", "file": "src/data/catalog/index.json", "candidates": [], "note": "Needs measured transmission of the supplier glasses, which no source here publishes." }
   ]
 }
