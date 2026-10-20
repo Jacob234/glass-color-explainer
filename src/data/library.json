@@ -197,7 +197,7 @@
     },
     {
       "id": "schott-optical", "kind": "datasheet", "short": "SCHOTT optical glass",
-      "title": "SCHOTT optical glass datasheets (N-BK7, F2, SF11, N-SF11)",
+      "title": "SCHOTT optical glass datasheets (N-BK7, LLF1, F2, SF11, N-SF11)",
       "by": "SCHOTT AG", "date": "2017", "edition": "values as in the SCHOTT Zemax catalog 2017-01-20b; the downloads page gives no version for the current collection",
       "url": "https://www.schott.com/en-gb/products/optical-glass-p1000267/downloads",
       "provides": "Sellmeier coefficients, refractive index nd and Abbe number vd for each glass, plus internal transmittance and thermal data. The downloads page also offers the catalog in Zemax format.",
@@ -250,7 +250,17 @@
       "provides": "Legal definitions of lead crystal (at least 24% PbO) and full lead crystal (at least 30%), with density and refractive-index limits.",
       "reuse": "cite", "license": "EU legislation; quoted with citation (EUR-Lex reuse terms not re-read).",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "eli/dir/1969/493", "stage": "prism" }]
+      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "eli/dir/1969/493", "stage": "prism" }, { "file": "src/data/glasses.json", "find": "1.545 that EU law sets for lead crystal", "stage": "prism" }]
+    },
+    {
+      "id": "tolkowsky-1919", "kind": "method", "short": "Tolkowsky 1919",
+      "title": "Diamond Design: A Study of the Reflection and Refraction of Light in a Diamond",
+      "by": "Marcel Tolkowsky", "date": "1919", "edition": "E. & F. N. Spon, London; World Wide Web edition ed. Jasper Paulsen (folds.net, 2001)",
+      "url": "https://www.folds.net/diamond_design/",
+      "provides": "The ray analysis of a brilliant's axial section: diamond's index 2.417 and critical angle 24° 26′, rays coming straight down reflected twice by the pavilion, and the proportions pavilion 40° 45′, crown 34° 30′, table 53%.",
+      "reuse": "cite", "license": "The 1919 text is public domain in the US (published before 1929), not necessarily elsewhere; the web edition's transcription, figures 38–39 and editor's notes are copyright Jasper Paulsen. Cited and linked; no figures copied.",
+      "checked": "2026-10-20",
+      "usedBy": [{ "file": "src/scripts/dispersion.js", "find": "Tolkowsky's (1919)", "stage": "prism" }, { "file": "src/components/Dispersion.astro", "find": "folds.net/diamond_design", "stage": "prism" }]
     },
 
     {

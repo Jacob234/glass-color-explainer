@@ -23,6 +23,13 @@
       "source": ["SCHOTT N-BK7 datasheet", "https://refractiveindex.info/?shelf=specs&book=SCHOTT-optical&page=N-BK7"]
     },
     {
+      "id": "llf1", "label": "LLF1 light flint", "family": "light lead flint", "lead": true,
+      "formula": "sellmeier", "coef": [1.21640125, 0.00857807248, 0.13366454, 0.0420143003, 0.883399468, 107.59306],
+      "range": [0.31, 2.5], "nd": 1.54814, "vd": 45.75,
+      "about": "SCHOTT's lightest lead flint. Its n<sub>d</sub> of 1.548 is just over the 1.545 that EU law sets for lead crystal, so it stands in here for tableware lead crystal, whose dispersion formula none of these sources give.",
+      "source": ["SCHOTT LLF1 datasheet", "https://refractiveindex.info/?shelf=specs&book=SCHOTT-optical&page=LLF1"]
+    },
+    {
       "id": "f2", "label": "F2 lead flint", "family": "lead flint", "lead": true,
       "formula": "sellmeier", "coef": [1.34533359, 0.00997743871, 0.209073176, 0.0470450767, 0.937357162, 111.886764],
       "range": [0.32, 2.5], "nd": 1.62004, "vd": 36.37,
