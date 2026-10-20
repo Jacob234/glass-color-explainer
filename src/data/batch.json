@@ -1,0 +1,85 @@
+{
+  "note": "Composition models for stage 01's oxide bench (scripts/batch.js). Every model is additive or polynomial in composition and was fitted by its authors to measured glasses; none is a first-principles calculation. Compositions in mol% unless a field says wt.",
+  "oxides": [
+    { "id": "SiO2", "label": "SiO₂", "name": "silica", "M": 60.08, "role": "former" },
+    { "id": "Na2O", "label": "Na₂O", "name": "soda", "M": 61.98, "role": "modifier", "max": 25 },
+    { "id": "K2O", "label": "K₂O", "name": "potash", "M": 94.2, "role": "modifier", "max": 20 },
+    { "id": "CaO", "label": "CaO", "name": "lime", "M": 56.08, "role": "modifier", "max": 15 },
+    { "id": "MgO", "label": "MgO", "name": "magnesia", "M": 40.3, "role": "modifier", "max": 8 },
+    { "id": "Al2O3", "label": "Al₂O₃", "name": "alumina", "M": 101.96, "role": "intermediate", "max": 8 },
+    { "id": "B2O3", "label": "B₂O₃", "name": "boric oxide", "M": 69.62, "role": "former", "max": 20 },
+    { "id": "PbO", "label": "PbO", "name": "lead oxide", "M": 223.2, "role": "intermediate", "max": 40 },
+    { "id": "Fe2O3", "label": "Fe₂O₃", "name": "iron (total, as Fe₂O₃)", "M": 159.69, "role": "colorant" }
+  ],
+  "presets": [
+    { "id": "float", "label": "window (float)", "mol": { "SiO2": 71.86, "Al2O3": 0.08, "MgO": 5.64, "CaO": 9.23, "Na2O": 13.13, "K2O": 0.02, "Fe2O3": 0.04 },
+      "source": "fluegel-glasses", "about": "Typical float glass, the base the bench compares against." },
+    { "id": "container", "label": "bottle (container)", "mol": { "SiO2": 74.42, "Al2O3": 0.75, "MgO": 0.3, "CaO": 11.27, "Na2O": 12.9, "K2O": 0.19, "Fe2O3": 0.01 },
+      "source": "fluegel-glasses", "about": "Typical container glass: more lime and alumina, almost no magnesia." },
+    { "id": "nbs710", "label": "NBS 710 standard", "wt": { "SiO2": 70.5, "Na2O": 8.7, "K2O": 7.7, "CaO": 11.6 },
+      "source": "nbs-710", "about": "The soda-potash-lime standard whose measured viscosity curve stage 00 draws (minor Sb₂O₃, SO₃ and R₂O₃ left out)." },
+    { "id": "lead", "label": "lead crystal", "wt": { "SiO2": 56, "PbO": 35, "K2O": 7, "Na2O": 2 },
+      "source": "fluegel-viscosity-2007", "about": "A full lead crystal, the composition Fluegel uses for his lead crystal viscosity curve." },
+    { "id": "boro", "label": "borosilicate", "mol": { "SiO2": 83.34, "B2O3": 11.19, "Al2O3": 1.33, "CaO": 0.03, "Na2O": 4.08, "K2O": 0.04 },
+      "source": "fluegel-glasses", "about": "Typical low-expansion borosilicate of the Pyrex and Duran type." }
+  ],
+  "viscosity": {
+    "note": "Fluegel (2007), Tables 4–6: isokom temperature T (°C) at log10 η [Pa·s] = 1.5, 6.6 and 12.0 as b0 + Σ b·C over mol% C of every component but silica, with square, cube and cross terms. Only the terms for this bench's oxides are kept (lithium, barium, titania and others dropped). The coefficients were read from the PDF by text extraction; three entries were unreadable and are reconstructed so the model reproduces the paper's own Table 12 predictions for the standards 710, 710A, 711 and DGG I within 2 °C: Na2O·CaO at 1.5 (0.103), the sign of (Na2O)³ at 12.0, and Na2O·K2O at 12.0 (0.060). See `reconstructed`.",
+    "source": "fluegel-viscosity-2007",
+    "isokoms": {
+      "1.5": { "b0": 1824.497, "terms": {
+        "Al2O3": 19.341, "B2O3": -22.347, "B2O3^2": 0.60376, "CaO": -16.843, "CaO^2": 0.12038, "Fe2O3": -13.611,
+        "K2O": -31.907, "K2O^2": 0.61234, "K2O^3": -0.006662, "MgO": -5.038, "K2O*MgO": 0.59449,
+        "Na2O": -30.61, "Na2O^2": 0.27887, "PbO": -21.349,
+        "B2O3*Na2O": -0.28237, "B2O3*K2O": -0.2789, "Al2O3*Na2O": -0.23085, "Al2O3*MgO": -0.44589, "Al2O3*CaO": -0.93909,
+        "Na2O*K2O": 0.58773, "Na2O*CaO": 0.103, "K2O*CaO": 0.29628, "MgO*CaO": -0.17394, "Al2O3*Na2O*CaO": 0.03362 } },
+      "6.6": { "b0": 939.479, "terms": {
+        "Al2O3": 5.812, "B2O3": -4.366, "B2O3^2": -0.17367, "CaO": -1.791, "Fe2O3": -11.013,
+        "K2O": -20.659, "K2O^2": 0.58116, "K2O^3": -0.00937, "MgO": 0.93, "Na2O": -19.051, "Na2O^2": 0.32209, "Na2O^3": -0.00208,
+        "PbO": -8.871, "B2O3*Na2O": 0.32005, "B2O3*K2O": 0.42514, "B2O3*CaO": -0.24066, "Al2O3*Na2O": 0.08442, "Al2O3*K2O": 0.48055,
+        "Na2O*K2O": 0.15519, "Na2O*CaO": 0.09392, "K2O*MgO": 0.26354, "K2O*CaO": 0.47564, "MgO*CaO": -0.15553,
+        "B2O3*Al2O3*Na2O": -0.033573, "Al2O3*Na2O*CaO": -0.00678, "Na2O*MgO*CaO": -0.012589 } },
+      "12.0": { "b0": 624.829, "terms": {
+        "Al2O3": 4.929, "B2O3": -1.121, "CaO": 6.84, "CaO^2": -0.08269, "Fe2O3": -8.453,
+        "K2O": -12.46, "K2O^2": 0.39706, "K2O^3": -0.005382, "MgO": 1.141, "Na2O": -12.854, "Na2O^2": 0.35785, "Na2O^3": -0.004179,
+        "PbO": -4.349, "B2O3*Na2O": 0.38413, "B2O3*CaO": -0.20958, "B2O3*Al2O3": -0.3338, "Al2O3*CaO": -0.13741,
+        "Na2O*K2O": 0.06, "Na2O*CaO": -0.10283, "K2O*MgO": 0.27425, "K2O*CaO": 0.2247, "MgO*CaO": -0.21563, "Al2O3*Na2O*CaO": 0.013868 } }
+    },
+    "reconstructed": [
+      { "level": "1.5", "term": "Na2O*CaO", "value": 0.103, "why": "unreadable in the extracted text; fitted to Table 12" },
+      { "level": "12.0", "term": "Na2O^3", "value": -0.004179, "why": "sign lost in extraction; negative reproduces Table 12" },
+      { "level": "12.0", "term": "Na2O*K2O", "value": 0.06, "why": "unreadable in the extracted text; fitted to Table 12" }
+    ],
+    "check": {
+      "note": "Fluegel's Table 1 compositions (mol%, trace TiO2, ZnO, SO3 and Sb2O3 left out) and his Table 12 model predictions, °C at 1.5, 6.6, 12.0.",
+      "710": { "mol": { "Al2O3": 0.11, "Na2O": 8.7, "K2O": 5.07, "CaO": 12.82, "Fe2O3": 0.01 }, "model": [1294, 732, 564] },
+      "711": { "mol": { "Al2O3": 0.51, "Na2O": 3.76, "K2O": 5.55, "PbO": 18.9 }, "model": [1172, 614, 445] },
+      "DGG I": { "mol": { "Al2O3": 0.72, "Na2O": 14.34, "K2O": 0.21, "MgO": 6.16, "CaO": 7.13, "Fe2O3": 0.07 }, "model": [1303, 715, 535] }
+    }
+  },
+  "expansion": {
+    "note": "Appen's additive factors for the linear expansion coefficient (ppm/K, 20–400 °C) by mole fraction, as tabulated by Fluegel. Silica: 3.8, or 10.5 − 0.1·[SiO2] above 67 mol%. B2O3: −1.25·F (F ≤ 4) or −5.0, with F = (Na2O + K2O + 0.7·(CaO + PbO) + 0.3·MgO − Al2O3) / B2O3 in mol%. PbO: 13.0 below 3 mol% alkali, else 11.5 + 0.5·ΣR2O. K2O: 46.5 when the glass holds more than 1 mol% Na2O, else 42.0.",
+    "source": "appen-fluegel",
+    "factors": { "Na2O": 39.5, "K2O": 46.5, "CaO": 13, "MgO": 6, "Al2O3": -3, "Fe2O3": 5.5 }
+  },
+  "optics": {
+    "note": "Young and Finn (1940): the Gladstone–Dale specific refraction (n_D − 1)/ρ = Σ r·p and the specific dispersion (n_F − n_C)/ρ = Σ q·p are each additive in weight fraction p. Their ratio, the Abbe number, needs no density. q for PbO is 66.0 × 10⁻⁴ up to 60 wt%; q for B2O3 is 0.20 × (100 + wt% B2O3) × 10⁻⁴.",
+    "source": "young-finn-1940",
+    "r": { "SiO2": 0.2082, "Na2O": 0.1937, "K2O": 0.2019, "CaO": 0.227, "MgO": 0.212, "Al2O3": 0.207, "B2O3": 0.236, "PbO": 0.134, "Fe2O3": 0.265 },
+    "q": { "SiO2": 30.5, "Na2O": 49.5, "K2O": 42.0, "CaO": 49.4, "MgO": 45.0, "Al2O3": 42, "B2O3": null, "PbO": 66.0, "Fe2O3": null }
+  },
+  "density": {
+    "note": "Fluegel et al. (2008), Table 2, melt density at 1200 °C in g/cm³, linear in mol% with a (PbO)² term. Room-temperature density is taken as 2.50 g/cm³ (Pilkington's float glass figure) times the batch's melt density over float glass's: one contraction factor for every batch, which is the model's weakest step.",
+    "source": "fluegel-melt-density-2008",
+    "b0": 2.23531,
+    "terms": { "B2O3": -0.00409, "Al2O3": 0.00156, "K2O": -0.00163, "MgO": 0.00678, "CaO": 0.01028, "PbO": 0.05784, "PbO^2": 0.000139 },
+    "floatRT": 2.5
+  },
+  "iron": {
+    "note": "Sack, Carmichael, Rivers and Ghiorso (1980), Table 3: ln(X_Fe2O3 / X_FeO) = a ln fO2 + b/T + c + Σ d·X over mole fractions X. Holding the furnace (fO2, T) fixed, only Σ d·X changes from batch to batch. Fitted to natural lavas melted at 1200–1430 °C, with less soda than any glass on this bench; lead and boric oxide are not in the model and are counted as silica.",
+    "source": "sack-1980",
+    "d": { "SiO2": -2.15036, "Al2O3": -8.35163, "MgO": -5.43639, "CaO": 0.073113, "Na2O": 3.54148, "K2O": 4.18688 },
+    "asSilica": ["B2O3", "PbO"],
+    "floatFerrous": 0.6
+  }
+}

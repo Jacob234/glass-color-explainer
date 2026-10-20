@@ -15,6 +15,7 @@ import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.
 import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
 import { basisLine } from './measured.js';
+import { batchStage } from './stage-batch.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -1286,5 +1287,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
 }
