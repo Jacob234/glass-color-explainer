@@ -2,15 +2,15 @@
 // Light is traced one wavelength at a time, so refraction can depend on wavelength (dispersion)
 // and absorption can follow the glass's own density spectrum along the path (Beer–Lambert).
 // It is a model: the world is a flat plane (a beam raking across paper), each ray carries one
-// wavelength, and polarisation is averaged away in the Fresnel terms.
+// wavelength, and polarization is averaged away in the Fresnel terms.
 import { GRID } from './spectra.js';
 import { GLASS, index } from './dispersion.js';
 
 // Glasses and their index n(λ) come from data/glasses.json (Sellmeier or Cauchy fits from the
-// SCHOTT catalogue and others, via refractiveindex.info), shared with the dispersion stage.
+// SCHOTT catalog and others, via refractiveindex.info), shared with the dispersion stage.
 export { GLASS as GLASSES } from './dispersion.js';
 
-// Unpolarised Fresnel reflectance at a dielectric boundary, from relative index eta = n1/n2.
+// Unpolarized Fresnel reflectance at a dielectric boundary, from relative index eta = n1/n2.
 // Returns 1 past the critical angle (total internal reflection).
 export function fresnel(cosI, eta) {
   const sin2T = eta * eta * (1 - cosI * cosI);
@@ -24,7 +24,7 @@ export function fresnel(cosI, eta) {
 export const prism = (cx, cy, side, rot = 0) => regular(cx, cy, side / Math.sqrt(3), 3, rot - Math.PI / 2);
 export const slab = (cx, cy, w, h, rot = 0) => [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]].map(([x, y]) => turn(cx, cy, x, y, rot));
 // A biconvex lens: two circular arcs of radius R meeting at the rim, height h. The arcs are stored
-// as polygon edges for intersection, but each edge also records its arc's centre, so the normal at
+// as polygon edges for intersection, but each edge also records its arc's center, so the normal at
 // a hit is the true circle's normal, not the facet's (facets would split light into parallel bundles).
 export function lens(cx, cy, h, R, rot = 0, steps = 48) {
   const a = Math.asin(h / 2 / R), sag = R - R * Math.cos(a), pts = [];

@@ -5,7 +5,7 @@ import { index } from '../src/scripts/dispersion.js';
 import { GRID, CMF_GRID, displayMatrix, spectrumColor } from '../src/scripts/spectra.js';
 import { LAMP } from '../src/scripts/lamps.js';
 
-test('Sellmeier fits give the catalogue d-line indices', () => {
+test('Sellmeier fits give the catalog d-line indices', () => {
   assert.ok(Math.abs(index(GLASSES.bk7, 587.56) - 1.5168) < 1e-4);
   assert.ok(Math.abs(index(GLASSES.nsf11, 587.56) - 1.78472) < 1e-4);
   assert.ok(index(GLASSES.nsf11, 420) > index(GLASSES.nsf11, 700)); // normal dispersion
@@ -57,7 +57,7 @@ test('displayMatrix matches radianceColor for a whole spectrum', () => {
 });
 
 test('a lens focuses near the lensmaker focal length, using its true curvature', () => {
-  // Biconvex crown lens, R = 60 mm, thin-lens f = R / (2 (n − 1)) ≈ 58 mm from the centre.
+  // Biconvex crown lens, R = 60 mm, thin-lens f = R / (2 (n − 1)) ≈ 58 mm from the center.
   const pieces = [{ poly: lens(0, 0, 30, 60), glass: 'bk7', density: GRID.map(() => 0) }];
   const crossing = (h) => {
     let last;

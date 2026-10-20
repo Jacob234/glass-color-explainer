@@ -31,7 +31,7 @@ const fold = `${Math.round(ratio / 1000) * 1000}`.replace(/\B(?=(\d{3})+$)/, ','
     </p>
     <p>
       <b>Blow and hold.</b> The first bubble is the hard part. At the tip of the pipe it is a few
-      millimetres across, and the glass around a small bubble must stretch hard to let it grow, so a
+      millimeters across, and the glass around a small bubble must stretch hard to let it grow, so a
       gather that has cooled for half a minute hardly moves. Once it starts, it runs away: a thinner wall
       is easier to stretch, so the same breath stretches it faster, until your breath rather than the
       glass sets the pace. Keep holding and the wall thins until it chills and sets as a thin, oversized
@@ -52,7 +52,7 @@ const fold = `${Math.round(ratio / 1000) * 1000}`.replace(/\B(?=(\d{3})+$)/, ','
     <p>
       Viscosity sets the pace of every flow, and for soda-lime glass it changes about {fold}-fold between
       the furnace at a typical {furnace} °C (about {Math.round(10 ** logFurnace / 10) * 10} Pa·s on this curve; the furnace figure is unverified) and the softening point
-      at {soft.measured} °C, where a hanging fibre stretches under its own weight. The simulator takes it from one measured glass,
+      at {soft.measured} °C, where a hanging fiber stretches under its own weight. The simulator takes it from one measured glass,
       NBS Standard Glass No. 710, through the Fulcher fit Napolitano and Hawkins made for it in 1964,
       the same curve as the site's <a href={`${base}/#glass`}>stage 00</a>. The gather is cut into 24 shells
       of equal mass, each with its own temperature and so its own viscosity, and each flow is the
@@ -81,8 +81,8 @@ const fold = `${Math.round(ratio / 1000) * 1000}`.replace(/\B(?=(\d{3})+$)/, ','
     <p>
       Turning the pipe at ω carries the sag round with the glass. In the shop's frame the far end obeys
       d′ = ω × d + v ĝ, and the solution circles the point v/ω to one side of the pipe with radius v/ω.
-      For a fresh gather turned once a second, the far end strays less than a centimetre; stopped, the
-      same glass falls two or three centimetres a second (both from the model).
+      For a fresh gather turned once a second, the far end strays less than a centimeter; stopped, the
+      same glass falls two or three centimeters a second (both from the model).
     </p>
     <h3>Swinging: stretching under weight</h3>
     <p>
@@ -95,15 +95,15 @@ const fold = `${Math.round(ratio / 1000) * 1000}`.replace(/\B(?=(\d{3})+$)/, ','
     <p>
       Out of the fire the gather loses heat mainly as radiation, and glass is not a simple radiator.
       Liu, Kitamura, Xia and Pilon measured soda-lime melts in 2016 and described their absorption in
-      two bands. Below 2.8 µm the glass is nearly transparent: clear glass absorbs about 43 per metre
-      there, so light crosses centimetres of it, while green bottle glass, with six times the iron,
-      absorbs about 179 per metre. From 2.8 to 5 µm every soda-lime glass absorbs about 460 per metre,
+      two bands. Below 2.8 µm the glass is nearly transparent: clear glass absorbs about 43 per meter
+      there, so light crosses centimeters of it, while green bottle glass, with six times the iron,
+      absorbs about 179 per meter. From 2.8 to 5 µm every soda-lime glass absorbs about 460 per meter,
       and beyond 5 µm it is opaque. At 1100 °C a black body sends about 45% of its power into the first
       band, 35% into the second and 20% into the opaque one (computed from Planck's law).
     </p>
     <p>
       So each band leaves from a different depth. The opaque band leaves from the skin, the second from
-      the outer few millimetres, and the first from deep inside a clear gather. Each shell here emits each
+      the outer few millimeters, and the first from deep inside a clear gather. Each shell here emits each
       band in proportion to how much of it can reach the surface, by the exact result for a non-scattering
       slab (the kernel 2κE₂(κd), whose total is the slab's emissivity, 1 − 2E₃(κh)). Two things follow
       that the simulator shows. A thin blown wall is a poorer emitter than the solid gather, because thin

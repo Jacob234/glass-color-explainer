@@ -21,7 +21,7 @@ const noUV = (spd) => [...UV.map(() => 0), ...spd];
 const BLACK = EXT.map((w) => Math.exp(-4 * Math.LN2 * ((w - 365) / 10) ** 2) + (w > 365 ? 0.01 * Math.exp(-(w - 365) / 12) : 0));
 
 // Emission lines (nm, relative power) binned onto GRID: each line's energy is shared between its
-// two neighbouring samples, so a trapezoid integral over the grid gets the whole line.
+// two neighboring samples, so a trapezoid integral over the grid gets the whole line.
 export function lines(list) {
   const out = GRID.map(() => 0), step = GRID[1] - GRID[0];
   for (const [w, a] of list) {

@@ -24,7 +24,7 @@ const fit = (canvas) => {
   return [canvas.getContext('2d'), w, h];
 };
 
-// Scene geometry, in millimetres; the drawing is 3.2 units to the millimetre.
+// Scene geometry, in millimeters; the drawing is 3.2 units to the millimeter.
 const K = 3.2, SIDE = 60, CX = 150, CY = 105, HALF = 4; // 8 mm beam
 const TILT = (28 * Math.PI) / 180, DIR = [Math.cos(TILT), -Math.sin(TILT)];
 const MID = [CX - SIDE / 4, CY - (SIDE / Math.sqrt(3)) / 4]; // middle of the left face, prism untouched
@@ -45,7 +45,7 @@ export function initDispersion({ getLamp, onLamp }) {
   // the incoming beam: the light table's own white, so drawn as two ink edges
   const perp = [-DIR[1], DIR[0]], beamPts = [-HALF, HALF].map((k) => [ORIGIN[0] + k * perp[0], ORIGIN[1] + k * perp[1]]);
 
-  // The card is lit at 1 nm steps, since a dense flint near its critical angle spreads neighbouring
+  // The card is lit at 1 nm steps, since a dense flint near its critical angle spreads neighboring
   // 5 nm samples apart; each 1 nm slice's light is added to the nearest sample of the observer's grid.
   function cardColors(poly, ref, D, samples) {
     const spd = getLamp().spd, at = (nm) => { const x = (nm - 380) / 5, i = Math.min(GRID.length - 2, Math.floor(x)); return spd[i] + (spd[i + 1] - spd[i]) * (x - i); };
@@ -129,7 +129,7 @@ export function initDispersion({ getLamp, onLamp }) {
     else if (lamp.dark) txt = 'Under the black light almost nothing visible goes in, so almost nothing comes out. A prism sorts light; it cannot make it.';
     if (lost.length && !lamp.lines && !lamp.dark) txt += ` Light below ${Math.max(...lost)} nm meets the far face past its critical angle and is totally reflected inside: violet goes first because glass bends it most.`;
     else if (!lamp.lines && !lamp.dark) {
-      // blue and orange centres, D apart along the card: separated once they are well over a beam width apart
+      // blue and orange centers, D apart along the card: separated once they are well over a beam width apart
       const at = (nm) => out.find(({ i }) => GRID[i] === nm), b = at(430), o = at(650);
       const d = b && o ? cardMm(card.valueAsNumber) * Math.tan((deviation(b.r.dir, o.r.dir) * Math.PI) / 180) : 0;
       txt += d > 2 * HALF * 1.6 ? ' The colors have separated.' : ' At this distance the colored beams still overlap, so the middle stays white and only the edges are colored, red on one side and blue on the other.';
@@ -150,7 +150,7 @@ export function initDispersion({ getLamp, onLamp }) {
     $('cardKeyR').textContent = `beam ${2 * HALF} mm`;
   }
 
-  // turning the prism: drag around its centre, or the arrow keys, or the slider
+  // turning the prism: drag around its center, or the arrow keys, or the slider
   let grab = null;
   const angleAt = (e) => {
     const m = scene.getScreenCTM().inverse(), p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m);
