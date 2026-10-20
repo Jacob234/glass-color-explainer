@@ -34,7 +34,7 @@
     },
     {
       "id": "ruby", "short": "Gold ruby", "year": 1679, "when": "1676–c. 1679", "title": "Gold ruby",
-      "text": "In 1676 the Hamburg physician Andreas Cassius reported the red that gold chloride gives. By about 1679 Johann Kunckel was making ruby glass in Potsdam and keeping the recipe secret. It comes out of the melt grey and turns red only on reheating.",
+      "text": "In 1676 the Hamburg physician Andreas Cassius reported the red that gold chloride gives. By about 1679 Johann Kunckel was making ruby glass in Potsdam and keeping the recipe secret. It comes out of the melt gray and turns red only on reheating.",
       "color": { "parts": [["gold-colloid", 1.1]], "thickness": 1.2 },
       "stage": "strike",
       "sources": [["Britannica: ruby glass", "https://www.britannica.com/technology/ruby-glass"]]

@@ -3,7 +3,7 @@
 //   bands      Gaussian bands fitted to measured glasses of known composition and thickness
 //              (Volotinen 2007), in decadic absorbance per cm per mol% of the ion. Absolute: c = 1
 //              is `amount` mol% of the ion through the page's 10 mm reference wall.
-//   digitised  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
+//   digitized  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
 //              in arbitrary units. Measured shape, unmeasured strength: c = 1 is `scale` times the
 //              traced curve, a scale chosen to keep the old drawn curve's daylight lightness.
 import data from '../data/measured.json' with { type: 'json' };
@@ -42,7 +42,7 @@ function nonNegativeFit(basis, y) {
   }
 }
 
-// The iron in a digitised glass, fitted where the colorant itself is clear, as relative units on
+// The iron in a digitized glass, fitted where the colorant itself is clear, as relative units on
 // MEASURED_WAVELENGTHS. Returns { curve, coefficients } (coefficients in relative units per mol%·cm).
 export function background(id) {
   const e = data.colorants[id], bg = e.background;
@@ -53,13 +53,13 @@ export function background(id) {
   return { curve: MEASURED_WAVELENGTHS.map((_, i) => shapes.reduce((s, sh, j) => s + k[j] * sh[i], 0)), coefficients: k };
 }
 
-// A digitised curve with its background taken away (relative units, never below zero).
+// A digitized curve with its background taken away (relative units, never below zero).
 export function cleaned(id) {
   const e = data.colorants[id], bg = background(id).curve;
   return e.relative.map((v, i) => Math.max(0, v - bg[i]));
 }
 
-// Optical density per unit c (before scaling): relative units for a digitised curve, absorbance
+// Optical density per unit c (before scaling): relative units for a digitized curve, absorbance
 // per cm per mol% for bands. Returns a function of wavelength.
 export function unitDensity(id) {
   const e = data.colorants[id];

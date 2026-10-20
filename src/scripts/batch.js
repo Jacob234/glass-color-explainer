@@ -12,7 +12,7 @@ export const OXIDES = data.oxides;
 const M = Object.fromEntries(OXIDES.map((o) => [o.id, o.M]));
 export const IDS = OXIDES.map((o) => o.id);
 
-// Normalise to 100, filling unknown oxides with 0.
+// Normalize to 100, filling unknown oxides with 0.
 const norm = (c) => {
   const out = Object.fromEntries(IDS.map((k) => [k, Math.max(0, c[k] ?? 0)]));
   const s = Object.values(out).reduce((a, b) => a + b, 0) || 1;

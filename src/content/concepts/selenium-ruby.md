@@ -40,10 +40,10 @@ Precision optical filter glass, used in photography, scientific instruments, mic
 
 ## The quantum dot postscript
 
-When the CdS-CdSe crystals are small enough (a few nanometres, comparable to the size of an exciton in the crystal), the electrons in the crystal are confined by the boundaries of the particle. This is quantum confinement: the allowed energy levels shift as the crystal shrinks, widening the effective band gap and blue-shifting the absorption edge. Size becomes an additional color control, independent of composition.
+When the CdS-CdSe crystals are small enough (a few nanometers, comparable to the size of an exciton in the crystal), the electrons in the crystal are confined by the boundaries of the particle. This is quantum confinement: the allowed energy levels shift as the crystal shrinks, widening the effective band gap and blue-shifting the absorption edge. Size becomes an additional color control, independent of composition.
 
 In 1981, physicist **Alexei Ekimov** at the S. I. Vavilov State Optical Institute in Leningrad was studying colored glass and identified this size-dependent shift as quantum confinement of charge carriers in a semiconductor nanocrystal (Ekimov and Onushchenko, *JETP Letters* 34, 345). His first demonstration used copper-chloride nanocrystals in glass, heated for between one and 96 hours at 500–700 °C to grow them to different sizes (Nobel Committee); cadmium-based systems followed. Glass was the medium where quantum dots were first experimentally observed and characterized.
 
 This work, along with parallel contributions from Louis Brus studying colloidal solutions and later Moungi Bawendi's synthesis methods, earned a share of the **2023 Nobel Prize in Chemistry**. The discovery was made in colored glass, the same kind of material as the traffic-light reds, whose makers may well have been tuning crystal size, and with it confinement, through their striking schedules long before the physics had a name (a plausible inference, not a documented one).
 
-Cadmium is toxic, and modern consumer and art-glass formulations have largely moved away from this chemistry where substitutes exist. For precision sharp-cut optical filters, however, the chemistry is still in use (unverified for current catalogues).
+Cadmium is toxic, and modern consumer and art-glass formulations have largely moved away from this chemistry where substitutes exist. For precision sharp-cut optical filters, however, the chemistry is still in use (unverified for current catalogs).

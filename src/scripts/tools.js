@@ -13,7 +13,7 @@ export function validateTools(d) {
     const at = t.id ?? t.name;
     if (!t.id || ids.has(t.id)) errors.push(`${at}: missing or repeated id`);
     ids.add(t.id);
-    for (const k of ['name', 'by', 'licence', 'url', 'what', 'here']) if (!t[k]) errors.push(`${at}: missing ${k}`);
+    for (const k of ['name', 'by', 'license', 'url', 'what', 'here']) if (!t[k]) errors.push(`${at}: missing ${k}`);
     if (!jobs.has(t.job)) errors.push(`${at}: unknown job ${t.job}`);
     if (!routes.has(t.route)) errors.push(`${at}: unknown route ${t.route}`);
     if (!status.has(t.status)) errors.push(`${at}: unknown status ${t.status}`);

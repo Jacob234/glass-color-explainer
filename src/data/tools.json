@@ -1,5 +1,5 @@
 {
-  "note": "Open software, models and data for glass, placed by the job each does and by how it can be used on a web page. Licences and last-commit dates were read from each project's own repository or page on the checked date. 'here' says how this site uses it.",
+  "note": "Open software, models and data for glass, placed by the job each does and by how it can be used on a web page. Licenses and last-commit dates were read from each project's own repository or page on the checked date. 'here' says how this site uses it.",
   "checked": "2026-10-19",
   "jobs": [
     {
@@ -101,7 +101,7 @@
       "route": "build",
       "status": "used",
       "by": "EPAM Systems (2019 open release); plain-text conversion by Daniel R. Cassar",
-      "licence": "ODbL 1.0 (the licence file is headed ODbL)",
+      "license": "ODbL 1.0 (the license file is headed ODbL)",
       "url": "https://github.com/drcassar/SciGlass",
       "what": "About 423,000 glasses from more than 40,000 papers and patents, each with its main-oxide composition and up to about 60 standard properties: viscosity points, density, index, expansion, Tg, liquidus.",
       "here": "The oxide bench on the home page plots the nearest measured melts against its composition models."
@@ -113,7 +113,7 @@
       "route": "closed",
       "status": "reference",
       "by": "Otto Schott Institute, University of Jena",
-      "licence": "Original data ODbL; no licence stated for additions",
+      "license": "Original data ODbL; no license stated for additions",
       "url": "https://sciglass.uni-jena.de",
       "what": "A maintained web version of SciGlass with corrections since 2019, about 15,000 optical spectra, a property predictor, an API (key by request) and an MCP server.",
       "here": "Not used yet. The spectra would replace drawn colorant curves."
@@ -125,7 +125,7 @@
       "route": "closed",
       "status": "not",
       "by": "New Glass Forum, Japan",
-      "licence": "Commercial",
+      "license": "Commercial",
       "url": "https://www.newglass.jp/interglad_n/gaiyo/info_e.html",
       "what": "A commercial glass property database that includes data published after 2019.",
       "here": "Not used: readers could not follow the numbers back."
@@ -137,7 +137,7 @@
       "route": "page",
       "status": "used",
       "by": "Mikhail Polyanskiy and contributors",
-      "licence": "CC0 1.0",
+      "license": "CC0 1.0",
       "url": "https://github.com/polyanskiy/refractiveindex.info-database",
       "what": "Refractive index and extinction data with sources, for optical glasses, fluoride and chalcogenide glasses, metals and crystals, plus vendor glass catalogs.",
       "here": "Source of the cited dispersion formulas in the Light Lab and the refraction stage."
@@ -149,10 +149,10 @@
       "route": "build",
       "status": "planned",
       "by": "Derek Au and Glazy contributors",
-      "licence": "CC BY-NC-SA 4.0",
+      "license": "CC BY-NC-SA 4.0",
       "url": "https://github.com/derekphilipau/glazy-data",
       "what": "12,892 ceramic glaze records (2021 export) with oxide analysis, firing cone and kiln atmosphere. 12,035 carry a color sampled from photographs. A glaze is a glass fused onto clay.",
-      "here": "Planned: fired color against composition and redox, such as copper green in an oxidizing kiln and copper red in a reducing one. The colors come from photographs and would be labelled that way."
+      "here": "Planned: fired color against composition and redox, such as copper green in an oxidizing kiln and copper red in a reducing one. The colors come from photographs and would be labeled that way."
     },
     {
       "id": "meulebroeck",
@@ -161,7 +161,7 @@
       "route": "page",
       "status": "used",
       "by": "Wendy Meulebroeck, Hilde Wouters, Karin Nys and Hugo Thienpont",
-      "licence": "CC BY 4.0",
+      "license": "CC BY 4.0",
       "url": "https://doi.org/10.1038/srep37726",
       "what": "Measured transmission spectra (300–1500 nm) of 85 panes from two stained-glass panels: cobalt blues, chromium greens, iron yellows, copper rubies and silver stain. Each curve is normalized, with no thickness given.",
       "here": "The cobalt, chromium and silver curves on this site are traced from it, for their shapes."
@@ -173,7 +173,7 @@
       "route": "offline",
       "status": "not",
       "by": "M3RG, IIT Delhi",
-      "licence": "CC BY-NC-SA 4.0",
+      "license": "CC BY-NC-SA 4.0",
       "url": "https://github.com/M3RG-IITD/DiSCoMaT",
       "what": "A model that extracts composition tables from glass papers.",
       "here": "Not used: SciGlass already holds the compositions this site needs."
@@ -185,7 +185,7 @@
       "route": "page",
       "status": "used",
       "by": "Alexander Fluegel (2007–2008); Young and Finn (1940); A. A. Appen",
-      "licence": "Published equations",
+      "license": "Published equations",
       "url": "https://www.glassproperties.com/",
       "what": "Composition models fitted to measured glasses: viscosity at fixed points, refractive index and dispersion, density, thermal expansion.",
       "here": "Drive the oxide bench. Within soda-lime glass the viscosity model misses SciGlass measurements by about 10 °C (median)."
@@ -197,7 +197,7 @@
       "route": "build",
       "status": "planned",
       "by": "Daniel R. Cassar (2023), in the GlassPy package",
-      "licence": "GPL-3.0 or later, code and weights",
+      "license": "GPL-3.0 or later, code and weights",
       "url": "https://github.com/drcassar/glasspy",
       "what": "A neural network trained on SciGlass that predicts 85 properties from composition, including liquidus temperature, Tg, elastic moduli and crystallization temperatures. The weights are a 127 MB download.",
       "here": "Planned as a second prediction beside the fitted models, and for liquidus, which sets how close a glass is to crystallizing at its working temperature."
@@ -209,7 +209,7 @@
       "route": "build",
       "status": "reference",
       "by": "Carvalho, Loponi and Cassar (2026, in review), in GlassPy",
-      "licence": "GPL-3.0 or later",
+      "license": "GPL-3.0 or later",
       "url": "https://arxiv.org/abs/2603.15312",
       "what": "A classifier that gives the probability that a composition forms a glass on cooling.",
       "here": "Not used yet. A probability map could be drawn over measured glass-forming regions."
@@ -221,7 +221,7 @@
       "route": "offline",
       "status": "not",
       "by": "Edesio Alcobaça and others",
-      "licence": "GPL-3.0",
+      "license": "GPL-3.0",
       "url": "https://github.com/ealcobaca/mlglass",
       "what": "Earlier machine-learning models for Tg and other properties. Last updated 2021.",
       "here": "Not used: GlassNet covers the same ground with more properties."
@@ -233,7 +233,7 @@
       "route": "closed",
       "status": "not",
       "by": "M3RG, IIT Delhi",
-      "licence": "None found",
+      "license": "None found",
       "url": "https://pyggi.iitd.ac.in",
       "what": "A web application with trained property models and a composition optimizer.",
       "here": "Not used: there is no downloadable model to cite or run."
@@ -245,7 +245,7 @@
       "route": "page",
       "status": "used",
       "by": "Napolitano and Hawkins (1964), National Bureau of Standards",
-      "licence": "US government work",
+      "license": "US government work",
       "url": "https://doi.org/10.6028/jres.068A.042",
       "what": "The viscosity of one standard soda-lime glass, measured at eight laboratories from the melt to the strain point.",
       "here": "The viscosity curve and fixed points on the home page."
@@ -257,7 +257,7 @@
       "route": "build",
       "status": "planned",
       "by": "Daniel R. Cassar (2021), in GlassPy",
-      "licence": "GPL-3.0 or later",
+      "license": "GPL-3.0 or later",
       "url": "https://doi.org/10.1016/j.actamat.2020.116602",
       "what": "A small neural network (about 16,000 parameters) that predicts three parameters of the MYEGA viscosity equation from composition: high-temperature viscosity, Tg and fragility. Every curve it gives therefore has the physical shape of a viscosity curve.",
       "here": "Planned for fragility: why some glasses stay workable over a wide temperature range and others stiffen quickly."
@@ -269,7 +269,7 @@
       "route": "page",
       "status": "used",
       "by": "Mauro, Yue, Ellison, Gupta and Allan (2009); Vogel, Fulcher, Tammann (1921–26)",
-      "licence": "Published equations",
+      "license": "Published equations",
       "url": "https://doi.org/10.1073/pnas.0911705106",
       "what": "Short equations for how viscosity changes with temperature.",
       "here": "The VFT equation drives the Forming Lab."
@@ -281,7 +281,7 @@
       "route": "page",
       "status": "planned",
       "by": "Giordano, Russell and Dingwell (2008); Python port by M. O. Chevrel",
-      "licence": "MIT (Python port)",
+      "license": "MIT (Python port)",
       "url": "https://github.com/oryalava/Silicate_melt_viscosity_models",
       "what": "Viscosity of dry and water-bearing natural silicate melts from composition.",
       "here": "Planned for obsidian and pumice: a few percent of dissolved water lowers the viscosity of a rhyolite melt by orders of magnitude."
@@ -293,7 +293,7 @@
       "route": "build",
       "status": "planned",
       "by": "Mikkel S. Bødker and others (2022), Aalborg University",
-      "licence": "GPL-3.0",
+      "license": "GPL-3.0",
       "url": "https://github.com/OxideGlassGroupAAU/StatMechGlass",
       "what": "A statistical-mechanics model of short-range order. It predicts how many network formers carry 4, 3, 2, 1 or 0 bridging oxygens (the Qⁿ distribution) from composition, with fitted values for silicate, borate and phosphate systems.",
       "here": "Planned for the oxide bench, to show how adding Na₂O breaks the silica network and why viscosity falls."
@@ -305,7 +305,7 @@
       "route": "offline",
       "status": "planned",
       "by": "Sundararaman, Huang, Ispas and Kob (SHIK); Pedone and others (2006); Bertani and others (2024)",
-      "licence": "Published parameters",
+      "license": "Published parameters",
       "url": "https://doi.org/10.1021/acs.jctc.3c01115",
       "what": "Interatomic potentials fitted for oxide glasses, for molecular dynamics in LAMMPS. The DeePMD one is a machine-learned potential for sodium silicates.",
       "here": "Planned: one offline simulation of silica and a sodium silicate, published as atom positions for a 3D view."
@@ -317,7 +317,7 @@
       "route": "offline",
       "status": "reference",
       "by": "Sandia National Laboratories; Anders Hafreager (Atomify)",
-      "licence": "GPL-2.0 (LAMMPS); GPL-3.0 (Atomify)",
+      "license": "GPL-2.0 (LAMMPS); GPL-3.0 (Atomify)",
       "url": "https://www.lammps.org/",
       "what": "The standard molecular dynamics engine, and a browser build of it. The browser build needs cross-origin isolation headers that many static hosts cannot set.",
       "here": "The engine for the offline simulation. Atomify is better linked to than embedded."
@@ -329,7 +329,7 @@
       "route": "offline",
       "status": "reference",
       "by": "Sébastien Le Roux and Philippe Jund",
-      "licence": "GPL",
+      "license": "GPL",
       "url": "https://rings-code.sourceforge.net/",
       "what": "Ring statistics and other structure analysis for atomic networks.",
       "here": "Analysis for the offline simulation."
@@ -341,7 +341,7 @@
       "route": "page",
       "status": "used",
       "by": "This site",
-      "licence": "This site's code",
+      "license": "This site's code",
       "url": "https://jacob234.github.io/glass-color-explainer/structure-lab/",
       "what": "A two-dimensional molecular dynamics model in the browser.",
       "here": "Shows how cooling rate decides between a crystal and a glass."
@@ -353,7 +353,7 @@
       "route": "page",
       "status": "used",
       "by": "This site",
-      "licence": "This site's code",
+      "license": "This site's code",
       "url": "https://github.com/Jacob234/glass-color-explainer",
       "what": "Transmission spectrum × lamp spectrum × CIE 1931 2° observer, adapted to D65 and encoded as sRGB, with Beer–Lambert mixing and thermal glow from Kirchhoff's law.",
       "here": "Computes the colors on the site."
@@ -365,7 +365,7 @@
       "route": "page",
       "status": "planned",
       "by": "Johnson and Christy (1972) optical constants, via refractiveindex.info",
-      "licence": "CC0 data",
+      "license": "CC0 data",
       "url": "https://refractiveindex.info/?shelf=main&book=Au&page=Johnson",
       "what": "Absorption and scattering by metal nanoparticles in glass, from measured optical constants.",
       "here": "Planned to compute gold ruby, silver yellow and the Lycurgus Cup's two colors. The heat-treatment sliders use hand-picked colors until then."
@@ -377,7 +377,7 @@
       "route": "offline",
       "status": "reference",
       "by": "Scott Prahl",
-      "licence": "MIT",
+      "license": "MIT",
       "url": "https://github.com/scottprahl/miepython",
       "what": "Mie scattering calculations in Python.",
       "here": "Reference values to test the browser Mie code against."
@@ -389,7 +389,7 @@
       "route": "offline",
       "status": "reference",
       "by": "Colour Developers",
-      "licence": "BSD-3-Clause",
+      "license": "BSD-3-Clause",
       "url": "https://github.com/colour-science/colour",
       "what": "A Python library for colorimetry: color matching functions, illuminants, chromatic adaptation and color spaces.",
       "here": "Reference values to test the spectral engine against."
@@ -401,7 +401,7 @@
       "route": "offline",
       "status": "not",
       "by": "Michael J. Hayford",
-      "licence": "BSD-3-Clause",
+      "license": "BSD-3-Clause",
       "url": "https://github.com/mjhoptics/ray-optics",
       "what": "Lens design in Python, with readers for the Schott, Ohara, Hoya and other optical glass catalogs.",
       "here": "Not used: the Light Lab takes its indices from cited dispersion formulas."
@@ -413,7 +413,7 @@
       "route": "page",
       "status": "reference",
       "by": "Benedikt Bitterli",
-      "licence": "zlib",
+      "license": "zlib",
       "url": "https://github.com/tunabrain/tantalum",
       "what": "A spectral two-dimensional light transport renderer in WebGL.",
       "here": "A reference for the Light Lab's ray tracer."
@@ -425,7 +425,7 @@
       "route": "offline",
       "status": "not",
       "by": "Realistic Graphics Lab, EPFL",
-      "licence": "BSD-3-Clause",
+      "license": "BSD-3-Clause",
       "url": "https://github.com/mitsuba-renderer/mitsuba3",
       "what": "A spectral, physically based 3D renderer.",
       "here": "Not used: it runs on the desktop only."
@@ -437,7 +437,7 @@
       "route": "page",
       "status": "used",
       "by": "This site",
-      "licence": "This site's code",
+      "license": "This site's code",
       "url": "https://jacob234.github.io/glass-color-explainer/forming-lab/",
       "what": "A gather of hot glass on a blowpipe: viscous flow, sag and radiative cooling.",
       "here": "The Forming Lab."
@@ -449,7 +449,7 @@
       "route": "page",
       "status": "reference",
       "by": "Tool (1946), Narayanaswamy (1971), Moynihan and others (1976)",
-      "licence": "Published equations",
+      "license": "Published equations",
       "url": "https://doi.org/10.1111/j.1151-2916.1971.tb12186.x",
       "what": "Structural relaxation through the glass transition, using fictive temperature. It explains why cooling rate changes a glass's density and stress.",
       "here": "Not used yet. Short enough to write for the annealing stage."
@@ -461,7 +461,7 @@
       "route": "offline",
       "status": "not",
       "by": "KyaniteLabs",
-      "licence": "MIT",
+      "license": "MIT",
       "url": "https://github.com/KyaniteLabs/openglaze",
       "what": "A ceramic glaze calculator and recipe manager.",
       "here": "Not used: the oxide bench already converts recipes to oxides."
