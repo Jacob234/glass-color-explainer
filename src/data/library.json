@@ -551,7 +551,7 @@
       "by": "W. Thiemsorn, K. Keowkamnerd, P. Suwannathada, H. Hessenkemper and S. Phanichaphant", "date": "2007", "edition": "Bulletin of Materials Science 30(5), 487–495",
       "url": "https://www.ias.ac.in/article/fulltext/boms/030/05/0487-0495",
       "provides": "Molar absorptivities at the band maximum for Mn³⁺ (480 nm, 112.5–134.2 L mol⁻¹ cm⁻¹), Co²⁺ (595 nm, 152.5–193.1), Cr³⁺ (655 nm, 20.5–22.3), Cu²⁺ and Ni²⁺ in soda-lime-silica glasses of known composition with 10–16 mol% Na₂O (Table 4), and their absorption spectra in A/d (Figs. 4–8). The page uses the middle-basicity values to put the traced cobalt and chromium curves in absolute units, and fits two bands to the Mn³⁺ spectrum of Fig. 4 for manganese.",
-      "reuse": "cite", "licence": "Journal article; no reuse licence stated. The page copies five numbers from Table 4 and stores two fitted bands, not the figure.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. The page copies five numbers from Table 4 and stores two fitted bands, not the figure.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/data/measured.json", "find": "thiemsorn-2007", "stage": "ions" }],
       "caution": "The Mn³⁺ and Cu²⁺ concentrations were themselves estimated from older literature absorptivities (Paul & Douglas), so those two ε values are not independent measurements. Mn³⁺ band widths were read off the published figure by this site, not reported by the authors."
@@ -562,7 +562,7 @@
       "by": "Wendy Meulebroeck and others", "date": "2010", "edition": "Proc. SPIE 7726, Optical Sensing and Detection",
       "url": "https://doi.org/10.1117/12.853666",
       "provides": "Transmission spectra of 89 colored glasses from Roman to modern times. Gives the Mn³⁺ band of historic soda glass at 489.8 ± 5.4 nm and shows a Roman glass colored by manganese as pink.",
-      "reuse": "cite", "licence": "Conference paper; no reuse licence stated. Cited for one number.",
+      "reuse": "cite", "license": "Conference paper; no reuse license stated. Cited for one number.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/data/measured.json", "find": "489.8", "stage": "ions" }]
     },
@@ -572,7 +572,7 @@
       "by": "Stefan Karlsson and Peter Sundberg", "date": "2026", "edition": "Glass Europe (published 21 Aug. 2026)",
       "url": "https://www.tib-op.org/ojs/index.php/glass-europe/article/download/2804/3666",
       "provides": "Molar extinction coefficient of Fe²⁺ in soda-lime float glass, 26.9 L mol⁻¹ cm⁻¹ (22.8 borosilicate, 19.4 aluminosilicate). The page uses it to check its conversion from molar absorptivity to absorbance per mol%.",
-      "reuse": "open", "licence": "CC BY 4.0.",
+      "reuse": "open", "license": "CC BY 4.0.",
       "checked": "2026-10-20",
       "usedBy": [{ "file": "src/data/measured.json", "find": "Karlsson & Sundberg", "stage": "ions" }]
     },

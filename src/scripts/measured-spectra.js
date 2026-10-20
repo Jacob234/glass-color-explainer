@@ -3,7 +3,7 @@
 //   bands      Gaussian bands fitted to measured glasses of known composition and thickness
 //              (Volotinen 2007; Thiemsorn et al. 2007 for Mn³⁺), in decadic absorbance per cm per
 //              mol% of the ion. Absolute: c = 1 is `amount` mol% of the ion through the 10 mm wall.
-//   digitised  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
+//   digitized  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
 //              in arbitrary units. Measured shape. With a `calibration` (a molar absorptivity ε at one
 //              wavelength, from a melt of known composition) the curve is put in the same absolute
 //              units as bands and c = 1 is `amount` mol%; without one, c = 1 is `scale` times the
