@@ -267,9 +267,12 @@ export function batchStage({ colorOf, onLamp }) {
     const where = !g.moved.length ? 'GlassNet, run on this glass,' : g.moved.length === 1 ? `GlassNet, run along this slider from ${label},` : `GlassNet (from ${label}, adding up the change each moved slider makes alone)`;
     let t = `${where} puts the working point at ${Math.round(w)} °C against the bench's ${Math.round(p.working)} °C, and the annealing point at ${Math.round(g.T12)} °C against ${Math.round(p.annealing)} °C. It also gives what the bench's models cannot: a liquidus of ${Math.round(g.liquidus)} °C, the temperature below which crystals can grow in the melt. `;
     const mNet = w - g.liquidus, own = Math.sign(mNet) === Math.sign(mBench) ? '' : ` (by GlassNet's own working point it is ${Math.round(Math.abs(mNet))} °C ${mNet >= 0 ? 'above' : 'below'}: the two models disagree on which side of the line this glass sits)`;
-    t += mBench >= 0
-      ? `At the bench's working point this batch is ${Math.round(mBench)} °C above that liquidus${own}, so no crystal is stable while it is shaped; below the liquidus crystals could grow, but the glass stiffens so fast as it cools that they get little time.`
-      : `At the bench's working point this batch is ${Math.round(-mBench)} °C below that liquidus${own}: crystals can grow in the gather while it is shaped, and the glass clouds unless it is worked fast or hot.`;
+    const q0 = nearL[0], close = q0 && q0.d < 1 ? ` Against the measured liquidus of the nearest SciGlass melt, ${q0.liq} °C, it would be ${Math.round(Math.abs(p.working - q0.liq))} °C ${p.working >= q0.liq ? 'above' : 'below'}.` : '';
+    if (Math.abs(mBench) < gn.LIQUIDUS_MISS) {
+      t += `At the bench's working point this batch is ${Math.round(Math.abs(mBench))} °C ${mBench >= 0 ? 'above' : 'below'} that liquidus${own}, closer than GlassNet's typical liquidus miss of ${gn.LIQUIDUS_MISS} °C, so the model cannot say which side of the line the gather is worked on.${close}`;
+    } else t += mBench >= 0
+      ? `At the bench's working point this batch is ${Math.round(mBench)} °C above that liquidus${own}, so no crystal is stable while it is shaped; below the liquidus crystals could grow, but the glass stiffens so fast as it cools that they get little time.${close}`
+      : `At the bench's working point this batch is ${Math.round(-mBench)} °C below that liquidus${own}: crystals can grow in the gather while it is shaped, and the glass clouds unless it is worked fast or hot.${close}`;
     if (g.moved.length > 1) t += ` With several sliders moved these numbers are summed one-slider changes, which ignore how the oxides interact: tested against GlassNet itself they stray a median ${Math.round(net.additivity.T3.median)} °C at the working point and ${Math.round(net.additivity.liquidus.median)} °C at the liquidus, which bends sharply where one crystal gives way to another.`;
     if (nearL.length) {
       const q = nearL[0];

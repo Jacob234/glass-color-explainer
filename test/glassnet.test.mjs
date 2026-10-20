@@ -54,6 +54,14 @@ test('isokoms out of order are clamped so the curve never turns back', () => {
   for (let i = 1; i < T.length; i++) assert.ok(T[i] <= T[i - 1]);
 });
 
+test('a low T0 is lifted to T1 rather than dragging the whole curve down', () => {
+  const low = { ...fake, named: { ...named, float: { ...named.float, T0: 900 } } };
+  const g = gn.predict(low, floatWt);
+  assert.equal(g.isokoms[0][1], g.isokoms[1][1]);
+  assert.equal(g.T3, named.float.T3);
+  assert.equal(g.viscosity.tempAt(3), named.float.T3);
+});
+
 test('score compares GlassNet and the bench model on the same measured points', () => {
   const sg = { glasses: [{ id: 'a', visc: [[3, 1090], [13.5, 500]], liq: 1000, nd: 1.5 }, { id: 'b', liq: 1000 }] };
   const s = gn.score(sg, fake, () => ({ tempAt: () => 1080, nd: 1.505 }));

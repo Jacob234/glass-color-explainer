@@ -41,8 +41,10 @@ export function predict(data, wt, from) {
     for (const key of Object.keys(p)) p[key] += along(sw[key], data.sliders[k], data.steps, wt[k]) - along(sw[key], data.sliders[k], data.steps, base[k]);
   }
   // GlassNet predicts each isokom separately, so nothing forces them into order; keep the curve monotone.
+  // Clamp from the glassy end up: the runniest isokom, T0 (log η = 0, wetter than any melt is worked),
+  // is the least reliable and sits below T1 for the lead and borosilicate presets.
   const T = LEVELS.map((n) => p[`T${n}`]);
-  for (let i = 1; i < T.length; i++) T[i] = Math.min(T[i], T[i - 1]);
+  for (let i = T.length - 2; i >= 0; i--) T[i] = Math.max(T[i], T[i + 1]);
   return { ...p, isokoms: LEVELS.map((n, i) => [n, T[i]]), anchor: a.id, moved: a.moved, viscosity: curve(T) };
 }
 
@@ -63,6 +65,10 @@ export function curve(T) {
 // Positive means the gather is worked hotter than any crystal can survive; negative means crystals can
 // grow while it is being worked.
 export const margin = (working, liquidus) => working - liquidus;
+
+// GlassNet's median liquidus miss against SciGlass, °C (scripts/score_glassnet.mjs: 48 °C over 4,506 melts,
+// 48 on the 724 it did not train on). Margins smaller than this are within the model's error.
+export const LIQUIDUS_MISS = 48;
 
 // Median |GlassNet − measured| and median |bench model − measured| over SciGlass melts, by property,
 // from public/data/sciglass/bench.json and glassnet.json. `models` gives the bench's own model for a
