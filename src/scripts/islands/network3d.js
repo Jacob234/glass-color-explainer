@@ -155,7 +155,7 @@ export function initNetworkViewer(root, tints) {
       ['density', `${sum.density.toFixed(2)} g/cm³`],
       ['Q⁴ · Q³ · Q²', `${pct(sum.qn[4])} · ${pct(sum.qn[3])} · ${pct(sum.qn[2])}`],
       ['oxygens bridging', pct(sum.bo)],
-      ['Si–O–Si angle, commonest', `${Math.round(sum.angle.peak)}°`],
+      ['Si–O–Si angle, commonest · mean', `${Math.round(sum.angle.peak)}° · ${Math.round(sum.angle.mean)}°`],
     ];
     if (sum.atoms.Na) rows.push(['oxygens around each Na', sum.naO.toFixed(1)]);
     meters.replaceChildren(...rows.map(([dt, dd]) => {

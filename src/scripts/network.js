@@ -162,7 +162,10 @@ export function summarize(s) {
   const angles = bridgeAngles(s, net);
   const hist = new Array(18).fill(0); // 90°–180° in 5° bins
   for (const a of angles) hist[Math.min(17, Math.max(0, Math.floor((a - 90) / 5)))]++;
-  const peak = 90 + 5 * hist.indexOf(Math.max(...hist)) + 2.5;
+  // the commonest angle: center of the fullest 5° bin after a three-bin running mean, so one noisy
+  // bin in a few thousand angles does not decide it
+  const smooth = hist.map((_, k) => (hist[k - 1] ?? 0) + hist[k] + (hist[k + 1] ?? 0));
+  const peak = 90 + 5 * smooth.indexOf(Math.max(...smooth)) + 2.5;
   let naO = 0;
   if (nNa) for (const [, os] of neighbors(s, NA, O, NAO_CUT)) naO += os.length;
   return {

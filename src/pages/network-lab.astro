@@ -36,15 +36,15 @@ const binary = binaryQn(data.glasses.soda.x);
         diffraction soon backed it, and the best of those measurements (Mozzi and Warren, 1969) found
         the angle at each bridging oxygen spread from 120° all the way to 180°, most often near 144°.
         In this simulated silica the commonest angle is {Math.round(ss.angle.peak)}° (to the nearest
-        5° bin), the spread runs as wide, and {pct(ss.siCoord[4])} of the silicons have exactly four
+        5°) and the mean {Math.round(ss.angle.mean)}°, the spread runs as wide, and {pct(ss.siCoord[4])} of the silicons have exactly four
         oxygens.
       </p>
       <p>
         <strong>Rings.</strong> Follow bridges from one silicon around and back to it and you trace a
         ring. In cristobalite, the crystal silica forms most easily, every smallest ring has six
         tetrahedra. Turn on the rings and step through the sizes: the glass has rings from
-        {Math.min(...ringRange(ss))} to {Math.max(...ringRange(ss))} tetrahedra and beyond, most of them
-        five, six or seven. The variety of rings is what a crystal cannot have, and it is one way to
+        {Math.min(...ringRange(ss))} to {Math.max(...ringRange(ss))} tetrahedra, most of them six or
+        seven. The variety of rings is what a crystal cannot have, and it is one way to
         say exactly what "disordered" means for a network whose every atom still has its proper
         neighbors.
       </p>
@@ -76,23 +76,25 @@ const binary = binaryQn(data.glasses.soda.x);
       </p>
       <p>
         The simulated glass has {pct(nf.qn[2])} Q² in the fast quench and {pct(ns.qn[2])} in the
-        slower one; the measured glass has almost none. The usual explanation, which the potential's
-        own authors give, is the cooling rate. A liquid's structure is more disordered the hotter it
-        is, and a glass keeps the structure of the liquid at the temperature where it stopped
-        rearranging. A simulation cools so fast that it stops rearranging hundreds of degrees hotter
-        than a real glass, and keeps that hotter liquid's disorder.
+        slower one, close to what the potential's authors found at a rate four times slower still; the
+        measured glass has almost none. The usual explanation, which those authors give, is the cooling
+        rate. A liquid's structure is more disordered the hotter it is, and a glass keeps the structure
+        of the liquid at the temperature where it stopped rearranging. A simulation cools so fast that
+        it stops rearranging hundreds of degrees hotter than a real glass, and keeps that hotter
+        liquid's disorder. Tenfold slower barely moves it here: the gap to the furnace is a factor of
+        10¹⁴, and a factor of ten is a small step along it.
       </p>
 
       <h2>Simulation is fast, the furnace is slow</h2>
       <p>
         The two quench rates here are 100 and 10 kelvin per picosecond: 10¹⁴ and 10¹³ kelvin per
         second. A lehr anneals glass at a few kelvin per minute, about 10⁻¹ K/s, so the gap is some
-        fourteen orders of magnitude. Simulations cannot close it: the slower run here took two and a
-        half hours on one processor for a few hundredths of a nanosecond of glass history, and each
+        fourteen orders of magnitude. Simulations cannot close it: the slower runs here took over two
+        hours each on one processor for a few hundredths of a nanosecond of glass history, and each
         tenfold slower cooling costs ten times as long. What they can do is show the trend. Vollmayr,
-        Kob and Binder (1996) cooled silica over two and a half decades of rate and found the glass
+        Kob and Binder (1996) cooled simulated silica at a range of rates and found the glass
         transition falling with the logarithm of the rate, and the density, the ring sizes and the
-        bond angles all moving toward the measured glass as the cooling slowed.
+        bond angles all shifting with it, the atomic structure more than the bulk properties.
       </p>
       <NetworkCharts chart="cooling" />
       <p class="caption">
@@ -102,22 +104,24 @@ const binary = binaryQn(data.glasses.soda.x);
         at 25 mol% Na₂O (2.43 g/cm³, 100 glasses).
       </p>
       <p>
-        Read the curves from the right. The liquid shrinks as it cools until, somewhere below
-        3000 K for silica, the network stops rearranging and the curve bends: that is the glass
-        transition at simulation speed, far above the real one near 1460 K (1190 °C, the median of 16
-        SciGlass entries for silica; 745 K for the soda silica). Silica does something few
-        liquids do: over part of its range it barely contracts on cooling, or even expands, because
-        its open tetrahedral network takes up more room as it orders. The ring sizes respond to the
-        rate too:
+        Read the curves from the right. Liquid silica densifies as it cools until, near 3000 K, the
+        network stops rearranging and the curve flattens: that is the glass transition at simulation
+        speed, far above the real one near 1460 K (1190 °C, the median of 16 SciGlass entries). Below
+        it the glass hardly contracts at all, which is real silica's famous near-zero expansion. The
+        soda silica keeps shrinking all the way down, as an ordinary glass does, and its bend, where
+        the slope eases, falls near 1500 K, again far above the measured 745 K. The ring sizes
+        respond to the rate too, and to the sodium:
       </p>
       <NetworkCharts chart="rings" />
       <p class="caption">
         Rings per silicon atom, by the number of tetrahedra in the ring. A ring is counted for each
         silicon and each pair of its bridges as the shortest closed path through them (King, 1967),
-        and each distinct ring once.
+        and each distinct ring once. The slower silica has fewer of the strained three- and
+        four-membered rings and more six-membered ones, the direction Vollmayr, Kob and Binder found;
+        in the soda silica, where bridges are cut, rings of six and seven are rarer and rings of nine and ten, and longer, far commoner.
       </p>
 
-      <h2>How the glass was made</h2>
+      <h2>How this was computed</h2>
       <p>
         Each glass is a run of LAMMPS, the molecular-dynamics code from Sandia, with the SHIK
         potential (Sundararaman, Huang, Ispas and Kob, 2018 and 2019). SHIK treats the atoms as
