@@ -1,9 +1,10 @@
 // batch.js — what each oxide in the batch does, for stage 01. Pure functions only: no DOM.
 // A batch is a set of oxide amounts; from it come four properties the page already draws
 // elsewhere, each from a published composition model (data/batch.json):
-//   viscosity curve  Fluegel (2007) isokoms at 10^1.5, 10^6.6, 10^12 Pa·s, joined by a Fulcher curve
+//   viscosity curve  Fluegel (2007) isokoms at 10^1.5, 10^6.6, 10^12 Pa·s, joined by a Fulcher curve,
+//                    plus an alumina–magnesia term fitted here to SciGlass melts
 //   index, Abbe      Young and Finn (1940) Gladstone–Dale refraction and specific dispersion
-//   density          Fluegel et al. (2008) melt density at 1200 °C, scaled to float glass at 20 °C
+//   density          a room-temperature fit to SciGlass, in the same polynomial form
 //   expansion        Appen's additive factors
 //   iron redox       Sack et al. (1980): how the batch shifts Fe³⁺/Fe²⁺ at a fixed furnace
 import data from '../data/batch.json' with { type: 'json' };
@@ -41,7 +42,11 @@ function poly(b0, terms, C) {
 
 /* ---------- viscosity ---------- */
 export const LEVELS = Object.keys(data.viscosity.isokoms).map(Number); // log10 Pa·s
-export const isokom = (mol, level) => { const m = data.viscosity.isokoms[level.toFixed(1)]; return poly(m.b0, m.terms, mol); };
+// Fluegel's model as published, and the same with the SciGlass correction added (what the bench draws).
+export const fluegelIsokom = (mol, level) => { const m = data.viscosity.isokoms[level.toFixed(1)]; return poly(m.b0, m.terms, mol); };
+const COR = data.viscosity.correction;
+export const correction = (mol, level) => poly(0, COR.terms[level.toFixed(1)], mol);
+export const isokom = (mol, level) => fluegelIsokom(mol, level) + correction(mol, level);
 export const isokoms = (mol) => LEVELS.map((L) => [L, isokom(mol, L)]);
 
 // The Fulcher (VFT) curve log10 η = A + B / (T − T0) through three isokoms (°C, Pa·s).
@@ -55,11 +60,11 @@ export function fulcher(points) {
   return { A, B, T0, logEta: (T) => (T > T0 ? A + B / (T - T0) : Infinity), tempAt: (L) => T0 + B / (L - A) };
 }
 export const viscosity = (mol) => fulcher(isokoms(mol));
+export const fluegelViscosity = (mol) => fulcher(LEVELS.map((L) => [L, fluegelIsokom(mol, L)]));
 
 /* ---------- density, index and dispersion ---------- */
 const D = data.density;
-export const meltDensity = (mol) => poly(D.b0, D.terms, mol);
-export const density = (mol) => (D.floatRT * meltDensity(mol)) / meltDensity(BASE.mol);
+export const density = (mol) => poly(D.b0, D.terms, mol); // g/cm³ at room temperature
 
 const O = data.optics;
 // Specific refraction (n_D − 1)/ρ and specific dispersion (n_F − n_C)/ρ, from weight fractions.
