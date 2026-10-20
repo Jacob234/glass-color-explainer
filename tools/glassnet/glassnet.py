@@ -8,13 +8,16 @@ weights from Zenodo, which the project's cloud sandbox cannot reach, so the scri
 
     python3 tools/glassnet/glassnet.py public/data/glassnet.json
 
-The bench's sliders reach any of millions of batches, too many to precompute one by one, so the
-script fits a cubic polynomial in mol% to GlassNet's predictions over batches drawn the way the
-sliders draw them, and the page evaluates that polynomial. It writes, for each property:
+The bench's sliders reach any of millions of batches, too many to precompute one by one. The page
+starts from the nearest preset and moves one slider at a time, so the script runs GlassNet along
+every slider's whole range from each preset (41 steps), and the page adds up the changes of the
+sliders that have moved: exact for one slider, an approximation for several, since it ignores how
+the oxides interact. (A cubic fitted to GlassNet over the whole slider box was tried first; it
+missed GlassNet by 40 to 60 °C rms, too coarse to show anything.) It writes:
 
-- `surrogate`: the polynomial, in the term format of src/scripts/batch.js, with how closely it
-  reproduces GlassNet on held-out batches and along one-oxide sweeps from each preset;
-- `named`: GlassNet itself at each preset (the page uses these exactly when a preset is chosen);
+- `named`: GlassNet itself at each preset;
+- `sweeps`: GlassNet along each slider from each preset, and `additivity`, how far the summed
+  changes stray from GlassNet itself on batches with two or three sliders moved;
 - `melts`: GlassNet run on every measured melt in public/data/sciglass/bench.json, for scoring it
   against SciGlass and for the page's nearest-melt comparison, flagged by whether that melt sat in
   GlassNet's own training set, its holdout, or neither.
@@ -22,7 +25,6 @@ sliders draw them, and the page evaluates that polynomial. It writes, for each p
 
 import json
 import sys
-from itertools import combinations, combinations_with_replacement
 from pathlib import Path
 
 import numpy as np
@@ -75,48 +77,53 @@ def preset_wt(p):
     return {k: round(100 * x / s, 1) for x, k in zip(w, OX) if k in VARS}
 
 
-def draws(n, rng):
-    """Batches as a reader makes them: each slider left at zero half the time, otherwise anywhere on
-    its range, and silica at least 40 wt%."""
-    out = []
-    while len(out) < n:
-        wt = {o["id"]: (rng.uniform(0, o["max"]) if rng.random() < 0.5 else 0.0) for o in MOVED}
-        if sum(wt.values()) <= 100 - SILICA_MIN:
-            out.append(mol_from_wt(wt))
-    return out
+STEPS = 41  # points along each slider, 0 to its max
 
 
-def sweeps():
-    """From each preset, each slider swept over its whole range (21 steps), the others held."""
-    out = []
+def fits(wt):
+    return sum(wt.values()) <= 100 - SILICA_MIN + 1e-9
+
+
+def sweep_grid():
+    """From each preset, each slider swept over its whole range, the others held; the steps past
+    the 40 wt% silica floor are left out, as the bench's sliders stop there."""
+    rows, where = [], []
     for p in BATCH["presets"]:
         base = preset_wt(p)
         for o in MOVED:
-            for x in np.linspace(0, o["max"], 21):
+            for j, x in enumerate(np.linspace(0, o["max"], STEPS)):
                 wt = {**base, o["id"]: float(x)}
-                if sum(wt.values()) <= 100 - SILICA_MIN:
-                    out.append(mol_from_wt(wt))
+                if fits(wt):
+                    rows.append(mol_from_wt(wt))
+                    where.append((p["id"], o["id"], j))
+    return rows, where
+
+
+def moved(n, rng):
+    """Batches with two or three sliders moved from a preset, to judge the summed changes."""
+    out = []
+    while len(out) < n:
+        p = BATCH["presets"][rng.integers(len(BATCH["presets"]))]
+        wt = preset_wt(p)
+        for i in rng.choice(len(MOVED), size=rng.integers(2, 4), replace=False):
+            o = MOVED[i]
+            wt[o["id"]] = float(rng.uniform(0, o["max"]))
+        if fits(wt):
+            out.append((p["id"], wt))
     return out
 
 
-TERMS = ([(v,) for v in VARS] + list(combinations_with_replacement(VARS, 2))
-         + list(combinations_with_replacement(VARS, 3)))
-
-
-def term_name(t):
-    if len(set(t)) == 1 and len(t) > 1:
-        return f"{t[0]}^{len(t)}"
-    return "*".join(t)
-
-
-def design(X):
-    idx = {k: i for i, k in enumerate(OX)}
-    cols = [np.ones(len(X))] + [np.prod([X[:, idx[v]] for v in t], axis=0) for t in TERMS]
-    return np.stack(cols, axis=1)
-
-
-def sig(x, n=6):
-    return float(f"{x:.{n}g}")
+def additive(sweeps, named, pid, wt, key):
+    """The page's rule: the preset, plus each moved slider's change along its own sweep."""
+    base, v = preset_wt(next(p for p in BATCH["presets"] if p["id"] == pid)), named[pid][key]
+    for o in MOVED:
+        k = o["id"]
+        if abs(wt[k] - base.get(k, 0)) < 1e-9:
+            continue
+        ys = sweeps[pid][k][key]
+        xs = np.linspace(0, o["max"], STEPS)[: len(ys)]
+        v += np.interp(wt[k], xs, ys) - np.interp(base.get(k, 0), xs, ys)
+    return v
 
 
 def predict(model, rows):
@@ -174,31 +181,31 @@ def main(out):
     rng = np.random.default_rng(1021)
     model = GlassNet()
 
-    # The surrogate: fit on 8,000 drawn batches, judged on 2,000 more and on the sweeps.
-    fit_rows, hold_rows, sweep_rows = draws(8000, rng), draws(2000, rng), sweeps()
-    yf, yh, ys = predict(model, fit_rows), predict(model, hold_rows), predict(model, sweep_rows)
-    Af, Ah, As = design(np.array(fit_rows)), design(np.array(hold_rows)), design(np.array(sweep_rows))
-    surrogate = {}
-    for key, _ in PROPS.values():
-        coef, *_ = np.linalg.lstsq(Af, yf[key].values, rcond=None)
-        coef = np.array([sig(c) for c in coef])
-        eh, es = Ah @ coef - yh[key].values, As @ coef - ys[key].values
-        digits = 4 if key in ("nd", "rho") else 2 if key == "vd" else 1
-        surrogate[key] = {
-            "b0": coef[0],
-            "terms": {term_name(t): c for t, c in zip(TERMS, coef[1:])},
-            "rmsHeldOut": round(float(np.sqrt(np.mean(eh**2))), digits),
-            "p95HeldOut": round(float(np.percentile(np.abs(eh), 95)), digits),
-            "rmsSweeps": round(float(np.sqrt(np.mean(es**2))), digits),
-            "maxSweeps": round(float(np.max(np.abs(es))), digits),
-        }
-        print(f"{key:10s} held-out rms {surrogate[key]['rmsHeldOut']}, p95 {surrogate[key]['p95HeldOut']}; "
-              f"sweeps rms {surrogate[key]['rmsSweeps']}, max {surrogate[key]['maxSweeps']}")
+    digits = lambda k: 4 if k in ("nd", "rho") else 2 if k == "vd" else 1
+    keys = [k for k, _ in PROPS.values()]
 
     # GlassNet itself at each preset.
     yn = predict(model, [preset_mol(p) for p in BATCH["presets"]])
-    named = {p["id"]: {k: round(float(yn[k][i]), 4 if k in ("nd", "rho") else 2 if k == "vd" else 1)
-                       for k, _ in PROPS.values()} for i, p in enumerate(BATCH["presets"])}
+    named = {p["id"]: {k: round(float(yn[k][i]), digits(k)) for k in keys} for i, p in enumerate(BATCH["presets"])}
+
+    # Along each slider from each preset.
+    rows, where = sweep_grid()
+    ys = predict(model, rows)
+    sweeps = {p["id"]: {o["id"]: {k: [] for k in keys} for o in MOVED} for p in BATCH["presets"]}
+    for i, (pid, ox, _) in enumerate(where):
+        for k in keys:
+            sweeps[pid][ox][k].append(round(float(ys[k][i]), digits(k)))
+
+    # How far the summed changes stray from GlassNet with two or three sliders moved.
+    trials = moved(3000, rng)
+    yt = predict(model, [mol_from_wt(wt) for _, wt in trials])
+    additivity = {}
+    for k in keys:
+        err = np.array([additive(sweeps, named, pid, wt, k) - yt[k][i] for i, (pid, wt) in enumerate(trials)])
+        additivity[k] = {"rms": round(float(np.sqrt(np.mean(err**2))), digits(k)),
+                         "median": round(float(np.median(np.abs(err))), digits(k)),
+                         "p95": round(float(np.percentile(np.abs(err), 95)), digits(k))}
+        print(f"{k:10s} summed changes vs GlassNet, 2–3 sliders moved: {additivity[k]}")
 
     # GlassNet on every measured melt, and where each melt sat in its training split.
     glasses = BENCH["glasses"]
@@ -226,9 +233,11 @@ def main(out):
     data = {
         "about": "GlassNet predictions for stage 01's oxide bench. Temperatures °C; T0..T12 are where "
                  "log10 η [Pa·s] = 0..12; liquidus is the temperature above which no crystal is stable; "
-                 "nd, vd, rho are index, Abbe number and density (g/cm³). `surrogate` is a cubic in mol% "
-                 "fitted to GlassNet over batches the bench's sliders can make (silica the balance), with "
-                 "its own error against GlassNet. `named` is GlassNet itself at each preset. `melts` keys "
+                 "nd, vd, rho are index, Abbe number and density (g/cm³). `named` is GlassNet at each "
+                 "preset. `sweeps[preset][oxide][property]` is GlassNet with that slider at "
+                 f"{STEPS} even steps from 0 to its max wt% (silica the balance, the others at the preset), "
+                 "cut short where silica would fall below 40 wt%. `additivity` is how far the preset plus "
+                 "the summed one-slider changes misses GlassNet with two or three sliders moved. `melts` keys "
                  "the glasses of public/data/sciglass/bench.json: [split, GlassNet T at each of that "
                  "glass's measured viscosity levels, liquidus, nd, vd], each null where SciGlass has no "
                  "measurement to compare; split is t (in GlassNet's training set), h (its holdout) or n "
@@ -242,14 +251,15 @@ def main(out):
                   "tool": "tools/glassnet/glassnet.py",
                   "splits": counts},
         "oxides": OX,
-        "variables": VARS,
-        "surrogate": surrogate,
+        "sliders": {o["id"]: o["max"] for o in MOVED},
+        "steps": STEPS,
         "named": named,
+        "sweeps": sweeps,
+        "additivity": additivity,
         "melts": melts,
     }
     Path(out).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-    print(f"{len(fit_rows)} fit, {len(hold_rows)} held out, {len(sweep_rows)} sweep points, "
-          f"{len(melts)} melts → {out}")
+    print(f"{len(rows)} sweep points, {len(trials)} trials, {len(melts)} melts → {out}")
 
 
 if __name__ == "__main__":
