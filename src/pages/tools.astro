@@ -1,0 +1,178 @@
+---
+import Base from '../layouts/Base.astro';
+import d from '../data/tools.json';
+import { inCell, byJob } from '../scripts/tools.js';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const st = d.status;
+const routeName = Object.fromEntries(d.routes.map((r) => [r.id, r.name]));
+const gapAt = (job, route) => d.gaps.filter((g) => g.job === job && g.route === route);
+const count = (s) => d.tools.filter((t) => t.status === s).length;
+const host = (url) => new URL(url).hostname.replace(/^www\./, '');
+---
+<Base title="Tools" description="Open software, models and data for glass science: what each does, its licence, whether it can run in a web page, and where nothing open exists yet.">
+  <article class="concept tools" id="tools" data-show="all">
+    <p class="detail-type">Tools</p>
+    <h1>Software and data for glass</h1>
+    <p class="summary">
+      The open databases, models and programs that compute glass properties, placed by the job
+      each does and by how it can be used on a web page. Each entry gives its licence and whether
+      this site uses it. Three cells mark jobs that no open tool does yet.
+    </p>
+
+    <div class="filter" role="group" aria-label="Show">
+      <span class="mono">Show</span>
+      <button type="button" id="show-all" data-show="all" aria-pressed="true">All <span class="n">{d.tools.length}</span></button>
+      {Object.entries(st).map(([k, s]) => (
+        <button type="button" id={`show-${k}`} data-show={k} aria-pressed="false"><span class="mark" aria-hidden="true">{s.mark}</span> {s.name} <span class="n">{count(k)}</span></button>
+      ))}
+    </div>
+
+    <div class="map-scroll">
+      <table class="map">
+        <caption class="mono">Rows: how a tool can be used. Columns: the job it does.</caption>
+        <thead>
+          <tr>
+            <td></td>
+            {d.jobs.map((j) => <th scope="col"><span class="job">{j.name}</span><span class="sub">{j.sub}</span></th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {d.routes.map((r) => (
+            <tr>
+              <th scope="row"><span class="route">{r.name}</span><span class="sub">{r.sub}</span></th>
+              {d.jobs.map((j) => (
+                <td>
+                  {inCell(d, j.id, r.id).map((t) => (
+                    <a class={`chip s-${t.status}`} href={`#${t.id}`}><span class="mark" aria-hidden="true">{st[t.status].mark}</span><span class="nm">{t.name}</span><span class="visually-hidden">, {st[t.status].name}</span></a>
+                  ))}
+                  {gapAt(j.id, r.id).map((g) => (
+                    <a class="gap" href={`#gap-${j.id}`}><b>Open gap:</b> {g.title}</a>
+                  ))}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="key">
+      {Object.entries(st).map(([k, s]) => <div><dt><span aria-hidden="true">{s.mark}</span> {s.name}</dt></div>)}
+      <div><dt><span class="gapkey">gap</span> No open tool does this job</dt></div>
+    </dl>
+
+    {d.jobs.map((j) => (
+      <section class="job-section" id={`job-${j.id}`}>
+        <h2>{j.name}</h2>
+        <ol class="cards">
+          {byJob(d, j.id).map((t) => (
+            <li class={`card s-${t.status}`} id={t.id}>
+              <p class="call"><span>{routeName[t.route]}</span><span><span aria-hidden="true">{st[t.status].mark}</span> {st[t.status].name}</span></p>
+              <h3><a href={t.url} rel="noopener">{t.name}</a></h3>
+              <p class="by">{t.by}</p>
+              <p class="what">{t.what}</p>
+              <p class="here"><b>On this site.</b> {t.here}</p>
+              <p class="licence"><b>Licence</b> {t.licence} · <span class="host">{host(t.url)}</span></p>
+            </li>
+          ))}
+          {d.gaps.filter((g) => g.job === j.id).map((g) => (
+            <li class="card gapcard" id={`gap-${j.id}`}>
+              <p class="call"><span>Open gap</span></p>
+              <h3>{g.title}</h3>
+              <p class="what">{g.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+
+    <p class="aside">
+      <b>How this map was made.</b> Licences and update dates were read from each project's own
+      repository or page on {d.checked}. "Runs in a web page" means the tool is small enough for a
+      browser and its licence lets it ship with a page; GPL code is listed under "run offline"
+      because a page that bundled it would itself have to be GPL. Corrections and missing tools are
+      welcome as an issue on <a href="https://github.com/Jacob234/glass-color-explainer/issues" rel="noopener">GitHub</a>.
+      The sources this site computes from are listed in the <a href={`${base}/library/`}>library</a>.
+    </p>
+    <p class="back"><a href={`${base}/`}>← back to the start</a></p>
+  </article>
+</Base>
+
+<script>
+  const root = document.getElementById('tools');
+  const buttons = root.querySelectorAll('.filter button');
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    root.dataset.show = b.dataset.show;
+    buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+</script>
+
+<style>
+  .tools { max-width: 76rem; }
+  .tools .summary { max-width: 46rem; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .filter { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 1.2rem; }
+  .filter button { font-size: 0.85rem; background: var(--node); border: 1px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.8rem; cursor: pointer; }
+  .filter button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .filter .n { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-2); margin-left: 0.2rem; font-variant-numeric: tabular-nums; }
+  .mark { font-family: var(--mono); }
+
+  .map-scroll { overflow-x: auto; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .tools table.map { display: table; width: 100%; min-width: 62rem; border-collapse: collapse; margin: 0; font-size: 0.85rem; table-layout: fixed; }
+  .map caption { caption-side: bottom; text-align: left; padding: 0.6rem 0; }
+  .tools .map th, .tools .map td { border-bottom: 1px solid var(--rule); padding: 0.6rem 0.5rem; vertical-align: top; }
+  .tools .map tbody tr:last-child th, .tools .map tbody tr:last-child td { border-bottom: none; }
+  .tools .map thead th { border-bottom: 1px solid var(--ink); }
+  .map thead td { width: 10.5rem; }
+  .map .job { display: block; font-family: var(--display); font-size: 1.15rem; letter-spacing: 0; text-transform: none; color: var(--ink); line-height: 1.15; margin-bottom: 0.2rem; }
+  .map .route { display: block; font-family: var(--sans); font-weight: 600; font-size: 0.86rem; letter-spacing: 0; text-transform: none; color: var(--ink); margin-bottom: 0.2rem; }
+  .map .sub { display: block; font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--ink-2); line-height: 1.35; font-weight: 400; }
+  .map tbody tr:nth-child(even) { background: var(--paper-2); }
+  .map td { display: table-cell; }
+  .chip { display: flex; gap: 0.4rem; align-items: baseline; text-decoration: none; background: var(--node); border: 1px solid var(--rule); padding: 0.3rem 0.45rem; margin-bottom: 0.35rem; line-height: 1.25; }
+  .chip:hover { border-color: var(--ink); }
+  .chip .nm { min-width: 0; overflow-wrap: anywhere; }
+  .chip.s-not { color: var(--ink-2); }
+  .chip.s-used { border-color: var(--ink-3); }
+  .gap { display: block; font-size: 0.78rem; line-height: 1.3; color: var(--ink-2); border: 1px dashed var(--ink-2); padding: 0.3rem 0.45rem; text-decoration: none; }
+  .gap b { color: var(--ink); font-weight: 600; }
+
+  .key { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; margin: 1rem 0 0; font-size: 0.85rem; color: var(--ink-2); }
+  .key dt { font-weight: 400; }
+  .gapkey { font-family: var(--mono); font-size: 0.7rem; border: 1px dashed var(--ink-2); padding: 0 0.3rem; }
+
+  .job-section h2 { border-top: 1px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 1rem; }
+  .tools .cards li { margin: 0; }
+  .card { background: var(--panel); border: 1px solid var(--rule); padding: 0.9rem 1rem 0.8rem; display: flex; flex-direction: column; scroll-margin-top: 1.5rem; }
+  .card:target { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .call { margin: 0; display: flex; justify-content: space-between; gap: 0.8rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; }
+  .card h3 { font-family: var(--display); font-weight: 500; font-size: 1.25rem; line-height: 1.2; margin: 0.6rem 0 0.2rem; text-wrap: balance; }
+  .card h3 a { text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; }
+  .by { margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--ink-2); }
+  .what, .here { margin: 0 0 0.6rem; font-size: 0.92rem; }
+  .here b { font-weight: 600; }
+  .licence { margin: auto 0 0; padding-top: 0.4rem; font-size: 0.8rem; color: var(--ink-2); border-top: 1px dotted var(--rule); }
+  .licence b { color: var(--ink); font-weight: 500; margin-right: 0.3rem; }
+  .host { font-family: var(--mono); font-size: 0.74rem; }
+  .card.s-not { background: transparent; }
+  .gapcard { background: transparent; border: 1px dashed var(--ink-2); }
+
+  .aside { margin-top: 3rem; font-size: 0.88rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 1rem; max-width: 46rem; }
+  .aside b { color: var(--ink); }
+
+  /* filtering: dim the map, hide the cards */
+  .tools:not([data-show="all"]) .chip { opacity: 0.2; }
+  .tools[data-show="used"] .chip.s-used, .tools[data-show="planned"] .chip.s-planned,
+  .tools[data-show="reference"] .chip.s-reference, .tools[data-show="not"] .chip.s-not { opacity: 1; }
+  .tools:not([data-show="all"]) .card:not(.gapcard) { display: none; }
+  .tools[data-show="used"] .card.s-used, .tools[data-show="planned"] .card.s-planned,
+  .tools[data-show="reference"] .card.s-reference, .tools[data-show="not"] .card.s-not { display: flex; }
+
+  /* phones read the cards below; the map needs a wide screen */
+  @media (max-width: 720px) {
+    .map-scroll { display: none; }
+  }
+</style>
