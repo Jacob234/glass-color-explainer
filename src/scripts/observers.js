@@ -84,7 +84,7 @@ export const EYES = [
   { id: 'wide', label: 'wide field', kind: 'xyz', curves: CIE1964, names: ['x̄₁₀', 'ȳ₁₀', 'z̄₁₀'],
     note: 'CIE 1964 10°: the same idea for a patch the size of your fist at arm’s length. Outside the fovea there is almost no macular pigment, so more blue reaches the cones.' },
   { id: 'cones', label: 'cones', kind: 'lms', names: ['L', 'M', 'S'],
-    note: 'CIE 2006: the eye built up from its parts. Three cone pigments, behind a lens that yellows with age and a macular pigment that thins away from the centre.' },
+    note: 'CIE 2006: the eye built up from its parts. Three cone pigments, behind a lens that yellows with age and a macular pigment that thins away from the center.' },
   { id: 'protan', label: 'no L cones', kind: 'lms', missing: 0, anchors: [475, 575], names: ['L', 'M', 'S'],
     note: 'Protanopia: no long-wave cones. Reds look dark, and red and green collapse onto one axis of yellow and blue.' },
   { id: 'deutan', label: 'no M cones', kind: 'lms', missing: 1, anchors: [475, 575], names: ['L', 'M', 'S'],
