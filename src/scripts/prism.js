@@ -3,6 +3,7 @@
 // under whatever lamp the page is lit by.
 import { GRID, SPECTRAL, css } from './spectra.js';
 import { underLamp } from './lamps.js';
+import { initFire } from './fire.js';
 import { GLASSES, GLASS, LINES, index, abbe, spread, uvResonance, prism, trace, deviation, onCard, focal, lineImage } from './dispersion.js';
 
 const $ = (id) => document.getElementById(id);
@@ -197,6 +198,8 @@ export function initDispersion({ getLamp, onLamp }) {
   // the two SF11s end at the same place: lift one label clear of the other
   const nsf = curves.find((c) => c.g.id === 'nsf11'); nsf.lab.setAttribute('y', +nsf.lab.getAttribute('y') - 13);
   nsf.lab.textContent = 'N-SF11';
+  // LLF1, window glass and N-BK7 end close together: part their labels
+  for (const [id, dy] of [['llf1', -6], ['sodalime', -4], ['bk7', 8]]) { const c = curves.find((k) => k.g.id === id); c.lab.setAttribute('y', +c.lab.getAttribute('y') + dy); }
 
   function renderGlass() {
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.id === glass.id));
@@ -267,6 +270,7 @@ export function initDispersion({ getLamp, onLamp }) {
 
   function renderAll() { renderPrism(); renderGlass(); renderLens(); }
   renderAll();
+  initFire({ getLamp, onLamp });
   addEventListener('resize', () => { fitStrip(lastStrip); renderLens(); });
   onLamp(renderAll);
 }
