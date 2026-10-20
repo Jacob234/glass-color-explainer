@@ -21,7 +21,7 @@ A transition metal ion — cobalt, chromium, iron, manganese, copper — occupie
 
 Three levers control the outcome:
 
-**Oxidation state.** Different redox states of the same element act as different colorants. Manganese as Mn³⁺ is purple; as Mn²⁺ it is nearly colorless. Iron as Fe²⁺ is blue-green; as Fe³⁺ a pale yellow-brown. Chromium as Cr³⁺ is green; as Cr⁶⁺ yellow. Copper as Cu²⁺ is turquoise; reduced all the way to metallic copper it becomes a ruby colloid by a different mechanism (see [colloidal color](../colloidal-color/)). Which oxidation state the melt lands in is decided in the furnace — see [redox in the furnace](../redox/).
+**Oxidation state.** Different redox states of the same element act as different colorants. Manganese as Mn³⁺ is pink to purple; as Mn²⁺ it is nearly colorless. Iron as Fe²⁺ is blue-green; as Fe³⁺ a pale yellow-brown. Chromium as Cr³⁺ is green; as Cr⁶⁺ yellow. Copper as Cu²⁺ is turquoise; reduced all the way to metallic copper it becomes a ruby colloid by a different mechanism (see [colloidal color](../colloidal-color/)). Which oxidation state the melt lands in is decided in the furnace — see [redox in the furnace](../redox/).
 
 **Coordination geometry.** Tetrahedral and octahedral sites split the energy levels differently, changing both the wavelength absorbed and the intensity. Cobalt's intense blue comes from Co²⁺ sitting in tetrahedral sites in silicate glass, a geometry that makes the transitions far stronger than usual. The practical consequence: you need only 0.025–0.1% cobalt oxide to produce a dark blue, whereas iron or manganese require larger doses for a comparable depth of color.
 
@@ -33,7 +33,7 @@ Three levers control the outcome:
 |---|---|---|
 | Co²⁺ | intense blue | tetrahedral; "smalt"; cobalt blue from ancient Egypt to Bristol blue |
 | Cr³⁺ | green | bottle and emerald greens; with iron, the standard wine-bottle green |
-| Mn³⁺ | purple / amethyst | also used as a decolorizer (see [redox](../redox/)) |
+| Mn³⁺ | rose to purple (amethyst) | also used as a decolorizer (see [redox](../redox/)) |
 | Fe²⁺ / Fe³⁺ | blue-green / pale yellow | the common impurity tint; the green you see on a window-glass edge |
 | Fe³⁺–S²⁻ | amber | the ferri-sulfide chromophore of beer bottles; requires a reduced, sulfur-bearing melt |
 | Cu²⁺ | turquoise / blue-green | the Egyptian-faience lineage |

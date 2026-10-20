@@ -1,12 +1,12 @@
 {
   "wavelengths": [380, 405, 430, 455, 480, 505, 530, 555, 580, 605, 630, 655, 680, 705, 730, 755, 780],
   "colorants": [
-    { "id": "cobalt", "label": "Cobalt Co²⁺", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs in three bands across the yellow, orange and red; a fraction of a percent makes a dark blue.",
-      "absorbance": [0.116, 0.032, 0, 0, 0.107, 0.514, 0.841, 0.811, 0.916, 0.96, 0.965, 0.964, 0.769, 0.242, 0.071, 0, 0] },
-    { "id": "chromium", "label": "Chromium Cr³⁺/Cr⁶⁺", "basis": "measured-shape", "source": "meulebroeck-2016", "group": "ions", "why": "Cr⁶⁺ takes the violet edge and Cr³⁺ a band in the orange-red; between them a green window gets through.",
-      "absorbance": [0.999, 0.95, 0.842, 0.76, 0.579, 0.264, 0.044, 0.072, 0.356, 0.651, 0.828, 0.894, 0.908, 0.917, 0.908, 0.897, 0.889] },
-    { "id": "manganese", "label": "Manganese Mn³⁺", "basis": "illustrative", "group": "ions", "why": "A broad band centered in the green leaves purple, the color that manganese-decolorized glass can turn.",
-      "absorbance": [0.30, 0.25, 0.30, 0.45, 0.70, 0.90, 0.85, 0.65, 0.45, 0.35, 0.30, 0.25, 0.20, 0.18, 0.15, 0.12, 0.10] },
+    { "id": "cobalt", "label": "Cobalt Co²⁺", "basis": "measured", "source": "meulebroeck-2016", "group": "ions", "why": "Tetrahedral Co²⁺ absorbs in three bands across the yellow, orange and red; a fraction of a percent makes a dark blue.",
+      "absorbance": [0.117, 0.032, 0, 0, 0.108, 0.516, 0.843, 0.813, 0.917, 0.961, 0.966, 0.964, 0.771, 0.243, 0.071, 0, 0] },
+    { "id": "chromium", "label": "Chromium Cr³⁺/Cr⁶⁺", "basis": "measured", "source": "meulebroeck-2016", "group": "ions", "why": "Cr⁶⁺ takes the violet edge and Cr³⁺ a band in the orange-red; between them a green window gets through.",
+      "absorbance": [0.999, 0.946, 0.834, 0.751, 0.57, 0.258, 0.043, 0.07, 0.349, 0.641, 0.82, 0.888, 0.902, 0.912, 0.902, 0.891, 0.883] },
+    { "id": "manganese", "label": "Manganese Mn³⁺", "basis": "measured", "source": "thiemsorn-2007", "group": "ions", "why": "A broad band centered in the blue-green (about 485 nm) with a shoulder near 650 nm leaves red and some violet: rose to wine purple, the color that manganese-decolorized glass can turn.",
+      "absorbance": [0.111, 0.338, 0.585, 0.733, 0.785, 0.777, 0.732, 0.666, 0.597, 0.534, 0.478, 0.427, 0.377, 0.327, 0.278, 0.231, 0.188] },
     { "id": "iron-ferrous", "label": "Iron Fe²⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "A strong absorption rising into the red and near-IR gives the blue-green edge tint of ordinary window glass.",
       "absorbance": [0.809, 0.436, 0.189, 0.078, 0.034, 0.019, 0.026, 0.066, 0.163, 0.327, 0.538, 0.738, 0.878, 0.953, 0.984, 0.995, 0.998] },
     { "id": "iron-ferric", "label": "Iron Fe³⁺", "basis": "measured", "source": "volotinen-2007", "group": "ions", "why": "Absorbs mostly in the ultraviolet, with weak bands in the violet and two fainter ones in the green and red, which leaves a faint yellow-green. It is the same element as Fe²⁺ in a higher oxidation state; the furnace's redox sets the balance.",
