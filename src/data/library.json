@@ -64,7 +64,7 @@
       "title": "Optical spectroscopic study of tetrahedrally coordinated Co²⁺ in natural spinel and staurolite at different temperatures and pressures",
       "by": "M. N. Taran et al.", "date": "2009", "edition": "American Mineralogist 94(11–12), 1647",
       "url": "https://doi.org/10.2138/am.2009.3247",
-      "provides": "Measured absorption of tetrahedral Co²⁺, the triplet that makes cobalt blue. The page takes the band's shape from it and places the centres for silicate glass by estimate.",
+      "provides": "Measured absorption of tetrahedral Co²⁺ and the assignment of its triplet, the ⁴A₂ → ⁴T₁(P) transition that makes cobalt blue. The page cites it for the physics; the curve itself is the measured glass of Meulebroeck et al. 2016.",
       "reuse": "cite", "licence": "Journal article; no reuse licence stated (the PDF is restricted).",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/scripts/bands.js", "find": "Taran et al.", "stage": "ions" }]
@@ -458,10 +458,20 @@
       "title": "Authenticity screening of stained glass windows using optical spectroscopy",
       "by": "Wendy Meulebroeck, Hilde Wouters, Karin Nys and Hugo Thienpont", "date": "2016", "edition": "Scientific Reports 6, 37726",
       "url": "https://doi.org/10.1038/srep37726",
-      "provides": "Measured ultraviolet to near-infrared transmission of historical and modern colored stained glass, with the absorption bands of cobalt, copper, iron, manganese and chromium identified.",
-      "would": "Real curves in place of the drawn ones for the common colorants, and an openly licensed set that can be copied into the repo.",
-      "reuse": "open", "licence": "CC BY 4.0.",
-      "checked": "2026-10-19", "usedBy": []
+      "provides": "Measured 300–1500 nm transmission of 85 panes of two stained-glass panels, plotted as absorbance in arbitrary units (each curve normalised 0..1; no thickness given): cobalt blues (Fig. 2), chromium greens with Cr³⁺ and Cr⁶⁺ (Fig. 3), iron yellows (Fig. 4), copper-ruby flashes (Fig. 5) and silver stain (Fig. 8). The page traces B1 (cobalt), G1 (chromium) and SY2 (silver) from the figures for their shapes.",
+      "reuse": "open", "licence": "CC BY 4.0. The traced curves in measured.json are an adaptation, credited there and here.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/measured.json", "find": "meulebroeck-2016", "stage": "ions" }]
+    },
+    {
+      "id": "volotinen-2007", "kind": "measurement", "short": "Volotinen 2007",
+      "title": "Mathematical description of absorbance spectra for Fe and Cu doped soda-lime-silica glasses",
+      "by": "Tarja T. Volotinen", "date": "2007", "edition": "PhD thesis, University of Sheffield (White Rose eTheses 6086)",
+      "url": "https://etheses.whiterose.ac.uk/id/eprint/6086/",
+      "provides": "Gaussian bands fitted to measured absorbance of 15Na₂O·15CaO·70SiO₂ glasses doped with iron and copper, 1 cm thick, reflection and host-glass losses removed, with heights in absorbance per cm per mol% of the ion (Tables 5.4.1–5.4.3, 6.6.2). The page's Fe²⁺, Fe³⁺ and Cu²⁺ curves are these bands, so their amounts are real.",
+      "reuse": "cite", "licence": "Thesis; the repository record states no reuse licence. The page copies 17 fitted numbers (band positions, widths and heights) with this citation, not text or figures.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/measured.json", "find": "volotinen-2007", "stage": "ions" }]
     },
     {
       "id": "schott-filter", "kind": "datasheet", "short": "SCHOTT filter glass",
@@ -614,7 +624,7 @@
     }
   ],
   "gaps": [
-    { "what": "Absorption curves of the twelve colorants", "file": "src/data/optics.json", "candidates": ["meulebroeck-2016", "schott-filter", "sciglass"] },
+    { "what": "Absorption curves of manganese, gold, the cadmium sulfoselenides and neodymium", "file": "src/data/optics.json", "candidates": ["schott-filter", "sciglass"], "note": "Cobalt, chromium, iron, copper and silver are measured (measured.json); cobalt, chromium and silver have measured shapes but no measured strength." },
     { "what": "Uranyl absorption bands and emission comb strengths", "file": "src/scripts/uranium.js", "candidates": ["sciglass"] },
     { "what": "Neodymium and praseodymium band strengths", "file": "src/scripts/bands.js", "candidates": ["sciglass"], "note": "Peak positions are sourced; strengths are scaled by eye." },
     { "what": "Studio furnace and glory-hole temperatures", "file": "src/data/viscosity.json", "candidates": ["bullseye-annealing"], "note": "Kiln glass only; furnace practice still needs a source (PR #17)." },

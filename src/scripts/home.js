@@ -14,6 +14,7 @@ import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
+import { basisLine } from './measured-spectra.js';
 import { batchStage } from './stage-batch.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
@@ -227,7 +228,7 @@ function redox() {
     draw(colorOf(parts, 1).css, colorOf(parts, 6).css);
     $('redoxOut').textContent = `${Math.round(r * 100)}% Fe²⁺`;
     $('redoxRead').textContent = r > 0.65 ? 'Reducing flame: most iron is Fe²⁺, absorbing in the red and near infrared. Blue-green.'
-      : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing violet and blue. A pale straw yellow.'
+      : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing the violet strongly and the green and red faintly. A pale yellow-green face on; edge on, those faint bands add up to bottle green.'
       : 'A mix of both ions. Each subtracts its own band, and the result is a muddy olive.';
   };
   s.addEventListener('input', render); onLamp(render);
@@ -235,9 +236,9 @@ function redox() {
 
 /* ---------- 03 the color rod: ions ---------- */
 const ROD_NOTES = {
-  cobalt: 'Co²⁺ absorbs across orange and red in three overlapping bands. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
+  cobalt: 'Co²⁺ absorbs across yellow, orange and red in three overlapping bands, near 534, 596 and 640 nm in soda glass. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
   copper: 'Cu²⁺ absorbs a broad band in the red and near infrared, leaving turquoise to blue.',
-  chromium: 'Cr³⁺ has two bands, one in the violet and one in the orange-red. What gets through is a green window, the green of old bottle glass.',
+  chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial color of the later 19th century; older bottle green is iron.',
   manganese: "Mn³⁺ absorbs in the green and lets red and blue through: amethyst. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
   neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The color shifts with the light it is viewed under.',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
@@ -251,7 +252,7 @@ function ions(onRod) {
     draw(tColor(T).css, colorOf([[cur, 1]], k * 5).css);
     strip($('strip3'), T);
     $('concOut').textContent = `×${k.toFixed(2)}`;
-    $('ionRead').textContent = ROD_NOTES[cur];
+    $('ionRead').replaceChildren(ROD_NOTES[cur], ' ', h('span', { className: 'basis' }, basisLine(cur)));
     press(cur);
     onRod?.(cur, k);
   }
