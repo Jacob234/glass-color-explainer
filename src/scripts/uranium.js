@@ -19,7 +19,8 @@ export const density = (w) => 3 / (1 + Math.exp((w - 398) / 11)) + BANDS.reduce(
 // Emission: uranyl's vibronic comb. One electronic transition, repeated at steps of the O=U=O
 // symmetric stretch (about 830 cm⁻¹), so the peaks are evenly spaced in energy, not wavelength.
 // The strongest sits near 527 nm, where a uranium-glass marble under a 445 nm laser peaks
-// (ledmuseum.candlepower.us, spectrum 1001); the others follow from the spacing. Glass broadens each.
+// (ledmuseum.candlepower.us/33/445spec3.htm, a plotted spectrum read by eye; an earlier note called it
+// "spectrum 1001", a label not on the page); the others follow from the spacing. Glass broadens each.
 const PEAK = 1e7 / 527, STRETCH = 830, LINEWIDTH = 700; // cm⁻¹
 export const COMB = [1, 0, -1, -2, -3].map((n, i) => [PEAK + n * STRETCH, [0.45, 1, 0.78, 0.38, 0.12][i]]);
 // Emission shape on GRID as photons per sample, summing to 1.
