@@ -69,7 +69,7 @@ This is a different mechanism from the dichroism of the Lycurgus Cup, the Roman 
 
 ## Redox: the cross-cutting control
 
-All four mechanisms depend, directly or indirectly, on the oxidation state of the elements involved. Iron in glass can be Fe²⁺ (blue-green absorber) or Fe³⁺ (yellow-brown absorber), or a mixture of both, depending on the oxygen level in the furnace atmosphere and the composition of the batch. Copper can exist as Cu²⁺ ions (turquoise) or Cu⁰ nanoparticles (ruby colloid). The same element in a different oxidation state can give a different color, or none.
+All four mechanisms depend, directly or indirectly, on the oxidation state of the elements involved. Iron in glass can be Fe²⁺ (blue-green absorber) or Fe³⁺ (a weak violet absorber that leaves pale yellow-green), or a mixture of both, depending on the oxygen level in the furnace atmosphere and the composition of the batch. Copper can exist as Cu²⁺ ions (turquoise) or Cu⁰ nanoparticles (ruby colloid). The same element in a different oxidation state can give a different color, or none.
 
 Redox control is therefore not a fifth mechanism; it is the variable that governs which mechanism is operating and how efficiently. It is also the tool for decolorizing glass: when the iron in cheap raw sand would otherwise tint the melt green, glassmakers add oxidizing or reducing agents — or small amounts of complementary colorants like selenium or manganese — to cancel the tint and restore transparency.
 

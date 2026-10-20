@@ -1,4 +1,4 @@
-// bands.js — colorants modelled as absorption bands rather than sampled curves.
+// bands.js — colorants modeled as absorption bands rather than sampled curves.
 // Pure functions only: no DOM. The coarse curves in optics.json are sampled every 25 nm, which is
 // fine for broad absorbers but loses narrow ones: neodymium's 585 nm band falls between the 580 and
 // 605 nm samples. A band model can be evaluated on any grid, so the 5 nm color engine (spectra.js)
@@ -8,13 +8,13 @@ import { MEASURED_MODELS } from './measured-spectra.js';
 
 const gauss = (x, c, fwhm) => Math.exp(-4 * Math.LN2 * ((x - c) / fwhm) ** 2);
 
-// Narrow bands, Gaussian in wavelength: [centre nm, FWHM nm, peak decadic density].
+// Narrow bands, Gaussian in wavelength: [center nm, FWHM nm, peak decadic density].
 export const wavelengthBands = (bands, grid) => grid.map((w) => bands.reduce((d, [c, fwhm, k]) => d + k * gauss(w, c, fwhm), 0));
-// Broad bands, Gaussian in energy: [centre cm⁻¹, FWHM cm⁻¹, peak decadic density].
+// Broad bands, Gaussian in energy: [center cm⁻¹, FWHM cm⁻¹, peak decadic density].
 export const energyBands = (bands, grid) => grid.map((w) => bands.reduce((d, [c, fwhm, k]) => d + k * gauss(1e7 / w, c, fwhm), 0));
 
 // Absorption bands of the two "twins" in didymium glass.
-// Centres follow the didymium wavelength-reference peaks (Starna RM-DG: 431, 473, 513, 529, 573,
+// Centers follow the didymium wavelength-reference peaks (Starna RM-DG: 431, 473, 513, 529, 573,
 // 585, 685, 741, 749, 807, 879 nm) plus the Pr³⁺ bands in silicate glass (444, 469, 482, 590 nm).
 // Widths and strengths are approximate, scaled so a 3 mm working lens passes about 1% at 589 nm.
 export const ND_BANDS = [
@@ -31,10 +31,8 @@ export const PR_BANDS = [[444, 9, 0.45], [469, 8, 0.22], [482, 6, 0.20], [590, 1
 // red: the red leak is real, but it sits where the eye is nearly blind, so the glass reads blue.
 
 // Decadic density on a wavelength grid, for each colorant that has a band model or a measured curve,
-// at the page's reference amount (c = 1). For neodymium that is an art glass with three times the
-// working lens's density (illustrative): narrow bands take little light, so a lens-strength piece is
-// barely lilac. The measured curves (cobalt, chromium, iron, copper, silver) come from measured-spectra.js.
-export const BAND_MODELS = {
-  neodymium: (grid) => wavelengthBands(ND_BANDS, grid).map((d) => 3 * d),
-  ...MEASURED_MODELS,
-};
+// at the page's reference amount (c = 1). Every entry now comes from a measured curve
+// (measured-spectra.js): cobalt, chromium, iron, copper, silver and neodymium. Neodymium art glass
+// uses its measured soda-lime curve; the didymium lenses above keep their own band model, since
+// a lens is Nd and Pr together and is drawn on flare.js's 1 nm grid.
+export const BAND_MODELS = { ...MEASURED_MODELS };

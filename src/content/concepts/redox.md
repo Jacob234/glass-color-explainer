@@ -1,10 +1,15 @@
 ---
 title: redox in the furnace
 mechanism: crosscutting
-summary: The furnace atmosphere sets the oxidation state of each element, and therefore the color. Iron alone can give blue-green, straw yellow, or amber, and "decolorizing" cheap glass is the oldest application of glass redox chemistry.
+summary: The furnace atmosphere sets the oxidation state of each element, and therefore the color. Iron alone can give blue-green, pale yellow-green, or (with sulfur) amber, and "decolorizing" cheap glass is the oldest application of glass redox chemistry.
+sources:
+  - label: "Shelby, Color in commercial glasses, IMI-NFG Glass Processing Course lecture 4 (Alfred University, 2015)"
+    url: https://www.lehigh.edu/imi/teched/GlassProcess/Lectures/Lecture04_Shelby_ColoredGlass.pdf
+  - label: "Volotinen, Mathematical description of absorbance spectra for Fe and Cu doped soda-lime-silica glasses, PhD thesis, University of Sheffield (2007)"
+    url: https://etheses.whiterose.ac.uk/id/eprint/6086/
 ---
 
-Redox, the balance between oxidized and reduced forms of multivalent elements in the melt, is the cross-cutting control variable of glass color. The same batch of raw materials can emerge from the furnace blue-green, yellow, amber, or colorless depending on how oxidizing or reducing the melt was. A color recipe therefore has to specify redox conditions as well as composition.
+Redox, the balance between oxidized and reduced forms of multivalent elements in the melt, is the cross-cutting control variable of glass color. The same batch of raw materials can emerge from the furnace blue-green, yellow-green, amber, or colorless depending on how oxidizing or reducing the melt was. A color recipe therefore has to specify redox conditions as well as composition.
 
 The discipline is ancient. Pliny the Elder described decolorizing glass in the first century CE, and manganese's role as "glassmaker's soap" was an empirical fact long before anyone understood why it worked. The explanation, in terms of quantitative electrochemistry, came much later.
 
@@ -14,7 +19,7 @@ Every commercial sand batch carries iron impurities, and iron is the most conseq
 
 **Fe²⁺** (ferrous iron) absorbs strongly in the near-infrared and has a visible blue-green component, the color you see looking at a pane of float glass edge-on.
 
-**Fe³⁺** (ferric iron) absorbs weakly in the visible, producing only a faint yellow-brown tint. A glass with the same iron concentration but all Fe³⁺ instead of Fe²⁺ looks nearly colorless by comparison.
+**Fe³⁺** (ferric iron) absorbs mostly in the ultraviolet. Its strongest band sits just outside the visible near 385 nm, with weaker ones at about 420 and 435 nm; the tail of the first and the two weak bands take out blue-violet, which leaves a pale yellow-green (Shelby). The measured bands this site uses (Volotinen) also carry two fainter bands in the green and red, so a thick wall of oxidized iron glass looks bottle green edge on. A glass with the same iron concentration but all Fe³⁺ instead of Fe²⁺ looks nearly colorless by comparison. It is not amber: the amber of beer bottles needs sulfur, below.
 
 The ferri-sulfide amber of beer bottles is a special case: in a strongly reduced, sulfur-bearing melt, an Fe³⁺–S²⁻ charge-transfer interaction creates an intense brown-amber chromophore. This color exists only in a narrow redox window: slightly too oxidizing and the sulfur is lost, removing the amber; slightly too reducing and metallic sulfides precipitate, turning the glass black. See [transition metal colorants](../transition-metal-colorants/) for the other iron stories.
 

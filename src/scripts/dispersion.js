@@ -37,7 +37,7 @@ export function uvResonance(g) {
 /* ---------- surfaces ---------- */
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
 
-// Unpolarised Fresnel reflectance going from index n1 to n2 at incidence cosine ci (transmitted cosine ct).
+// Unpolarized Fresnel reflectance going from index n1 to n2 at incidence cosine ci (transmitted cosine ct).
 export function fresnel(n1, n2, ci, ct) {
   const rs = (n1 * ci - n2 * ct) / (n1 * ci + n2 * ct), rp = (n1 * ct - n2 * ci) / (n1 * ct + n2 * ci);
   return (rs * rs + rp * rp) / 2;
@@ -91,7 +91,7 @@ export function trace(poly, n, origin, dir, maxEvents = 8) {
   return { pts, dir: d, T: inside ? 0 : T, tir, out: !inside };
 }
 
-// An equilateral prism (60° apex) of side s, centred on its centroid at (cx, cy), turned by deg.
+// An equilateral prism (60° apex) of side s, centered on its centroid at (cx, cy), turned by deg.
 // y runs downward, as on screen; at deg = 0 the apex points up.
 export function prism(cx, cy, s, deg) {
   const th = (deg * Math.PI) / 180, R = s / Math.sqrt(3);

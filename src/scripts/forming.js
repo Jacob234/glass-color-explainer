@@ -165,7 +165,7 @@ export function totalEmissivity(g, r = edges(g)) {
 // One implicit (backward-Euler) conduction step with explicit sources, across the shells.
 function conduct(g, dt, Q, r) {
   const m = (RHO * g.V) / N, C = m * CP;
-  const Gk = []; // conductance between shell centres i and i+1, W/K
+  const Gk = []; // conductance between shell centers i and i+1, W/K
   const rc = Array.from({ length: N }, (_, i) => Math.cbrt((r[i] ** 3 + r[i + 1] ** 3) / 2));
   for (let i = 0; i < N - 1; i++) {
     const k = conductivity((g.T[i] + g.T[i + 1]) / 2);

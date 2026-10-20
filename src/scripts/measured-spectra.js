@@ -3,7 +3,7 @@
 //   bands      Gaussian bands fitted to measured glasses of known composition and thickness
 //              (Volotinen 2007), in decadic absorbance per cm per mol% of the ion. Absolute: c = 1
 //              is `amount` mol% of the ion through the page's 10 mm reference wall.
-//   digitised  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
+//   digitized  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
 //              in arbitrary units. Measured shape, unmeasured strength: c = 1 is `scale` times the
 //              traced curve, a scale chosen to keep the old drawn curve's daylight lightness.
 import data from '../data/measured.json' with { type: 'json' };
@@ -42,7 +42,7 @@ function nonNegativeFit(basis, y) {
   }
 }
 
-// The iron in a digitised glass, fitted where the colorant itself is clear, as relative units on
+// The iron in a digitized glass, fitted where the colorant itself is clear, as relative units on
 // MEASURED_WAVELENGTHS. Returns { curve, coefficients } (coefficients in relative units per mol%·cm).
 export function background(id) {
   const e = data.colorants[id], bg = e.background;
@@ -53,13 +53,13 @@ export function background(id) {
   return { curve: MEASURED_WAVELENGTHS.map((_, i) => shapes.reduce((s, sh, j) => s + k[j] * sh[i], 0)), coefficients: k };
 }
 
-// A digitised curve with its background taken away (relative units, never below zero).
+// A digitized curve with its background taken away (relative units, never below zero).
 export function cleaned(id) {
   const e = data.colorants[id], bg = background(id).curve;
   return e.relative.map((v, i) => Math.max(0, v - bg[i]));
 }
 
-// Optical density per unit c (before scaling): relative units for a digitised curve, absorbance
+// Optical density per unit c (before scaling): relative units for a digitized curve, absorbance
 // per cm per mol% for bands. Returns a function of wavelength.
 export function unitDensity(id) {
   const e = data.colorants[id];
@@ -84,11 +84,16 @@ export const measuredEntry = (id) => data.colorants[id];
 export const MEASURED = data;
 
 // One line for the page on where a colorant's curve comes from.
-const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016' };
+const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016', 'chimalawong-2010': 'Chimalawong et al. 2010' };
+const TRACED = {
+  'meulebroeck-2016': 'traced from a stained-glass spectrum',
+  'chimalawong-2010': 'traced from soda-lime glasses melted with 1–3 mol% Nd₂O₃',
+};
 const ION = { 'iron-ferrous': 'Fe²⁺', 'iron-ferric': 'Fe³⁺', copper: 'Cu²⁺' };
 export function basisLine(id) {
   const e = data.colorants[id];
   if (!e) return 'Illustrative curve, drawn from the shape of published spectra.';
   if (e.kind === 'bands') return `Measured: bands fitted to soda-lime glass of known composition (${CITE[e.source]}). ×1 is ${e.amount} mol% ${ION[id]} through 10 mm.`;
-  return `Measured shape, traced from a stained-glass spectrum (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
+  if (e.source === 'chimalawong-2010') return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). ×1 is scaled to the color the old drawn curve gave; read as plotted, that is about ${(e.scale * 0.3).toFixed(1)} mol% Nd₂O₃ through 10 mm.`;
+  return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
 }

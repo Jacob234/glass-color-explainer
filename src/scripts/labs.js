@@ -26,7 +26,7 @@ export const LABS = [
     blurb: 'Melt up to four colorants, set the wall thickness, and see the color the batch would make.',
     glass: [['copper', 1]], second: [['cds', 1]] },
   { slug: 'library', name: 'Library', kicker: 'where the numbers come from', shape: 'slides',
-    blurb: 'Every datasheet, standard table and measurement the site computes from, and what each licence allows.',
+    blurb: 'Every datasheet, standard table and measurement the site computes from, and what each license allows.',
     glass: [['neodymium', 1]] },
 ].map((lab) => ({
   ...lab,

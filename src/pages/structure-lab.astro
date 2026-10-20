@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import StructureSim from '../components/islands/StructureSim.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<Base title="Structure Lab" description="A molecular-dynamics glass former: melt four hundred atoms, cool them slowly and they crystallise, quench them and they freeze into a glass.">
+<Base title="Structure Lab" description="A molecular-dynamics glass former: melt four hundred atoms, cool them slowly and they crystallize, quench them and they freeze into a glass.">
   <article class="concept ss-page">
     <p class="detail-type">a simulation</p>
     <h1>Structure Lab</h1>
@@ -20,11 +20,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h2>Three runs worth making</h2>
       <p>
         <strong>All alike, quenched.</strong> Set the size difference to zero and cool at the fastest
-        rate. The atoms crystallise anyway, almost at once. Identical spheres in a plane pack
+        rate. The atoms crystallize anyway, almost at once. Identical spheres in a plane pack
         so easily into triangles that no cooling rate a computer can reach outruns them. The same
         holds in the laboratory: whether a liquid forms a glass is a race between cooling and
         crystal growth (Turnbull, 1969), and simple liquids win it only at extreme rates. Pure metals
-        have been made glassy, but only in nanometre-sized samples quenched at about 10¹⁴ kelvin per
+        have been made glassy, but only in nanometer-sized samples quenched at about 10¹⁴ kelvin per
         second (Zhong et al., 2014). The pure substances that form glass easily, such as silica, owe it
         to the connected network their bonds build rather than to speed.
       </p>
@@ -40,7 +40,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         between them. Every run ends as a glass, and the volume curve bends rather than drops: the
         liquid stiffens until its atoms stop trading places, and below that bend the volume shrinks
         only as fast as a solid's would. The bend is the glass transition. Compare g(r), the count of
-        neighbours at each distance: the glass keeps the liquid's broad humps, only sharper, while
+        neighbors at each distance: the glass keeps the liquid's broad humps, only sharper, while
         a crystal splits them into narrow peaks at the lattice spacings.
       </p>
 
@@ -59,7 +59,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         glass because its tetrahedra lock into a network that is very slow to rearrange (stage 00 on
         the <a href={`${base}/#glass`}>front page</a> draws it). Soda and lime cut that network so it
         melts in a studio furnace, and a soda–lime batch is then a mixture of several oxides that
-        would have to separate to crystallise. When it does crystallise, glassmakers call it
+        would have to separate to crystallize. When it does crystallize, glassmakers call it
         devitrification, and they avoid it by keeping a melt out of the temperature range where the
         crystal grows fastest. (This paragraph is the general account, not taken from a cited source here.)
       </p>
@@ -78,10 +78,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h2>What the model leaves out</h2>
       <ul>
         <li><strong>The chemistry.</strong> These atoms attract and repel with no preferred direction, as argon does. Silicon and oxygen bond covalently at fixed angles, which is what builds the network. A model of silica needs a three-body or charged potential, such as the BKS potential (van Beest, Kramer and van Santen, 1990).</li>
-        <li><strong>The third dimension.</strong> The atoms live in a plane. Two-dimensional crystallisation differs in detail from three, and two-dimensional crystals can melt through an intermediate, hexatic phase that three-dimensional ones lack (predicted by Halperin and Nelson in 1978, and for hard disks shown by Bernard and Krauth in 2011). Two-dimensional glass also exists: in 2012 a sheet of silica glass two atoms thick was imaged atom by atom on graphene, and it looks much like Zachariasen's 1932 drawing.</li>
+        <li><strong>The third dimension.</strong> The atoms live in a plane. Two-dimensional crystallization differs in detail from three, and two-dimensional crystals can melt through an intermediate, hexatic phase that three-dimensional ones lack (predicted by Halperin and Nelson in 1978, and for hard disks shown by Bernard and Krauth in 2011). Two-dimensional glass also exists: in 2012 a sheet of silica glass two atoms thick was imaged atom by atom on graphene, and it looks much like Zachariasen's 1932 drawing.</li>
         <li><strong>Size.</strong> Four hundred atoms in a box that wraps around at its edges, so a grain the size of the box can meet itself. Real grains hold billions of atoms.</li>
         <li><strong>The bath.</strong> Temperature and pressure are held by the Berendsen thermostat and barostat, which rescale velocities and the box each step. They steer the averages well but do not give exactly the right fluctuations. The run uses velocity Verlet steps of 0.005 τ.</li>
-        <li><strong>The order detector.</strong> An atom is drawn solid when its neighbours sit in a near-perfect hexagon and at least five of them are oriented the same way, by the sixfold bond-order test of ten Wolde, Ruiz-Montero and Frenkel adapted to a plane. The threshold is a choice; a glass in two dimensions always has a few small ordered clusters.</li>
+        <li><strong>The order detector.</strong> An atom is drawn solid when its neighbors sit in a near-perfect hexagon and at least five of them are oriented the same way, by the sixfold bond-order test of ten Wolde, Ruiz-Montero and Frenkel adapted to a plane. The threshold is a choice; a glass in two dimensions always has a few small ordered clusters.</li>
       </ul>
       <p>
         For the real thing in a browser, <a href="https://andeplane.github.io/atomify/" rel="noopener">Atomify</a> runs
