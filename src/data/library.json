@@ -4,14 +4,19 @@
     "engine": "color engine",
     "lamps": "lamp switch",
     "glass": "00 what glass is",
+    "batch": "01 batch",
     "ions": "03 color rod",
     "heat": "04 glory hole",
+    "strike": "05 reheat",
     "light": "07 cold shop",
     "prism": "07′ cold shop, cut",
     "lehr": "06 lehr",
     "rack": "08 rack",
     "showroom": "showroom",
-    "lightlab": "light lab"
+    "lightlab": "light lab",
+    "forminglab": "forming lab",
+    "structurelab": "structure lab",
+    "concepts": "concept pages"
   },
   "sources": [
     {
@@ -59,7 +64,7 @@
       "title": "Optical spectroscopic study of tetrahedrally coordinated Co²⁺ in natural spinel and staurolite at different temperatures and pressures",
       "by": "M. N. Taran et al.", "date": "2009", "edition": "American Mineralogist 94(11–12), 1647",
       "url": "https://doi.org/10.2138/am.2009.3247",
-      "provides": "Measured absorption of tetrahedral Co²⁺, the triplet that makes cobalt blue. The page takes the band's shape from it and places the centres for silicate glass by estimate.",
+      "provides": "Measured absorption of tetrahedral Co²⁺ and the assignment of its triplet, the ⁴A₂ → ⁴T₁(P) transition that makes cobalt blue. The page cites it for the physics; the curve itself is the measured glass of Meulebroeck et al. 2016.",
       "reuse": "cite", "licence": "Journal article; no reuse licence stated (the PDF is restricted).",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/scripts/bands.js", "find": "Taran et al.", "stage": "ions" }]
@@ -127,13 +132,13 @@
     {
       "id": "ledmuseum-uranium", "kind": "measurement", "short": "LED Museum spectra",
       "title": "Craig Johnson's LED Museum: fluorescence spectra of a uranium glass marble",
-      "by": "ledmuseum.candlepower.us", "date": "2013", "edition": "page last updated 9 March 2013",
-      "url": "http://ledmuseum.candlepower.us/eighth/blu-ray.htm",
-      "provides": "Spectrograph plots of a uranium glass marble fluorescing under a violet laser. The page places uranium glass's strongest emission peak near 527 nm from this site.",
+      "by": "ledmuseum.candlepower.us", "date": "2011", "edition": "page last updated 8 July 2011",
+      "url": "http://ledmuseum.candlepower.us/33/445spec3.htm",
+      "provides": "Spectrograph plots of a uranium glass marble and a uranium glass insulator fluorescing under a 445 nm laser module. uranium.js places uranium glass's strongest emission peak near 527 nm from the marble's plot, read by eye.",
       "reuse": "unknown", "licence": "No copyright or terms notice on the page. Plots are images; no numbers are copied beyond the peak position.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/scripts/uranium.js", "find": "ledmuseum.candlepower.us", "stage": "showroom" }],
-      "caution": "uranium.js cites \"spectrum 1001\" under a 445 nm laser; the page found on 2026-10-19 is a uranium marble under a Blu-ray (about 405 nm) laser. The exact spectrum cited has not been re-found."
+      "caution": "The 527 nm peak is read by eye from a plotted image; the page gives no numbers. A related page (eighth/blu-ray.htm) shows the same kind of glass under a Blu-ray laser, about 405 nm."
     },
     {
       "id": "nbs-710", "kind": "measurement", "short": "NBS glass 710",
@@ -156,18 +161,18 @@
       "provides": "Elastic, thermal and optical constants of float glass: E = 72 GPa, expansion 8.3 × 10⁻⁶ /°C, density, conductivity, heat capacity, and a rule for reading stress from optical retardation.",
       "reuse": "cite", "licence": "Disclaimer only; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }],
-      "caution": "The 2026 edition gives Poisson's ratio 0.22; the stage uses 0.23 from the 2013 edition."
+      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }, { "file": "src/scripts/stage-batch.js", "find": "ATS-129", "stage": "batch" }],
+      "caution": "The 2026 edition gives Poisson's ratio 0.22; the stage uses 0.23 from the 2013 edition and says so (about a 1% difference in stress)."
     },
     {
       "id": "adams-williamson-1920", "kind": "measurement", "short": "Adams & Williamson",
-      "title": "A Note on the Annealing of Optical Glass",
-      "by": "L. H. Adams and E. D. Williamson", "date": "1920", "edition": "JOSA 4(4), 213",
-      "url": "https://doi.org/10.1364/JOSA.4.000213",
-      "provides": "Measurements of how stress decays in hot glass, the basis of annealing schedules.",
+      "title": "The annealing of glass; and A Note on the Annealing of Optical Glass",
+      "by": "L. H. Adams and E. D. Williamson", "date": "1920", "edition": "J. Franklin Inst. 190(5), 597–631 and 190(6), 835–870; JOSA 4(4), 213",
+      "url": "https://doi.org/10.1016/S0016-0032(20)90856-6",
+      "provides": "Measurements of how stress decays in hot glass, the basis of annealing schedules, and their law that the rate of relief goes as the square of the stress, dσ/dt = −Aσ².",
       "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/Home.astro", "find": "JOSA.4.000213", "stage": "lehr" }]
+      "usedBy": [{ "file": "src/components/Home.astro", "find": "JOSA.4.000213", "stage": "lehr" }, { "file": "src/components/Home.astro", "find": "S0016-0032(20)90856-6", "stage": "lehr" }]
     },
     {
       "id": "zanotto-1998", "kind": "measurement", "short": "Zanotto 1998",
@@ -175,16 +180,16 @@
       "by": "Edgar Dutra Zanotto", "date": "1998", "edition": "Am. J. Phys. 66(5), 392–395",
       "url": "https://doi.org/10.1119/1.19026",
       "provides": "The shear modulus (about 30 GPa) and viscosity extrapolation that turn room-temperature glass into a relaxation time longer than the age of the universe.",
-      "reuse": "cite", "licence": "Journal article (AIP); no reuse licence stated. PR #17 links an author-hosted PDF; the DOI is the record.",
+      "reuse": "cite", "licence": "Journal article (AIP); no reuse licence stated. The site now links the DOI.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/data/viscosity.json", "find": "Zanotto", "stage": "glass" }]
     },
     {
       "id": "gulbiten-2017", "kind": "measurement", "short": "Gulbiten et al. 2017",
       "title": "Viscous flow of medieval cathedral glass",
-      "by": "Ozgur Gulbiten, John C. Mauro, Xiaoju Guo and Olus N. Boratav", "date": "2017", "edition": "J. Am. Ceram. Soc. 101(1), 5–11",
+      "by": "Ozgur Gulbiten, John C. Mauro, Xiaoju Guo and Olus N. Boratav", "date": "2018 (online 2017)", "edition": "J. Am. Ceram. Soc. 101(1), 5–11",
       "url": "https://doi.org/10.1111/jace.15092",
-      "provides": "Measured room-temperature viscosity of a medieval Westminster Abbey glass (10²⁴–10²⁵ Pa·s) and flow of about 1 nm per billion years.",
+      "provides": "Room-temperature viscosity of a medieval Westminster Abbey glass, estimated from its composition (10²⁴–10²⁵ Pa·s) and flow of about 1 nm per billion years.",
       "reuse": "cite", "licence": "Journal article (Wiley); no reuse licence stated.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "jace.15092", "stage": "glass" }]
@@ -247,14 +252,226 @@
     },
 
     {
+      "id": "barber-freestone-1990", "kind": "measurement", "short": "Barber & Freestone 1990",
+      "title": "An investigation of the origin of the colour of the Lycurgus Cup by analytical transmission electron microscopy",
+      "by": "D. J. Barber and I. C. Freestone", "date": "1990", "edition": "Archaeometry 32(1), 33–45",
+      "url": "https://doi.org/10.1111/j.1475-4754.1990.tb01079.x",
+      "provides": "Analytical TEM of the Lycurgus Cup glass: the color comes from silver-gold alloy nanoparticles.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "tb01079", "stage": "concepts" }]
+    },
+    {
+      "id": "freestone-2007", "kind": "measurement", "short": "Freestone et al. 2007",
+      "title": "The Lycurgus Cup — A Roman nanotechnology",
+      "by": "Ian Freestone, Nigel Meeks, Margaret Sax and Catherine Higgitt", "date": "2007", "edition": "Gold Bulletin 40(4), 270–277",
+      "url": "https://doi.org/10.1007/BF03215599",
+      "provides": "About 40 ppm gold and 300 ppm silver in the cup; particles 50–100 nm, about 7:3 silver to gold with some copper; only a handful of other Roman dichroic pieces; routine gold ruby from 17th-century Europe. Also summarises Brill's 1960s analyses (VII Int. Congress on Glass, Brussels 1965, paper 223, not seen directly).",
+      "reuse": "cite", "licence": "Journal article (Springer, open access); no reuse licence checked.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "BF03215599", "stage": "concepts" }, { "file": "src/data/history.json", "find": "BF03215599", "stage": "strike" }]
+    },
+    {
+      "id": "haslbeck-2005", "kind": "measurement", "short": "Haslbeck et al. 2005",
+      "title": "Formation of gold nanoparticles in gold ruby glass: the influence of tin",
+      "by": "S. Haslbeck, K.-P. Martinek, L. Stievano and F. E. Wagner", "date": "2005", "edition": "Hyperfine Interactions 165(1–4), 89–94 (online 2006)",
+      "url": "https://doi.org/10.1007/s10751-006-9246-0",
+      "provides": "Gold ruby glasses with 200 ppm gold and up to 2 wt% tin, struck around 600 °C: tin gives many small particles, and color runs from purple-red (little tin) to brown (much tin).",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "s10751-006-9246-0", "stage": "concepts" }, { "file": "src/components/Home.astro", "find": "s10751-006-9246-0", "stage": "strike" }]
+    },
+    {
+      "id": "cmog-glass-dictionary", "kind": "reference", "short": "Corning Museum of Glass",
+      "title": "Glass Dictionary: gold ruby; lead glass; and the exhibition Glass of the Alchemists: lead crystal and gold ruby, 1650–1750",
+      "by": "The Corning Museum of Glass", "date": "2026", "edition": "web pages, read 2026-10-19",
+      "url": "https://allaboutglass.cmog.org/definition/gold-ruby",
+      "provides": "Kunckel perfected gold ruby at Potsdam shortly before 1679 and made it at the Elector's glassworks with purple of Cassius by the mid-1680s; Glauber is also credited with the purple; Ravenscroft patented his glass in 1674 and added more lead in 1676.",
+      "reuse": "cite", "licence": "Museum web pages; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/colloidal-color.md", "find": "allaboutglass.cmog.org", "stage": "concepts" }, { "file": "src/components/Dispersion.astro", "find": "allaboutglass.cmog.org", "stage": "prism" }]
+    },
+    {
+      "id": "ekimov-1981", "kind": "measurement", "short": "Ekimov & Onushchenko 1981",
+      "title": "Quantum size effect in three-dimensional microscopic semiconductor crystals",
+      "by": "A. I. Ekimov and A. A. Onushchenko", "date": "1981", "edition": "JETP Letters 34(6), 345",
+      "url": "http://www.jetpletters.ru/ps/1517/article_23187.shtml",
+      "provides": "The first report of quantum confinement in semiconductor nanocrystals: copper chloride crystals in glass, whose absorption shifts blue as they shrink.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/selenium-ruby.md", "find": "article_23187", "stage": "concepts" }, { "file": "src/components/Home.astro", "find": "article_23187", "stage": "strike" }]
+    },
+    {
+      "id": "nobel-2023", "kind": "reference", "short": "Nobel Prize 2023",
+      "title": "The Nobel Prize in Chemistry 2023: press release and popular information",
+      "by": "The Royal Swedish Academy of Sciences", "date": "2023", "edition": "web pages",
+      "url": "https://www.nobelprize.org/prizes/chemistry/2023/popular-information/",
+      "provides": "Ekimov at the S. I. Vavilov State Optical Institute, copper chloride in glass heated at 500–700 °C for 1 to 96 hours, and the prize shared with Brus and Bawendi.",
+      "reuse": "cite", "licence": "Nobel Prize outreach pages; no reuse licence checked.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/content/concepts/selenium-ruby.md", "find": "nobelprize.org", "stage": "concepts" }]
+    },
+    {
+      "id": "brewster-1816", "kind": "measurement", "short": "Brewster 1816",
+      "title": "On the communication of the structure of doubly refracting crystals to glass, muriate of soda, fluor spar, and other substances, by mechanical compression and dilatation",
+      "by": "David Brewster", "date": "1816", "edition": "Phil. Trans. R. Soc. Lond. 106, 156–178",
+      "url": "https://doi.org/10.1098/rstl.1816.0011",
+      "provides": "The discovery that stressed or unevenly heated glass becomes birefringent.",
+      "reuse": "open", "licence": "Published 1816; public domain.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Home.astro", "find": "rstl.1816.0011", "stage": "lehr" }]
+    },
+    {
+      "id": "astm-stress", "kind": "standard", "short": "ASTM C770, C148, F218",
+      "title": "Glass Stress—Optical Coefficient (C770); Polariscopic Examination of Glass Containers (C148); Measuring Optical Retardation and Analyzing Stress in Glass (F218)",
+      "by": "ASTM International", "date": "2020–2022", "edition": "C770-16(2020); C148-17(2022); F218-13(2020)",
+      "url": "https://store.astm.org/c0770-16r20.html",
+      "provides": "How the stress-optic coefficient of a glass is measured, and polariscope practice; C148 specifies a sensitive tint plate of nominal 565 nm retardation.",
+      "reuse": "cite", "licence": "Paid standards; cited, not copied.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ASTM C770", "stage": "lehr" }, { "file": "src/components/Home.astro", "find": "c0770-16r20", "stage": "lehr" }, { "file": "src/scripts/home.js", "find": "C148", "stage": "lehr" }]
+    },
+    {
+      "id": "zachariasen-1932", "kind": "method", "short": "Zachariasen 1932",
+      "title": "The atomic arrangement in glass",
+      "by": "W. H. Zachariasen", "date": "1932", "edition": "J. Am. Chem. Soc. 54(10), 3841–3851",
+      "url": "https://doi.org/10.1021/ja01349a006",
+      "provides": "The continuous random network picture of oxide glass and the rules an oxide must obey to form one.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "ja01349a006", "stage": "glass" }]
+    },
+    {
+      "id": "huang-2012", "kind": "measurement", "short": "Huang et al. 2012",
+      "title": "Direct imaging of a two-dimensional silica glass on graphene",
+      "by": "P. Y. Huang et al.", "date": "2012", "edition": "Nano Lett. 12, 1081–1086",
+      "url": "https://doi.org/10.1021/nl204423x",
+      "provides": "Atom-by-atom electron micrographs of a bilayer silica glass, the first direct image of a Zachariasen network.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "nl204423x", "stage": "glass" }, { "file": "src/pages/structure-lab.astro", "find": "nl204423x", "stage": "structurelab" }]
+    },
+    {
+      "id": "wooten-1985", "kind": "method", "short": "Wooten, Winer & Weaire 1985",
+      "title": "Computer generation of structural models of amorphous Si and Ge",
+      "by": "F. Wooten, K. Winer and D. Weaire", "date": "1985", "edition": "Phys. Rev. Lett. 54(13), 1392–1395",
+      "url": "https://doi.org/10.1103/PhysRevLett.54.1392",
+      "provides": "Building a random network from a crystal by bond switches and relaxation; stage 00's drawing sketches the method.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "PhysRevLett.54.1392", "stage": "glass" }]
+    },
+    {
+      "id": "feynman-31", "kind": "reference", "short": "Feynman Lectures I-31",
+      "title": "The Feynman Lectures on Physics, vol. I, ch. 31: The Origin of the Refractive Index",
+      "by": "R. P. Feynman, R. B. Leighton and M. Sands", "date": "1963", "edition": "New Millennium edition online, Caltech",
+      "url": "https://www.feynmanlectures.caltech.edu/I_31.html",
+      "provides": "The driven-oscillator derivation of the refractive index, and why it rises toward an absorption resonance.",
+      "reuse": "cite", "licence": "Free to read online; copyright Caltech; no reuse licence.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "feynmanlectures", "stage": "prism" }]
+    },
+    {
+      "id": "newton-opticks", "kind": "measurement", "short": "Newton, Opticks",
+      "title": "Opticks: or, a Treatise of the Reflections, Refractions, Inflections and Colours of Light",
+      "by": "Isaac Newton", "date": "1704", "edition": "1st edition 1704; the online copy is the 4th edition, 1730 (Project Gutenberg eBook 33504)",
+      "url": "https://www.gutenberg.org/ebooks/33504",
+      "provides": "Newton's experiments on refraction and color, including his view that dispersion goes with refraction.",
+      "reuse": "open", "licence": "Public domain.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/components/Dispersion.astro", "find": "gutenberg.org/ebooks/33504", "stage": "prism" }]
+    },
+    {
+      "id": "trouton-1906", "kind": "measurement", "short": "Trouton 1906",
+      "title": "On the coefficient of viscous traction and its relation to that of viscosity",
+      "by": "F. T. Trouton", "date": "1906", "edition": "Proc. R. Soc. Lond. A 77(519), 426–440",
+      "url": "https://doi.org/10.1098/rspa.1906.0038",
+      "provides": "Extensional viscosity is three times the shear viscosity, measured on pitch and other very viscous liquids.",
+      "reuse": "open", "licence": "Published 1906; public domain.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/forming-lab.astro", "find": "rspa.1906.0038", "stage": "forminglab" }]
+    },
+    {
+      "id": "teichman-2003", "kind": "method", "short": "Teichman & Mahadevan 2003",
+      "title": "The viscous catenary",
+      "by": "J. Teichman and L. Mahadevan", "date": "2003", "edition": "J. Fluid Mech. (2003); author PDF",
+      "url": "https://softmath.seas.harvard.edu/wp-content/uploads/2019/10/2003-02.pdf",
+      "provides": "States the Stokes–Rayleigh analogy between slow viscous flow and incompressible elasticity, crediting Stokes (1845) and Rayleigh's Theory of Sound.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/forming-lab.astro", "find": "2003-02.pdf", "stage": "forminglab" }],
+      "caution": "Journal volume and pages not yet confirmed."
+    },
+    {
+      "id": "turnbull-1969", "kind": "method", "short": "Turnbull 1969",
+      "title": "Under what conditions can a glass be formed?",
+      "by": "D. Turnbull", "date": "1969", "edition": "Contemp. Phys. 10(5), 473–488",
+      "url": "https://doi.org/10.1080/00107516908204405",
+      "provides": "Glass formation as a race between cooling and crystal nucleation and growth.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/structure-lab.astro", "find": "00107516908204405", "stage": "structurelab" }]
+    },
+    {
+      "id": "zhong-2014", "kind": "measurement", "short": "Zhong et al. 2014",
+      "title": "Formation of monatomic metallic glasses through ultrafast liquid quenching",
+      "by": "L. Zhong, J. Wang, H. Sheng, Z. Zhang and S. X. Mao", "date": "2014", "edition": "Nature 512, 177–180",
+      "url": "https://doi.org/10.1038/nature13617",
+      "provides": "Pure refractory metals such as tantalum made glassy in nanometre volumes by quenching at about 10¹⁴ K/s (rate and metal confirmed from the PubMed abstract).",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/structure-lab.astro", "find": "nature13617", "stage": "structurelab" }]
+    },
+    {
+      "id": "kthny-2d-melting", "kind": "method", "short": "Halperin & Nelson 1978; Bernard & Krauth 2011",
+      "title": "Theory of two-dimensional melting; Two-step melting in two dimensions: first-order liquid-hexatic transition",
+      "by": "B. I. Halperin and D. R. Nelson; E. P. Bernard and W. Krauth", "date": "1978, 2011", "edition": "Phys. Rev. Lett. 41, 121 (1978); 107, 155704 (2011)",
+      "url": "https://doi.org/10.1103/PhysRevLett.107.155704",
+      "provides": "The hexatic phase between a two-dimensional crystal and liquid: predicted in 1978, shown for hard disks in 2011.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/structure-lab.astro", "find": "PhysRevLett.41.121", "stage": "structurelab" }, { "file": "src/pages/structure-lab.astro", "find": "PhysRevLett.107.155704", "stage": "structurelab" }]
+    },
+    {
+      "id": "bks-1990", "kind": "method", "short": "BKS potential",
+      "title": "Force fields for silicas and aluminophosphates based on ab initio calculations",
+      "by": "B. W. H. van Beest, G. J. Kramer and R. A. van Santen", "date": "1990", "edition": "Phys. Rev. Lett. 64(16), 1955–1958",
+      "url": "https://doi.org/10.1103/PhysRevLett.64.1955",
+      "provides": "The charged pair potential most often used to simulate silica glass.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/structure-lab.astro", "find": "PhysRevLett.64.1955", "stage": "structurelab" }]
+    },
+    {
+      "id": "metallic-glass-rules", "kind": "method", "short": "Greer 1993; Inoue 2000; Peker & Johnson 1993",
+      "title": "Confusion by design; Stabilization of metallic supercooled liquid and bulk amorphous alloys; A highly processable metallic glass",
+      "by": "A. L. Greer; A. Inoue; A. Peker and W. L. Johnson", "date": "1993–2000", "edition": "Nature 366, 303–304 (1993); Acta Mater. 48, 279–306 (2000); Appl. Phys. Lett. 63, 2342 (1993)",
+      "url": "https://doi.org/10.1038/366303a0",
+      "provides": "The confusion principle, Inoue's empirical rules for bulk metallic glasses (three or more elements), and the five-element Vitreloy 1.",
+      "reuse": "cite", "licence": "Journal article; no reuse licence stated.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/pages/structure-lab.astro", "find": "366303a0", "stage": "structurelab" }, { "file": "src/pages/structure-lab.astro", "find": "S1359-6454(99)00300-6", "stage": "structurelab" }, { "file": "src/pages/structure-lab.astro", "find": "1.110520", "stage": "structurelab" }],
+      "caution": "Inoue's three-element rule is quoted from the paper's well-known summary; the passage was not re-read on the checked date."
+    },
+    {
       "id": "meulebroeck-2016", "kind": "measurement", "short": "Meulebroeck et al. 2016",
       "title": "Authenticity screening of stained glass windows using optical spectroscopy",
       "by": "Wendy Meulebroeck, Hilde Wouters, Karin Nys and Hugo Thienpont", "date": "2016", "edition": "Scientific Reports 6, 37726",
       "url": "https://doi.org/10.1038/srep37726",
-      "provides": "Measured ultraviolet to near-infrared transmission of historical and modern colored stained glass, with the absorption bands of cobalt, copper, iron, manganese and chromium identified.",
-      "would": "Real curves in place of the drawn ones for the common colorants, and an openly licensed set that can be copied into the repo.",
-      "reuse": "open", "licence": "CC BY 4.0.",
-      "checked": "2026-10-19", "usedBy": []
+      "provides": "Measured 300–1500 nm transmission of 85 panes of two stained-glass panels, plotted as absorbance in arbitrary units (each curve normalised 0..1; no thickness given): cobalt blues (Fig. 2), chromium greens with Cr³⁺ and Cr⁶⁺ (Fig. 3), iron yellows (Fig. 4), copper-ruby flashes (Fig. 5) and silver stain (Fig. 8). The page traces B1 (cobalt), G1 (chromium) and SY2 (silver) from the figures for their shapes.",
+      "reuse": "open", "licence": "CC BY 4.0. The traced curves in measured.json are an adaptation, credited there and here.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/measured.json", "find": "meulebroeck-2016", "stage": "ions" }]
+    },
+    {
+      "id": "volotinen-2007", "kind": "measurement", "short": "Volotinen 2007",
+      "title": "Mathematical description of absorbance spectra for Fe and Cu doped soda-lime-silica glasses",
+      "by": "Tarja T. Volotinen", "date": "2007", "edition": "PhD thesis, University of Sheffield (White Rose eTheses 6086)",
+      "url": "https://etheses.whiterose.ac.uk/id/eprint/6086/",
+      "provides": "Gaussian bands fitted to measured absorbance of 15Na₂O·15CaO·70SiO₂ glasses doped with iron and copper, 1 cm thick, reflection and host-glass losses removed, with heights in absorbance per cm per mol% of the ion (Tables 5.4.1–5.4.3, 6.6.2). The page's Fe²⁺, Fe³⁺ and Cu²⁺ curves are these bands, so their amounts are real.",
+      "reuse": "cite", "licence": "Thesis; the repository record states no reuse licence. The page copies 17 fitted numbers (band positions, widths and heights) with this citation, not text or figures.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/measured.json", "find": "volotinen-2007", "stage": "ions" }]
     },
     {
       "id": "schott-filter", "kind": "datasheet", "short": "SCHOTT filter glass",
@@ -269,12 +486,17 @@
     {
       "id": "sciglass", "kind": "database", "short": "SciGlass",
       "title": "SciGlass",
-      "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "MS Access release; browsable at sciglass.uni-jena.de",
+      "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared.",
-      "would": "Measured spectra for uranium and didymium glass, and composition–property data for a formers-and-modifiers stage.",
-      "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading.",
-      "checked": "2026-10-19", "usedBy": []
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py.",
+      "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
+      "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
+      "checked": "2026-10-19",
+      "usedBy": [
+        { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
+        { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" }
+      ],
+      "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
     },
     {
       "id": "schott-tie29", "kind": "datasheet", "short": "SCHOTT TIE-29",
@@ -292,9 +514,10 @@
       "by": "SCHOTT AG, Advanced Optics", "date": "2005", "edition": "current PDF undated; earlier version October 2005",
       "url": "https://media.schott.com/api/public/content/3d5861d824f64033aafd5353a21f7603?v=ab765931",
       "provides": "Internal versus external transmittance, surface reflection losses and how to rescale transmittance to another thickness.",
-      "would": "A source for the engine's two-surface reflection loss and thickness scaling, now stated without one.",
       "reuse": "cite", "licence": "No reuse licence stated.",
-      "checked": "2026-10-19", "usedBy": []
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/flare.js", "find": "SCHOTT TIE-35", "stage": "heat" }, { "file": "src/components/Dispersion.astro", "find": "TIE-35", "stage": "prism" }],
+      "caution": "Gives the reflection factor P from Fresnel's formula (0.92 at n ≈ 1.5) rather than a flat 4% a face, and notes that thick high-index glasses often look yellowish."
     },
     {
       "id": "nist-asd", "kind": "database", "short": "NIST ASD",
@@ -302,9 +525,9 @@
       "by": "A. Kramida, Yu. Ralchenko, J. Reader and the NIST ASD Team", "date": "2024", "edition": "version 5.12; DOI 10.18434/T4W30F",
       "url": "https://physics.nist.gov/asd",
       "provides": "Evaluated atomic lines. Sodium D2 588.995095 nm and D1 589.592424 nm in air, matching the values in flare.js.",
-      "would": "A citation for the sodium doublet the glory-hole stage uses, and lines for any other flame or lamp.",
       "reuse": "cite", "licence": "NIST Standard Reference Data can be copyrighted under the Standard Reference Data Act; no licence text found. Quote values with the recommended citation.",
-      "checked": "2026-10-19", "usedBy": []
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/scripts/flare.js", "find": "NIST Atomic Spectra Database v5.12", "stage": "heat" }]
     },
     {
       "id": "nist-srm-710a", "kind": "standard", "short": "NIST SRM 710a",
@@ -335,15 +558,77 @@
       "would": "Tables to test the analytic observer against, and the CIE 2006 cone fundamentals if the page ever explains metamerism from the cones up.",
       "reuse": "unknown", "licence": "\"Provided free of charge as a service to the vision science community\"; no explicit reuse licence.",
       "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "fluegel-viscosity-2007", "kind": "method", "short": "Fluegel 2007 viscosity",
+      "title": "Glass viscosity calculation based on a global statistical modelling approach",
+      "by": "Alexander Fluegel, Pacific Northwest National Laboratory", "date": "2007", "edition": "Glass Technol.: Eur. J. Glass Sci. Technol. A 48(1), 13–30; author's copy on glassproperties.com",
+      "url": "https://glassproperties.com/viscosity/Viscosity_2006_AFluegel.pdf",
+      "provides": "Isokom temperatures at 10^1.5, 10^6.6 and 10^12 Pa·s as polynomials in mol% composition, fitted to more than 2,200 silicate glasses (about 42–89 mol% SiO2), with the paper's own predictions for standard glasses (Table 12).",
+      "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-viscosity-2007", "stage": "batch" }],
+      "caution": "Coefficients were read from the PDF by text extraction. Three were unreadable and are refitted to the paper's Table 12 (batch.json, viscosity.reconstructed); check them against Fluegel's spreadsheet when it can be fetched."
+    },
+    {
+      "id": "fluegel-melt-density-2008", "kind": "method", "short": "Fluegel et al. melt density",
+      "title": "Density and thermal expansion calculation of silicate glass melts from 1000 °C to 1400 °C",
+      "by": "Alexander Fluegel, David A. Earl, Arun K. Varshneya and Thomas P. Seward III, Alfred University", "date": "2008", "edition": "Phys. Chem. Glasses: Eur. J. Glass Sci. Technol. B 49(5); author's copy on glassproperties.com",
+      "url": "http://glassproperties.com/density/DensityCTE_GlassMelts_2006.pdf",
+      "provides": "Melt density at 1000–1400 °C as a function of mol% composition (Table 2), fitted to SciGlass data for glasses above 40 mol% silica.",
+      "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-melt-density-2008", "stage": "batch" }],
+      "caution": "A melt model. The bench scales its 1200 °C value to 2.50 g/cm³ for float glass, one contraction factor for every batch."
+    },
+    {
+      "id": "appen-fluegel", "kind": "method", "short": "Appen expansion factors",
+      "title": "Older thermal expansion models (Appen's factors, as tabulated)",
+      "by": "Alexander Fluegel, after A. A. Appen, Glass Chemistry (1974)", "date": "2007", "edition": "web page on glassproperties.com",
+      "url": "http://glassproperties.com/expansion/Old-Thermal-Expansion-Models.htm",
+      "provides": "Appen's additive factors for the linear expansion coefficient by mol%, including the composition-dependent rules for SiO2, B2O3, PbO and K2O. The page traces additive expansion factors back to Winkelmann and Schott (1894).",
+      "reuse": "unknown", "licence": "No terms stated on the site. Factors are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "appen-fluegel", "stage": "batch" }]
+    },
+    {
+      "id": "young-finn-1940", "kind": "method", "short": "Young & Finn 1940",
+      "title": "Effect of composition and other factors on the specific refraction and dispersion of glasses",
+      "by": "John C. Young and Alfred N. Finn, National Bureau of Standards", "date": "1940", "edition": "J. Res. NBS 25(6), 759",
+      "url": "https://nvlpubs.nist.gov/nistpubs/jres/25/jresv25n6p759_a1b.pdf",
+      "provides": "Specific refraction (n_D − 1)/ρ and specific dispersion (n_F − n_C)/ρ factors for each oxide, additive by weight.",
+      "reuse": "cite", "licence": "US government publication; no licence stated. Factors are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "young-finn-1940", "stage": "batch" }]
+    },
+    {
+      "id": "sack-1980", "kind": "method", "short": "Sack et al. 1980",
+      "title": "Ferric-ferrous equilibria in natural silicate liquids at 1 bar",
+      "by": "Richard O. Sack, Ian S. E. Carmichael, Mark Rivers and Mark S. Ghiorso", "date": "1980", "edition": "Contrib. Mineral. Petrol. 75, 369–376",
+      "url": "https://doi.org/10.1007/BF00374720",
+      "provides": "ln(X_Fe2O3/X_FeO) as a function of oxygen fugacity, temperature and mole-fraction composition (Table 3).",
+      "reuse": "cite", "licence": "Journal article; coefficients quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "sack-1980", "stage": "batch" }],
+      "caution": "Fitted to natural lavas, with less alkali than soda-lime glass and no lead or boron."
+    },
+    {
+      "id": "fluegel-glasses", "kind": "standard", "short": "Typical glass compositions",
+      "title": "Glass compositions: typical commercial glasses",
+      "by": "Alexander Fluegel", "date": "2007", "edition": "web page on glassproperties.com",
+      "url": "http://glassproperties.com/glasses/",
+      "provides": "Typical compositions (mol%) of float, container, borosilicate and other commercial glasses.",
+      "reuse": "unknown", "licence": "No terms stated on the site. A few compositions are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-glasses", "stage": "batch" }]
     }
   ],
   "gaps": [
-    { "what": "Absorption curves of the twelve colorants", "file": "src/data/optics.json", "candidates": ["meulebroeck-2016", "schott-filter", "sciglass"] },
+    { "what": "Absorption curves of manganese, gold, the cadmium sulfoselenides and neodymium", "file": "src/data/optics.json", "candidates": ["schott-filter", "sciglass"], "note": "Cobalt, chromium, iron, copper and silver are measured (measured.json); cobalt, chromium and silver have measured shapes but no measured strength." },
     { "what": "Uranyl absorption bands and emission comb strengths", "file": "src/scripts/uranium.js", "candidates": ["sciglass"] },
     { "what": "Neodymium and praseodymium band strengths", "file": "src/scripts/bands.js", "candidates": ["sciglass"], "note": "Peak positions are sourced; strengths are scaled by eye." },
-    { "what": "Surface reflection loss (4% a face) and thickness scaling", "file": "src/scripts/flare.js", "candidates": ["schott-tie35"] },
-    { "what": "Sodium D line wavelengths", "file": "src/scripts/flare.js", "candidates": ["nist-asd"], "note": "Values are right; the citation is missing." },
     { "what": "Studio furnace and glory-hole temperatures", "file": "src/data/viscosity.json", "candidates": ["bullseye-annealing"], "note": "Kiln glass only; furnace practice still needs a source (PR #17)." },
+    { "what": "Transmission spectrum of over-struck gold ruby", "file": "src/scripts/home.js", "candidates": ["haslbeck-2005"], "note": "Stage 05 draws over-striking as a 30 nm red shift and broadening, a guess; a measured spectrum would settle whether it ends purple or brown." },
     { "what": "Rack swatch colors, sampled from product photos", "file": "src/data/catalog/index.json", "candidates": [], "note": "Needs measured transmission of the supplier glasses, which no source here publishes." }
   ]
 }

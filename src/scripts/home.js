@@ -14,6 +14,8 @@ import { initDispersion } from './prism.js';
 import { BOWL, CANE, profile, bowlPath, bowlReadings, canePath } from './vessel.js';
 import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
+import { basisLine } from './measured-spectra.js';
+import { batchStage } from './stage-batch.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -226,7 +228,7 @@ function redox() {
     draw(colorOf(parts, 1).css, colorOf(parts, 6).css);
     $('redoxOut').textContent = `${Math.round(r * 100)}% Fe²⁺`;
     $('redoxRead').textContent = r > 0.65 ? 'Reducing flame: most iron is Fe²⁺, absorbing in the red and near infrared. Blue-green.'
-      : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing violet and blue. A pale straw yellow.'
+      : r < 0.3 ? 'Oxidizing flame: most iron is Fe³⁺, absorbing the violet strongly and the green and red faintly. A pale yellow-green face on; edge on, those faint bands add up to bottle green.'
       : 'A mix of both ions. Each subtracts its own band, and the result is olive.';
   };
   s.addEventListener('input', render); onLamp(render);
@@ -234,9 +236,9 @@ function redox() {
 
 /* ---------- 03 the color rod: ions ---------- */
 const ROD_NOTES = {
-  cobalt: 'Co²⁺ absorbs across orange and red in three overlapping bands. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
+  cobalt: 'Co²⁺ absorbs across yellow, orange and red in three overlapping bands, near 534, 596 and 640 nm in soda glass. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
   copper: 'Cu²⁺ absorbs a broad band in the red and near infrared, leaving turquoise to blue.',
-  chromium: 'Cr³⁺ has two bands, one in the violet and one in the orange-red. What gets through is a green window, the green of old bottle glass.',
+  chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial color of the later 19th century; older bottle green is iron.',
   manganese: "Mn³⁺ absorbs in the green and lets red and blue through: amethyst. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
   neodymium: 'Nd³⁺ has narrow f-electron lines, sharpest near yellow (around 585 nm). The color shifts with the light it is viewed under.',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
@@ -250,7 +252,7 @@ function ions(onRod) {
     draw(tColor(T).css, colorOf([[cur, 1]], k * 5).css);
     strip($('strip3'), T);
     $('concOut').textContent = `×${k.toFixed(2)}`;
-    $('ionRead').textContent = ROD_NOTES[cur];
+    $('ionRead').replaceChildren(ROD_NOTES[cur], ' ', h('span', { className: 'basis' }, basisLine(cur)));
     press(cur);
     onRod?.(cur, k);
   }
@@ -709,7 +711,7 @@ function strike() {
     $('goldTag').textContent = lab; $('goldOut').textContent = lab;
     $('goldRead').textContent = t < 0.15 ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
       : t < 0.7 ? 'Particles have formed. Their electrons resonate with green light (a surface plasmon) and absorb it; red and some blue pass.'
-      : 'Particles grow and clump. The band shifts toward longer wavelengths and broadens, and the ruby goes dull and brown.';
+      : 'Particles grow and clump. The band shifts toward longer wavelengths and broadens, and the ruby goes dull and purple (a model; real over-struck glass can also go brown).';
   };
   const renderGap = () => {
     const eV = sE.valueAsNumber / 100, edge = 1240 / eV, T = bandEdge(eV);
@@ -732,7 +734,7 @@ function strike() {
 const VIEW_NOTES = {
   plane: 'The dark cross is not unstressed glass. Along it the stress runs parallel and perpendicular to the polarizers, and light polarized along a principal stress passes through unchanged. Switch to circular to remove it.',
   circular: 'Quarter-wave plates on either side make the light circular, so the direction of the stress no longer matters and the cross is gone. Only the size of the stress shows.',
-  tint: 'A full-wave plate makes the empty field magenta, the color that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. This is how strain viewers in glassworks are set up.',
+  tint: 'A full-wave plate makes the empty field magenta, the color that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. The ASTM test for glass containers (C148) uses such a plate, nominally 565 nm; the model uses 550 nm.',
 };
 const RATE = (v) => 0.3 * 1000 ** (v / 1000); // °C per minute, log slider
 const G_MAX = 12000, G_STEP = 2, T_MAX = 3000, T_STEP = 10, T_PHI = 24; // nm, nm, nm, nm, angle bins over 180°
@@ -1285,5 +1287,5 @@ function fitBench() {
 }
 
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
+  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); historyRail(); lampSwitch();
 }

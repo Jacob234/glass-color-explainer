@@ -1,7 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import FormingSim from '../components/islands/FormingSim.astro';
+import vis from '../data/viscosity.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// Furnace to softening point on the NBS 710 Fulcher fit, so the ratio in the text follows the data.
+const { A, B, T0 } = vis.fulcher;
+const furnace = vis.studio.find((s) => s.id === 'furnace')!.T;
+const soft = vis.points.find((p) => p.id === 'softening')!;
+const logFurnace = A + B / (furnace - T0) - 1; // log10 Pa·s
+const ratio = 10 ** (soft.logPas - logFurnace);
+const fold = `${Math.round(ratio / 1000) * 1000}`.replace(/\B(?=(\d{3})+$)/, ',');
 ---
 <Base title="Forming Lab" description="A gather of hot glass on a blowpipe: viscosity from a measured soda-lime glass, sag, blowing and swinging from viscous flow, cooling by radiation in three bands.">
   <article class="concept">
@@ -42,8 +50,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <h2>The three flows</h2>
     <p>
-      Viscosity sets the pace of every flow, and for soda-lime glass it changes a thousandfold between
-      the furnace and the point where a blower gives up. The simulator takes it from one measured glass,
+      Viscosity sets the pace of every flow, and for soda-lime glass it changes about {fold}-fold between
+      the furnace at a typical {furnace} °C (about {Math.round(10 ** logFurnace / 10) * 10} Pa·s on this curve; the furnace figure is unverified) and the softening point
+      at {soft.measured} °C, where a hanging fibre stretches under its own weight. The simulator takes it from one measured glass,
       NBS Standard Glass No. 710, through the Fulcher fit Napolitano and Hawkins made for it in 1964,
       the same curve as the site's <a href={`${base}/#glass`}>stage 00</a>. The gather is cut into 24 shells
       of equal mass, each with its own temperature and so its own viscosity, and each flow is the
@@ -64,7 +73,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       The part of the gather beyond the pipe's tip is a short beam under its own weight. Slow viscous
       flow obeys the same equations as
       elastic deformation, with velocities in place of displacements and 3η in place of Young's modulus
-      (the Stokes–Rayleigh analogy, exact for incompressible material; the attribution is from memory, unverified). So the elastic tip deflection wL⁴/8EI becomes a
+      (the Stokes–Rayleigh analogy, exact for incompressible material, after Stokes in 1845 and Rayleigh's <i>Theory of Sound</i>, as Teichman and Mahadevan attribute it). So the elastic tip deflection wL⁴/8EI becomes a
       deflection <i>rate</i>. Its stiffness weights each shell by r³, the opposite of blowing: the skin
       carries the bending. In the model, this is how a blower keeps control: let the skin chill and it
       holds the gather straight while the core is still hot enough to blow.
@@ -136,7 +145,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <li>Emissivity of thin glass: R. Gardon, "The emissivity of transparent materials", <i>J. Am. Ceram.
         Soc.</i> 39 (1956) 278.</li>
       <li>Extensional viscosity: F. T. Trouton, "On the coefficient of viscous traction and its relation to
-        that of viscosity", <i>Proc. R. Soc. Lond. A</i> 77 (1906) 426 (citation from memory, unverified).</li>
+        that of viscosity", <i>Proc. R. Soc. Lond. A</i> 77 (1906) 426–440, <a href="https://doi.org/10.1098/rspa.1906.0038">doi:10.1098/rspa.1906.0038</a>.</li>
+      <li>Elastic–viscous analogy: J. Teichman and L. Mahadevan, "The viscous catenary", <i>J. Fluid Mech.</i> (2003),
+        <a href="https://softmath.seas.harvard.edu/wp-content/uploads/2019/10/2003-02.pdf">PDF</a>, which credits it to G. G. Stokes,
+        <i>Trans. Camb. Phil. Soc.</i> 8 (1845) 287, and Lord Rayleigh, <i>The Theory of Sound</i>, vol. II.</li>
       <li>Kirchhoff's law: G. Kirchhoff, <i>Annalen der Physik</i> 109 (1860) 275.</li>
     </ul>
     <p class="back"><a href={`${base}/#heat`}>← back to the glory hole</a></p>

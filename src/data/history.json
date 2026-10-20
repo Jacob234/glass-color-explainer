@@ -13,10 +13,10 @@
     },
     {
       "id": "lycurgus", "short": "Lycurgus cup", "year": 300, "when": "c. 290–325 CE", "title": "The Lycurgus cup",
-      "text": "A Roman cage cup that looks jade green in reflected light and glows red when lit from inside. About 330 ppm of silver and 40 ppm of gold sit in it as particles about 70 nm across. The pin shows the transmitted color; the green is scattered light, which this engine does not model.",
+      "text": "A Roman cage cup that looks jade green in reflected light and glows red when lit from inside. About 300 ppm of silver and 40 ppm of gold sit in it, much of it as silver-gold particles 50–100 nm across. The pin shows the transmitted color; the green is scattered light, which this engine does not model.",
       "color": { "parts": [["gold-colloid", 0.7], ["silver-colloid", 0.3]], "thickness": 1.4 },
       "stage": "strike",
-      "sources": [["Wikipedia: Lycurgus Cup (British Museum 1958,1202.1)", "https://en.wikipedia.org/wiki/Lycurgus_Cup"]]
+      "sources": [["Freestone et al., The Lycurgus Cup: a Roman nanotechnology, Gold Bulletin 40 (2007) 270", "https://doi.org/10.1007/BF03215599"], ["Wikipedia: Lycurgus Cup (British Museum 1958,1202.1)", "https://en.wikipedia.org/wiki/Lycurgus_Cup"]]
     },
     {
       "id": "forest", "short": "Forest glass", "year": 1000, "until": 1700, "when": "c. 1000–1700", "title": "Forest glass",

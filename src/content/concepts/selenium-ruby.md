@@ -7,27 +7,32 @@ artifacts:
     title: Traffic-light red
   - id: sharp-cut-filters
     title: Sharp-cut filter glass
+sources:
+  - label: "Ekimov & Onushchenko, Quantum size effect in three-dimensional microscopic semiconductor crystals, JETP Letters 34 (1981) 345"
+    url: http://www.jetpletters.ru/ps/1517/article_23187.shtml
+  - label: "The Nobel Prize in Chemistry 2023: press release"
+    url: https://www.nobelprize.org/prizes/chemistry/2023/press-release/
+  - label: "The Nobel Prize in Chemistry 2023: popular information"
+    url: https://www.nobelprize.org/prizes/chemistry/2023/popular-information/
 ---
 
-Selenium ruby, glass colored by cadmium sulfoselenide crystals, produces the most saturated reds, oranges, and yellows glass can achieve. The red of every traffic light, railway signal, and automotive tail light of the pre-LED century came from this chemistry. The colors are pure enough that international signal standards were effectively written around this chemistry.
+Selenium ruby, glass colored by cadmium sulfoselenide crystals, produces the most saturated reds, oranges, and yellows glass can achieve. Much of the signal red of traffic lights and railway signals in the pre-LED century came from this chemistry (a general account, unverified here).
 
 The mechanism differs from both dissolved ions and metal colloids. Instead of absorbing at a specific wavelength, a semiconductor crystal absorbs *everything above a cutoff*. Below the cutoff, the glass transmits freely; above it, nearly everything is blocked. The result is a sharp absorption edge rather than a broad absorption band, which is why the colors look saturated rather than tinted.
 
 ## How it works
 
-**Band-gap absorption.** A semiconductor has a characteristic energy threshold, the band gap, below which photons pass through and above which they are absorbed (promoting an electron from the lower valence band to the upper conduction band). Cadmium sulfide (CdS) has a band gap of roughly 2.4 electron volts, which places its absorption edge in the green, near 515 nm. It absorbs violet through green and transmits yellow. Cadmium selenide (CdSe) has a smaller gap near 1.7 eV, which puts its edge at the long-wavelength end of the visible, bordering the near-infrared (~730 nm); it absorbs nearly the entire visible spectrum and looks dark red to near-black.
+**Band-gap absorption.** A semiconductor has a characteristic energy threshold, the band gap, below which photons pass through and above which they are absorbed (promoting an electron from the lower valence band to the upper conduction band). Cadmium sulfide (CdS) has a band gap of roughly 2.4 electron volts (a handbook figure, unverified here), which by λ = 1240 / E places its absorption edge in the green, near 515 nm. It absorbs violet through green and transmits yellow. Cadmium selenide (CdSe) has a smaller gap near 1.7 eV, which by the same rule puts its edge at the long-wavelength end of the visible, bordering the near-infrared (about 730 nm); it absorbs nearly the entire visible spectrum and looks dark red to near-black.
 
 The two compounds form a continuous solid solution, CdS₁₋ₓSeₓ: by adjusting the ratio of sulfur to selenium, you move the band gap, and therefore the absorption edge, continuously across the longer-wavelength part of the visible spectrum. A single chemical system covers the full range from yellow through orange to signal red.
 
-**Striking, again.** Like [gold ruby glass](../colloidal-color/), selenium ruby comes out of the melt nearly colorless: the cadmium, sulfur, and selenium are dissolved in the glass. A controlled reheat, typically 600–700 °C, nucleates and grows CdS-CdSe microcrystals, and the color "strikes" as the crystals grow. Under-struck glass is pale; over-striking coarsens the crystals and dulls the color. The process is the same controlled nucleation and growth used in [colloidal color](../colloidal-color/).
+**Striking, again.** Like [gold ruby glass](../colloidal-color/), selenium ruby comes out of the melt nearly colorless: the cadmium, sulfur, and selenium are dissolved in the glass. A controlled reheat (600–700 °C is the commonly quoted range; unverified) nucleates and grows CdS-CdSe microcrystals, and the color "strikes" as the crystals grow. Under-struck glass is pale; over-striking coarsens the crystals and dulls the color. The process is the same controlled nucleation and growth used in [colloidal color](../colloidal-color/).
 
 ## Artifact stories
 
 ### Traffic-light red
 
-The dominant red in traffic signals and railway semaphores for most of the 20th century was selenium ruby glass — specifically, a composition tuned to transmit a narrow red band above roughly 620–630 nm while blocking everything below. The reason signal engineers favored this chemistry over ionic reds or other alternatives was the sharpness of the edge: a steep cutoff maximizes chromatic purity at maximum brightness. Dissolved-ion reds, which have broad, overlapping absorption humps rather than a vertical edge, let through enough orange and yellow to dilute the perceived red and reduce visibility at distance.
-
-The signal industry's specifications were written to match what this chemistry could deliver, which meant that when LEDs eventually displaced glass filters in traffic lights, the LED specifications had to match the CdS-CdSe optical performance. The glass-based figures remained in the standards documents long after the glass itself was gone.
+A common red in traffic signals and railway semaphores for much of the 20th century was selenium ruby glass, a composition tuned to pass the red above roughly 620–630 nm and block everything shorter (figures unverified). The physics favors it: a steep cutoff gives the purest red for the most light let through. Dissolved-ion reds, which have broad, overlapping absorption humps rather than a vertical edge, let through enough orange and yellow to dilute the perceived red and reduce visibility at distance.
 
 ### Sharp-cut filters
 
@@ -35,10 +40,10 @@ Precision optical filter glass, used in photography, scientific instruments, mic
 
 ## The quantum dot postscript
 
-When the CdS-CdSe crystals are small enough (below roughly 10 nm), the electrons in the crystal are confined by the boundaries of the particle. This is quantum confinement: the allowed energy levels shift as the crystal shrinks, widening the effective band gap and blue-shifting the absorption edge. Size becomes an additional color control, independent of composition.
+When the CdS-CdSe crystals are small enough (a few nanometres, comparable to the size of an exciton in the crystal), the electrons in the crystal are confined by the boundaries of the particle. This is quantum confinement: the allowed energy levels shift as the crystal shrinks, widening the effective band gap and blue-shifting the absorption edge. Size becomes an additional color control, independent of composition.
 
-In 1981, physicist **Alexei Ekimov** at the Vavilov State Optical Institute in Leningrad was studying color-filter glass and identified this size-dependent shift as quantum confinement of charge carriers in a semiconductor nanocrystal. His first demonstration used copper-chloride nanocrystals in glass; cadmium-based systems followed. Glass was the medium where quantum dots were first experimentally observed and characterized.
+In 1981, physicist **Alexei Ekimov** at the S. I. Vavilov State Optical Institute in Leningrad was studying colored glass and identified this size-dependent shift as quantum confinement of charge carriers in a semiconductor nanocrystal (Ekimov and Onushchenko, *JETP Letters* 34, 345). His first demonstration used copper-chloride nanocrystals in glass, heated for between one and 96 hours at 500–700 °C to grow them to different sizes (Nobel Committee); cadmium-based systems followed. Glass was the medium where quantum dots were first experimentally observed and characterized.
 
-This work, along with parallel contributions from Louis Brus studying colloidal solutions and later Moungi Bawendi's synthesis methods, earned a share of the **2023 Nobel Prize in Chemistry**. The discovery was made in the same glass system that colored traffic lights for a century; glassmakers had been unknowingly tuning quantum confinement with their striking schedules for decades before the physics had a name.
+This work, along with parallel contributions from Louis Brus studying colloidal solutions and later Moungi Bawendi's synthesis methods, earned a share of the **2023 Nobel Prize in Chemistry**. The discovery was made in colored glass, the same kind of material as the traffic-light reds, whose makers may well have been tuning crystal size, and with it confinement, through their striking schedules long before the physics had a name (a plausible inference, not a documented one).
 
-Cadmium is toxic, and modern consumer and art-glass formulations have largely moved away from this chemistry where substitutes exist. For precision sharp-cut optical filters, however, the chemistry remains the standard, because no current alternative gives the same edge.
+Cadmium is toxic, and modern consumer and art-glass formulations have largely moved away from this chemistry where substitutes exist. For precision sharp-cut optical filters, however, the chemistry is still in use (unverified for current catalogues).

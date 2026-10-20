@@ -33,7 +33,7 @@
       "id": "sf11", "label": "SF11 dense flint", "family": "dense lead flint", "lead": true,
       "formula": "sellmeier", "coef": [1.73848403, 0.0136068604, 0.311168974, 0.0615960463, 1.17490871, 121.922711],
       "range": [0.39, 2.5], "nd": 1.78472, "vd": 25.76,
-      "about": "A dense flint with a great deal of lead. Faintly yellow, because its ultraviolet absorption reaches the violet.",
+      "about": "A dense flint with a great deal of lead. Faintly yellow, because its ultraviolet absorption reaches the violet (SCHOTT TIE-35).",
       "source": ["SCHOTT SF11 datasheet", "https://refractiveindex.info/?shelf=specs&book=SCHOTT-optical&page=SF11"]
     },
     {
