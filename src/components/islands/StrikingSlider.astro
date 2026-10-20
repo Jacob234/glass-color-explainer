@@ -1,31 +1,45 @@
 ---
-// props: sequence — "gold" | "selenium"
+// props: sequence — "metals" | "selenium" (models in src/scripts/strike.js)
+import { RECIPES } from '../../scripts/strike.js';
 const { sequence } = Astro.props;
+const metals = sequence === 'metals';
 ---
 <figure class="stk" data-sequence={sequence}>
+  {metals && <div class="stk-metals">{Object.entries(RECIPES).map(([id, r]) => <button data-id={id}>{r.label}</button>)}</div>}
   <div class="stk-row">
-    <div class="stk-swatch"></div>
+    <div class="stk-swatch">{metals && <span class="stk-front" title="the same glass lit from the front, against black (brightened 4×)"></span>}</div>
     <div class="stk-controls">
       <label>heat treatment (time × temperature)
-        <input type="range" min="0" max="100" value="0" />
+        <input type="range" min="0" max="100" value="45" />
       </label>
       <p class="stk-label"></p>
+      {metals && <p class="stk-note"></p>}
     </div>
   </div>
-  <p class="island-footnote">A stylized striking timeline. The swatch colors are picked by eye, not computed from a spectrum. Real schedules are composition-specific, and the over-struck end of the slider is a fault to avoid, not a target.</p>
+  {metals
+    ? <p class="island-footnote">Computed: Mie theory for spheres of gold, silver or copper in glass of index 1.5, from measured optical constants (Johnson and Christy 1972). The large swatch is the glass held up to daylight; the small square is the same glass lit from the front against black. The schedule (when particles form, how large they grow) and the amounts (gold 200 ppm through 2 mm, silver 150 ppm through 1 mm, copper 150 ppm through 2 mm) are a model; the over-struck end is a fault to avoid, not a target.</p>
+    : <p class="island-footnote">Computed: a band-gap edge whose energy rises as the crystals shrink (Brus 1984), with CdSe's effective masses and a bulk gap of 1.95 eV standing in for a selenium-rich sulfoselenide. The model is rough for the smallest crystals, and the dulling of over-struck glass is not in it.</p>}
 </figure>
 <script>
-  import optics from '../../data/optics.json';
   import { initStrikingSlider } from '../../scripts/islands/striking.js';
-  for (const el of document.querySelectorAll('.stk')) initStrikingSlider(el, optics);
+  for (const el of document.querySelectorAll('.stk')) initStrikingSlider(el);
 </script>
 <style>
   .stk { border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; margin: 1.5rem 0; background: var(--panel); }
+  .stk-metals { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; }
+  .stk-metals button { font-size: 0.78rem; padding: 0.25rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--edge); background: var(--node); color: var(--muted); cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s; }
+  .stk-metals button:hover { color: var(--text); border-color: var(--faint); }
+  .stk-metals button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
   .stk-row { display: flex; gap: 1rem; align-items: center; }
-  .stk-swatch { width: 4.2rem; height: 4.2rem; border-radius: 10px; border: 2px solid var(--edge);
+  .stk-swatch { position: relative; flex: none; width: 4.2rem; height: 4.2rem; border-radius: 10px; border: 2px solid var(--edge);
     box-shadow: inset 0 0 12px rgba(255,255,255,0.3); }
-  .stk-controls { flex: 1; }
+  .stk-front { position: absolute; right: -0.6rem; bottom: -0.6rem; width: 1.6rem; height: 1.6rem; border-radius: 4px;
+    border: 2px solid var(--panel); box-shadow: 0 0 0 1px var(--edge); }
+  .stk-controls { flex: 1; min-width: 0; }
   .stk-controls input { width: 100%; }
-  .stk-label { font-size: 0.85rem; color: var(--muted); margin: 0.3rem 0 0; }
+  .stk-label { font-size: 0.8rem; font-family: var(--mono, monospace); color: var(--muted); margin: 0.3rem 0 0; }
+  .stk-note { font-size: 0.85rem; color: var(--muted); margin: 0.3rem 0 0; }
   .island-footnote { font-size: 0.72rem; color: var(--faint); margin: 0.5rem 0 0; }
 </style>

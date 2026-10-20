@@ -39,7 +39,7 @@ function network() {
   const base = g.honeycomb(30, 14), glassy = g.disorder(base, { fraction: 0.55, seed: 11 });
   const nets = { crystal: base, glass: glassy };
   let order = 'glass';
-  // Place each patch so its centre sits in the middle of the view.
+  // Place each patch so its center sits in the middle of the view.
   const place = (net) => {
     const xs = net.nodes.map((p) => p.x), ys = net.nodes.map((p) => p.y);
     const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;

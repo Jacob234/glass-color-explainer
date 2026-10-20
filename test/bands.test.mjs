@@ -8,10 +8,26 @@ const DAY = s.toGrid(optics.wavelengths, optics.illuminants.find((i) => i.id ===
 const colorant = (id) => optics.colorants.find((c) => c.id === id);
 const at = (w) => s.GRID.indexOf(w);
 
-test('neodymium keeps its 585 nm band on the 5 nm grid', () => {
+test('neodymium keeps its 583 nm band on the 5 nm grid', () => {
   const d = s.colorantDensity(colorant('neodymium'), optics.wavelengths);
-  assert.ok(d[at(585)] > 4, `density at 585 nm ${d[at(585)]}`);
-  assert.ok(d[at(560)] < 0.3 && d[at(620)] < 0.1); // clear on both sides of the band
+  assert.ok(d[at(585)] > 2, `density at 585 nm ${d[at(585)]}`);
+  assert.ok(d[at(560)] < 0.1 && d[at(625)] < 0.05); // clear on both sides of the band
+  assert.ok(d[at(610)] > 0.05 * d[at(585)]); // but its long-wavelength wing reaches the tube's red line
+});
+
+// JBK-951: real neodymium glass is lilac in daylight, pink under a bulb and blue-gray under a
+// tri-phosphor tube. Hue in CIELAB (a*, b*) of the history pin's glass under each lamp.
+test('neodymium turns blue under the fluorescent tube, lilac in daylight, pink under tungsten', async () => {
+  const { LAMP, underLamp } = await import('../src/scripts/lamps.js');
+  const f = await import('../src/scripts/fit.js');
+  const T = s.transmission([[BAND_MODELS.neodymium(s.GRID), 1.6]]);
+  const lab = (id) => f.linToLab(underLamp(T, LAMP[id]).lin);
+  const [, ad, bd] = lab('daylight'), [, at_, bt] = lab('tungsten'), [, af, bf] = lab('tube');
+  assert.ok(ad > 10 && bd < -20, `daylight a* ${ad}, b* ${bd}: lilac`);
+  assert.ok(at_ > 15 && at_ > Math.abs(bt), `tungsten a* ${at_}, b* ${bt}: pink`);
+  assert.ok(bf < -10 && af < 0, `tube a* ${af}, b* ${bf}: blue`);
+  const hue = (a, b) => (Math.atan2(b, a) * 180) / Math.PI;
+  assert.ok(hue(af, bf) < hue(ad, bd) - 30, 'the tube turns the hue from violet toward blue');
 });
 
 test('neodymium glass reads lilac: red above green, blue highest', () => {

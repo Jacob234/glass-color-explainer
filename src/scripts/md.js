@@ -6,7 +6,7 @@
 
 // The mixture the page runs: half the atoms larger than the other half by a fraction m, all
 // bonds equally strong, unlike pairs sized by the Lorentz rule (the mean). With m = 0 every atom
-// is alike and the liquid crystallises at once; by m ≈ 0.3 the sizes no longer pack into one
+// is alike and the liquid crystallizes at once; by m ≈ 0.3 the sizes no longer pack into one
 // lattice and the liquid freezes into a glass however slowly it is cooled; in between the
 // cooling rate decides. The tests pin those three regimes.
 export const mismatch = (m) => ({
@@ -18,7 +18,7 @@ export const mismatch = (m) => ({
 // The textbook model glass former, Kob and Andersen, Phys. Rev. E 51, 4626 (1995): the unlike pair
 // binds most strongly, frustrating either species from ordering alone. In two dimensions its
 // 80:20 mixture forms hexagonal crystals of A, so Brüning et al. (2009) used 65:35. Kept for
-// comparison; at the cooling rates a page can run it neither crystallises nor shows a rate effect.
+// comparison; at the cooling rates a page can run it neither crystallizes nor shows a rate effect.
 export const KOB_ANDERSEN = {
   AA: { eps: 1.0, sig: 1.0 },
   AB: { eps: 1.5, sig: 0.8 },
@@ -73,7 +73,7 @@ function zeroMomentum(s) {
   for (let i = 0; i < s.n; i++) { s.vx[i] -= px; s.vy[i] -= py; }
 }
 
-// Kinetic temperature: two degrees of freedom per atom, less the two of the fixed centre of mass.
+// Kinetic temperature: two degrees of freedom per atom, less the two of the fixed center of mass.
 export function kineticT(s) {
   let k2 = 0;
   for (let i = 0; i < s.n; i++) k2 += s.vx[i] ** 2 + s.vy[i] ** 2;
@@ -89,7 +89,7 @@ export const pressure = (s) => ((2 * s.n - 2) * kineticT(s) / 2 + s.W / 2) / (s.
 export const areaPerAtom = (s) => (s.L * s.L) / s.n;
 export const potentialPerAtom = (s) => s.U / s.n;
 
-// Neighbour cells at least RMAX wide; each pair is visited once by scanning half the stencil.
+// Neighbor cells at least RMAX wide; each pair is visited once by scanning half the stencil.
 function cells(s, rmin) {
   const m = Math.max(3, Math.floor(s.L / rmin)), w = s.L / m;
   const head = new Int32Array(m * m).fill(-1), next = new Int32Array(s.n);
@@ -165,9 +165,9 @@ export function step(s, steps = 1) {
 }
 
 // Local sixfold bond order, the two-dimensional measure of crystallinity. For each atom,
-// ψ6 = (1/n) Σ exp(6iθ) over neighbours within 1.4 σ of the pair. A perfect triangular lattice
+// ψ6 = (1/n) Σ exp(6iθ) over neighbors within 1.4 σ of the pair. A perfect triangular lattice
 // gives |ψ6| = 1 everywhere. An atom counts as crystalline when |ψ6| > 0.7 and at least five of
-// its neighbours' ψ6 point the same way as its own (normalised Re ψ6ᵢ ψ6ⱼ* > 0.9): locally
+// its neighbors' ψ6 point the same way as its own (normalized Re ψ6ᵢ ψ6ⱼ* > 0.9): locally
 // hexagonal and agreeing with the atoms around it, in the manner of ten Wolde, Ruiz-Montero and
 // Frenkel (1995). The thresholds were chosen so a quenched liquid's chance hexagons mostly fail.
 export const NEIGH = 1.4;

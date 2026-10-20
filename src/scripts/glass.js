@@ -74,7 +74,7 @@ export function honeycomb(nx, ny) {
   return { nodes, bonds };
 }
 
-const neighbours = (net) => {
+const neighbors = (net) => {
   const nb = net.nodes.map(() => []);
   for (const [a, b] of net.bonds) { nb[a].push(b); nb[b].push(a); }
   return nb;
@@ -82,14 +82,14 @@ const neighbours = (net) => {
 
 // Disorder it the way Wooten, Winer and Weaire built amorphous silicon (1985): Stone–Wales bond
 // switches, each turning four rings by ±1 (two shrink, two grow) while every atom keeps three
-// neighbours, with the positions relaxed by springs as it goes. A switch that would leave a ring
+// neighbors, with the positions relaxed by springs as it goes. A switch that would leave a ring
 // smaller than five is undone. WWW accept or reject each switch by its strain energy; here the
 // order is random and the only test is ring size, so this is a sketch of their method.
 export function disorder(net, { fraction = 1, seed = 7, relax = 800 } = {}) {
   const nodes = net.nodes.map((p) => ({ ...p })), bonds = net.bonds.map((b) => [...b]);
   const out = { nodes, bonds };
   const rand = rng(seed);
-  let nb = neighbours(out);
+  let nb = neighbors(out);
   const near = (starts, d) => { // nodes within graph distance d
     let front = [...starts]; const seen = new Set(front);
     for (let k = 0; k < d; k++) { const next = []; for (const n of front) for (const m of nb[n]) if (!seen.has(m)) { seen.add(m); next.push(m); } front = next; }
@@ -111,11 +111,11 @@ export function disorder(net, { fraction = 1, seed = 7, relax = 800 } = {}) {
     bonds[i1] = [b, a1]; bonds[i2] = [a, b2]; // a–a1 and b–b2 become b–a1 and a–b2
     const mx = (P.x + Q.x) / 2, my = (P.y + Q.y) / 2; // turn the bond a quarter turn to start close
     for (const p of [P, Q]) { const dx = p.x - mx, dy = p.y - my; p.x = mx - dy; p.y = my + dx; }
-    nb = neighbours(out);
+    nb = neighbors(out);
     const local = near([a, b], 2), rings = ringSizes(out, 9, (u, v) => local.has(u) && local.has(v));
     if (rings.some((r) => r != null && r < 5)) {
       [bonds[i1], bonds[i2]] = saved; Object.assign(P, saved[2]); Object.assign(Q, saved[3]);
-      nb = neighbours(out); continue;
+      nb = neighbors(out); continue;
     }
     if (++done % 4 === 0) relaxNet(out, 30);
   }
@@ -124,9 +124,9 @@ export function disorder(net, { fraction = 1, seed = 7, relax = 800 } = {}) {
   return out;
 }
 
-// Springs: bonds to length 1, second neighbours to √3 (the 120° of an ideal triangle network).
+// Springs: bonds to length 1, second neighbors to √3 (the 120° of an ideal triangle network).
 export function relaxNet(net, steps = 400) {
-  const nb = neighbours(net), { nodes } = net, pairs = [];
+  const nb = neighbors(net), { nodes } = net, pairs = [];
   for (const [a, b] of net.bonds) pairs.push([a, b, 1, 1]);
   nodes.forEach((_, c) => { const n = nb[c]; for (let i = 0; i < n.length; i++) for (let j = i + 1; j < n.length; j++) pairs.push([n[i], n[j], Math.sqrt(3), 0.8]); });
   for (let s = 0; s < steps; s++) {
@@ -143,7 +143,7 @@ export function relaxNet(net, steps = 400) {
 // Rings: the smallest ring through each bond, by breadth-first search with that bond removed.
 // Used by the tests and the readout; edge bonds that close no ring inside the patch give null.
 export function ringSizes(net, maxLen = 10, only = null) {
-  const nb = neighbours(net);
+  const nb = neighbors(net);
   return net.bonds.map(([a, b]) => {
     if (only && !only(a, b)) return null;
     const dist = new Map([[a, 0]]); let front = [a];

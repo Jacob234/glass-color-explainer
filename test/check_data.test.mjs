@@ -9,7 +9,6 @@ const goodOptics = {
   wavelengths: [380, 580, 780],
   colorants: [{ id: 'cobalt', label: 'Co', group: 'ions', why: 'w', absorbance: [0.1, 0.9, 0.1] }],
   illuminants: [{ id: 'daylight', label: 'D', spd: [1, 1, 1] }],
-  striking: { gold: [{ t: 0, label: 'a', color: '#fff' }] },
 };
 
 function makeContentDir(pages) {
@@ -84,7 +83,7 @@ test('valid islands object produces no errors', () => {
   const dir = makeContentDir({ 'page-a': goodPage });
   const goodIslands = {
     spectrum: { 'page-a': 'cobalt' },
-    striking: { 'page-a': 'gold' },
+    striking: { 'page-a': 'metals' },
     alexandrite: [],
     lycurgus: [],
   };

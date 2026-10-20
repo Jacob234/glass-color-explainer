@@ -6,7 +6,7 @@ import * as b from '../src/scripts/batch.js';
 
 const sg = JSON.parse(readFileSync(new URL('../public/data/sciglass/bench.json', import.meta.url), 'utf8'));
 
-test('the extract carries its licence and only the bench oxides', () => {
+test('the extract carries its license and only the bench oxides', () => {
   assert.equal(sg.licence.name, 'ODbL 1.0');
   assert.match(sg.licence.notice, /SciGlass/);
   assert.deepEqual(sg.oxides, b.IDS);
