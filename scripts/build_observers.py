@@ -7,7 +7,7 @@ Not run by the site build; kept so the numbers can be regenerated and checked.
     python3 scripts/build_observers.py luxpy/toolboxes/indvcmf/data > src/data/observers.json
 
 Sources:
-- CIE 1964 10° colour-matching functions: colour-science's copy of the CIE table.
+- CIE 1964 10° color-matching functions: colour-science's copy of the CIE table.
 - CIE 170-1:2006 model components at 5 nm, 390–780 nm (photopigment low-density absorbance,
   the two parts of the ocular-media density, relative macular density): the tables Asano,
   Fairchild & Blondé (2016) distribute with their individual-observer model, as packaged in luxpy.

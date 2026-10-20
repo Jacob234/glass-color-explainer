@@ -105,7 +105,7 @@ function exitDistance(x, y, dx, dy, [x0, y0, x1, y1]) {
 }
 
 // A beam from a slit: parallel rays across a width, wavelength drawn uniformly over GRID with the
-// lamp's power as weight, so a line lamp (sodium) gives one colour and daylight all of them.
+// lamp's power as weight, so a line lamp (sodium) gives one color and daylight all of them.
 export function slitRay(beam, spd, rand) {
   const i = Math.floor(rand() * GRID.length), s = (rand() - 0.5) * beam.width;
   const dx = Math.cos(beam.angle), dy = Math.sin(beam.angle);

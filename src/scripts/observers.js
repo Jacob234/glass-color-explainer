@@ -1,10 +1,10 @@
 // observers.js — the same light, seen by different eyes. Pure functions only: no DOM.
-// Everywhere else on the page a colour is computed for one eye, the CIE 1931 2° standard observer.
+// Everywhere else on the page a color is computed for one eye, the CIE 1931 2° standard observer.
 // Here the eye is a parameter: the CIE 1964 10° observer, the CIE 2006 cone model at any age from
 // 20 to 80 and any field from 2° to 10° (CIE 170-1:2006), and dichromats built from those cones.
 //
 // To put another eye's experience on a screen calibrated for the standard eye, this file finds the
-// corresponding colour: the light that would give the standard eye, adapted to daylight, the same
+// corresponding color: the light that would give the standard eye, adapted to daylight, the same
 // adapted cone signals the glass gives the other eye. Each eye is assumed to have adapted fully to
 // its own lens and macula (they change over years) and partly to the lamp (lamp.adapt, as in
 // lamps.js). That is a model, and the page says so.
@@ -72,15 +72,15 @@ export const mediaTransmission = ({ age = 32, field = 2 } = {}) => {
 };
 
 /* ---------- the eyes ---------- */
-// kind 'xyz': an eye given as colour-matching functions; kind 'lms': the cone model, with `missing`
-// naming the cone a dichromat lacks. Brettel, Viénot & Mollon (1997) anchor each dichromat's colours
+// kind 'xyz': an eye given as color-matching functions; kind 'lms': the cone model, with `missing`
+// naming the cone a dichromat lacks. Brettel, Viénot & Mollon (1997) anchor each dichromat's colors
 // on two wavelengths it shares with trichromats: 475 and 575 nm for protans and deutans, 485 and
 // 660 nm for tritans.
 const CIE1931 = (() => { const c = GRID.map(cmf); return [0, 1, 2].map((k) => c.map((v) => v[k])); })();
 const CIE1964 = [0, 1, 2].map((k) => column(data.cie1964, data.cie1964.xyz, k));
 export const EYES = [
   { id: 'standard', label: 'the page’s eye', kind: 'xyz', curves: CIE1931, names: ['x̄', 'ȳ', 'z̄'],
-    note: 'CIE 1931 2°: the average of 17 observers matching colours in a 2° field in the late 1920s. Every other colour on the page is computed for this eye.' },
+    note: 'CIE 1931 2°: the average of 17 observers matching colors in a 2° field in the late 1920s. Every other color on the page is computed for this eye.' },
   { id: 'wide', label: 'wide field', kind: 'xyz', curves: CIE1964, names: ['x̄₁₀', 'ȳ₁₀', 'z̄₁₀'],
     note: 'CIE 1964 10°: the same idea for a patch the size of your fist at arm’s length. Outside the fovea there is almost no macular pigment, so more blue reaches the cones.' },
   { id: 'cones', label: 'cones', kind: 'lms', names: ['L', 'M', 'S'],
@@ -104,9 +104,9 @@ const FINAL = (() => {
   return (xyz) => mul(BRADFORD_INV, mul(BRADFORD, xyz).map((v, i) => (v * dst[i]) / src[i]));
 })();
 
-// Brettel, Viénot & Mollon (1997): a dichromat's colours lie on two half-planes through the white
+// Brettel, Viénot & Mollon (1997): a dichromat's colors lie on two half-planes through the white
 // and one anchor wavelength each. The missing cone's signal is replaced by the value that puts the
-// colour on the half-plane on its own side of the white.
+// color on the half-plane on its own side of the white.
 export function dichromat(q, white, missing, anchors) {
   const [a, b] = missing === 2 ? [0, 1] : [missing === 0 ? 1 : 0, 2]; // the ratio that picks the side
   const side = q[b] * white[a] < white[b] * q[a]; // below the white's ratio: the long-wave anchor
@@ -150,7 +150,7 @@ function exposure(lamp, eye, opts, ref) {
   return exposures.get(key);
 }
 
-// The colour of glass with transmission T (and light it gives out, `emitted`) under `lamp`, as
+// The color of glass with transmission T (and light it gives out, `emitted`) under `lamp`, as
 // `eye` sees it, drawn for a screen made for the standard eye. Returns linear and encoded sRGB and css.
 export function seenBy(T, lamp, eye, { age = 32, field = 2, emitted = null, ref = null } = {}) {
   const opts = { age, field };

@@ -45,7 +45,7 @@ test('every eye sees white paper as white in daylight', () => {
 test('a dichromat keeps the white and the anchors, and loses one cone signal', () => {
   const white = [1, 0.9, 0.8];
   assert.deepEqual(dichromat(white, white, 0, [475, 575]).map((v) => +v.toFixed(12)), white.map((v) => +v.toFixed(12)));
-  // two lights that differ only in the missing cone collapse onto one colour
+  // two lights that differ only in the missing cone collapse onto one color
   for (const [missing, anchors] of [[0, [475, 575]], [1, [475, 575]], [2, [485, 660]]]) {
     const a = [0.6, 0.5, 0.4], b = a.slice(); b[missing] += 0.1;
     const pa = dichromat(a, white, missing, anchors), pb = dichromat(b, white, missing, anchors);

@@ -14,6 +14,7 @@ export const KINDS = {
   measurement: 'Measurement',
   method: 'Method',
   catalogue: 'Supplier catalogue',
+  reference: 'Reference work',
 };
 
 // Reuse terms, from most to least open. `copy` means numbers or files may be copied into the

@@ -1,0 +1,89 @@
+---
+// The labs index: one piece of glass per lab on a strip of light table. Colors come from labs.js
+// (computed from spectra at build time); the drawings are ink. Used on /labs/ and in the home page's
+// "Go deeper" list.
+import { LABS } from '../scripts/labs.js';
+interface Props { current?: string; }
+const { current } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// a disordered patch of atoms for the structure piece: fixed, so every build draws the same glass
+const atoms = Array.from({ length: 34 }, (_, i) => {
+  const r = Math.sin(i * 12.9898) * 43758.5453;
+  const s = Math.sin(i * 78.233) * 12543.123;
+  return [44 + (i % 9) * 9 + ((r - Math.floor(r)) - 0.5) * 6, 26 + Math.floor(i / 9) * 13 + ((s - Math.floor(s)) - 0.5) * 6];
+});
+---
+<ul class="labs" aria-label="Labs">
+  {LABS.map((lab) => (
+    <li>
+      <a href={`${base}/${lab.slug}/`} aria-current={current === lab.slug ? 'page' : undefined}>
+        <svg class="lab-piece" viewBox="0 0 160 96" aria-hidden="true">
+          {lab.shape === 'prism' && (
+            <g>
+              <line x1="8" y1="70" x2="62" y2="52" class="ray" />
+              <polygon points="80,14 120,82 40,82" fill={lab.color} class="edge" />
+              <line x1="98" y1="50" x2="152" y2="66" class="ray" />
+            </g>
+          )}
+          {lab.shape === 'gather' && (
+            <g>
+              <rect x="6" y="45" width="78" height="5" rx="1" class="pipe" />
+              <path d="M84 40 C 96 26, 132 24, 142 44 C 150 60, 132 76, 108 72 C 94 70, 86 62, 84 56 Z" fill={lab.color} class="edge" />
+            </g>
+          )}
+          {lab.shape === 'network' && (
+            <g>
+              <rect x="34" y="14" width="92" height="68" fill={lab.color} class="edge" />
+              {atoms.map(([x, y]) => <circle cx={x} cy={y} r="2.4" class="atom" />)}
+            </g>
+          )}
+          {lab.shape === 'pair' && (
+            <g>
+              <defs><clipPath id="labs-pair"><circle cx="66" cy="48" r="32" /></clipPath></defs>
+              <circle cx="66" cy="48" r="32" fill={lab.color} />
+              <circle cx="94" cy="48" r="32" fill={lab.color2} />
+              <circle cx="94" cy="48" r="32" fill={lab.overlap} clip-path="url(#labs-pair)" />
+              <circle cx="66" cy="48" r="32" fill="none" class="edge" />
+              <circle cx="94" cy="48" r="32" fill="none" class="edge" />
+            </g>
+          )}
+          {lab.shape === 'slides' && (
+            <g>
+              <rect x="40" y="10" width="76" height="56" class="card" />
+              <rect x="48" y="18" width="76" height="56" class="card" />
+              <line x1="56" y1="30" x2="110" y2="30" class="ray" /><line x1="56" y1="38" x2="100" y2="38" class="ray" />
+              <rect x="56" y="34" width="76" height="52" fill={lab.color} class="edge" />
+            </g>
+          )}
+        </svg>
+        <span class="mono">{lab.kicker}</span>
+        <strong>{lab.name}</strong>
+        <span class="blurb">{lab.blurb}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+<p class="labs-note">Each piece is a real melt from the site's colorant table, computed under daylight like every other color here: cobalt, gold ruby, trace iron, copper with cadmium sulfide (and both together where they overlap), neodymium.</p>
+
+<style>
+  .labs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0 1.6rem; }
+  .labs a { display: grid; align-content: start; gap: 0.25rem; padding: 0 0 1.2rem; border-bottom: 1px solid var(--rule); text-decoration: none; height: 100%; }
+  .lab-piece { width: 100%; height: auto; display: block; margin-bottom: 0.5rem; background: #fff; border: 1px solid var(--rule);
+    background-image: radial-gradient(120% 90% at 50% 45%, #fff 0%, #fbfbf9 55%, #eef0ec 100%); }
+  .edge { stroke: var(--ink); stroke-width: 1; }
+  .ray { stroke: var(--ink); stroke-width: 1; opacity: 0.55; }
+  .pipe { fill: var(--ink); }
+  .atom { fill: var(--ink); opacity: 0.8; }
+  .card { fill: #fff; stroke: var(--ink-3); stroke-width: 1; }
+  strong { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.1; }
+  .blurb { font-size: 0.88rem; color: var(--ink-2); }
+  a:hover strong, a[aria-current] strong { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  a:hover .lab-piece { border-color: var(--ink); }
+  @media (max-width: 560px) {
+    /* phone: the piece beside its words, so five labs fit in a couple of screens */
+    .labs a { grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 1rem; padding: 0.9rem 0; align-items: start; }
+    .lab-piece { grid-row: 1 / span 3; margin: 0.2rem 0 0; }
+    strong { font-size: 1.3rem; }
+  }
+  .labs-note { margin: 0.8rem 0 0; font-size: 0.78rem; color: var(--ink-3); max-width: 46rem; }
+</style>
