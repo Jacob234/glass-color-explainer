@@ -1,5 +1,5 @@
 // stage-batch.js — the oxide bench in stage 01, the batch. Diagrams are drawn in ink; the only
-// colour is the slab, the same iron as the slab above with its Fe²⁺ share set by this batch.
+// color is the slab, the same iron as the slab above with its Fe²⁺ share set by this batch.
 // Composition models live in batch.js.
 import * as b from './batch.js';
 import { GLASSES, index, abbe, LINES } from './dispersion.js';
@@ -40,7 +40,7 @@ const ROLE = {
   MgO: 'Magnesia comes in with dolomite, which float glass uses for part of its lime. It stiffens the annealing end far less than lime does, and float makers use it partly to keep crystals from forming as the sheet cools.',
   Al2O3: 'Alumina joins the network as tetrahedra, each taking an alkali ion to balance its charge, so it mends the breaks soda made. The glass grows stiffer at every temperature and more durable. Bottle glass carries more of it than window glass.',
   B2O3: 'Boric oxide is a second network former. Borosilicate expands about a third as much as window glass, so it survives going from oven to cold water. Its effect is not simply additive: at first boron takes up the soda and stiffens the glass, and past a point it softens it again, the boron anomaly. Appen\'s boron factor follows this through the ratio of modifiers to boron.',
-  PbO: 'Lead oxide softens the glass over a long range, which is why lead crystal is easy to cut. Here the index rises because lead packs more matter into each cubic centimetre, not because it bends more light per gram: Young and Finn\'s specific refraction for PbO is the lowest of any oxide on this bench. Dispersion rises faster than index, so the Abbe number falls and cut lead crystal throws colour (stage 07′).',
+  PbO: 'Lead oxide softens the glass over a long range, which is why lead crystal is easy to cut. Here the index rises because lead packs more matter into each cubic centimetre, not because it bends more light per gram: Young and Finn\'s specific refraction for PbO is the lowest of any oxide on this bench. Dispersion rises faster than index, so the Abbe number falls and cut lead crystal throws color (stage 07′).',
 };
 
 export function batchStage({ colorOf, onLamp }) {
