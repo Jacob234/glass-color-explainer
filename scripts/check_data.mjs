@@ -50,11 +50,6 @@ export function validate(map, optics, contentDir, islands) {
   for (const il of optics.illuminants) {
     if (il.spd.length !== n) errors.push(`illuminant ${il.id}: spd has ${il.spd.length} points, expected ${n}`);
   }
-  for (const [name, seq] of Object.entries(optics.striking)) {
-    if (!seq.length || (seq.length > 1 && (seq[0].t !== 0 || seq[seq.length - 1].t !== 1))) {
-      errors.push(`striking ${name}: sequence must run t=0..1`);
-    }
-  }
 
   // --- recipes (optional) ---
   const recipeColorantIds = new Set(optics.colorants.map((c) => c.id));
@@ -84,7 +79,7 @@ export function validate(map, optics, contentDir, islands) {
   // --- islands.json (optional 4th param) ---
   if (islands) {
     const colorantIds = new Set(optics.colorants.map((c) => c.id));
-    const strikingKeys = new Set(Object.keys(optics.striking));
+    const strikingKeys = new Set(['metals', 'selenium']); // the models in src/scripts/strike.js
 
     // spectrum: each key must be a content page; each comma-sep id must exist in optics.colorants
     for (const [slug, ids] of Object.entries(islands.spectrum || {})) {
@@ -98,13 +93,13 @@ export function validate(map, optics, contentDir, islands) {
       }
     }
 
-    // striking: each key must be a content page; each value must be a key in optics.striking
+    // striking: each key must be a content page; each value must be a striking model
     for (const [slug, seq] of Object.entries(islands.striking || {})) {
       if (!pages.has(slug)) {
         errors.push(`islands.striking: slug "${slug}" does not resolve to a content page`);
       }
       if (!strikingKeys.has(seq)) {
-        errors.push(`islands.striking["${slug}"]: sequence "${seq}" not found in optics.striking`);
+        errors.push(`islands.striking["${slug}"]: sequence "${seq}" is not a striking model (metals, selenium)`);
       }
     }
 

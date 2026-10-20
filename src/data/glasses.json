@@ -1,5 +1,5 @@
 {
-  "note": "Refractive index of clear glasses. Sellmeier: n² = 1 + Σ Bᵢλ²/(λ² − Cᵢ), λ in µm, coef = [B1, C1, B2, C2, B3, C3] (C in µm²). Cauchy: n = A + Bλ² + C/λ², coef = [A, B, C]. nd and vd are the datasheet values, kept to check the formula against. Coefficients copied from the refractiveindex.info database (CC0), which takes the Schott glasses from the SCHOTT Zemax catalogue 2017-01-20b.",
+  "note": "Refractive index of clear glasses. Sellmeier: n² = 1 + Σ Bᵢλ²/(λ² − Cᵢ), λ in µm, coef = [B1, C1, B2, C2, B3, C3] (C in µm²). Cauchy: n = A + Bλ² + C/λ², coef = [A, B, C]. nd and vd are the datasheet values, kept to check the formula against. Coefficients copied from the refractiveindex.info database (CC0), which takes the Schott glasses from the SCHOTT Zemax catalog 2017-01-20b.",
   "glasses": [
     {
       "id": "silica", "label": "fused silica", "family": "pure former", "lead": false,
@@ -21,6 +21,13 @@
       "range": [0.3, 2.5], "nd": 1.5168, "vd": 64.17,
       "about": "The most widely used optical crown: low index, low dispersion.",
       "source": ["SCHOTT N-BK7 datasheet", "https://refractiveindex.info/?shelf=specs&book=SCHOTT-optical&page=N-BK7"]
+    },
+    {
+      "id": "llf1", "label": "LLF1 light flint", "family": "light lead flint", "lead": true,
+      "formula": "sellmeier", "coef": [1.21640125, 0.00857807248, 0.13366454, 0.0420143003, 0.883399468, 107.59306],
+      "range": [0.31, 2.5], "nd": 1.54814, "vd": 45.75,
+      "about": "SCHOTT's lightest lead flint. Its n<sub>d</sub> of 1.548 is just over the 1.545 that EU law sets for lead crystal, so it stands in here for tableware lead crystal, whose dispersion formula none of these sources give.",
+      "source": ["SCHOTT LLF1 datasheet", "https://refractiveindex.info/?shelf=specs&book=SCHOTT-optical&page=LLF1"]
     },
     {
       "id": "f2", "label": "F2 lead flint", "family": "lead flint", "lead": true,

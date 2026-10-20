@@ -23,8 +23,8 @@
       "absorbance": [0.98, 0.98, 0.98, 0.97, 0.96, 0.94, 0.90, 0.75, 0.35, 0.08, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
     { "id": "cdse", "label": "CdSe-rich crystals", "basis": "illustrative", "group": "bandgap", "why": "Selenium-rich crystals move the edge to ~640 nm, giving the signal red of selenium ruby.",
       "absorbance": [0.98, 0.98, 0.98, 0.98, 0.97, 0.96, 0.95, 0.92, 0.88, 0.75, 0.40, 0.10, 0.04, 0.03, 0.02, 0.02, 0.02] },
-    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "illustrative", "group": "ions", "why": "Shielded 4f electrons absorb in narrow bands (green, yellow, near-IR), giving a lilac that changes with the light source.",
-      "absorbance": [0.10, 0.08, 0.10, 0.12, 0.15, 0.30, 0.70, 0.25, 0.90, 0.30, 0.12, 0.10, 0.15, 0.25, 0.75, 0.30, 0.10] }
+    { "id": "neodymium", "label": "Neodymium Nd³⁺", "basis": "measured-shape", "source": "chimalawong-2010", "group": "ions", "why": "Shielded 4f electrons absorb in narrow bands (green, yellow, near-IR), giving a lilac that changes with the light source.",
+      "absorbance": [0, 0, 0.096, 0.033, 0.169, 0.309, 0.704, 0.008, 0.993, 0.568, 0, 0, 0.126, 0, 0, 0, 0] }
   ],
   "illuminants": [
     { "id": "daylight", "label": "Daylight (≈D65)",
@@ -32,22 +32,6 @@
     { "id": "incandescent", "label": "Incandescent (≈A)",
       "spd": [0.05, 0.08, 0.12, 0.17, 0.24, 0.31, 0.38, 0.46, 0.54, 0.62, 0.70, 0.78, 0.85, 0.91, 0.96, 0.98, 1.00] }
   ],
-  "striking": {
-    "gold": [
-      { "t": 0.0, "label": "dissolved gold — colorless", "color": "#f2f0ec" },
-      { "t": 0.25, "label": "nucleation — first faint blush", "color": "#eed7d4" },
-      { "t": 0.5, "label": "growth — the ruby strikes", "color": "#9b1b3c" },
-      { "t": 0.75, "label": "peak ruby", "color": "#7a1530" },
-      { "t": 1.0, "label": "over-struck: coarsened, dull gray-purple", "color": "#5b4350" }
-    ],
-    "selenium": [
-      { "t": 0.0, "label": "dissolved — colorless", "color": "#f2f0ec" },
-      { "t": 0.25, "label": "first crystals — pale straw", "color": "#ecd9a0" },
-      { "t": 0.5, "label": "edge sliding — orange", "color": "#d97a1f" },
-      { "t": 0.75, "label": "signal red", "color": "#b3121b" },
-      { "t": 1.0, "label": "over-struck — dull brick", "color": "#6e2f23" }
-    ]
-  },
   "recipes": [
     {
       "id": "decolorize",
@@ -70,7 +54,7 @@
     {
       "id": "amber-ish",
       "label": "Amber-ish",
-      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a grey brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this model does not have.",
+      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a gray brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this model does not have.",
       "melt": [
         { "colorant": "iron-ferric", "c": 1 },
         { "colorant": "manganese", "c": 0.12 }

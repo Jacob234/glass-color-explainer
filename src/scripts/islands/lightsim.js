@@ -70,7 +70,7 @@ export function initLightSim(root) {
   }
 
   function render(lamp, scene) {
-    // Normalise so the open beam has Y = BEAM_LEVEL: each ray lays about one unit per pixel it
+    // Normalize so the open beam has Y = BEAM_LEVEL: each ray lays about one unit per pixel it
     // crosses, rays spread across the beam's width, and a ray's expected XYZ is the lamp's white / N.
     const white = lamp.spd.reduce((s, v, i) => s + v * CMF_GRID[i][1], 0) / GRID.length;
     const k = (BEAM_LEVEL * beam.width * scale) / (Math.max(1, rays) * white);

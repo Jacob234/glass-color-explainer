@@ -48,17 +48,17 @@ export const surfaceStress = (d, dT) => faceStress(d / 2, d, dT);
 export const coreStress = (d, dT) => faceStress(0, d, dT);
 
 // Seen face on, the profile above is invisible: it is equal in every direction in the plane, so
-// σ₁ − σ₂ = 0. What shows is the in-plane pattern of a disc whose rim set before its centre.
-// Model: a parabolic difference share·ΔT between centre and rim is frozen in (Timoshenko and Goodier's
-// thin-disc solution, with the sign reversed for a residual stress). The centre is in equal tension
+// σ₁ − σ₂ = 0. What shows is the in-plane pattern of a disc whose rim set before its center.
+// Model: a parabolic difference share·ΔT between center and rim is frozen in (Timoshenko and Goodier's
+// thin-disc solution, with the sign reversed for a residual stress). The center is in equal tension
 // both ways; toward the rim the hoop stress turns compressive and σθ − σr = −(EαΔT/2)(r/R)².
-// share, the rim-to-centre fraction of the face-to-core difference, is a guess at shape.
+// share, the rim-to-center fraction of the face-to-core difference, is a guess at shape.
 export function planRetardation(r, R, d, dT, share = 1) {
   const u = r / R;
   return -GLASS.C * d * ((GLASS.E * GLASS.alpha * share * dT) / 2) * u * u;
 }
 
-// Seen through its edge, a ray at offset x from the centre and height z crosses the chord at that
+// Seen through its edge, a ray at offset x from the center and height z crosses the chord at that
 // height. The in-plane pattern adds nothing there: a free disc carries no net force across any cut,
 // so it integrates to zero along every full chord. What remains is the face-to-core profile.
 export const edgeRetardation = (x, z, R, d, dT) => GLASS.C * chord(R, x) * faceStress(z, d, dT);
