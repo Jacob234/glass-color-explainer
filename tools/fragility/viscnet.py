@@ -111,7 +111,7 @@ def main(out):
                   "cite": "Cassar D.R., ViscNet: neural network for predicting the fragility index and the "
                           "temperature-dependency of viscosity, Acta Materialia 206 (2021) 116602, "
                           "doi:10.1016/j.actamat.2020.116602",
-                  "licence": "Numbers computed with GlassPy (GPL-3.0-or-later); no GlassPy code or weights "
+                  "license": "Numbers computed with GlassPy (GPL-3.0-or-later); no GlassPy code or weights "
                              "are included. Compositions from the bench and from SciGlass (ODbL 1.0).",
                   "tool": "tools/fragility/viscnet.py"},
         "oxides": OX,
