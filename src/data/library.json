@@ -489,13 +489,14 @@
       "title": "SciGlass",
       "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py.",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs).",
       "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
       "reuse": "open", "licence": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT licence. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
       "checked": "2026-10-19",
       "usedBy": [
         { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
-        { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" }
+        { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" },
+        { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" }
       ],
       "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
     },
@@ -629,7 +630,7 @@
       "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-viscosity-2007", "stage": "batch" }],
-      "caution": "Coefficients were read from the PDF by text extraction. Three were unreadable and are refitted to the paper's Table 12 (batch.json, viscosity.reconstructed); check them against Fluegel's spreadsheet when it can be fetched."
+      "caution": "Coefficients are as printed in the PDF's text layer (read again 2026-10-20, JBK-1002); with them the bench reproduces Table 12 for all five standards within 0.5 °C. An earlier machine reading had the CaO term at 10^1.5 wrong (−16.843, a neighbouring cell, for −17.453) and three entries unreadable. The bench adds an Al2O3×MgO correction of its own, fitted to SciGlass (JBK-1011); it is labelled as not Fluegel's."
     },
     {
       "id": "fluegel-melt-density-2008", "kind": "method", "short": "Fluegel et al. melt density",
@@ -639,8 +640,9 @@
       "provides": "Melt density at 1000–1400 °C as a function of mol% composition (Table 2), fitted to SciGlass data for glasses above 40 mol% silica.",
       "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-melt-density-2008", "stage": "batch" }],
-      "caution": "A melt model. The bench scales its 1200 °C value to 2.50 g/cm³ for float glass, one contraction factor for every batch."
+      "would": "Melt density at working temperatures, should a stage need the hot glass's weight. The bench used it for room-temperature density until JBK-1003 (scaled to 2.50 g/cm³ for float glass, it ran a median 0.05 g/cm³ light) and now uses a SciGlass fit instead.",
+      "usedBy": [],
+      "caution": "A melt model, not a room-temperature one."
     },
     {
       "id": "appen-fluegel", "kind": "method", "short": "Appen expansion factors",

@@ -153,6 +153,14 @@ export function batchStage({ colorOf, onLamp }) {
     // viscosity
     const v = p.viscosity, items = [svgEl('path', { d: vcurve(v, 1.5, 12), class: 'ln bold' }), svgEl('path', { d: vcurve(v, VY0, 1.5), class: 'ln' }), svgEl('path', { d: vcurve(v, 12, VY1), class: 'ln' })];
     for (const [L, T] of b.isokoms(mol)) if (T >= VX0 && T <= VX1) items.push(svgEl('circle', { cx: V.sx(T), cy: V.sy(L), r: 5, class: 'ring' }));
+    // Fluegel as published, faint and dashed, wherever the SciGlass alumina–magnesia term moves the curve.
+    const shift = Math.max(...b.LEVELS.map((L) => Math.abs(b.correction(mol, L))));
+    if (shift >= 2) {
+      const fv = b.fluegelViscosity(mol), x1 = V.box.W - V.box.R, y = V.box.T + 14;
+      items.unshift(svgEl('path', { d: vcurve(fv, 1.5, 12), class: 'ln faint dash' }),
+        svgEl('line', { x1: x1 - 30, x2: x1, y1: y, y2: y, class: 'ln faint dash' }),
+        svgEl('text', { x: x1 - 38, y: y + 4, class: 'lab faint', 'text-anchor': 'end' }, 'Fluegel as published'));
+    }
     for (const [id, L] of POINTS) {
       const T = p[id]; if (!(T >= VX0 && T <= VX1)) continue;
       items.push(svgEl('circle', { cx: V.sx(T), cy: V.sy(L), r: 2.6, class: 'dot' }),
@@ -196,8 +204,12 @@ export function batchStage({ colorOf, onLamp }) {
       ['iron as Fe²⁺', `${Math.round(p.ferrous * 100)}%`, p.ferrous],
     ]);
 
-    const molSi = mol.SiO2, warn = molSi < 43 || molSi > 89 || mol.B2O3 > 17 || mol.Al2O3 > 10
-      ? ' This batch is outside the glasses the viscosity model was fitted to, so its curve is a guess.' : '';
+    const molSi = mol.SiO2, R2O = mol.Na2O + mol.K2O;
+    const warn = molSi < 43 || molSi > 89 || mol.B2O3 > 17 || mol.Al2O3 > 10
+      ? ' This batch is outside the glasses the viscosity model was fitted to, so its curve is a guess.'
+      : mol.Al2O3 >= 2 && mol.Al2O3 > 0.5 * R2O
+        ? ' This batch carries more than half as much alumina as alkali. SciGlass melts like it are stiffer than even the corrected model, by a median 13 °C at the annealing end and 37 °C at the melting end: alumina is taking up the alkali that keeps the network broken, and the model\'s terms do not follow that to its end.'
+        : '';
     const lead = touched ? ROLE[touched] : preset ? b.PRESET[preset].about : '';
     const cmp = preset === 'float' && !touched ? 'Window glass, the reference for everything below.'
       : `Against window glass its melting point moves ${signed(p.melting - base.melting)} °C, its annealing point ${signed(p.annealing - base.annealing)} °C, its working range ${signed(p.range - base.range)} °C and its index ${signed(p.nd - base.nd, 3)}.`;
