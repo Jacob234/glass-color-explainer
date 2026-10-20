@@ -67,7 +67,9 @@ for (const run of RUNS) {
   });
   console.log(run.id, sum.density.toFixed(3), 'g/cm³', sum.qn.map((q) => q.toFixed(3)).join(' '));
 }
-writeFileSync(join(root, 'src/data/glass3d.json'), JSON.stringify(index, null, 2) + '\n');
+// two-space JSON, but arrays of numbers (and the cooling curve's pairs) kept on one line
+const pretty = JSON.stringify(index, null, 2).replace(/\[[\d\s.,\-\[\]]*\]/g, (m) => m.replace(/\s+/g, ' ').replace(/\[ /g, '[').replace(/ \]/g, ']'));
+writeFileSync(join(root, 'src/data/glass3d.json'), pretty + '\n');
 
 function roundAll(v) {
   if (typeof v === 'number') return +v.toFixed(4);

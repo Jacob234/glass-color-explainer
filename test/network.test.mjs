@@ -62,3 +62,14 @@ test('the shipped glasses are what their labels say', () => {
     assert.ok(Math.abs(sum.density - d.measured.density) < 0.15, `${f}: ${sum.density}`);
   }
 });
+
+test('the statistics in glass3d.json are what network.js computes from the shipped positions', () => {
+  const index = JSON.parse(readFileSync(new URL('../src/data/glass3d.json', import.meta.url)));
+  for (const run of index.runs) {
+    const d = JSON.parse(readFileSync(new URL(`../src/data/glass3d/${run.id}.json`, import.meta.url)));
+    const sum = net.summarize(net.decode(d));
+    assert.ok(Math.abs(sum.density - run.summary.density) < 1e-3, run.id);
+    sum.qn.forEach((q, n) => assert.ok(Math.abs(q - run.summary.qn[n]) < 1e-3, `${run.id} Q${n}`));
+    for (const [k, v] of Object.entries(run.summary.rings)) assert.ok(Math.abs(sum.rings[k] - v) < 1e-3, `${run.id} ${k}-rings`);
+  }
+});

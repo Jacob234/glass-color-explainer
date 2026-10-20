@@ -17,6 +17,7 @@
     "lightlab": "light lab",
     "forminglab": "forming lab",
     "structurelab": "structure lab",
+    "networklab": "network lab",
     "concepts": "concept pages",
     "eyes": "09′ showroom, other eyes"
   },
@@ -422,7 +423,7 @@
       "provides": "The continuous random network picture of oxide glass and the rules an oxide must obey to form one.",
       "reuse": "cite", "license": "Journal article; no reuse license stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "ja01349a006", "stage": "glass" }]
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "ja01349a006", "stage": "glass" }, { "file": "src/pages/network-lab.astro", "find": "ja01349a006", "stage": "networklab" }]
     },
     {
       "id": "huang-2012", "kind": "measurement", "short": "Huang et al. 2012",
@@ -623,7 +624,7 @@
       "title": "SciGlass",
       "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py).",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py). The Network lab compares its simulated densities with SciGlass medians for silica (258 glasses) and Na₂O·3SiO₂ (100 glasses).",
       "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
       "reuse": "open", "license": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT license. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
       "checked": "2026-10-19",
@@ -631,7 +632,8 @@
         { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
         { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" },
         { "file": "public/data/sciglass/fragility.json", "find": "ODbL", "stage": "fragility" },
-        { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" }
+        { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" },
+        { "file": "scripts/build_glass3d.mjs", "find": "SciGlass", "stage": "networklab" }
       ],
       "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
     },
@@ -868,6 +870,105 @@
       "checked": "2026-10-20",
       "usedBy": [
         { "file": "src/components/Fragility.astro", "find": "science.267.5206.1924", "stage": "fragility" }
+      ]
+    },
+    {
+      "id": "shik-2018", "kind": "method", "short": "SHIK silica potential",
+      "title": "New optimization scheme to obtain interaction potentials for oxide glasses",
+      "by": "S. Sundararaman, L. Huang, S. Ispas and W. Kob", "date": "2018", "edition": "J. Chem. Phys. 148, 194504",
+      "url": "https://doi.org/10.1063/1.5023707",
+      "provides": "The SHIK potential for silica: partial charges and Buckingham-plus-r⁻²⁴ parameters fitted to an ab initio liquid and to the measured glass density and stiffness. The O–O, Si–O and Si–Si terms used for both Network lab glasses.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. The parameters are copied into scripts/md3d/quench.in with this citation.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "10.1063/1.5023707", "stage": "networklab" },
+        { "file": "scripts/md3d/quench.in", "find": "148, 194504", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "shik-2019", "kind": "method", "short": "SHIK alkali silicates",
+      "title": "New interaction potentials for alkali and alkaline-earth aluminosilicate glasses",
+      "by": "S. Sundararaman, L. Huang, S. Ispas and W. Kob", "date": "2019", "edition": "J. Chem. Phys. 150, 154505; arXiv:1811.01284",
+      "url": "https://arxiv.org/abs/1811.01284",
+      "provides": "The sodium terms and charges (Si 1.7755 e, Na 0.6018 e, O by neutrality), their melt–quench protocol at about 2.25 K/ps, and their figure 5 of Qⁿ against Maekawa's NMR, from which the Network lab reads its comparison rows. LAMMPS pair style shik/wolf from github.com/compmatscirpi/SHIK-potential (no license file; compiled for the offline runs, not redistributed).",
+      "reuse": "cite", "license": "arXiv preprint under arXiv's non-exclusive distribution license; journal version has no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "1811.01284", "stage": "networklab" },
+        { "file": "src/data/glass3d.json", "find": "Sundararaman et al. 2019", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "lammps-2022", "kind": "method", "short": "LAMMPS",
+      "title": "LAMMPS: a flexible simulation tool for particle-based materials modeling at the atomic, meso, and continuum scales",
+      "by": "A. P. Thompson et al. (Sandia National Laboratories)", "date": "2022", "edition": "Comput. Phys. Commun. 271, 108171; stable branch, built 2026-10-20",
+      "url": "https://doi.org/10.1016/j.cpc.2021.108171",
+      "provides": "The molecular-dynamics code that ran the four Network lab quenches offline. Only its output (atom positions) ships with the site.",
+      "reuse": "open", "license": "Code GPL-2.0; the site ships no LAMMPS code, only positions it computed.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "j.cpc.2021.108171", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "maekawa-1991", "kind": "measurement", "short": "Maekawa et al. 1991",
+      "title": "The structural groups of alkali silicate glasses determined from ²⁹Si MAS-NMR",
+      "by": "H. Maekawa, T. Maekawa, K. Kawamura and T. Yokokawa", "date": "1991", "edition": "J. Non-Cryst. Solids 127, 53–64",
+      "url": "https://doi.org/10.1016/0022-3093(91)90400-Z",
+      "provides": "Measured Qⁿ fractions in alkali silicate glasses. The Network lab's NMR row (Q³ 62%, Q⁴ 38% at 25 mol% Na₂O) is read from Sundararaman et al. 2019's figure 5, not from this paper's tables.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "90400-Z", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "mozzi-warren-1969", "kind": "measurement", "short": "Mozzi & Warren 1969",
+      "title": "The structure of vitreous silica",
+      "by": "R. L. Mozzi and B. E. Warren", "date": "1969", "edition": "J. Appl. Cryst. 2, 164–172",
+      "url": "https://doi.org/10.1107/S0021889869006868",
+      "provides": "X-ray pair functions of vitreous silica: Si–O 1.62 Å, every O bonded to two Si, Si–O–Si angles from 120° to 180° with the maximum at 144° (from the abstract).",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "S0021889869006868", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "king-1967", "kind": "method", "short": "King 1967 rings",
+      "title": "Ring configurations in a random network model of vitreous silica",
+      "by": "S. V. King", "date": "1967", "edition": "Nature 213, 1112–1113",
+      "url": "https://doi.org/10.1038/2131112a0",
+      "provides": "The shortest-path ring definition that src/scripts/network.js uses to count rings.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "2131112a0", "stage": "networklab" },
+        { "file": "src/scripts/network.js", "find": "King (1967)", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "vollmayr-1996", "kind": "method", "short": "Vollmayr, Kob & Binder",
+      "title": "Cooling-rate effects in amorphous silica: a computer-simulation study",
+      "by": "K. Vollmayr, W. Kob and K. Binder", "date": "1996", "edition": "Phys. Rev. B 54, 15808–15827",
+      "url": "https://doi.org/10.1103/PhysRevB.54.15808",
+      "provides": "MD silica (BKS potential) cooled at many rates: Tg falls logarithmically with rate, and density, ring sizes and bond angles all depend on it, the microscopic quantities more strongly than the macroscopic ones.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "PhysRevB.54.15808", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "greaves-1985", "kind": "method", "short": "Greaves 1985",
+      "title": "EXAFS and the structure of glass",
+      "by": "G. N. Greaves", "date": "1985", "edition": "J. Non-Cryst. Solids 71, 203–217",
+      "url": "https://doi.org/10.1016/0022-3093(85)90289-3",
+      "provides": "The modified random network: alkali ions gathered in channels through the silicate network.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "90289-3", "stage": "networklab" }
       ]
     }
   ],
