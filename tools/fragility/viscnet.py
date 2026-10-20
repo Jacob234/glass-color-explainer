@@ -71,14 +71,34 @@ def predict(model, rows):
     return out
 
 
+def tg_miss(model, melts):
+    """Median |ViscNet Tg − fitted Tg| (K) over the measured melts."""
+    X = np.array([r["mol"] for r in melts])
+    Tg = model.viscosity_parameters(X, OX)["Tg"] - 273.15
+    fit = np.array([g["fit"]["Tg"] for g in FRAG["glasses"]])
+    return float(np.median(np.abs(Tg - fit)))
+
+
 def main(out):
-    import glasspy
+    from importlib.metadata import version
+
     import torch
     from glasspy.predict import ViscNet
 
     torch.manual_seed(0)
     model = ViscNet()
     named, sweeps, melts = compositions()
+    # GlassPy 0.6.0's _BaseViscNet.__init__ sets x_std = x_mean (a typo for x_std), so features are
+    # divided by their means instead of their standard deviations. Score both scalings against the
+    # measured melts and keep the one that reproduces them.
+    as_shipped = tg_miss(model, melts)
+    model.x_std = model.__class__.x_std
+    fixed = tg_miss(model, melts)
+    print(f"median Tg miss against SciGlass fits: as shipped {as_shipped:.1f} K, x_std restored {fixed:.1f} K")
+    scaling = "x_std restored"
+    if as_shipped < fixed:
+        model.x_std = model.__class__.x_mean
+        scaling = "as shipped"
     pn, ps, pm = predict(model, named), predict(model, sweeps), predict(model, melts)
     data = {
         "about": "ViscNet predictions of the MYEGA parameters for the fragility section: log10 η∞ (Pa·s), Tg "
@@ -86,7 +106,8 @@ def main(out):
                  "(mBand, TgBand). named are the bench presets plus silica and B2O3; sweeps add one oxide "
                  "in place of silica to window glass (x in mol%); melts match public/data/sciglass/"
                  "fragility.json by id. Compositions in mol%, in the order of `oxides`.",
-        "model": {"name": "ViscNet", "glasspy": getattr(glasspy, "__version__", "unknown"),
+        "model": {"name": "ViscNet", "glasspy": version("glasspy"), "scaling": scaling,
+                  "tgMissK": {"as shipped": round(as_shipped, 1), "x_std restored": round(fixed, 1)},
                   "cite": "Cassar D.R., ViscNet: neural network for predicting the fragility index and the "
                           "temperature-dependency of viscosity, Acta Materialia 206 (2021) 116602, "
                           "doi:10.1016/j.actamat.2020.116602",

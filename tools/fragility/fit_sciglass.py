@@ -10,8 +10,9 @@ or more) with a viscosity curve long enough to fix its glass transition and its 
 MYEGA (Mauro et al. 2009), temperatures in K, η in Pa·s:
     log10 η = A + (12 − A) (Tg/T) exp[(m/(12 − A) − 1)(Tg/T − 1)]
 Tg is the temperature where η = 10^12 Pa·s, and m = d log10 η / d(Tg/T) at T = Tg, the fragility.
-A curve spanning at least eight decades fits all three parameters. A shorter one fixes
-A = −2.93, the high-temperature limit Zheng et al. (2011) found common to silicate liquids.
+A is fixed at −2.93, the high-temperature limit Zheng et al. (2011) found common to silicate
+liquids, so every melt is fitted for Tg and m alone. Left free, A wanders to −6 on curves that stop
+short of the melting end, and m moves with it; fixing it keeps the fitted m comparable.
 
 Needs pandas and scipy. The output is a derived database under ODbL 1.0; keep its `licence` block.
 """
@@ -40,19 +41,11 @@ def myega(T, A, Tg, m):
 
 
 def fit(L, T):
-    """Least-squares MYEGA through points (log10 η Pa·s, T K). Returns A, Tg, m, rms, free."""
-    free = L.max() - L.min() >= 8
+    """Least-squares MYEGA through points (log10 η Pa·s, T K), A fixed. Returns Tg, m, rms."""
     Tg0 = float(np.clip(np.interp(12, L, T) if L.max() >= 12 else T.min() * 0.95, 301, 1999))  # L rises along the curve
-    if free:
-        r = least_squares(lambda p: myega(T, *p) - L, [A_FIXED, Tg0, 35],
-                          bounds=([-8, 300, 14.5], [2, 2000, 150]))
-        A, Tg, m = r.x
-    else:
-        r = least_squares(lambda p: myega(T, A_FIXED, *p) - L, [Tg0, 35],
-                          bounds=([300, 14.5], [2000, 150]))
-        (Tg, m), A = r.x, A_FIXED
-    rms = float(np.sqrt(np.mean(r.fun ** 2)))
-    return A, Tg, m, rms, free
+    r = least_squares(lambda p: myega(T, A_FIXED, *p) - L, [Tg0, 35], bounds=([300, 14.5], [2000, 150]))
+    Tg, m = r.x
+    return Tg, m, float(np.sqrt(np.mean(r.fun ** 2)))
 
 
 def main(src, out):
@@ -79,7 +72,7 @@ def main(src, out):
             continue
         L = np.array(Ls, float)
         T = np.array([p[1] for p in pts]) + K
-        A, Tg, m, rms, free = fit(L, T)
+        Tg, m, rms = fit(L, T)
         if rms > 0.15 or not 14.5 < m < 150:
             dropped["misfit"] += 1
             continue
@@ -92,8 +85,7 @@ def main(src, out):
             "id": f"{kod}-{int(row['GLASNO'])}", "src": kod,
             "mol": [round(float(row[k]), 2) for k in ids],
             "visc": [[l, round(t - K, 1)] for l, t in zip(L.tolist(), T.tolist())],
-            "fit": {"logEtaInf": round(float(A), 2), "Tg": round(float(Tg - K), 1), "m": round(float(m), 1),
-                    "rms": round(rms, 3), "free": bool(free)},
+            "fit": {"logEtaInf": A_FIXED, "Tg": round(float(Tg - K), 1), "m": round(float(m), 1), "rms": round(rms, 3)},
         })
 
     used = sorted({g["src"] for g in glasses})
@@ -101,8 +93,8 @@ def main(src, out):
         "about": "Measured melts from SciGlass made only of the stage 01 bench's oxides, each with a MYEGA "
                  "fit to its viscosity curve. mol lists mol% in the order of `oxides`; visc lists [log10 "
                  "viscosity in Pa·s, temperature °C]; fit gives log10 η∞ (Pa·s), Tg (°C, where η = 10^12 "
-                 "Pa·s), fragility m and the rms misfit in decades; free is false where log10 η∞ was "
-                 f"fixed at {A_FIXED}. src keys `sources`, each [short citation, full citation].",
+                 "Pa·s), fragility m and the rms misfit in decades, with log10 η∞ "
+                 f"fixed at {A_FIXED} (Zheng et al. 2011). src keys `sources`, each [short citation, full citation].",
         "licence": {
             "name": "ODbL 1.0",
             "url": "https://opendatacommons.org/licenses/odbl/1-0/",
