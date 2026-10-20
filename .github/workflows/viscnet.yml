@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # to start CI on the commit it pushes, which GITHUB_TOKEN pushes would not trigger
 
 concurrency:
   group: viscnet-${{ github.ref }}
@@ -49,3 +50,6 @@ jobs:
           git commit -m "Update ViscNet predictions (tools/fragility/viscnet.py)"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+          gh workflow run ci.yml --ref "${GITHUB_REF_NAME}"
+        env:
+          GH_TOKEN: ${{ github.token }}
