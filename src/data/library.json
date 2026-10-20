@@ -5,6 +5,7 @@
     "lamps": "lamp switch",
     "glass": "00 what glass is",
     "batch": "01 batch",
+    "fragility": "02′ melt, long and short",
     "ions": "03 color rod",
     "heat": "04 glory hole",
     "strike": "05 reheat",
@@ -591,13 +592,14 @@
       "title": "SciGlass",
       "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs).",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py).",
       "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
       "reuse": "open", "license": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT license. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
       "checked": "2026-10-19",
       "usedBy": [
         { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
         { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" },
+        { "file": "public/data/sciglass/fragility.json", "find": "ODbL", "stage": "fragility" },
         { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" }
       ],
       "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
@@ -786,6 +788,56 @@
       "reuse": "unknown", "license": "No terms stated on the site. A few compositions are quoted with citation.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-glasses", "stage": "batch" }]
+    },
+    {
+      "id": "viscnet-2021", "kind": "method", "short": "ViscNet (Cassar 2021)",
+      "title": "ViscNet: Neural network for predicting the fragility index and the temperature-dependency of viscosity",
+      "by": "Daniel R. Cassar", "date": "2021", "edition": "Acta Materialia 206, 116602; arXiv 2007.03719; run through GlassPy 0.6.0 (github.com/drcassar/glasspy)",
+      "url": "https://doi.org/10.1016/j.actamat.2020.116602",
+      "provides": "A small neural network (35 composition features, two hidden layers) that outputs the three MYEGA parameters, log10 η∞, Tg and fragility m, trained on SciGlass viscosity data. The fragility stage's curves for the bench presets, silica, B2O3, one-oxide sweeps and 834 measured melts come from it, precomputed in a GitHub Actions job (tools/fragility/viscnet.py).",
+      "reuse": "cite", "license": "Paper: journal article (preprint on arXiv). GlassPy code and the trained weights (Zenodo 13625981): GPL-3.0-or-later. The site ships only numbers computed with them, not the code or weights.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "public/data/viscnet.json", "find": "ViscNet", "stage": "fragility" },
+        { "file": "src/components/Fragility.astro", "find": "ViscNet (Cassar 2021)", "stage": "fragility" }
+      ],
+      "caution": "GlassPy 0.6.0 divides the features by their means instead of their standard deviations (_BaseViscNet sets x_std = x_mean); the script restores the standard deviations, which cuts the median Tg miss against the measured fits from 53 to 22 K. Pure silica is still badly wrong: Tg about 650 °C too low. ViscNet was trained on SciGlass, so comparing it with SciGlass melts is not an independent test."
+    },
+    {
+      "id": "myega-2009", "kind": "method", "short": "MYEGA (Mauro et al. 2009)",
+      "title": "Viscosity of glass-forming liquids",
+      "by": "John C. Mauro, Yuanzheng Yue, Adam J. Ellison, Prabhat K. Gupta, Douglas C. Allan", "date": "2009", "edition": "PNAS 106(47), 19780–19784",
+      "url": "https://doi.org/10.1073/pnas.0911705106",
+      "provides": "The three-parameter viscosity equation every curve in the fragility stage uses: log10 η in terms of η∞, Tg and fragility m, derived from Adam–Gibbs with a temperature-dependent count of topological constraints.",
+      "reuse": "cite", "license": "Journal article; the equation is quoted with citation.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/scripts/fragility.js", "find": "MYEGA (Mauro et al. 2009)", "stage": "fragility" }
+      ]
+    },
+    {
+      "id": "zheng-2011", "kind": "measurement", "short": "Zheng et al. 2011",
+      "title": "Universality of the high-temperature viscosity limit of silicate liquids",
+      "by": "Qiuju Zheng, John C. Mauro, Adam J. Ellison, Marcel Potuzak, Yuanzheng Yue", "date": "2011", "edition": "Physical Review B 83, 212202",
+      "url": "https://doi.org/10.1103/PhysRevB.83.212202",
+      "provides": "The finding that silicate liquids share a high-temperature viscosity limit, log10 η∞ ≈ −2.93 Pa·s (value confirmed in secondary citations, e.g. Cassetta et al. 2021, Sci. Rep.). The fragility stage holds η∞ at this value in its fits to SciGlass melts and in its fixed-Tg working-range plot.",
+      "reuse": "cite", "license": "Journal article; the value is quoted with citation.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/scripts/fragility.js", "find": "Zheng et al. (2011)", "stage": "fragility" }
+      ]
+    },
+    {
+      "id": "angell-1995", "kind": "reference", "short": "Angell 1995",
+      "title": "Formation of glasses from liquids and biopolymers",
+      "by": "C. Austen Angell", "date": "1995", "edition": "Science 267(5206), 1924–1935",
+      "url": "https://doi.org/10.1126/science.267.5206.1924",
+      "provides": "The strong–fragile classification of liquids and the plot of log viscosity against Tg/T that the fragility stage draws.",
+      "reuse": "cite", "license": "Journal article; cited only.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Fragility.astro", "find": "science.267.5206.1924", "stage": "fragility" }
+      ]
     }
   ],
   "gaps": [
