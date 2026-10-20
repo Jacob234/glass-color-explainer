@@ -1,0 +1,57 @@
+---
+// The showroom, other eyes: the same glass under the same lamp, seen by different observers.
+// The instruments live in scripts/eyes.js; the physics in scripts/observers.js; the tables in
+// data/observers.json (built by scripts/build_observers.py).
+import '../styles/observers.css';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<section class="wrap stage eyes" id="eyes">
+  <div class="stage-rail"><div class="stage-num">09′</div><span class="mono">the showroom, other eyes</span></div>
+  <div class="stage-body">
+    <h2>Color is a fact about an <i>eye</i></h2>
+    <div class="prose">
+      <p>Every color on this page so far was computed for one eye: the CIE 1931 standard observer, an average of seventeen people who matched colors in two English laboratories in the 1920s, ten for William Wright and seven for John Guild. Nobody has exactly that eye. The lens yellows with age and soaks up blue before it reaches the retina. A yellow pigment over the center of the retina, the macula, filters the middle of what you look at but not the edges. About one man in twelve of northern European descent has some red–green color deficiency, and something like one in forty is missing a cone type altogether (surveys differ).</p>
+      <p>The lamp switch at the foot of the page changes the light. This stage keeps the light and changes the eye. The left half of each piece is the page's eye; the right half is the eye you pick.</p>
+    </div>
+    <div class="bench bench-top">
+      <div class="eye-table" id="eyeTable" role="group" aria-label="the light-table glass, each piece split: left, the page's eye; right, the chosen eye"></div>
+      <div class="controls">
+        <div class="chips" id="eyePick" role="group" aria-label="the eye"></div>
+        <div class="ctl" id="ageCtl"><label class="mono" for="eyeAge">age <output id="eyeAgeOut"></output></label>
+          <input id="eyeAge" type="range" min="20" max="80" value="70" /><div class="ends"><span>20</span><span>80</span></div></div>
+        <div class="ctl" id="fieldCtl"><label class="mono" for="eyeField">field of view <output id="eyeFieldOut"></output></label>
+          <input id="eyeField" type="range" min="2" max="10" step="1" value="2" /><div class="ends"><span>a fingernail at arm's length</span><span>a fist</span></div></div>
+        <p class="readout" id="eyeRead" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>A match belongs to an eye <i>and</i> a lamp</h3>
+      <div class="prose">
+        <p>Two glasses with different spectra can look identical. That is a metamer, and the rack stage showed how many melts can hide behind one swatch. Here each glass is paired with a smooth-spectrum twin computed to match it exactly for the page's eye in daylight. Then the eye changes, or the lamp does, and the question is whether the match survives.</p>
+        <p>It mostly survives a change of eye, and it often fails a change of lamp. Eyes differ by smooth filters, the lens and macula, in front of broad cone curves, so a trichromat's eye changes the weights of a match only a little. A lamp can be made of a few narrow lines, and a glass like neodymium has narrow bands of its own, so the two spectra can disagree where the lamp puts all its light. A dichromat accepts every match a trichromat makes: if the three cone signals are equal, any two of them are.</p>
+      </div>
+      <div class="bench bench-top">
+        <div>
+          <div class="twin-pair">
+            <div class="pane" id="twinGlass"><b id="twinGlassTag">the glass</b></div>
+            <div class="pane" id="twinSmooth"><b>its smooth twin</b></div>
+          </div>
+          <canvas class="eye-plot" id="eyePlot" role="img" aria-label="transmission of the glass and its twin, with the chosen eye's three sensitivity curves"></canvas>
+          <div class="strip-key"><span>380 nm</span><span id="plotKey">filled: the glass · dashed: its twin · lines: the eye</span><span>780 nm</span></div>
+        </div>
+        <div class="controls">
+          <div class="chips" id="twinPick" role="group" aria-label="glass"></div>
+          <table class="splits" id="splits" aria-describedby="twinRead">
+            <caption class="mono">how far the pair splits (CIEDE2000)</caption>
+          </table>
+          <p class="readout" id="twinRead" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+
+    <p class="aside"><b>Model.</b> The 1931 eye is the page's analytic fit to the CIE 2° functions; the 1964 eye is the CIE 10° table. The cone eyes are the CIE 2006 physiological model built from its parts, as CIE 170-1:2006 specifies: photopigment absorbance, peak pigment density falling with field size, macular density 0.485·e<sup>−f/6.132</sup>, and lens density growing with age by the Pokorny–Smith–Lutze formula (valid 20 to 80). Dichromats are that eye with one cone signal replaced by Brettel, Viénot and Mollon's two-half-plane rule, a model of how dichromats' colors look to trichromats that rests on reports from people with one color-deficient eye. To draw another eye's experience on a screen made for the standard eye, each eye is taken to be fully adapted to its own lens and macula, which change over decades, and partly adapted to the lamp, as everywhere on the page; the screen shows the color that would give the standard eye the same adapted cone signals. Werner and Schefrin (1993) found that the white point of 50 observers aged 11 to 78 did not shift with age, which is the full-adaptation assumption's best support. The twins are fitted to the colors a screen can show, so for a piece outside sRGB, such as cobalt, the match is a match of what is drawn.</p>
+    <p class="aside"><b>What the numbers say.</b> Between trichromats the pairs split by about 0 to 3 units, where 1 is a just-noticeable difference side by side, and neodymium under the tri-phosphor tube splits most. Change the lamp from daylight to that tube and the page's own eye splits the neodymium pair by about 20. So for glass, the lamp matters far more than whose eye it is, and the large effects of the eye are a missing cone, or the slow fade of blue with age, which adaptation mostly hides. The CIE 2006 eye at 32 already differs from the 1931 eye in the blue, where the 1931 functions are known to be too weak (Judd corrected them in 1951).</p>
+    <p class="aside"><b>Sources.</b> <a href="https://doi.org/10.25039/CIE.DS.sqksu2n5" rel="noopener">CIE 1964 10° observer</a> · <a href="https://cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1" rel="noopener">CIE 170-1:2006</a> · <a href="https://doi.org/10.1371/journal.pone.0145671" rel="noopener">Asano, Fairchild &amp; Blondé 2016</a> · <a href="https://doi.org/10.1364/JOSAA.14.002647" rel="noopener">Brettel, Viénot &amp; Mollon 1997</a> · <a href="https://doi.org/10.1364/JOSAA.10.001509" rel="noopener">Werner &amp; Schefrin 1993</a> · <a href={`${base}/library/`}>all sources</a></p>
+  </div>
+</section>
