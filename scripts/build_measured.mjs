@@ -5,9 +5,9 @@
 // The reference amount (c = 1) is the amount whose daylight color comes closest (CIEDE2000) to the
 // color the drawn curve gave at c = 1, so recipes, the mixing lab and the rack fitter keep their
 // scale, and what difference is left comes from the shape of the measured curve. `match` records
-// that target color, read once from the drawn curve. A 'bands' entry's amount is rounded to two
-// significant figures and kept as a stated physical amount; a 'digitized' entry's scale is kept as
-// computed (its units are arbitrary).
+// that target color, read once from the drawn curve. A 'bands' entry's amount, and a calibrated
+// 'digitized' entry's, is rounded to two significant figures and kept as a stated physical amount;
+// an uncalibrated 'digitized' entry's scale is kept as computed (its units are arbitrary).
 // Run: node scripts/build_measured.mjs [--check]   (--check: fail if optics.json is out of date)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -31,23 +31,24 @@ for (const [id, e] of Object.entries(measured.colorants)) {
   const c = optics.colorants.find((x) => x.id === id);
   if (!c) throw new Error(`measured colorant ${id} is not in optics.json`);
   if (e.match === undefined) {
-    if (c.basis) throw new Error(`${id}: match missing but optics.json already carries the measured curve`);
-    e.match = f.linToHex(lin(s.colorantDensity(c, optics.wavelengths)));
+    if (c.basis && c.basis !== 'illustrative') throw new Error(`${id}: match missing but optics.json already carries the measured curve`);
+    e.match = f.linToHex(lin(s.densityOnGrid(optics.wavelengths, c.absorbance))); // the drawn curve, not a model
     changed = true;
   }
   const unit = m.unitDensity(id), dens = (k) => s.GRID.map((w) => k * unit(w));
-  if ((e.kind === 'bands' ? e.amount : e.scale) === undefined) {
+  const abs = m.isAbsolute(e);
+  if ((abs ? e.amount : e.scale) === undefined) {
     const target = f.hexToLab(e.match), err = (x) => f.deltaE00(target, f.linToLab(lin(dens(Math.exp(x)))));
     let a = Math.log(1e-3), b = Math.log(100); // golden-section search on log(amount)
     const g = (Math.sqrt(5) - 1) / 2;
     for (let i = 0; i < 90; i++) { const x1 = b - g * (b - a), x2 = a + g * (b - a); if (err(x1) < err(x2)) b = x2; else a = x1; }
     const k = Math.exp((a + b) / 2);
-    if (e.kind === 'bands') e.amount = sig2(k); else e.scale = Number(k.toFixed(3));
+    if (abs) e.amount = sig2(k); else e.scale = Number(k.toFixed(3));
     changed = true;
   }
-  const k = e.kind === 'bands' ? e.amount : e.scale;
+  const k = abs ? e.amount : e.scale;
   const coarse = optics.wavelengths.map((w) => Number((1 - 10 ** -(k * unit(w))).toFixed(3)));
-  const basis = e.kind === 'bands' ? 'measured' : 'measured-shape';
+  const basis = abs ? 'measured' : 'measured-shape';
   if (JSON.stringify(c.absorbance) !== JSON.stringify(coarse) || c.basis !== basis || c.source !== e.source) {
     c.absorbance = coarse; c.basis = basis; c.source = e.source;
     changed = true;
@@ -72,7 +73,7 @@ if (check) {
   let t = readFileSync(path('src/data/measured.json'), 'utf8');
   for (const [id, e] of Object.entries(measured.colorants)) {
     const head = new RegExp(`("${id}": \\{\\s*"kind": "[^"]*", "source": "[^"]*",)( "match": "#[0-9a-f]+",)?( "(?:amount|scale)": [\\d.e-]+,)?`);
-    t = t.replace(head, `$1 "match": "${e.match}", "${e.kind === 'bands' ? 'amount' : 'scale'}": ${e.kind === 'bands' ? e.amount : e.scale},`);
+    t = t.replace(head, `$1 "match": "${e.match}", "${m.isAbsolute(e) ? 'amount' : 'scale'}": ${m.isAbsolute(e) ? e.amount : e.scale},`);
   }
   writeFileSync(path('src/data/measured.json'), t);
   console.log('wrote optics.json and measured.json');

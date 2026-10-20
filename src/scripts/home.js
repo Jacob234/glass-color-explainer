@@ -242,7 +242,7 @@ const ROD_NOTES = {
   cobalt: 'Co²⁺ absorbs across yellow, orange and red in three overlapping bands, near 534, 596 and 640 nm in soda glass. A tiny amount is enough: cobalt is among the strongest colorants in glass.',
   copper: 'Cu²⁺ absorbs a broad band in the red and near infrared, leaving turquoise to blue.',
   chromium: 'Chromium sits in glass in two valences. Cr⁶⁺ takes the violet edge; Cr³⁺ takes a shoulder in the blue and a band in the orange-red with narrow dips at 633 and 682 nm. Between them a green window gets through. Chrome greens are an industrial color of the later 19th century; older bottle green is iron.',
-  manganese: "Mn³⁺ absorbs in the green and lets red and blue through: amethyst. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
+  manganese: "Mn³⁺ absorbs a broad band centered near 485 nm, in the blue-green, with a weaker shoulder near 650 nm. What gets through is mostly red with a little violet, so soda-lime manganese glass reads rose to wine rather than blue-violet. Glassmakers used it as 'glassmaker's soap' to cancel iron's green.",
   neodymium: 'Nd³⁺ absorbs in narrow bands, the strongest at 583 nm in the yellow and a weaker one at 525 nm in the green. Daylight leaves lilac; switch the lamp to the fluorescent tube and the same rod turns blue-gray (the showroom shows why).',
   'iron-ferrous': 'Fe²⁺ absorbs a broad band in the red and near infrared. This is the green-blue of window edges.',
 };

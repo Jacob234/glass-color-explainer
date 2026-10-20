@@ -56,6 +56,38 @@ test('measured ferric iron is a faint yellow-green, measured copper a pale blue'
 
 test('each basis line names its source and, for absolute curves, the amount at ×1', () => {
   assert.match(m.basisLine('copper'), /Volotinen 2007.*0\.11 mol% Cu²⁺ through 10 mm/);
-  assert.match(m.basisLine('cobalt'), /Meulebroeck et al\. 2016/);
-  assert.match(m.basisLine('manganese'), /^Illustrative/);
+  assert.match(m.basisLine('cobalt'), /Meulebroeck et al\. 2016.*Thiemsorn et al\. 2007.*0\.02 mol% Co²⁺ \(about 0\.025 wt% CoO\) through 10 mm/);
+  assert.match(m.basisLine('chromium'), /0\.11 mol% Cr³⁺.*Cr⁶⁺ is not calibrated/);
+  assert.match(m.basisLine('manganese'), /Thiemsorn et al\. 2007.*mol% Mn³⁺ through 10 mm/);
+  assert.match(m.basisLine('silver-colloid'), /scaled to the color the old drawn curve gave/);
+  assert.match(m.basisLine('gold-colloid'), /^Illustrative/);
+});
+
+test('the ε to per-mol% conversion reproduces float glass: Volotinen Fe²⁺ at 1100 nm is 27 ± 3 L/mol/cm', () => {
+  const eps = m.sigmaBands(measured.colorants['iron-ferrous'].bands, 1100) / (measured.molarDensity.value / 100);
+  near(eps, 26.9, 3, 'ε(Fe²⁺, 1100 nm), Karlsson & Sundberg 26.9');
+});
+
+test("a calibrated trace has the cited absorptivity at its calibration wavelength, at the stated amount", () => {
+  for (const id of ['cobalt', 'chromium']) {
+    const e = measured.colorants[id], { at, epsilon } = e.calibration;
+    near(m.unitDensity(id)(at), epsilon * 0.418, 1e-9, `${id} per mol% at ${at} nm`);
+    near(m.MEASURED_MODELS[id]([at])[0], e.amount * epsilon * 0.418, 1e-9, `${id} at ×1`);
+  }
+});
+
+test('the Mn³⁺ bands give the cited ε at 480 nm, peak in the blue-green, and read rose to wine, not blue-violet', () => {
+  near(m.sigmaBands(measured.colorants.manganese.bands, 480) / 0.418, 122.73, 0.5, 'ε(Mn³⁺, 480 nm)');
+  const d = m.MEASURED_WAVELENGTHS.map((w) => m.sigmaBands(measured.colorants.manganese.bands, w));
+  const peak = m.MEASURED_WAVELENGTHS[d.indexOf(Math.max(...d))];
+  assert.ok(peak >= 480 && peak <= 495, `peak at ${peak} nm`);
+  const lin = s.spectrumColor(s.transmission([[s.colorantDensity(colorant('manganese'), optics.wavelengths), 2]]), DAY).lin;
+  const [, a, b] = linToLab(lin);
+  assert.ok(a > 15 && Math.abs(b) < 15, `a* ${a}, b* ${b}`);
+});
+
+test('cobalt at 0.025 wt% CoO through 10 mm is a full blue, as glassmakers dose it', () => {
+  const lin = s.spectrumColor(s.transmission([[s.colorantDensity(colorant('cobalt'), optics.wavelengths), 1]]), DAY).lin;
+  const [L, , b] = linToLab(lin);
+  assert.ok(b < -60 && L < 60, `L* ${L}, b* ${b}`);
 });

@@ -1,11 +1,13 @@
 // measured-spectra.js — colorant absorption from measurements (src/data/measured.json), on any wavelength grid.
 // Pure functions only: no DOM. Two kinds of entry:
 //   bands      Gaussian bands fitted to measured glasses of known composition and thickness
-//              (Volotinen 2007), in decadic absorbance per cm per mol% of the ion. Absolute: c = 1
-//              is `amount` mol% of the ion through the page's 10 mm reference wall.
+//              (Volotinen 2007; Thiemsorn et al. 2007 for Mn³⁺), in decadic absorbance per cm per
+//              mol% of the ion. Absolute: c = 1 is `amount` mol% of the ion through the 10 mm wall.
 //   digitized  a curve traced from a published figure (Meulebroeck et al. 2016) whose absorbance is
-//              in arbitrary units. Measured shape, unmeasured strength: c = 1 is `scale` times the
-//              traced curve, a scale chosen to keep the old drawn curve's daylight lightness.
+//              in arbitrary units. Measured shape. With a `calibration` (a molar absorptivity ε at one
+//              wavelength, from a melt of known composition) the curve is put in the same absolute
+//              units as bands and c = 1 is `amount` mol%; without one, c = 1 is `scale` times the
+//              traced curve, a scale chosen to keep the old drawn curve's daylight color.
 import data from '../data/measured.json' with { type: 'json' };
 
 const { from, to, step } = data.wavelengths;
@@ -59,19 +61,27 @@ export function cleaned(id) {
   return e.relative.map((v, i) => Math.max(0, v - bg[i]));
 }
 
-// Optical density per unit c (before scaling): relative units for a digitized curve, absorbance
-// per cm per mol% for bands. Returns a function of wavelength.
+// True when c = 1 is a stated amount of the ion (bands, or a calibrated trace), not a fitted scale.
+export const isAbsolute = (e) => e.kind === 'bands' || Boolean(e.calibration);
+
+// ε (L mol⁻¹ cm⁻¹) to absorbance per cm per mol% of the ion.
+export const perMolPercent = (epsilon) => epsilon * data.molarDensity.value / 100;
+
+// Optical density per unit c (before scaling): absorbance per cm per mol% for bands and calibrated
+// traces, relative units for an uncalibrated trace. Returns a function of wavelength.
 export function unitDensity(id) {
   const e = data.colorants[id];
   if (e.kind === 'bands') return (w) => sigmaBands(e.bands, w);
   const ys = cleaned(id);
-  return (w) => sample(ys, w);
+  if (!e.calibration) return (w) => sample(ys, w);
+  const { at, epsilon } = e.calibration, k = perMolPercent(epsilon) / sample(ys, at);
+  return (w) => k * sample(ys, w);
 }
 
 // The factor from unitDensity to the page's reference amount (c = 1 through 10 mm).
 export const referenceFactor = (id) => {
   const e = data.colorants[id];
-  return e.kind === 'bands' ? e.amount * 1 /* cm: the 10 mm reference wall */ : e.scale;
+  return isAbsolute(e) ? e.amount * 1 /* cm: the 10 mm reference wall */ : e.scale;
 };
 
 // Decadic density on a wavelength grid at c = 1, for each measured colorant.
@@ -83,17 +93,28 @@ export const MEASURED_MODELS = Object.fromEntries(Object.keys(data.colorants).ma
 export const measuredEntry = (id) => data.colorants[id];
 export const MEASURED = data;
 
+// The amount at c = 1 as weight percent of the oxide, for a calibrated trace: mol% of the ion times
+// the oxide mass per ion over the mean formula mass of the reference glass (59.8 g/mol). Dilute only.
+export const weightPercent = (id) => {
+  const e = data.colorants[id];
+  return e.calibration ? (e.amount * e.calibration.massPerIon) / 59.8 : undefined;
+};
+
 // One line for the page on where a colorant's curve comes from.
-const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016', 'chimalawong-2010': 'Chimalawong et al. 2010' };
+const CITE = { 'volotinen-2007': 'Volotinen 2007', 'meulebroeck-2016': 'Meulebroeck et al. 2016', 'thiemsorn-2007': 'Thiemsorn et al. 2007', 'chimalawong-2010': 'Chimalawong et al. 2010' };
 const TRACED = {
   'meulebroeck-2016': 'traced from a stained-glass spectrum',
   'chimalawong-2010': 'traced from soda-lime glasses melted with 1–3 mol% Nd₂O₃',
 };
-const ION = { 'iron-ferrous': 'Fe²⁺', 'iron-ferric': 'Fe³⁺', copper: 'Cu²⁺' };
+const ION = { 'iron-ferrous': 'Fe²⁺', 'iron-ferric': 'Fe³⁺', copper: 'Cu²⁺', manganese: 'Mn³⁺' };
 export function basisLine(id) {
   const e = data.colorants[id];
   if (!e) return 'Illustrative curve, drawn from the shape of published spectra.';
+  if (e.kind === 'bands' && e.fit) return `Measured: bands fitted here to a published spectrum of soda-lime glass, scaled by its measured absorptivity (${CITE[e.source]}). ×1 is ${e.amount} mol% ${ION[id]} through 10 mm.`;
   if (e.kind === 'bands') return `Measured: bands fitted to soda-lime glass of known composition (${CITE[e.source]}). ×1 is ${e.amount} mol% ${ION[id]} through 10 mm.`;
   if (e.source === 'chimalawong-2010') return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). ×1 is scaled to the color the old drawn curve gave; read as plotted, that is about ${(e.scale * 0.3).toFixed(1)} mol% Nd₂O₃ through 10 mm.`;
-  return `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}). The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
+  const shape = `Measured shape, ${TRACED[e.source]} (${CITE[e.source]}).`;
+  if (!e.calibration) return `${shape} The paper gives no thickness, so ×1 is scaled to the color the old drawn curve gave.`;
+  const c = e.calibration, wt = Number(weightPercent(id).toPrecision(2));
+  return `${shape} Strength from the absorptivity of ${c.ion} at ${c.at} nm in soda-lime glass (${CITE[c.source]}): ×1 is ${e.amount} mol% ${c.ion} (about ${wt} wt% ${c.oxide}) through 10 mm.${c.caveat ? ' Cr⁶⁺ is not calibrated.' : ''}`;
 }
