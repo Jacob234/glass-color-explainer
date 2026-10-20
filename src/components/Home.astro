@@ -300,10 +300,11 @@ const pins = history.pins.map((p) => {
     <div class="pair">
       <div>
         <h3>Gold, struck</h3>
-        <div class="pane" id="goldPane"><b id="goldTag"></b></div>
+        <div class="pane" id="goldPane"><b id="goldTag"></b><span class="pane-front" title="the same glass lit from the front, against black (brightened 4×)"><i>front-lit</i></span></div>
         <canvas class="strip" id="stripGold" aria-hidden="true"></canvas>
         <div class="ctl"><label class="mono" for="gold">time in the reheat <output id="goldOut"></output></label>
           <input id="gold" type="range" min="0" max="100" value="55" /><div class="ends"><span>straight from the melt</span><span>over-struck</span></div></div>
+        <p class="read-size" id="goldSize"></p>
         <p id="goldRead"></p>
         <p class="more"><a href={page('colloidal-color')}>Read: colloidal color →</a></p>
       </div>
@@ -317,7 +318,7 @@ const pins = history.pins.map((p) => {
         <p class="more"><a href={page('selenium-ruby')}>Read: selenium ruby →</a></p>
       </div>
     </div>
-    <p class="aside"><b>Models.</b> The over-strike is drawn as the gold band shifting about 30 nm to the red and broadening as particles grow and clump, the direction Mie theory gives for larger spheres; the size of the shift is a guess. It computes to a dull purple. Glassmakers also describe over-struck ruby as "livery" and brown, and in one laboratory study (<a href="https://doi.org/10.1007/s10751-006-9246-0" rel="noopener">Haslbeck et al., 2005</a>) fewer, larger particles gave purple-red while tin-rich glasses with many small ones went brown, so the end color depends on the glass; no measured spectrum of over-struck gold ruby has been found to check the model against. The band edge is an idealized step at λ = 1240 / E<sub>g</sub>. Selenium narrows the gap, and very small crystals widen it again (quantum confinement, first recognized in glass by <a href="http://www.jetpletters.ru/ps/1517/article_23187.shtml" rel="noopener">Ekimov and Onushchenko, 1981</a>), which is why the strike temperature matters.</p>
+    <p class="aside"><b>Models.</b> The gold is computed, not drawn. Each particle is a sphere of gold in glass of index 1.5, and Mie's 1908 solution of Maxwell's equations for a sphere gives how much light it absorbs and scatters at each wavelength, from gold's measured optical constants (<a href="https://doi.org/10.1103/PhysRevB.6.4370" rel="noopener">Johnson and Christy, 1972</a>). In particles a few nm across the electrons also collide with the surface, which broadens the band; that correction (Kreibig and Vollmer, 1995) carries an uncertain constant. The schedule is a model: 200 ppm gold (as in Haslbeck's glasses) through 2 mm, a spread of sizes around the median, and radii chosen to span what the physics distinguishes rather than taken from one glass. Two things fall out of it rather than being put in. Over-struck gold goes purple and then blue in transmitted light, the direction <a href="https://doi.org/10.1007/s10751-006-9246-0" rel="noopener">Haslbeck et al. (2005)</a> saw for fewer, larger particles. And the same large particles scatter orange-brown light back toward a viewer, one plausible source of the "livery" look glassmakers describe; the brown Haslbeck found in tin-rich glasses with many small particles is not reproduced, and no measured spectrum of over-struck gold ruby has been found to check either against. The band edge is an idealized step at λ = 1240 / E<sub>g</sub>. Selenium narrows the gap, and very small crystals widen it again (quantum confinement, first recognised in glass by <a href="http://www.jetpletters.ru/ps/1517/article_23187.shtml" rel="noopener">Ekimov and Onushchenko, 1981</a>), which is why the strike temperature matters.</p>
   </div>
 </section>
 

@@ -17,6 +17,7 @@ import * as st from './stress.js';
 import { glassStage } from './stage-glass.js';
 import { basisLine } from './measured-spectra.js';
 import { batchStage } from './stage-batch.js';
+import * as strikeModel from './strike.js';
 
 const COLORANT = Object.fromEntries(optics.colorants.map((c) => [c.id, c]));
 const DENS = Object.fromEntries(optics.colorants.map((c) => [c.id, colorantDensity(c, optics.wavelengths)]));
@@ -689,30 +690,20 @@ function glasses() {
 
 /* ---------- 05 the reheat: struck gold and band-gap crystals ---------- */
 function strike() {
-  const base = DENS['gold-colloid'], sG = $('gold'), sE = $('gap');
-  const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-  // Model: particles form (density rises), then over-strike shifts the band ~30 nm red and broadens it.
-  function goldT(t) {
-    const amount = smooth(0.1, 0.6, t), over = smooth(0.6, 1, t), shift = over * 6, width = 1 + over * 5; // steps of 5 nm
-    const reach = Math.ceil(width * 2);
-    return GRID.map((_, i) => {
-      let sum = 0, norm = 0;
-      for (let k = -reach; k <= reach; k++) {
-        const j = Math.min(GRID.length - 1, Math.max(0, Math.round(i - shift + k))), wt = Math.exp(-0.5 * (k / width) ** 2);
-        sum += wt * base[j]; norm += wt;
-      }
-      return 10 ** -((sum / norm) * (amount * 2.2 + 0.02) * (1 + over * 0.6));
-    });
-  }
+  const sG = $('gold'), sE = $('gap');
+  // Gold ruby from Mie theory (strike.js, mie.js): the slider sets particle size, the color follows.
   const renderGold = () => {
-    const t = sG.valueAsNumber / 100, T = goldT(t);
-    $('goldPane').style.setProperty('--c', tColor(T).css);
-    strip($('stripGold'), T);
-    const lab = t < 0.15 ? 'unstruck' : t < 0.4 ? 'pink' : t < 0.7 ? 'ruby' : 'over-struck';
+    const t = sG.valueAsNumber / 100, g = strikeModel.struck('Au', t), lab = strikeModel.phase(t);
+    $('goldPane').style.setProperty('--c', tColor(g.T).css);
+    $('goldPane').style.setProperty('--front', tColor(g.R.map((v) => Math.min(1, v * 4))).css);
+    strip($('stripGold'), g.T);
     $('goldTag').textContent = lab; $('goldOut').textContent = lab;
-    $('goldRead').textContent = t < 0.15 ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
-      : t < 0.7 ? 'Particles have formed. Their electrons resonate with green light (a surface plasmon) and absorb it; red and some blue pass.'
-      : 'Particles grow and clump. The band shifts toward longer wavelengths and broadens, and the ruby goes dull and purple (a model; real over-struck glass can also go brown).';
+    $('goldSize').textContent = g.p < 0.01 ? 'no particles yet'
+      : `radius ${g.r < 10 ? g.r.toFixed(1) : Math.round(g.r)} nm · ${Math.round(100 * g.p)}% of the gold in particles · ${g.peak ? `band peak ${g.peak} nm` : 'no distinct band'} · ${Math.round(100 * g.scatter)}% of it scattered`;
+    $('goldRead').textContent = lab === 'unstruck' ? 'Gold dissolved as atoms. They absorb almost nothing, so the glass is close to clear.'
+      : lab === 'striking' ? 'Particles are forming. Their electrons resonate with green light (a surface plasmon) and absorb it; red and some blue pass. More gold in particles means a deeper color, not a different one, because small spheres all resonate at the same wavelength.'
+      : lab === 'struck' ? 'All the gold is in particles a few nm across: gold ruby. Particles this small absorb and hardly scatter, so the glass is clear and red.'
+      : 'The particles coarsen. Larger spheres resonate further to the red and broaden, and they start to scatter: the transmitted color goes purple and then blue, while light scattered back toward you (the small square) turns orange-brown.';
   };
   const renderGap = () => {
     const eV = sE.valueAsNumber / 100, edge = 1240 / eV, T = bandEdge(eV);
