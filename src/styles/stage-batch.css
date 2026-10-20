@@ -1,0 +1,9 @@
+/* Stage 01's oxide bench: ink diagrams on the light box; the slab is the only color. */
+.oxides .chips { margin: 0.4rem 0 0.2rem; }
+.oxides .lightbox svg { display: block; width: 100%; height: auto; }
+.ox-sliders { display: grid; gap: 0.35rem; align-content: start; }
+.ox-sliders .ctl label span { text-transform: none; }
+.ox-sliders .meters { margin-bottom: 0.5rem; }
+.oxides .meters { gap: 0.55rem; }
+.oxides .meters dd { font-size: 1.3rem; }
+.oxides .slab-small { max-width: 16rem; margin-top: 1rem; }

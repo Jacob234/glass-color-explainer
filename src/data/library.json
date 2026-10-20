@@ -4,6 +4,7 @@
     "engine": "color engine",
     "lamps": "lamp switch",
     "glass": "00 what glass is",
+    "batch": "01 batch",
     "ions": "03 color rod",
     "heat": "04 glory hole",
     "strike": "05 reheat",
@@ -160,7 +161,7 @@
       "provides": "Elastic, thermal and optical constants of float glass: E = 72 GPa, expansion 8.3 × 10⁻⁶ /°C, density, conductivity, heat capacity, and a rule for reading stress from optical retardation.",
       "reuse": "cite", "licence": "Disclaimer only; no reuse licence stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }],
+      "usedBy": [{ "file": "src/scripts/stress.js", "find": "ATS-129", "stage": "lehr" }, { "file": "src/scripts/stage-batch.js", "find": "ATS-129", "stage": "batch" }],
       "caution": "The 2026 edition gives Poisson's ratio 0.22; the stage uses 0.23 from the 2013 edition and says so (about a 1% difference in stress)."
     },
     {
@@ -542,6 +543,69 @@
       "would": "Tables to test the analytic observer against, and the CIE 2006 cone fundamentals if the page ever explains metamerism from the cones up.",
       "reuse": "unknown", "licence": "\"Provided free of charge as a service to the vision science community\"; no explicit reuse licence.",
       "checked": "2026-10-19", "usedBy": []
+    },
+    {
+      "id": "fluegel-viscosity-2007", "kind": "method", "short": "Fluegel 2007 viscosity",
+      "title": "Glass viscosity calculation based on a global statistical modelling approach",
+      "by": "Alexander Fluegel, Pacific Northwest National Laboratory", "date": "2007", "edition": "Glass Technol.: Eur. J. Glass Sci. Technol. A 48(1), 13–30; author's copy on glassproperties.com",
+      "url": "https://glassproperties.com/viscosity/Viscosity_2006_AFluegel.pdf",
+      "provides": "Isokom temperatures at 10^1.5, 10^6.6 and 10^12 Pa·s as polynomials in mol% composition, fitted to more than 2,200 silicate glasses (about 42–89 mol% SiO2), with the paper's own predictions for standard glasses (Table 12).",
+      "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-viscosity-2007", "stage": "batch" }],
+      "caution": "Coefficients were read from the PDF by text extraction. Three were unreadable and are refitted to the paper's Table 12 (batch.json, viscosity.reconstructed); check them against Fluegel's spreadsheet when it can be fetched."
+    },
+    {
+      "id": "fluegel-melt-density-2008", "kind": "method", "short": "Fluegel et al. melt density",
+      "title": "Density and thermal expansion calculation of silicate glass melts from 1000 °C to 1400 °C",
+      "by": "Alexander Fluegel, David A. Earl, Arun K. Varshneya and Thomas P. Seward III, Alfred University", "date": "2008", "edition": "Phys. Chem. Glasses: Eur. J. Glass Sci. Technol. B 49(5); author's copy on glassproperties.com",
+      "url": "http://glassproperties.com/density/DensityCTE_GlassMelts_2006.pdf",
+      "provides": "Melt density at 1000–1400 °C as a function of mol% composition (Table 2), fitted to SciGlass data for glasses above 40 mol% silica.",
+      "reuse": "cite", "licence": "Journal article, author's copy; no reuse licence stated. Coefficients are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-melt-density-2008", "stage": "batch" }],
+      "caution": "A melt model. The bench scales its 1200 °C value to 2.50 g/cm³ for float glass, one contraction factor for every batch."
+    },
+    {
+      "id": "appen-fluegel", "kind": "method", "short": "Appen expansion factors",
+      "title": "Older thermal expansion models (Appen's factors, as tabulated)",
+      "by": "Alexander Fluegel, after A. A. Appen, Glass Chemistry (1974)", "date": "2007", "edition": "web page on glassproperties.com",
+      "url": "http://glassproperties.com/expansion/Old-Thermal-Expansion-Models.htm",
+      "provides": "Appen's additive factors for the linear expansion coefficient by mol%, including the composition-dependent rules for SiO2, B2O3, PbO and K2O. The page traces additive expansion factors back to Winkelmann and Schott (1894).",
+      "reuse": "unknown", "licence": "No terms stated on the site. Factors are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "appen-fluegel", "stage": "batch" }]
+    },
+    {
+      "id": "young-finn-1940", "kind": "method", "short": "Young & Finn 1940",
+      "title": "Effect of composition and other factors on the specific refraction and dispersion of glasses",
+      "by": "John C. Young and Alfred N. Finn, National Bureau of Standards", "date": "1940", "edition": "J. Res. NBS 25(6), 759",
+      "url": "https://nvlpubs.nist.gov/nistpubs/jres/25/jresv25n6p759_a1b.pdf",
+      "provides": "Specific refraction (n_D − 1)/ρ and specific dispersion (n_F − n_C)/ρ factors for each oxide, additive by weight.",
+      "reuse": "cite", "licence": "US government publication; no licence stated. Factors are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "young-finn-1940", "stage": "batch" }]
+    },
+    {
+      "id": "sack-1980", "kind": "method", "short": "Sack et al. 1980",
+      "title": "Ferric-ferrous equilibria in natural silicate liquids at 1 bar",
+      "by": "Richard O. Sack, Ian S. E. Carmichael, Mark Rivers and Mark S. Ghiorso", "date": "1980", "edition": "Contrib. Mineral. Petrol. 75, 369–376",
+      "url": "https://doi.org/10.1007/BF00374720",
+      "provides": "ln(X_Fe2O3/X_FeO) as a function of oxygen fugacity, temperature and mole-fraction composition (Table 3).",
+      "reuse": "cite", "licence": "Journal article; coefficients quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "sack-1980", "stage": "batch" }],
+      "caution": "Fitted to natural lavas, with less alkali than soda-lime glass and no lead or boron."
+    },
+    {
+      "id": "fluegel-glasses", "kind": "standard", "short": "Typical glass compositions",
+      "title": "Glass compositions: typical commercial glasses",
+      "by": "Alexander Fluegel", "date": "2007", "edition": "web page on glassproperties.com",
+      "url": "http://glassproperties.com/glasses/",
+      "provides": "Typical compositions (mol%) of float, container, borosilicate and other commercial glasses.",
+      "reuse": "unknown", "licence": "No terms stated on the site. A few compositions are quoted with citation.",
+      "checked": "2026-10-19",
+      "usedBy": [{ "file": "src/data/batch.json", "find": "fluegel-glasses", "stage": "batch" }]
     }
   ],
   "gaps": [
