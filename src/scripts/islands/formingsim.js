@@ -64,7 +64,7 @@ export function initFormingSim(root) {
   }
   const side = () => { const col = Math.max(128 * dpr, W * 0.2); return { w: W - col, col }; };
 
-  // Outline of a spheroid of volume-radius r around the gather's centre, in the pipe's frame
+  // Outline of a spheroid of volume-radius r around the gather's center, in the pipe's frame
   // (x along the pipe, away from the blower), bent down by the sag toward the far end.
   function outline(r, droop, cOuter) {
     const c = f.along(g, r) * scale, e = f.across(g, r) * scale, pts = [];

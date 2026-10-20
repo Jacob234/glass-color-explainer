@@ -6,7 +6,7 @@
 // color the drawn curve gave at c = 1, so recipes, the mixing lab and the rack fitter keep their
 // scale, and what difference is left comes from the shape of the measured curve. `match` records
 // that target color, read once from the drawn curve. A 'bands' entry's amount is rounded to two
-// significant figures and kept as a stated physical amount; a 'digitised' entry's scale is kept as
+// significant figures and kept as a stated physical amount; a 'digitized' entry's scale is kept as
 // computed (its units are arbitrary).
 // Run: node scripts/build_measured.mjs [--check]   (--check: fail if optics.json is out of date)
 import { readFileSync, writeFileSync } from 'node:fs';

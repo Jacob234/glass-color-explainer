@@ -1,5 +1,5 @@
 {
-  "note": "Refractive index of clear glasses. Sellmeier: n² = 1 + Σ Bᵢλ²/(λ² − Cᵢ), λ in µm, coef = [B1, C1, B2, C2, B3, C3] (C in µm²). Cauchy: n = A + Bλ² + C/λ², coef = [A, B, C]. nd and vd are the datasheet values, kept to check the formula against. Coefficients copied from the refractiveindex.info database (CC0), which takes the Schott glasses from the SCHOTT Zemax catalogue 2017-01-20b.",
+  "note": "Refractive index of clear glasses. Sellmeier: n² = 1 + Σ Bᵢλ²/(λ² − Cᵢ), λ in µm, coef = [B1, C1, B2, C2, B3, C3] (C in µm²). Cauchy: n = A + Bλ² + C/λ², coef = [A, B, C]. nd and vd are the datasheet values, kept to check the formula against. Coefficients copied from the refractiveindex.info database (CC0), which takes the Schott glasses from the SCHOTT Zemax catalog 2017-01-20b.",
   "glasses": [
     {
       "id": "silica", "label": "fused silica", "family": "pure former", "lead": false,

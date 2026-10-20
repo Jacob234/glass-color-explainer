@@ -54,7 +54,7 @@
     {
       "id": "amber-ish",
       "label": "Amber-ish",
-      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a grey brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this model does not have.",
+      "story": "Ferric iron plus a touch of manganese, through a thick wall. With iron's measured bands this comes out a gray brown, not amber: Fe³⁺ takes some green and red as well as violet. Real beer-bottle amber needs the ferri-sulfide chromophore, which this model does not have.",
       "melt": [
         { "colorant": "iron-ferric", "c": 1 },
         { "colorant": "manganese", "c": 0.12 }

@@ -25,7 +25,7 @@ test('a use found in its file is on the page; one on a PR waits; none at all is 
 });
 
 test('a claimed use that the code no longer cites fails the check', () => {
-  const bad = { sources: [{ id: 'x', title: 't', by: 'b', date: '2000', url: 'https://example.org', provides: 'p', kind: 'datasheet', reuse: 'cite', licence: 'l', checked: '2026-10-19',
+  const bad = { sources: [{ id: 'x', title: 't', by: 'b', date: '2000', url: 'https://example.org', provides: 'p', kind: 'datasheet', reuse: 'cite', license: 'l', checked: '2026-10-19',
     usedBy: [{ file: 'src/scripts/optics-core.js', find: 'no such citation', stage: 'engine' }] }], gaps: [] };
   assert.equal(validateLibrary(bad, read).length, 1);
 });

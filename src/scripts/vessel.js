@@ -1,5 +1,5 @@
 // vessel.js — path lengths through a blown bowl and a pulled cane, for the stage 03 vessel.
-// Pure functions only: no DOM. All lengths are in millimetres. Both objects are solids of
+// Pure functions only: no DOM. All lengths are in millimeters. Both objects are solids of
 // revolution about a vertical (bowl) or horizontal (cane) axis, so the glass a straight ray
 // crosses at offset x from the axis is a difference of chords: 2(√(R² − x²) − √(r² − x²)).
 

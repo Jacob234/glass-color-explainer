@@ -370,7 +370,7 @@ function vessel() {
     $('bowlMeters').replaceChildren(...rows);
     $('wallOut').textContent = `×${blow().toFixed(2)}`;
     $('bowlRead').textContent = cased
-      ? 'Cased: the color is in a skin half a millimetre thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
+      ? 'Cased: the color is in a skin half a millimeter thick, so rim, wall and foot each cross about the same amount of it and the bowl reads as one even tint. The foot, added in clear, carries none.'
       : 'Solid color: the rim is blown thinnest and is palest, and the heavy foot is darkest. The outline darkens too, because there your line of sight runs along the wall instead of across it.';
     $('caneRead').textContent = cased
       ? 'Cased cane is darkest at its edges and palest down the middle, like a tube, because the middle crosses only the skin twice. Cut end on, the color is a ring.'
@@ -517,7 +517,7 @@ function kirchhoff() {
 /* ---------- 04 the glory hole: the glasses ---------- */
 // A pair of safety glasses on the scene. Inside the lenses the scene is drawn again, recolored by
 // each lens's transmission: the room by the lens under the page's lamp, the glowing parts by the lens
-// against a black body, and the sodium flare by the lens at 589 nm. Each is normalised by the
+// against a black body, and the sodium flare by the lens at 589 nm. Each is normalized by the
 // lens's luminous transmission, i.e. after the eye has adapted to the dimmer view.
 const LENS_NOTES = {
   none: 'Without protection the flare is several times brighter than the glass inside it. The gather is hard to make out inside the yellow glare.',
@@ -546,7 +546,7 @@ function glasses() {
   }
   const L = (id) => document.getElementById(`${id}-L`);
 
-  // Per-lens constants. Channel multipliers are in linear sRGB, normalised to unit luminance.
+  // Per-lens constants. Channel multipliers are in linear sRGB, normalized to unit luminance.
   const norm = (m) => { const y = lum(m) || 1; return m.map((v) => Math.min(3, v / y)); };
   const linOf = (v) => [[3.2404542, -1.5371385, -0.4985314], [-0.969266, 1.8760108, 0.041556], [0.0556434, -0.2040259, 1.0572252]]
     .map((r) => Math.max(1e-6, r[0] * v[0] + r[1] * v[1] + r[2] * v[2]));
@@ -726,7 +726,7 @@ function strike() {
 const VIEW_NOTES = {
   plane: 'The dark cross is not unstressed glass. Along it the stress runs parallel and perpendicular to the polarizers, and light polarized along a principal stress passes through unchanged. Switch to circular to remove it.',
   circular: 'Quarter-wave plates on either side make the light circular, so the direction of the stress no longer matters and the cross is gone. Only the size of the stress shows.',
-  tint: 'A full-wave plate makes the empty field magenta, the color that changes fastest with retardation. A few nanometres push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. The ASTM test for glass containers (C148) uses such a plate, nominally 565 nm; the model uses 550 nm.',
+  tint: 'A full-wave plate makes the empty field magenta, the color that changes fastest with retardation. A few nanometers push it toward blue where the stress lies along the plate\'s axis and toward yellow where it lies across, so even well-annealed glass shows. The ASTM test for glass containers (C148) uses such a plate, nominally 565 nm; the model uses 550 nm.',
 };
 const RATE = (v) => 0.3 * 1000 ** (v / 1000); // °C per minute, log slider
 const G_MAX = 12000, G_STEP = 2, T_MAX = 3000, T_STEP = 10, T_PHI = 24; // nm, nm, nm, nm, angle bins over 180°
@@ -771,8 +771,8 @@ function lehr() {
   }
   const put = (px, o, c) => { px[o] = 255 * encode(c[0]); px[o + 1] = 255 * encode(c[1]); px[o + 2] = 255 * encode(c[2]); px[o + 3] = 255; };
 
-  // The light table from above: the scene is X mm either side of the disc's centre.
-  const X = 80, Y = 50, R = st.FOOT.R, pos = { x: 18, y: -6 }, AR = 40; // analyzer centre and radius, mm
+  // The light table from above: the scene is X mm either side of the disc's center.
+  const X = 80, Y = 50, R = st.FOOT.R, pos = { x: 18, y: -6 }, AR = 40; // analyzer center and radius, mm
   const open = document.createElement('canvas'), shut = document.createElement('canvas');
   const state = () => {
     const rate = RATE(sCool.valueAsNumber), d = sThick.valueAsNumber;
@@ -800,7 +800,7 @@ function lehr() {
     ctx.save(); ctx.beginPath(); ctx.arc(sx(pos.x), sy(pos.y), AR * s, 0, 2 * Math.PI); ctx.clip(); ctx.drawImage(shut, 0, 0); ctx.restore();
     ctx.lineWidth = dpr; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(sx(0), sy(0), R * s, 0, 2 * Math.PI); ctx.stroke();
     an.style.left = `${(sx(pos.x) / w) * 100}%`; an.style.top = `${(sy(pos.y) / hh) * 100}%`; an.style.width = `${((2 * AR * s) / w) * 100}%`;
-    an.setAttribute('aria-valuetext', `second polarizer ${Math.round(Math.hypot(pos.x, pos.y))} mm from the centre of the foot`);
+    an.setAttribute('aria-valuetext', `second polarizer ${Math.round(Math.hypot(pos.x, pos.y))} mm from the center of the foot`);
   }
 
   // The foot through its edge: a ray at offset x crosses the whole chord at height z.
@@ -841,7 +841,7 @@ function lehr() {
       row('rim, face on · retardation', `${rim < 10 ? rim.toFixed(1) : Math.round(rim)} nm`, rim / 6),
       row(`${st.GLASS.anneal} → ${st.GLASS.strain} °C takes`, time, mins / 6));
     const state_ = rim < 3 ? `Annealed. Face on, ${rim.toFixed(1)} nm of retardation at the rim is far less than a wavelength, so between crossed polarizers the foot is nearly as dark as the field around it.`
-      : rim < 150 ? 'Low stress: first-order grey and white, brightest at the rim, where the hoop stress differs most from the radial.'
+      : rim < 150 ? 'Low stress: first-order gray and white, brightest at the rim, where the hoop stress differs most from the radial.'
       : rim < 450 ? 'The rim has reached first-order yellow and orange. Rings of equal color are lines of equal retardation, and they crowd toward the rim because the stress there grows as the square of the radius.'
       : 'Past first-order red into blue at the rim. Each repeat of the colors is another wavelength of retardation: this piece holds substantial stress.';
     const sodium = lamp.id === 'sodium' ? ' Under the sodium lamp there is only one wavelength, so the colors collapse into light and dark rings. Each dark ring is one more 589 nm of retardation: count them and you have measured the stress.' : '';
@@ -903,7 +903,7 @@ function rack() {
   const MECH = [['all', 'everything'], ['ions', 'ions'], ['colloids', 'metal colloids'], ['bandgap', 'semiconductors'], ['structure', 'structure'], ['unknown', 'unclassified']];
   const MECH_NOTE = { ions: 'ions', colloids: 'metal colloid', bandgap: 'semiconductor', structure: 'structural', unknown: 'mechanism not published' };
   const SHELVES = [['reds', 345, 15], ['ambers & browns', 15, 45], ['yellows', 45, 70], ['greens', 70, 160], ['teals', 160, 195], ['blues', 195, 250], ['violets', 250, 290], ['pinks', 290, 345]];
-  const NEUTRAL = 'whites, greys & blacks', names = [...SHELVES.map((x) => x[0]), NEUTRAL];
+  const NEUTRAL = 'whites, grays & blacks', names = [...SHELVES.map((x) => x[0]), NEUTRAL];
   const hsl = (hex) => {
     const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
     const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
@@ -1148,7 +1148,7 @@ function historyRail() {
   pick(history.pins[0].id);
 
   // Lanes: the build guesses them from a nominal label width; here they are redone from the
-  // measured labels, so neighbours never overlap at any width. A tick's year hides under a stem.
+  // measured labels, so neighbors never overlap at any width. A tick's year hides under a stem.
   const rail = box.querySelector('.hist-rail'), pinEls = [...rail.querySelectorAll('.pin')], ticks = [...rail.querySelectorAll('.hist-tick')];
   const pct = (el) => parseFloat(el.style.getPropertyValue('--x')) / 100;
   const lanes = () => {
