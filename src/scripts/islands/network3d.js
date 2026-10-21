@@ -160,7 +160,10 @@ export function initNetworkViewer(root, tints) {
     if (sum.atoms.Na) rows.push(['oxygens around each Na', sum.naO.toFixed(1)]);
     meters.replaceChildren(...rows.map(([dt, dd]) => {
       const div = document.createElement('div');
-      div.innerHTML = `<dt>${dt}</dt><dd>${dd}</dd>`;
+      const term = document.createElement('dt'), value = document.createElement('dd');
+      term.textContent = dt;
+      value.textContent = dd;
+      div.append(term, value);
       return div;
     }));
     const rate = state.rate === 'fast' ? '10¹⁴' : '10¹³';
