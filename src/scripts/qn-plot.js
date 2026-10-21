@@ -33,7 +33,7 @@ export function curves(F, rows, { cls = 'ln', label = true, labelMin = 0.12, spe
     if (!label) continue;
     let k = 0;
     rows.forEach((r, j) => { if (r.Q[i] > rows[k].Q[i]) k = j; });
-    if (i === 0) k = rows.findIndex((r) => r.Q[0] < 0.5); // Q⁴ is labelled where it crosses half
+    if (i === 0) k = rows.findIndex((r) => r.Q[0] < 0.5); // Q⁴ is labeled where it crosses half
     if (k < 0 || rows[k].Q[i] < labelMin) continue;
     out.push(el('text', { x: F.sx(rows[k].x) + (i === 0 ? 8 : 0), y: F.sy(rows[k].Q[i]) - 8, class: 'lab', 'text-anchor': i === 0 ? 'start' : 'middle' }, SPECIES[i]));
   }
