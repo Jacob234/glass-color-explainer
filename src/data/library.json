@@ -899,6 +899,20 @@
       "caution": "GlassPy 0.6.0 divides the features by their means instead of their standard deviations (_BaseViscNet sets x_std = x_mean); the script restores the standard deviations, which cuts the median Tg miss against the measured fits from 53 to 22 K. Pure silica is still badly wrong: Tg about 650 °C too low. ViscNet was trained on SciGlass, so comparing it with SciGlass melts is not an independent test."
     },
     {
+      "id": "glassnet-2023", "kind": "method", "short": "GlassNet (Cassar 2023)",
+      "title": "GlassNet: A multitask deep neural network for predicting many glass properties",
+      "by": "Daniel R. Cassar", "date": "2023", "edition": "Ceramics International 49(22), 36013–36024; run through GlassPy 0.6.0 (github.com/drcassar/glasspy)",
+      "url": "https://doi.org/10.1016/j.ceramint.2023.08.281",
+      "provides": "A multitask neural network trained on SciGlass that predicts 85 properties from composition. The oxide bench's second opinion comes from it: viscosity isokoms T0–T12, liquidus, Tg, index, Abbe number and density at each preset and along each slider, and on every measured melt in the bench's SciGlass extract, precomputed in a GitHub Actions job (tools/glassnet/glassnet.py) into public/data/glassnet.json.",
+      "reuse": "cite", "license": "Paper: journal article. GlassPy code and the trained weights: GPL-3.0-or-later. The site ships only numbers computed with them, not the code or weights.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "public/data/glassnet.json", "find": "GlassNet", "stage": "batch" },
+        { "file": "src/components/Home.astro", "find": "GlassNet (Cassar 2023)", "stage": "batch" }
+      ],
+      "caution": "Trained on SciGlass, so comparing it with SciGlass melts is not an independent test (10,465 of the bench's 12,513 melts were in its training set). On those melts it misses viscosity by a median 20 °C, worse than the bench's own 16 °C, and the liquidus by 48 °C. Its isokoms are predicted separately and can cross; its T0 sits below T1 for the lead and borosilicate presets."
+    },
+    {
       "id": "myega-2009", "kind": "method", "short": "MYEGA (Mauro et al. 2009)",
       "title": "Viscosity of glass-forming liquids",
       "by": "John C. Mauro, Yuanzheng Yue, Adam J. Ellison, Prabhat K. Gupta, Douglas C. Allan", "date": "2009", "edition": "PNAS 106(47), 19780–19784",

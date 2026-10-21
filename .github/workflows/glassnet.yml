@@ -1,0 +1,56 @@
+name: GlassNet
+
+# Runs GlassPy's GlassNet (GPL-3.0-or-later) over the stage 01 oxide bench and its SciGlass melts and
+# commits the numbers in public/data/glassnet.json back to the branch. Runs here because GlassPy fetches its
+# weights from Zenodo, which the project's cloud sandbox cannot reach. Only the numbers are kept.
+
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - tools/glassnet/glassnet.py
+      - public/data/sciglass/bench.json
+      - src/data/batch.json
+      - .github/workflows/glassnet.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # to start CI on the commit it pushes, which GITHUB_TOKEN pushes would not trigger
+
+concurrency:
+  group: glassnet-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install GlassPy (CPU torch)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install glasspy==0.6.0
+      - name: Predict
+        run: python3 tools/glassnet/glassnet.py public/data/glassnet.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glassnet
+          path: public/data/glassnet.json
+      - name: Commit the numbers to the branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/glassnet.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "Update GlassNet predictions (tools/glassnet/glassnet.py)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          gh workflow run ci.yml --ref "${GITHUB_REF_NAME}"
+        env:
+          GH_TOKEN: ${{ github.token }}
