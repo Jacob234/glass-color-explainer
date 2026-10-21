@@ -11,7 +11,8 @@ const MAX_ABSORPTANCE = 0.999; // caps optical density at 3 so -log10 stays fini
 
 // CIE 1931 2° color-matching functions, multi-lobe piecewise-Gaussian fit from
 // Wyman, Sloan & Shirley, "Simple Analytic Approximations to the CIE XYZ Color
-// Matching Functions", JCGT 2(2), 2013. Within ~1% of the tabulated CMFs.
+// Matching Functions", JCGT 2(2), 2013. Within 0.025 of the tabulated CMFs, but x̄'s tail beyond
+// about 680 nm falls off too fast, so deep reds and dull glow are least accurate (test/oracle.test.mjs).
 function lobe(w, mu, s1, s2) {
   const t = (w - mu) / (w < mu ? s1 : s2);
   return Math.exp(-0.5 * t * t);
