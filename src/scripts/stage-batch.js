@@ -3,7 +3,12 @@
 // Composition models live in batch.js.
 import * as b from './batch.js';
 import * as m from './measured.js';
+import * as gn from './glassnet.js';
 import { GLASSES, index, abbe, LINES } from './dispersion.js';
+import sheffield from '../data/durability.json' with { type: 'json' };
+import batchData from '../data/batch.json' with { type: 'json' };
+import * as qn from './qn.js';
+import * as qp from './qn-plot.js';
 
 const $ = (id) => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
@@ -37,9 +42,9 @@ const SILICA_MIN = 40; // wt%
 const ROLE = {
   Na2O: 'Soda is the flux. It breaks the silica network into non-bridging oxygens, so the batch melts at a temperature a furnace can reach; the broken network also expands more when heated and is attacked faster by water. In the iron model an alkaline melt favors Fe³⁺, so more soda pales the green toward yellow.',
   K2O: 'Potash acts like soda, a little more strongly. Soda and potash together soften the glass at low temperature more than either alone, the mixed-alkali effect, which lengthens the working range. Medieval forest glass was fluxed with potash from wood and fern ash.',
-  CaO: 'Lime mends the network soda broke: without it a soda-silica glass dissolves in water. In Fluegel\'s model a mol% of lime in place of silica lowers the melting end of the curve (−17 °C at 10¹·⁵ Pa·s) but raises the annealing end (+7 °C at 10¹² Pa·s). The curve steepens and the gather sets fast. Glassmakers call this a short glass.',
+  CaO: 'Lime mends the network soda broke: without it a soda-silica glass dissolves in water, and in the durability fit below each mol% of lime cancels about 1.1 mol% of soda. In Fluegel\'s model a mol% of lime in place of silica lowers the melting end of the curve (−17 °C at 10¹·⁵ Pa·s) but raises the annealing end (+7 °C at 10¹² Pa·s). The curve steepens and the gather sets fast. Glassmakers call this a short glass.',
   MgO: 'Magnesia comes in with dolomite, which float glass uses for part of its lime. It stiffens the annealing end far less than lime does, and float makers use it partly to keep crystals from forming as the sheet cools.',
-  Al2O3: 'Alumina joins the network as tetrahedra, each taking an alkali ion to balance its charge, so it mends the breaks soda made. The glass grows stiffer at every temperature and more durable. Bottle glass carries more of it than window glass.',
+  Al2O3: 'Alumina joins the network as tetrahedra, each taking an alkali ion to balance its charge, so it mends the breaks soda made. The glass grows stiffer at every temperature and more durable: in the durability fit below a mol% of alumina cancels 2.3 mol% of soda. Bottle glass carries more of it than window glass.',
   B2O3: 'Boric oxide is a second network former. Borosilicate expands about a third as much as window glass, so it survives going from oven to cold water. Its effect is not simply additive: at first boron takes up the soda and stiffens the glass, and past a point it softens it again, the boron anomaly. Appen\'s boron factor follows this through the ratio of modifiers to boron.',
   PbO: 'Lead oxide softens the glass over a long range, which is why lead crystal is easy to cut. Here the index rises because lead packs more matter into each cubic centimeter, not because it bends more light per gram: Young and Finn\'s specific refraction for PbO is the lowest of any oxide on this bench. Dispersion rises faster than index, so the Abbe number falls and cut lead crystal throws color (stage 07′).',
 };
@@ -49,7 +54,7 @@ export function batchStage({ colorOf, onLamp }) {
   const iron = $('iron');
   const round = (x) => Math.round(x * 10) / 10;
   const presetWt = (p) => Object.fromEntries(MOVED.map((o) => [o.id, round(p.wt[o.id] ?? 0)]));
-  let wt = presetWt(b.BASE), preset = 'float', touched = null;
+  let wt = presetWt(b.BASE), preset = 'float', origin = 'float', touched = null;
   const molOf = (w) => b.fromWt(w);
   const base = b.properties(molOf(presetWt(b.BASE)));
 
@@ -75,7 +80,7 @@ export function batchStage({ colorOf, onLamp }) {
   const chipButtons = b.PRESETS.map((p) => {
     const btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'chip chip-plain'; btn.textContent = p.label; btn.dataset.id = p.id;
-    btn.addEventListener('click', () => { wt = presetWt(p); preset = p.id; touched = null; render(); });
+    btn.addEventListener('click', () => { wt = presetWt(p); preset = origin = p.id; touched = null; render(); });
     chipBox.append(btn);
     return btn;
   });
@@ -123,23 +128,59 @@ export function batchStage({ colorOf, onLamp }) {
   const alive = svgEl('g');
   as.replaceChildren(A.frame, fixed, alive);
 
-  /* measured melts from SciGlass, fetched once the bench is near the screen */
-  let sg = null, sgState = 'idle';
+  const cross = (x, y, r, cls) => svgEl('path', { d: `M${x - r} ${y - r}L${x + r} ${y + r}M${x - r} ${y + r}L${x + r} ${y - r}`, class: cls });
+
+  /* durability: weight lost in an hour's boil against the soda the other oxides leave free */
+  const ds = $('bDurSvg'), DX0 = -12, DX1 = 36, DY0 = -1.3, DY1 = 2.15, DH = 380, lg = Math.log10;
+  const D = axes({ x0: DX0, x1: DX1, y0: DY0, y1: DY1, H: DH, T: 30 });
+  D.frame.append(svgEl('text', { x: 14, y: 18, class: 'ax-l' }, 'weight lost in an hour\'s boil, %'),
+    svgEl('text', { x: D.box.W - D.box.R, y: DH - 6, class: 'ax-l', 'text-anchor': 'end' }, 'free soda, mol% →'));
+  for (const v of [0.1, 0.3, 1, 3, 10, 30, 100]) D.frame.append(svgEl('line', { x1: D.box.L - 5, x2: D.box.L, y1: D.sy(lg(v)), y2: D.sy(lg(v)) }), svgEl('text', { x: D.box.L - 9, y: D.sy(lg(v)) + 4, class: 'ax-t', 'text-anchor': 'end' }, String(v)));
+  for (let x = -10; x <= 30; x += 10) D.frame.append(svgEl('line', { x1: D.sx(x), x2: D.sx(x), y1: DH - D.box.B, y2: DH - D.box.B + 5 }), svgEl('text', { x: D.sx(x), y: DH - D.box.B + 18, class: 'ax-t', 'text-anchor': 'middle' }, String(x)));
+  const dCurve = [];
+  for (let i = 0; i <= 160; i++) { const F = DX0 + ((DX1 - DX0) * i) / 160; dCurve.push([D.sx(F), D.sy(lg(batchData.durability.floor + b.dissolved(F)))]); }
+  // Each measured glass at its own free soda, its loss brought to the 500–700 µm grains of the main series.
+  const dFixed = svgEl('g');
+  dFixed.append(svgEl('path', { d: pathOf(dCurve), class: 'ln' }));
+  for (const g of sheffield.glasses) {
+    const F = b.freeSoda(g.mol), y = lg(g.loss) - (batchData.durability.grain[g.grain] ?? 0);
+    if (F >= DX0 && F <= DX1) dFixed.append(cross(D.sx(F), D.sy(Math.min(DY1, y)), 3.5, 'x'));
+  }
+  const ws = b.freeSoda(b.PRESET.float.mol), wl = b.toMol({ SiO2: 67.9, Na2O: 32.1 });
+  dFixed.append(svgEl('text', { x: D.sx(b.freeSoda(wl)) - 10, y: D.sy(2) + 4, class: 'lab faint', 'text-anchor': 'end' }, 'dissolved'),
+    svgEl('line', { x1: D.box.L, x2: D.box.W - D.box.R, y1: D.sy(lg(batchData.durability.floor)), y2: D.sy(lg(batchData.durability.floor)), class: 'ln faint dash' }),
+    svgEl('text', { x: D.box.W - D.box.R, y: D.sy(lg(batchData.durability.floor)) - 8, class: 'lab faint', 'text-anchor': 'end' }, 'floor of the test'));
+  const dLive = svgEl('g');
+  ds.replaceChildren(D.frame, dFixed, dLive);
+
+  /* measured melts from SciGlass and GlassNet's predictions, fetched once the bench is near the screen */
+  let sg = null, sgState = 'idle', net = null, netState = 'idle';
+  const fetchJson = (f) => fetch(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/data/${f}`).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
   const loadMeasured = () => {
     if (sgState !== 'idle') return;
-    sgState = 'loading';
-    fetch(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/data/sciglass/bench.json`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    sgState = 'loading'; netState = 'loading';
+    fetchJson('sciglass/bench.json')
       .then((d) => { sg = d; sgState = 'ready'; render(); })
       .catch(() => { sgState = 'failed'; render(); });
+    fetchJson('glassnet.json')
+      .then((d) => { net = d; netState = 'ready'; render(); })
+      .catch(() => { netState = 'failed'; render(); });
   };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); loadMeasured(); } }, { rootMargin: '600px' });
     io.observe($('oxides'));
   } else loadMeasured();
-  const cross = (x, y, r, cls) => svgEl('path', { d: `M${x - r} ${y - r}L${x + r} ${y + r}M${x - r} ${y + r}L${x + r} ${y - r}`, class: cls });
-  const vGlass = svgEl('g'), aGlass = svgEl('g');
+  const vGlass = svgEl('g'), aGlass = svgEl('g'), vNet = svgEl('g'), aNet = svgEl('g');
   vs.insertBefore(vGlass, live); as.insertBefore(aGlass, alive);
+  vs.insertBefore(vNet, vGlass); as.insertBefore(aNet, aGlass);
+
+  /* the network: Qⁿ against non-bridging oxygens per silicon, for this batch's modifiers at its own Tg */
+  const NX1 = 2.5, NF = qp.frame({ x0: 0, x1: NX1, ticks: [0, 0.5, 1, 1.5, 2, 2.5], fmt: (t) => t.toFixed(1), xlabel: 'non-bridging oxygens per silicon' });
+  const netLive = svgEl('g');
+  $('bNetSvg').replaceChildren(NF.g, netLive);
+  const baseNet = qn.batchNetwork(b.BASE.mol);
+  const randomRows = Array.from({ length: 51 }, (_, i) => ({ x: (i * NX1) / 50, Q: qn.random((i * NX1) / 50) }));
+  const randomLines = qp.curves(NF, randomRows, { cls: 'ln faint dash', label: false, species: [0, 1, 2, 3] });
 
   /* the slab */
   const slabSvg = $('bSlab'), face = slabSvg.querySelector('.face'), cast = slabSvg.querySelector('.cast'), edges = slabSvg.querySelectorAll('.edge');
@@ -179,6 +220,31 @@ export function batchStage({ colorOf, onLamp }) {
       .map((g) => cross(A.sx(g.vd), A.sy(g.nd), g === nearA[0] ? 5 : 3.5, g === nearA[0] ? 'x' : 'x faint')));
     $('bMeasured').textContent = measuredText(nearV, nearA);
 
+    // GlassNet: its own viscosity curve, dotted; its liquidus, a vertical line; measured liquidus
+    // temperatures of nearby SciGlass melts as crosses along the top; its index and Abbe number, a square.
+    const g = net ? gn.predict(net, wt, origin) : null, nearL = sg ? m.nearest(mol, sg, { has: ['liq'] }) : [];
+    const netItems = [], aItems = [];
+    if (g) {
+      const pts = [];
+      for (let i = 0; i <= 110; i++) { const L = 1 + (11 * i) / 110, T = g.viscosity.tempAt(L); if (T >= VX0 && T <= VX1) pts.push([V.sx(T), V.sy(L)]); }
+      const x1 = V.box.W - V.box.R, y = V.box.T + 30;
+      netItems.push(svgEl('path', { d: pathOf(pts), class: 'ln net' }),
+        svgEl('line', { x1: x1 - 30, x2: x1, y1: y, y2: y, class: 'ln net' }),
+        svgEl('text', { x: x1 - 38, y: y + 4, class: 'lab', 'text-anchor': 'end' }, 'GlassNet'));
+      const xl = V.sx(g.liquidus);
+      if (g.liquidus >= VX0 && g.liquidus <= VX1) {
+        netItems.push(svgEl('line', { x1: xl, x2: xl, y1: V.sy(VY1), y2: V.sy(VY0), class: 'ln liq' }),
+          svgEl('text', { x: xl - 7, y: V.sy(VY1) + 12, class: 'lab', 'text-anchor': 'end' }, `liquidus ${Math.round(g.liquidus)} °C`));
+      }
+      if (g.vd <= AX0 && g.vd >= AX1 && g.nd >= AY0 && g.nd <= AY1) {
+        const x = A.sx(g.vd), y2 = A.sy(g.nd);
+        aItems.push(svgEl('rect', { x: x - 4.5, y: y2 - 4.5, width: 9, height: 9, class: 'net-sq' }));
+      }
+    }
+    for (const q of nearL.toReversed()) if (q.liq >= VX0 && q.liq <= VX1) netItems.push(cross(V.sx(q.liq), V.sy(13.1), q === nearL[0] ? 5 : 3.5, q === nearL[0] ? 'x' : 'x faint'));
+    vNet.replaceChildren(...netItems); aNet.replaceChildren(...aItems);
+    $('bNet').textContent = netText(p, g, nearL);
+
     // Abbe
     alive.replaceChildren(
       svgEl('circle', { cx: A.sx(base.vd), cy: A.sy(base.nd), r: 4, class: 'mark' }),
@@ -194,7 +260,7 @@ export function batchStage({ colorOf, onLamp }) {
     // Expansion: lehr stress and thermal shock both scale with α, everything else held at window
     // glass. Pilkington ATS-129 gives float glass a thermal stress of 0.62 MPa per °C of difference
     // and a mean breaking strength of 41 MPa (annealed, weathered).
-    const stress = p.alpha / base.alpha, shock = 41 / (0.62 * stress);
+    const stress = p.alpha / base.alpha, shock = 41 / (0.62 * stress), du = p.durability;
     meters($('bMeters'), [
       ['density', `${p.rho.toFixed(2)} g/cm³`, (p.rho - 2.1) / 1.4],
       ['refractive index, yellow d line', p.nd.toFixed(3), (p.nd - 1.45) / 0.2],
@@ -202,7 +268,19 @@ export function batchStage({ colorOf, onLamp }) {
       ['expansion', `${p.alpha.toFixed(1)} ppm/K`, p.alpha / 12],
       ['lehr stress, window glass = 1', `× ${stress.toFixed(2)}`, stress / 1.5],
       ['iron as Fe²⁺', `${Math.round(p.ferrous * 100)}%`, p.ferrous],
+      ['lost to boiling water, 1 h', du.atFloor ? `under ${du.loss.toFixed(1)}%` : `${du.loss < 10 ? du.loss.toFixed(1) : Math.round(du.loss)}%`, (lg(du.loss) - lg(0.2)) / (2 - lg(0.2))],
     ]);
+
+    // durability
+    const dx = D.sx(Math.max(DX0, Math.min(DX1, du.free))), dy = D.sy(lg(du.loss));
+    dLive.replaceChildren(
+      svgEl('circle', { cx: D.sx(ws), cy: D.sy(lg(base.durability.loss)), r: 4, class: 'mark' }),
+      svgEl('circle', { cx: dx, cy: dy, r: 6.5, class: 'dot' }),
+      svgEl('text', { x: dx + (du.free > 12 ? 12 : 10), y: dy + (du.free > 12 ? 22 : -10), class: 'lab', 'text-anchor': 'start' }, 'this batch'),
+    );
+    $('bDurRead').textContent = durText(du, mol);
+
+    renderNet(mol);
 
     const molSi = mol.SiO2, R2O = mol.Na2O + mol.K2O;
     const warn = molSi < 43 || molSi > 89 || mol.B2O3 > 17 || mol.Al2O3 > 10
@@ -214,6 +292,43 @@ export function batchStage({ colorOf, onLamp }) {
     const cmp = preset === 'float' && !touched ? 'Window glass, the reference for everything below.'
       : `Against window glass its melting point moves ${signed(p.melting - base.melting)} °C, its annealing point ${signed(p.annealing - base.annealing)} °C, its working range ${signed(p.range - base.range)} °C and its index ${signed(p.nd - base.nd, 3)}.`;
     $('bRead').textContent = `${lead} ${cmp} A sheet of it would survive a sudden temperature jump of about ${Math.round(shock)} °C.${warn}`;
+  }
+  function durText(du, mol) {
+    const free = du.free >= 0 ? `The other oxides leave ${du.free.toFixed(1)} mol% of the soda free.`
+      : `The other oxides could take up ${Math.abs(du.free).toFixed(1)} mol% more soda than the batch has.`;
+    const bare = ['CaO', 'MgO', 'Al2O3', 'PbO', 'B2O3'].every((k) => (mol[k] ?? 0) < 0.5);
+    let t = du.atFloor
+      ? `${free} Boiling water would take less from this glass than the 1920s test could measure, about 0.2% of its weight in an hour as grains.`
+      : `${free} Boiled as grains for an hour, it would lose about ${du.loss < 10 ? du.loss.toFixed(1) : Math.round(du.loss)}% of its weight${du.dissolved > 90 ? ': it dissolves' : ''}.`;
+    if (bare && !du.atFloor) t += ' Nothing in it holds the soda; this is the glass lime is there to prevent.';
+    if (!du.fitted && !du.atFloor) t += ' Its composition is outside the glasses the durability fit saw, so the number is a guess.';
+    return t;
+  }
+  function renderNet(mol) {
+    const n = qn.batchNetwork(mol), pct = (v) => `${Math.round(v * 100)}%`;
+    const rows = qn.trajectory(NX1, n.mix, n.Tf);
+    const items = [...randomLines, ...qp.curves(NF, rows, { cls: 'ln', species: [0, 1, 2, 3] })];
+    const x = Math.min(NX1, n.q), far = Math.abs(n.q - baseNet.q) > 0.08;
+    if (far) items.push(...qp.rule(NF, baseNet.q, 'window', { faint: true, anchor: baseNet.q > n.q ? 'start' : 'end' }));
+    items.push(...qp.rule(NF, x, 'this batch', { anchor: far && baseNet.q > n.q ? 'end' : 'start' }));
+    n.Q.slice(0, 4).forEach((v, i) => { if (v > 0.005) items.push(svgEl('circle', { cx: NF.sx(x), cy: NF.sy(v), r: 3.2, class: 'dot' })); });
+    netLive.replaceChildren(...items);
+    const rows2 = [
+      ['Q⁴, four bridges', pct(n.Q[0]), n.Q[0]],
+      ['Q³, three', pct(n.Q[1]), n.Q[1]],
+      ['Q², two: chains', pct(n.Q[2]), n.Q[2]],
+      ['non-bridging O per Si', n.q.toFixed(2), n.q / 2.5],
+    ];
+    if (n.N4 != null) rows2.push(['boron as BO₄', pct(n.N4), n.N4]);
+    meters($('bNetMeters'), rows2);
+    const r = qn.random(n.q);
+    let t = n.q < 0.005
+      ? `No modifier is left over to break the silicate network: ${n.toAl > 0.25 ? `alumina takes ${n.toAl.toFixed(1)} mol% of it to balance its tetrahedra` : ''}${n.toAl > 0.25 && n.toB > 0.25 ? ' and ' : ''}${n.toB > 0.25 ? `boron takes ${n.toB.toFixed(1)} mol% to turn ${pct(n.N4)} of its triangles into tetrahedra` : ''}. Every silicon is Q⁴, as in silica.`
+      : `${pct(n.Q[0])} of the silicons keep all four bridges and ${pct(n.Q[1])} have three. If every bridge were equally likely to break, the same ${n.q.toFixed(2)} cuts per silicon would leave ${pct(r[0])} and ${pct(r[1])}, with ${pct(r[2] + r[3] + r[4])} at two or fewer; the model's enthalpies make a modifier prefer a silicon that is still whole, so the cuts spread out.`;
+    if (n.q >= 0.005 && (n.toAl > 0.25 || n.toB > 0.25)) t += ` Before that, ${[n.toAl > 0.25 && `alumina takes ${n.toAl.toFixed(1)} mol% of the modifier`, n.toB > 0.25 && `boron takes ${n.toB.toFixed(1)} mol% (${pct(n.N4)} of it four-coordinated)`].filter(Boolean).join(' and ')}, mending rather than breaking.`;
+    if (n.q >= 0.005 && n.assumed > 0.05) t += ` ${pct(n.assumed)} of the breaking modifier is lime, magnesia or lead oxide, which the model has no fitted values for; it is counted as soda.`;
+    t += far ? ` ${n.q < baseNet.q ? 'More bridges make a stiffer network' : 'Fewer bridges make a network that rearranges at lower temperature'}: this batch anneals at ${Math.round(n.Tf - 273.15)} °C against window glass's ${Math.round(baseNet.Tf - 273.15)} °C${n.q < baseNet.q && n.Tf < baseNet.Tf ? ', though here other oxides pull the other way' : n.q > baseNet.q && n.Tf > baseNet.Tf ? ', though here other oxides pull the other way' : ''}.` : ` This batch anneals at ${Math.round(n.Tf - 273.15)} °C, the temperature its network froze at.`;
+    $('bNetRead').textContent = t;
   }
   function measuredText(nearV, nearA) {
     if (sgState === 'loading' || sgState === 'idle') return 'Fetching measured melts from SciGlass…';
@@ -227,6 +342,27 @@ export function batchStage({ colorOf, onLamp }) {
       const a = nearA[0], o = b.optics(m.molOf(a, sg.oxides));
       t += ` On the index plot the nearest measured glass is ${m.cite(sg, a)}: n = ${a.nd.toFixed(3)} measured against ${o.nd.toFixed(3)} from the model, Abbe number ${Math.round(a.vd)} against ${Math.round(o.vd)}.`;
     }
+    return t;
+  }
+  function netText(p, g, nearL) {
+    if (netState === 'loading' || netState === 'idle') return 'Fetching GlassNet\'s predictions…';
+    if (netState === 'failed' || !g) return 'GlassNet\'s predictions did not load, so the bench has no second opinion here.';
+    const w = g.viscosity.tempAt(3), mBench = p.working - g.liquidus;
+    const label = b.PRESET[g.anchor].label;
+    const where = !g.moved.length ? 'GlassNet, run on this glass,' : g.moved.length === 1 ? `GlassNet, run along this slider from ${label},` : `GlassNet (from ${label}, adding up the change each moved slider makes alone)`;
+    let t = `${where} puts the working point at ${Math.round(w)} °C against the bench's ${Math.round(p.working)} °C, and the annealing point at ${Math.round(g.T12)} °C against ${Math.round(p.annealing)} °C. It also gives what the bench's models cannot: a liquidus of ${Math.round(g.liquidus)} °C, the temperature below which crystals can grow in the melt. `;
+    const mNet = w - g.liquidus, own = Math.sign(mNet) === Math.sign(mBench) ? '' : ` (by GlassNet's own working point it is ${Math.round(Math.abs(mNet))} °C ${mNet >= 0 ? 'above' : 'below'}: the two models disagree on which side of the line this glass sits)`;
+    const q0 = nearL[0], close = q0 && q0.d < 1 ? ` Against the measured liquidus of the nearest SciGlass melt, ${q0.liq} °C, it would be ${Math.round(Math.abs(p.working - q0.liq))} °C ${p.working >= q0.liq ? 'above' : 'below'}.` : '';
+    if (Math.abs(mBench) < gn.LIQUIDUS_MISS) {
+      t += `At the bench's working point this batch is ${Math.round(Math.abs(mBench))} °C ${mBench >= 0 ? 'above' : 'below'} that liquidus${own}, closer than GlassNet's typical liquidus miss of ${gn.LIQUIDUS_MISS} °C, so the model cannot say which side of the line the gather is worked on.${close}`;
+    } else t += mBench >= 0
+      ? `At the bench's working point this batch is ${Math.round(mBench)} °C above that liquidus${own}, so no crystal is stable while it is shaped; below the liquidus crystals could grow, but the glass stiffens so fast as it cools that they get little time.${close}`
+      : `At the bench's working point this batch is ${Math.round(-mBench)} °C below that liquidus${own}: crystals can grow in the gather while it is shaped, and the glass clouds unless it is worked fast or hot.${close}`;
+    if (g.moved.length > 1) t += ` With several sliders moved these numbers are summed one-slider changes, which ignore how the oxides interact: tested against GlassNet itself they stray a median ${Math.round(net.additivity.T3.median)} °C at the working point and ${Math.round(net.additivity.liquidus.median)} °C at the liquidus, which bends sharply where one crystal gives way to another.`;
+    if (nearL.length) {
+      const q = nearL[0];
+      t += ` The crosses along the top are measured liquidus temperatures from SciGlass within 3 mol%; the nearest, ${m.cite(sg, q)}, ${q.d < 0.05 ? 'this batch itself' : `${q.d.toFixed(1)} mol% away`}, melted clear above ${q.liq} °C, and GlassNet put it at ${net.melts[q.id]?.[2] ?? '?'} °C.`;
+    } else t += ' SciGlass holds no measured liquidus within 3 mol% of this batch.';
     return t;
   }
   const SUP = { '-': '⁻', '.': '·', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };

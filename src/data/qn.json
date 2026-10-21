@@ -1,0 +1,31 @@
+{
+  "note": "Network structure from composition (scripts/qn.js): how many of each silicon's four oxygens bridge to another network former, the Qⁿ distribution. The statistical-mechanics model is Mauro's (2013) as applied by Bødker and colleagues; it is reimplemented here from the published equations (Bødker et al. 2019, eqs 9–10; Bødker et al. 2022, eq 3), not ported from the StatMechGlass code, which is GPL. Compositions in mol%.",
+  "source": "bodker-2019",
+  "enthalpies": {
+    "note": "Bødker et al. (2019), Table 1: relative enthalpy, kJ/mol, for a modifier to break a bond on a Q⁴, Q³, Q², Q¹ silicon, fitted to ²⁹Si MAS NMR of binary glasses with Tg from the literature as their fictive temperature. Each set is relative to its own Q⁴, so only the differences matter. The paper gives the uncertainty as about ±0.05 kJ/mol.",
+    "Na": [0, 14.1, 22.9, 27.1],
+    "K": [0, 18.8, 35.2, 32.8]
+  },
+  "assumed": {
+    "note": "No fitted silicate enthalpies for lime, magnesia or lead oxide were found in a published, readable source, so the bench treats them as soda. This is the bench's assumption, not the model's.",
+    "as": { "CaO": "Na", "MgO": "Na", "PbO": "Na" }
+  },
+  "step": 0.01,
+  "stepNote": "Modifier is added in steps of one non-bridging oxygen per hundred silicons, the step StatMechGlass fits with.",
+  "dellBray": {
+    "note": "Boron takes modifier before silicon does, turning BO₃ triangles into charged BO₄ tetrahedra, up to R = 0.5 + K/16 modifier per B₂O₃ (K = SiO₂/B₂O₃); past that the extra modifier breaks the silicate network. Dell, Bray and Xiao (1983), as restated by Manara, Grandjean and Neuville (2009). The model is for sodium; here every modifier is counted alike, and the fall in BO₄ at much higher R is not followed.",
+    "source": "dell-bray-1983"
+  },
+  "nmr": {
+    "note": "²⁹Si MAS NMR: mol% modifier oxide, then Q⁴, Q³, Q², Q¹, Q⁰ in percent. The data Bødker et al. (2019) fitted, from Maekawa et al. (1991) for sodium and from Maekawa et al. (1991) and Schroeder et al. (1973) for potassium, read from the data files that ship with StatMechGlass (Data/SiO2/Na.csv and K.csv, first ten and nine rows; the rows appended after them have no stated source and are left out).",
+    "source": "maekawa-1991",
+    "Na2O": [
+      [20, 50, 48, 2, 0, 0], [25, 38, 61, 1, 0, 0], [28.6, 27, 68, 5, 0, 0], [33.3, 11, 79, 10, 0, 0], [36.4, 7, 76, 17, 0, 0],
+      [40, 2, 67, 29, 2, 0], [42.9, 2, 54, 41, 3, 0], [44.4, 0, 47, 50, 3, 0], [50, 0, 16, 70, 13, 1], [55.6, 0, 3, 54, 39, 4]
+    ],
+    "K2O": [
+      [20, 49, 51, 0, 0, 0], [27.3, 25, 72, 3, 0, 0], [28.6, 22, 74, 4, 0, 0], [33.3, 7, 86, 7, 0, 0], [36.4, 5, 81, 14, 0, 0],
+      [40, 0, 67, 32, 1, 0], [42.9, 0, 51, 48, 1, 0], [44.4, 0, 41, 57, 2, 0], [50, 0, 9, 84, 7, 0]
+    ]
+  }
+}

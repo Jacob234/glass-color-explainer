@@ -291,12 +291,12 @@
       "name": "StatMechGlass",
       "job": "struct",
       "route": "build",
-      "status": "planned",
+      "status": "used",
       "by": "Mikkel S. Bødker and others (2022), Aalborg University",
       "license": "GPL-3.0",
       "url": "https://github.com/OxideGlassGroupAAU/StatMechGlass",
       "what": "A statistical-mechanics model of short-range order. It predicts how many network formers carry 4, 3, 2, 1 or 0 bridging oxygens (the Qⁿ distribution) from composition, with fitted values for silicate, borate and phosphate systems.",
-      "here": "Planned for the oxide bench, to show how adding Na₂O breaks the silica network and why viscosity falls."
+      "here": "The oxide bench and the Structure Lab redraw its model from the published equations and enthalpies (the GPL code is not copied): the Qⁿ shares for any batch, and the model beside the ²⁹Si NMR of soda– and potash–silica glass."
     },
     {
       "id": "potentials",

@@ -9,3 +9,18 @@
 .oxides .slab-small { max-width: 16rem; margin-top: 1rem; }
 .oxides .plot .x { fill: none; stroke: var(--ink); stroke-width: 1.8; }
 .oxides .plot .x.faint { stroke: var(--ink-3); stroke-width: 1.2; }
+/* GlassNet's second opinion: a dotted curve, a dash-dot liquidus, a hollow square on the index plot. */
+.oxides .plot .ln.net { stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 1.5 3.5; stroke-linecap: round; }
+.oxides .plot .ln.liq { stroke: var(--ink-2, var(--ink)); stroke-width: 1.2; stroke-dasharray: 8 3 2 3; }
+.oxides .plot .net-sq { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; }
+/* "How this was computed": a folded note under the bench's asides. */
+.oxides .how { font-size: 0.86rem; color: var(--ink-2); max-width: 38rem; margin-top: 0.8rem; border-top: 1px solid var(--rule); padding-top: 0.6rem; }
+.oxides .how summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+.oxides .how p { margin-top: 0.6rem; }
+.oxides .how b { font-weight: 600; color: var(--ink); }
+.oxides .how code { font-family: var(--mono); font-size: 0.8rem; }
+.oxides .net-intro { margin-top: 1.6rem; }
+.qn-key b { display: inline-block; width: 22px; height: 0; border-top: 1.4px solid var(--ink); }
+.qn-key b.k-rand { border-top: 1px dashed var(--ink-3); }
+.qn-key b.k-ring { width: 7px; height: 7px; border: 1.4px solid var(--ink); border-radius: 50%; }
+.qn-key b.k-bin { border-top: 1px dotted var(--ink-3); }

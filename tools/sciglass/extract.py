@@ -2,8 +2,8 @@
 
 Reads the plain-text conversion of SciGlass (github.com/drcassar/SciGlass, the same content as
 github.com/epam/SciGlass, ODbL 1.0) and writes public/data/sciglass/bench.json: every glass made
-only of the bench's nine oxides (99.5 mol% or more) that has a measured viscosity point, index
-or Abbe number, inside the composition range Fluegel's viscosity model was fitted to.
+only of the bench's nine oxides (99.5 mol% or more) that has a measured viscosity point, index,
+Abbe number or liquidus temperature, inside the composition range Fluegel's viscosity model was fitted to.
 
     git clone --depth 1 https://github.com/drcassar/SciGlass /path/to/sciglass-text
     python3 tools/sciglass/extract.py /path/to/sciglass-text public/data/sciglass/bench.json
@@ -57,7 +57,8 @@ def main(src, out):
         visc = [[L, round(float(row[k]))] for k, L in VISC if pd.notna(row.get(k)) and 300 <= row[k] <= 1800]
         nd = row.get("ND300") if pd.notna(row.get("ND300")) and 1.4 <= row["ND300"] <= 2.1 else None
         vd = row.get("NUD300") if pd.notna(row.get("NUD300")) and 15 <= row["NUD300"] <= 100 else None
-        if not visc and nd is None and vd is None:
+        liq = row.get("TLiq") if pd.notna(row.get("TLiq")) and 500 <= row["TLiq"] <= 1800 else None
+        if not visc and nd is None and vd is None and liq is None:
             continue
         kod = int(row["KOD"])
         if kod not in cites:
@@ -72,13 +73,15 @@ def main(src, out):
             g["nd"] = round(float(nd), 4)
         if vd is not None:
             g["vd"] = round(float(vd), 1)
+        if liq is not None:
+            g["liq"] = round(float(liq))
         glasses.append(g)
 
     used = sorted({g["src"] for g in glasses})
     data = {
         "about": "Measured melts from SciGlass made only of the stage 01 bench's oxides, inside the "
                  "range Fluegel's viscosity model was fitted to. mol lists mol% in the order of "
-                 "`oxides`; visc lists [log10 viscosity in Pa·s, temperature °C]; src keys `sources`, each [short citation, full citation].",
+                 "`oxides`; visc lists [log10 viscosity in Pa·s, temperature °C]; liq is the liquidus temperature, °C; src keys `sources`, each [short citation, full citation].",
         "licence": {
             "name": "ODbL 1.0",
             "url": "https://opendatacommons.org/licenses/odbl/1-0/",
