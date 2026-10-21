@@ -54,9 +54,12 @@ const pins = history.pins.map((p) => {
 });
 ---
 <section class="wrap hero">
-  <h1>Why glass<br />has <i>color</i></h1>
+  <h1>How glass<br /><i>works</i></h1>
   <div class="hero-sub">
-    <p>Glass is colored by what it takes away. White light goes in, and whatever the glass absorbs never comes out. Most of this page follows from that, from the green edge of a windowpane to a ruby goblet, and the later stages show where the rule fails.</p>
+    <div class="hero-text">
+      <p>Glass is a melt that stiffened without crystallizing. Its recipe and its cooling set how long it stays workable, the stress it keeps, how it bends light, how it resists water and its color. This page follows one piece from batch to showroom and computes each from measurements or a model it names.</p>
+      <p>Color comes first because it is the easiest to see. Each piece below is colored by what it absorbs from white light, and the later stages show where that rule fails.</p>
+    </div>
     <span class="mono">Drag the glass.<br />Lay pieces over each other.</span>
   </div>
   <div class="table" id="table" aria-label="A light table with pieces of colored glass you can drag"></div>
@@ -552,6 +555,7 @@ const pins = history.pins.map((p) => {
   <div class="stage-rail"><div class="stage-num">→</div><span class="mono">the long read</span></div>
   <div class="stage-body">
     <h2>Go <i>deeper</i></h2>
+    <p class="reading-note">The long read is about color, the strand this site started from: one essay per mechanism. Structure, viscosity, annealing, optics and durability are in the stages above and in the labs.</p>
     <ol class="reading">
       {reading.map((c) => (
         <li><a href={page(c.id)}><span class="mono">{c.data.mechanism}</span><strong>{c.data.title}</strong><span>{c.data.summary}</span></a></li>
