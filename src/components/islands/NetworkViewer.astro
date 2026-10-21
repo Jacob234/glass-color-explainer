@@ -1,0 +1,106 @@
+---
+// The Network lab viewer: a precomputed silicate glass you can turn and slice. Island in
+// scripts/islands/network3d.js, analysis in scripts/network.js, data in data/glass3d/.
+import { meltColor } from '../../scripts/labs.js';
+// Ring panes are colored glass: one real melt per ring size, computed from spectra under daylight.
+const RING_GLASS = {
+  3: ['gold ruby', [['gold-colloid', 1]]],
+  4: ['cadmium yellow', [['cds', 1.5]]],
+  5: ['chromium green', [['chromium', 1.5]]],
+  6: ['cobalt blue', [['cobalt', 0.6]]],
+  7: ['copper turquoise', [['copper', 2]]],
+  8: ['neodymium lilac', [['neodymium', 4]]],
+  9: ['selenium orange', [['cdsse', 1]]],
+};
+const tints = Object.fromEntries(Object.entries(RING_GLASS).map(([n, [, melt]]) => [n, meltColor(melt)]));
+---
+<figure class="nv" data-tints={JSON.stringify(tints)}>
+  <div class="nv-grid">
+    <div class="nv-table">
+      <canvas aria-label="A cube of simulated glass, three nanometers on a side, seen as a slice: silicon atoms as discs shaded by how many of their oxygens they share, oxygen at the bond ends, sodium as dashed rings. Drag to turn it."></canvas>
+      <div class="nv-key mono" aria-hidden="true">
+        <span><i class="q4"></i>Si, Q⁴</span><span><i class="q3"></i>Q³</span><span><i class="q2"></i>Q²</span><span><i class="q1"></i>Q¹</span>
+        <span><i class="nbo"></i>O, non-bridging</span><span><i class="na"></i>Na</span>
+      </div>
+      <p class="nv-hint mono">drag to turn · mouse wheel zooms</p>
+    </div>
+    <div class="nv-side">
+      <div class="nv-ctl">
+        <span class="mono lbl">glass</span>
+        <div class="chips" data-key="glass" role="group" aria-label="glass">
+          <button type="button" class="chip chip-plain" data-v="silica" aria-pressed="true">silica</button>
+          <button type="button" class="chip chip-plain" data-v="soda" aria-pressed="false">soda silica</button>
+        </div>
+      </div>
+      <div class="nv-ctl">
+        <span class="mono lbl">quench</span>
+        <div class="chips" data-key="rate" role="group" aria-label="cooling rate">
+          <button type="button" class="chip chip-plain" data-v="fast" aria-pressed="true">10¹⁴ K/s</button>
+          <button type="button" class="chip chip-plain" data-v="slow" aria-pressed="false">10¹³ K/s</button>
+        </div>
+      </div>
+      <div class="nv-ctl">
+        <span class="mono lbl">slice</span>
+        <div class="chips" data-key="slab" role="group" aria-label="slice thickness">
+          <button type="button" class="chip chip-plain" data-v="thin" aria-pressed="true">0.6 nm</button>
+          <button type="button" class="chip chip-plain" data-v="thick" aria-pressed="false">1.2 nm</button>
+          <button type="button" class="chip chip-plain" data-v="whole" aria-pressed="false">whole</button>
+        </div>
+        <input name="depth" type="range" min="-0.5" max="0.5" step="0.005" value="0" aria-label="slice depth" />
+        <div class="ends"><span>back</span><span>front</span></div>
+      </div>
+      <div class="nv-ctl">
+        <span class="mono lbl">rings of</span>
+        <div class="chips nv-rings" data-key="ring" role="group" aria-label="show rings of this many tetrahedra">
+          <button type="button" class="chip chip-plain" data-n="0" aria-pressed="true">none</button>
+          {Object.keys(RING_GLASS).map((n) => (
+            <button type="button" class="chip chip-plain ring-chip" data-n={n} aria-pressed="false">
+              <i style={`background:${tints[n]}`}></i>{n === '9' ? '9+' : n}<small></small>
+            </button>
+          ))}
+        </div>
+      </div>
+      <dl class="nv-meters"></dl>
+      <p class="nv-read" aria-live="polite"></p>
+      <button type="button" name="reset" class="chip chip-plain nv-reset">square up</button>
+    </div>
+  </div>
+</figure>
+<script>
+  import { initNetworkViewer } from '../../scripts/islands/network3d.js';
+  for (const el of document.querySelectorAll<HTMLElement>('.nv')) initNetworkViewer(el, JSON.parse(el.dataset.tints ?? '{}'));
+</script>
+<style>
+  .nv { margin: 1.5rem 0 2rem; }
+  .nv-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .nv canvas { display: block; width: 100%; aspect-ratio: 1; border: 1px solid var(--ink); touch-action: pan-y; cursor: grab; }
+  .nv canvas:active { cursor: grabbing; }
+  :global(.nv.loading) canvas { opacity: 0.5; }
+  .nv-key { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin-top: 0.5rem; font-size: 0.62rem; }
+  .nv-key span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .nv-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1.2px solid var(--ink); }
+  .nv-key .q4 { background: #141414; } .nv-key .q3 { background: #6e6e6b; } .nv-key .q2 { background: #c9c9c6; }
+  .nv-key .nbo { width: 7px; height: 7px; }
+  .nv-key .na { width: 12px; height: 12px; border-style: dashed; }
+  .nv-hint { margin: 0.3rem 0 0; font-size: 0.6rem; color: var(--ink-3); text-transform: none; letter-spacing: 0.02em; }
+  .nv-side { display: grid; gap: 1rem; align-content: start; }
+  .lbl { display: block; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.35rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chip { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.3rem 0.8rem; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .ring-chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.6rem; }
+  .ring-chip i { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--ink); }
+  .ring-chip small { font-size: 0.56rem; opacity: 0.7; }
+  .ring-chip small:empty { display: none; }
+  .nv input[type=range] { width: 100%; margin-top: 0.6rem; }
+  .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .nv-meters { margin: 0; display: grid; gap: 0.35rem; }
+  .nv-meters :global(div) { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.25rem; }
+  .nv-meters :global(dt) { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+  .nv-meters :global(dd) { margin: 0; font-family: var(--mono); font-size: 0.72rem; text-align: right; }
+  .nv-read { margin: 0; font-size: 0.95rem; min-height: 4.5em; }
+  .nv-reset { justify-self: start; }
+  @media (max-width: 820px) {
+    .nv-grid { grid-template-columns: 1fr; }
+  }
+</style>

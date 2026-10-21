@@ -1,0 +1,135 @@
+---
+// Charts for the Network lab, drawn at build time from src/data/glass3d.json: Qⁿ against the
+// binary model and NMR, ring sizes, and density through each quench.
+import data from '../data/glass3d.json';
+import { binaryQn } from '../scripts/network.js';
+interface Props { chart: 'qn' | 'rings' | 'cooling'; }
+const { chart } = Astro.props;
+const run = (id: string) => data.runs.find((r) => r.id === id)!;
+const RATE = { 100: '10¹⁴ K/s', 10: '10¹³ K/s' } as Record<number, string>;
+const name = (r: any) => `${data.glasses[r.glass as 'silica' | 'soda'].name}, ${RATE[r.rate]}`;
+// one line style per run: silica solid, soda dashed; the slower quench drawn heavier
+const STYLE: Record<string, { dash: string; w: number }> = {
+  'silica-fast': { dash: '', w: 1.2 }, 'silica-slow': { dash: '', w: 2.6 },
+  'soda-fast': { dash: '6 4', w: 1.2 }, 'soda-slow': { dash: '6 4', w: 2.6 },
+};
+const formula = (g: string) => (data.glasses as Record<string, { formula: string }>)[g].formula;
+const ringsOf = (r: (typeof data.runs)[number], n: number) => (r.summary.rings as Record<string, number>)[n] ?? 0;
+const Q_FILL = ['#fafaf8', '#fafaf8', '#c9c9c6', '#6e6e6b', '#141414'];
+const TEXT_CLASS = ['in', 'in', 'in', 'in dark', 'in dark']; // paper-colored labels on the dark bars
+const path = (pts: number[][]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join('');
+
+// Qⁿ rows
+const qRows = [
+  { label: 'silica, either quench', qn: run('silica-slow').summary.qn },
+  { label: 'soda silica, 10¹⁴ K/s', qn: run('soda-fast').summary.qn },
+  { label: 'soda silica, 10¹³ K/s', qn: run('soda-slow').summary.qn },
+  { label: `${data.reference.shik.label} (2019)`, qn: data.reference.shik.qn },
+  { label: 'binary model', qn: binaryQn(data.glasses.soda.x) },
+  { label: data.reference.nmr.label, qn: data.reference.nmr.qn },
+];
+// each row's label sits above its bar, so the bars keep the full width on a phone
+const QW = 640, QL = 24, QR = 26, QH = 26, QG = 30, QT = 50;
+const qx = (f: number) => QL + f * (QW - QL - QR);
+// each row as stacked segments, Q⁴ first; tiny slivers dropped, labels only where they fit
+const qBars = qRows.map((row, i) => {
+  let at = 0;
+  const segs = [4, 3, 2, 1, 0].map((n) => {
+    const f = row.qn[n] ?? 0, seg = { n, x: qx(at), w: qx(at + f) - qx(at), text: f >= 0.07 ? `Q${'⁰¹²³⁴'[n]} ${Math.round(f * 100)}` : '' };
+    at += f;
+    return { ...seg, keep: f >= 0.004 };
+  }).filter((g) => g.keep);
+  return { label: row.label, y: QT + i * (QH + QG), segs };
+});
+
+// ring sizes
+const sizes = [3, 4, 5, 6, 7, 8, 9, 10];
+const RW = 640, RH = 280, RL = 52, RR = 14, RT = 16, RB = 42;
+const rMax = Math.max(...data.runs.flatMap((r) => sizes.map((n) => ringsOf(r, n))));
+const rTop = Math.ceil(rMax * 10) / 10;
+const rTicks = [0, rTop / 2, rTop];
+const rx = (n: number) => RL + ((n - 3) / 7) * (RW - RL - RR), ry = (v: number) => RT + (1 - v / rTop) * (RH - RT - RB);
+
+// density on cooling
+const CW = 640, CH = 300, CL = 56, CR = 14, CT = 16, CB = 42;
+const T0 = 300, T1 = 4000;
+const all = data.runs.flatMap((r) => r.cooling.map((p) => p[1]));
+const d0 = Math.floor(Math.min(...all, 2.1) * 10) / 10, d1 = Math.ceil(Math.max(...all, 2.45) * 10) / 10;
+const cx = (T: number) => CL + ((T - T0) / (T1 - T0)) * (CW - CL - CR), cy = (d: number) => CT + (1 - (d - d0) / (d1 - d0)) * (CH - CT - CB);
+const dTicks = Array.from({ length: Math.round((d1 - d0) * 10) + 1 }, (_, i) => +(d0 + i * 0.1).toFixed(1));
+const cooled = data.runs.filter((r) => r.cooling.length >= 2);
+const measured = { silica: 2.202, soda: 2.43 };
+---
+{chart === 'qn' && (
+  <svg class="nc" viewBox={`0 0 ${QW} ${QT + qRows.length * (QH + QG) - QG + 4}`} role="img" aria-label="Fractions of Q4, Q3, Q2 and Q1 silicon in each glass, the binary model and NMR measurement">
+    {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+      <g><line class="ax faint" x1={qx(f)} x2={qx(f)} y1={QT - 24} y2={QT + qRows.length * (QH + QG) - QG} /><text class="tk" x={qx(f)} y={QT - 30} text-anchor="middle">{Math.round(f * 100)}%</text></g>
+    ))}
+    {qBars.map((row) => (
+      <g>
+        <text class="lb" x={QL} y={row.y - 8}>{row.label}</text>
+        {row.segs.map((g) => (
+          <g>
+            <rect x={g.x} y={row.y} width={g.w} height={QH} fill={Q_FILL[g.n]} class="bar" />
+            {g.text && <text class={TEXT_CLASS[g.n]} x={g.x + g.w / 2} y={row.y + QH / 2 + 4} text-anchor="middle">{g.text}</text>}
+          </g>
+        ))}
+      </g>
+    ))}
+  </svg>
+)}
+{chart === 'rings' && (
+  <svg class="nc" viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Rings per silicon atom against ring size, for each of the four simulated glasses">
+    <line class="ax" x1={RL} x2={RW - RR} y1={RH - RB} y2={RH - RB} />
+    <line class="ax" x1={RL} x2={RL} y1={RT} y2={RH - RB} />
+    {sizes.map((n) => <text class="tk" x={rx(n)} y={RH - RB + 18} text-anchor="middle">{n}</text>)}
+    {rTicks.map((v) => <text class="tk" x={RL - 8} y={ry(v) + 4} text-anchor="end">{v.toFixed(2)}</text>)}
+    <text class="lb" x={(RL + RW - RR) / 2} y={RH - 6} text-anchor="middle">tetrahedra in the ring</text>
+    <text class="lb" x={RL} y={RT - 4}>rings per silicon</text>
+    {data.runs.map((r) => (
+      <path class="series" d={path(sizes.map((n) => [rx(n), ry(ringsOf(r, n))]))} stroke-dasharray={STYLE[r.id].dash} stroke-width={STYLE[r.id].w} />
+    ))}
+  </svg>
+)}
+{chart === 'cooling' && (
+  <svg class="nc" viewBox={`0 0 ${CW} ${CH}`} role="img" aria-label="Density against temperature as each simulated melt was quenched, with the measured room-temperature densities">
+    <line class="ax" x1={CL} x2={CW - CR} y1={CH - CB} y2={CH - CB} />
+    <line class="ax" x1={CL} x2={CL} y1={CT} y2={CH - CB} />
+    {[500, 1000, 1500, 2000, 2500, 3000, 3500, 4000].map((T) => <text class="tk" x={cx(T)} y={CH - CB + 18} text-anchor="middle">{T}</text>)}
+    {dTicks.map((d) => <text class="tk" x={CL - 8} y={cy(d) + 4} text-anchor="end">{d.toFixed(1)}</text>)}
+    <text class="lb" x={(CL + CW - CR) / 2} y={CH - 6} text-anchor="middle">temperature (K)</text>
+    <text class="lb" x={CL + 6} y={CT + 10}>density (g/cm³)</text>
+    {Object.entries(measured).map(([g, d]) => (
+      <g><line class="meas" x1={cx(300)} x2={cx(300) + 26} y1={cy(d)} y2={cy(d)} /><text class="gl" x={cx(300) + 32} y={cy(d) + 4}>measured, {formula(g)}</text></g>
+    ))}
+    {cooled.map((r) => (
+      <path class="series" d={path(r.cooling.map(([T, d]) => [cx(T), cy(d)]))} stroke-dasharray={STYLE[r.id].dash} stroke-width={STYLE[r.id].w} />
+    ))}
+  </svg>
+)}
+{chart !== 'qn' && (
+  <ul class="nc-key mono">
+    {data.runs.map((r) => (
+      <li><svg width="34" height="8" aria-hidden="true"><line x1="0" x2="34" y1="4" y2="4" stroke="#141414" stroke-dasharray={STYLE[r.id].dash} stroke-width={STYLE[r.id].w} /></svg>{name(r)}</li>
+    ))}
+  </ul>
+)}
+<style>
+  .nc { display: block; width: 100%; height: auto; margin: 1rem 0 0.4rem; }
+  .nc :global(.ax) { stroke: var(--ink); stroke-width: 1; }
+  .nc :global(.ax.faint) { stroke: var(--ink-3); stroke-dasharray: 2 4; }
+  .nc :global(text) { font-family: var(--mono); fill: var(--ink-2); }
+  .nc :global(.tk), .nc :global(.lb) { font-size: 12px; }
+  .nc :global(.gl) { font-size: 11px; fill: var(--ink-3); }
+  .nc :global(.bar) { stroke: var(--ink); stroke-width: 1; }
+  .nc :global(.in) { font-size: 11px; fill: var(--ink); }
+  .nc :global(.in.dark) { fill: var(--paper); }
+  .nc :global(.series) { fill: none; stroke: var(--ink); stroke-linejoin: round; }
+  .nc :global(.meas) { stroke: var(--ink); stroke-width: 3; }
+  .nc-key { display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; list-style: none; padding: 0; margin: 0 0 1rem; font-size: 0.62rem; color: var(--ink-2); }
+  .nc-key li { display: inline-flex; align-items: center; gap: 0.45rem; }
+  @media (max-width: 820px) {
+    .nc :global(.tk), .nc :global(.lb) { font-size: 16px; }
+    .nc :global(.in), .nc :global(.gl) { font-size: 14px; }
+  }
+</style>

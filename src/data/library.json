@@ -17,6 +17,7 @@
     "lightlab": "light lab",
     "forminglab": "forming lab",
     "structurelab": "structure lab",
+    "networklab": "network lab",
     "concepts": "concept pages",
     "eyes": "09′ showroom, other eyes"
   },
@@ -422,7 +423,7 @@
       "provides": "The continuous random network picture of oxide glass and the rules an oxide must obey to form one.",
       "reuse": "cite", "license": "Journal article; no reuse license stated.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "ja01349a006", "stage": "glass" }]
+      "usedBy": [{ "file": "src/components/WhatGlassIs.astro", "find": "ja01349a006", "stage": "glass" }, { "file": "src/pages/network-lab.astro", "find": "ja01349a006", "stage": "networklab" }]
     },
     {
       "id": "huang-2012", "kind": "measurement", "short": "Huang et al. 2012",
@@ -632,6 +633,7 @@
         { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" },
         { "file": "public/data/sciglass/fragility.json", "find": "ODbL", "stage": "fragility" },
         { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" },
+        { "file": "scripts/build_glass3d.mjs", "find": "SciGlass", "stage": "networklab" },
         { "file": "src/data/durability.json", "find": "Open Database License", "stage": "batch" }
       ],
       "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
@@ -682,7 +684,8 @@
       "reuse": "cite", "license": "Journal article; no reuse license stated. Cited for the structural model only.",
       "checked": "2026-10-20",
       "usedBy": [
-        { "file": "src/components/Home.astro", "stage": "batch", "find": "1985JNCS...71..203G" }
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "1985JNCS...71..203G" },
+        { "file": "src/pages/network-lab.astro", "find": "90289-3", "stage": "networklab" }
       ],
       "caution": "One structural model among several; the bench uses it only to explain why durability falls steeply with soda, not to compute anything."
     },
@@ -948,9 +951,84 @@
         { "file": "src/components/Fragility.astro", "find": "science.267.5206.1924", "stage": "fragility" }
       ]
     },
+    {
+      "id": "shik-2018", "kind": "method", "short": "SHIK silica potential",
+      "title": "New optimization scheme to obtain interaction potentials for oxide glasses",
+      "by": "S. Sundararaman, L. Huang, S. Ispas and W. Kob", "date": "2018", "edition": "J. Chem. Phys. 148, 194504",
+      "url": "https://doi.org/10.1063/1.5023707",
+      "provides": "The SHIK potential for silica: partial charges and Buckingham-plus-r⁻²⁴ parameters fitted to an ab initio liquid and to the measured glass density and stiffness. The O–O, Si–O and Si–Si terms used for both Network lab glasses.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. The parameters are copied into scripts/md3d/quench.in with this citation.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "10.1063/1.5023707", "stage": "networklab" },
+        { "file": "scripts/md3d/quench.in", "find": "148, 194504", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "shik-2019", "kind": "method", "short": "SHIK alkali silicates",
+      "title": "New interaction potentials for alkali and alkaline-earth aluminosilicate glasses",
+      "by": "S. Sundararaman, L. Huang, S. Ispas and W. Kob", "date": "2019", "edition": "J. Chem. Phys. 150, 154505; arXiv:1811.01284",
+      "url": "https://arxiv.org/abs/1811.01284",
+      "provides": "The sodium terms and charges (Si 1.7755 e, Na 0.6018 e, O by neutrality), their melt–quench protocol at about 2.25 K/ps, and their figure 5 of Qⁿ against Maekawa's NMR, from which the Network lab reads its comparison rows. LAMMPS pair style shik/wolf from github.com/compmatscirpi/SHIK-potential (no license file; compiled for the offline runs, not redistributed).",
+      "reuse": "cite", "license": "arXiv preprint under arXiv's non-exclusive distribution license; journal version has no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "1811.01284", "stage": "networklab" },
+        { "file": "src/data/glass3d.json", "find": "Sundararaman et al. 2019", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "lammps-2022", "kind": "method", "short": "LAMMPS",
+      "title": "LAMMPS: a flexible simulation tool for particle-based materials modeling at the atomic, meso, and continuum scales",
+      "by": "A. P. Thompson et al. (Sandia National Laboratories)", "date": "2022", "edition": "Comput. Phys. Commun. 271, 108171; stable branch, built 2026-10-20",
+      "url": "https://doi.org/10.1016/j.cpc.2021.108171",
+      "provides": "The molecular-dynamics code that ran the four Network lab quenches offline. Only its output (atom positions) ships with the site.",
+      "reuse": "open", "license": "Code GPL-2.0; the site ships no LAMMPS code, only positions it computed.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "j.cpc.2021.108171", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "mozzi-warren-1969", "kind": "measurement", "short": "Mozzi & Warren 1969",
+      "title": "The structure of vitreous silica",
+      "by": "R. L. Mozzi and B. E. Warren", "date": "1969", "edition": "J. Appl. Cryst. 2, 164–172",
+      "url": "https://doi.org/10.1107/S0021889869006868",
+      "provides": "X-ray pair functions of vitreous silica: Si–O 1.62 Å, every O bonded to two Si, Si–O–Si angles from 120° to 180° with the maximum at 144° (from the abstract).",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "S0021889869006868", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "king-1967", "kind": "method", "short": "King 1967 rings",
+      "title": "Ring configurations in a random network model of vitreous silica",
+      "by": "S. V. King", "date": "1967", "edition": "Nature 213, 1112–1113",
+      "url": "https://doi.org/10.1038/2131112a0",
+      "provides": "The shortest-path ring definition that src/scripts/network.js uses to count rings.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "2131112a0", "stage": "networklab" },
+        { "file": "src/scripts/network.js", "find": "King (1967)", "stage": "networklab" }
+      ]
+    },
+    {
+      "id": "vollmayr-1996", "kind": "method", "short": "Vollmayr, Kob & Binder",
+      "title": "Cooling-rate effects in amorphous silica: a computer-simulation study",
+      "by": "K. Vollmayr, W. Kob and K. Binder", "date": "1996", "edition": "Phys. Rev. B 54, 15808–15827",
+      "url": "https://doi.org/10.1103/PhysRevB.54.15808",
+      "provides": "MD silica (BKS potential) cooled at many rates: Tg falls logarithmically with rate, and density, ring sizes and bond angles all depend on it, the microscopic quantities more strongly than the macroscopic ones.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/pages/network-lab.astro", "find": "PhysRevB.54.15808", "stage": "networklab" }
+      ]
+    },
     {"id": "bodker-2019", "kind": "method", "short": "Bødker et al. 2019", "title": "Predicting Composition-Structure Relations in Alkali Borosilicate Glasses Using Statistical Mechanics", "by": "Mikkel S. Bødker, Søren S. Sørensen, John C. Mauro and Morten M. Smedskjaer", "date": "2019", "edition": "Front. Mater. 6, 175", "url": "https://doi.org/10.3389/fmats.2019.00175", "provides": "The statistical-mechanics model of network structure (eqs 9–10: a modifier breaks a bond on silicon species n with weight share · exp(−H_n/kT_f)) and Table 1's relative enthalpies for soda– and potash–silica, fitted to ²⁹Si NMR. The oxide bench and the Structure Lab reimplement the equations and use the enthalpies (src/scripts/qn.js, src/data/qn.json).", "reuse": "open", "license": "CC BY 4.0 (stated on the article page).", "checked": "2026-10-20", "usedBy": [{"file": "src/data/qn.json", "find": "Bødker et al. (2019), Table 1", "stage": "batch"}, {"file": "src/pages/structure-lab.astro", "find": "10.3389/fmats.2019.00175", "stage": "structurelab"}], "caution": "Enthalpies are relative and were fitted with literature Tg as the fictive temperature; the site uses its own viscosity model's Tg instead. With it the model reproduces the fitted NMR within about 1.3 percentage points RMS, but that is the fit, not a test. No published alkaline-earth silicate values were found, so lime, magnesia and lead oxide are counted as soda."},
     {"id": "statmechglass-2022", "kind": "method", "short": "StatMechGlass 2022", "title": "StatMechGlass: Python based software for composition–structure prediction in oxide glasses using statistical mechanics", "by": "Mikkel S. Bødker, Collin J. Wilkinson, John C. Mauro and Morten M. Smedskjaer", "date": "2022", "edition": "SoftwareX 17, 100913; code at github.com/OxideGlassGroupAAU/StatMechGlass (GPL-3.0)", "url": "https://doi.org/10.1016/j.softx.2021.100913", "provides": "How several modifiers share out their bonds (eq. 3: each modifier's draw probabilities averaged by its share), and, in the code's data files, the Maekawa et al. NMR table the site plots.", "reuse": "cite", "license": "Paper: open access (author's copy at vbn.aau.dk). Code: GPL-3.0, so it is not copied into the site; the equations are rewritten from the papers.", "checked": "2026-10-20", "usedBy": [{"file": "src/scripts/qn.js", "find": "Bødker et al. 2022, eq 3", "stage": "batch"}, {"file": "src/pages/structure-lab.astro", "find": "10.1016/j.softx.2021.100913", "stage": "structurelab"}], "caution": "The parameter files in the code (Parameters/SiO2) differ from the paper's Table 1, and the alumina file repeats the soda values; the site uses the paper's numbers."},
-    {"id": "maekawa-1991", "kind": "measurement", "short": "Maekawa et al. 1991", "title": "The structural groups of alkali silicate glasses determined from ²⁹Si MAS-NMR", "by": "H. Maekawa, T. Maekawa, K. Kawamura and T. Yokokawa", "date": "1991", "edition": "J. Non-Cryst. Solids 127(1), 53–64", "url": "https://doi.org/10.1016/0022-3093(91)90400-Z", "provides": "Measured Qⁿ shares in soda– and potash–silica glasses from 20 to 56 mol% alkali, the points the Structure Lab plots and the statistical-mechanics enthalpies were fitted to.", "reuse": "cite", "license": "Journal article; numbers quoted with citation, read from StatMechGlass's data files rather than the paper.", "checked": "2026-10-20", "usedBy": [{"file": "src/data/qn.json", "find": "Maekawa et al. (1991)", "stage": "structurelab"}, {"file": "src/pages/structure-lab.astro", "find": "10.1016/0022-3093(91)90400-Z", "stage": "structurelab"}], "caution": "Not read in the original: the values come from StatMechGlass's Data/SiO2 files, which Bødker et al. (2019) attribute to Maekawa et al. and, for some potassium glasses, to Schroeder et al. (1973). Some rows in those files are appended without a source and are left out."},
+    {"id": "maekawa-1991", "kind": "measurement", "short": "Maekawa et al. 1991", "title": "The structural groups of alkali silicate glasses determined from ²⁹Si MAS-NMR", "by": "H. Maekawa, T. Maekawa, K. Kawamura and T. Yokokawa", "date": "1991", "edition": "J. Non-Cryst. Solids 127(1), 53–64", "url": "https://doi.org/10.1016/0022-3093(91)90400-Z", "provides": "Measured Qⁿ shares in soda– and potash–silica glasses from 20 to 56 mol% alkali, the points the Structure Lab plots and the statistical-mechanics enthalpies were fitted to.", "reuse": "cite", "license": "Journal article; numbers quoted with citation, read from StatMechGlass's data files rather than the paper.", "checked": "2026-10-20", "usedBy": [{"file": "src/data/qn.json", "find": "Maekawa et al. (1991)", "stage": "structurelab"}, {"file": "src/pages/structure-lab.astro", "find": "10.1016/0022-3093(91)90400-Z", "stage": "structurelab"}, {"file": "src/pages/network-lab.astro", "find": "90400-Z", "stage": "networklab"}], "caution": "Not read in the original: the values come from StatMechGlass's Data/SiO2 files, which Bødker et al. (2019) attribute to Maekawa et al. and, for some potassium glasses, to Schroeder et al. (1973). Some rows in those files are appended without a source and are left out."},
     {"id": "dell-bray-1983", "kind": "method", "short": "Dell, Bray & Xiao 1983", "title": "¹¹B NMR studies and structural modeling of Na₂O–B₂O₃–SiO₂ glasses of high soda content", "by": "W. J. Dell, P. J. Bray and S. Z. Xiao", "date": "1983", "edition": "J. Non-Cryst. Solids 58(1), 1–16", "url": "https://doi.org/10.1016/0022-3093(83)90097-2", "provides": "How far boron takes up modifier before silicon does in a borosilicate: four-coordinated boron rises as N₄ = R up to R = 0.5 + K/16 (R = Na₂O/B₂O₃, K = SiO₂/B₂O₃). The bench uses that limit to decide how much modifier is left to break the silicate network.", "reuse": "cite", "license": "Journal article; cited only.", "checked": "2026-10-20", "usedBy": [{"file": "src/components/Home.astro", "find": "10.1016/0022-3093(83)90097-2", "stage": "batch"}], "caution": "Not read in the original: the limit 0.5 + K/16 was checked against Manara, Grandjean and Neuville's revision of the model (J. Non-Cryst. Solids, 2009), which restates it. The model is for sodium; the bench applies it to every modifier and does not follow N₄'s fall at high R."}
   ],
   "gaps": [
