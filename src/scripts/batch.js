@@ -7,6 +7,7 @@
 //   density          a room-temperature fit to SciGlass, in the same polynomial form
 //   expansion        Appen's additive factors
 //   iron redox       Sack et al. (1980): how the batch shifts Fe³⁺/Fe²⁺ at a fixed furnace
+//   durability       a fit made here to the Sheffield boiling-water tests of 1919–1929, read from SciGlass
 import data from '../data/batch.json' with { type: 'json' };
 
 export const OXIDES = data.oxides;
@@ -117,6 +118,23 @@ export function ferrous(mol, baseFerrous = I.floatFerrous) {
   return 1 / (1 + ratio);
 }
 
+/* ---------- durability ---------- */
+const W = data.durability;
+// The soda the other oxides have not taken up, mol%. Potash counts as soda (no Sheffield series has it).
+export const freeSoda = (mol) => {
+  const c = (k) => mol[k] ?? 0;
+  return c('Na2O') + c('K2O') - Object.entries(W.cancels).reduce((s, [k, v]) => s + v * c(k), 0) + W['B2O3^2'] * c('B2O3') ** 2;
+};
+// Per cent of the glass boiling water carries off from grains in an hour: the dissolving part, which
+// saturates at 100, and the floor the test reports for glass water hardly touches.
+export const dissolved = (F) => 100 / (1 + Math.exp(-(F - W.F0) / W.w));
+export function durability(mol) {
+  const F = freeSoda(mol), part = dissolved(F), r = W.range, c = (k) => mol[k] ?? 0;
+  const R2O = c('Na2O') + c('K2O');
+  const fitted = R2O >= r.R2O[0] && R2O <= r.R2O[1] && ['CaO', 'MgO', 'Al2O3', 'PbO', 'B2O3'].every((k) => c(k) <= r[k]);
+  return { free: F, dissolved: part, loss: W.floor + part, atFloor: part < W.floor, fitted };
+}
+
 /* ---------- the whole batch ---------- */
 export function properties(mol) {
   const v = viscosity(mol), working = v.tempAt(3), softening = v.tempAt(6.6);
@@ -127,6 +145,7 @@ export function properties(mol) {
     ...optics(mol),
     alpha: expansion(mol),
     ferrous: ferrous(mol),
+    durability: durability(mol),
   };
 }
 

@@ -623,7 +623,7 @@
       "title": "SciGlass",
       "by": "EPAM Systems (open release); SciGlass Next at Universität Jena", "date": "2019", "edition": "v1.0 MS Access release (May 2019), read through D. R. Cassar's plain-text conversion (github.com/drcassar/SciGlass, Zenodo 10.5281/zenodo.8287159); browsable as SciGlass Next at sciglass.uni-jena.de (API by key on request)",
       "url": "https://github.com/epam/SciGlass",
-      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py).",
+      "provides": "About 422,000 glass compositions with their properties (viscosity, transition temperature, expansion, index) and over 15,000 optical spectra, ultraviolet to near infrared. The bench uses 10,257 melts made only of its nine oxides, with measured viscosity points, index and Abbe number, extracted by tools/sciglass/extract.py. Its room-temperature density model is fitted to 7,452 of SciGlass's measured densities (tools/sciglass/fit_density.py), and its alumina–magnesia viscosity correction to 2,971 of the melts (tools/sciglass/fit_viscosity.mjs). The fragility stage fits the MYEGA equation to 834 of the bench's melts with long enough viscosity curves (tools/fragility/fit_sciglass.py). Its durability fit uses 53 of the Sheffield boiling-water tests of 1919–1929 kept in SciGlass's source tables (tools/sciglass/fit_durability.py, extract in src/data/durability.json).",
       "would": "Measured spectra for uranium and didymium glass (the spectra are not in the open text conversion; SciGlass Next shows them).",
       "reuse": "open", "license": "ODbL per SciGlass Next; the GitHub LICENSE file is headed ODbL but its body is the MIT license. Treat as ODbL (attribution and share-alike), the stricter reading: the extract public/data/sciglass/bench.json carries the ODbL notice and is offered under ODbL 1.0.",
       "checked": "2026-10-19",
@@ -631,9 +631,73 @@
         { "file": "src/scripts/measured.js", "find": "SciGlass", "stage": "batch" },
         { "file": "public/data/sciglass/bench.json", "find": "ODbL", "stage": "batch" },
         { "file": "public/data/sciglass/fragility.json", "find": "ODbL", "stage": "fragility" },
-        { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" }
+        { "file": "src/data/batch.json", "find": "SciGlass", "stage": "batch" },
+        { "file": "src/data/durability.json", "find": "Open Database License", "stage": "batch" }
       ],
       "caution": "A compilation of literature values, not a curated reference: duplicates and mistyped entries exist (one entry at NBS 710's composition lists n = 1.618). Fluegel's viscosity model was fitted to much of the same literature, so agreement with it is a consistency check, not independent validation."
+    },
+    {
+      "id": "turner-ict-1927", "kind": "reference", "short": "Turner, ICT 1927",
+      "title": "Chemical durability of glasses",
+      "by": "W. E. S. Turner, in the International Critical Tables of Numerical Data, Physics, Chemistry and Technology", "date": "1927", "edition": "International Critical Tables vol. 2, pp. 107–113 (McGraw-Hill for the National Research Council); scanned at the Internet Archive",
+      "url": "https://archive.org/details/B-001-003-368",
+      "provides": "Turner's own summary of the Sheffield durability work, including Dimbleby and Turner's 1926 series (J. Soc. Glass Technol. 10, 304–358): per cent Na₂O extracted and per cent loss in weight of 20–30 mesh grains boiled for one hour in water, 20.24% HCl, 2 N NaOH and 2 N Na₂CO₃, with a repeatability of 5 to 10%. The durability fit on the bench uses the same measurements as SciGlass keeps them.",
+      "reuse": "cite", "license": "Published 1927; the scan is offered by the Internet Archive. Numbers are cited, not copied from the scan.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "International Critical Tables, 1927" }
+      ],
+      "caution": "Grain tests of a century ago: the method differs from today's ISO 719, and the weight-loss test cannot separate durable glasses, which all lose about 0.2%."
+    },
+    {
+      "id": "turner-memoir-1964", "kind": "reference", "short": "Turner memoir",
+      "title": "William Ernest Stephen Turner, 1881–1963",
+      "by": "Biographical Memoirs of Fellows of the Royal Society", "date": "1964", "edition": "DOI 10.1098/rsbm.1964.0019",
+      "url": "https://doi.org/10.1098/rsbm.1964.0019",
+      "provides": "The founding of the Department of Glass Technology at the University of Sheffield: approved by the University Council in June 1915, at first called the Department of Glass Manufacture.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. Facts are cited.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "rsbm.1964.0019" }
+      ]
+    },
+    {
+      "id": "bunker-1994", "kind": "reference", "short": "Bunker 1994",
+      "title": "Molecular mechanisms for corrosion of silica and silicate glasses",
+      "by": "B. C. Bunker", "date": "1994", "edition": "Journal of Non-Crystalline Solids 179, 300–308",
+      "url": "https://doi.org/10.1016/0022-3093(94)90708-0",
+      "provides": "The mechanisms of water attack on silicate glass: ion exchange of hydrogen for alkali, hydrolysis of Si–O–Si bridges, and the dependence of both on pH.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. Cited for mechanism only.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "Bunker 1994" }
+      ]
+    },
+    {
+      "id": "greaves-1985", "kind": "reference", "short": "Greaves 1985",
+      "title": "EXAFS and the structure of glass",
+      "by": "G. N. Greaves", "date": "1985", "edition": "Journal of Non-Crystalline Solids 71, 203–217",
+      "url": "https://ui.adsabs.harvard.edu/abs/1985JNCS...71..203G/abstract",
+      "provides": "The modified random network: in alkali silicate glass the modifier ions cluster into channels through the silica network, a structural picture used for fast alkali transport.",
+      "reuse": "cite", "license": "Journal article; no reuse license stated. Cited for the structural model only.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "1985JNCS...71..203G" }
+      ],
+      "caution": "One structural model among several; the bench uses it only to explain why durability falls steeply with soda, not to compute anything."
+    },
+    {
+      "id": "fluegel-durability", "kind": "method", "short": "Fluegel ISO 719 model",
+      "title": "Calculation of the chemical durability (hydrolytic class, corrosion) of glasses",
+      "by": "Alexander Fluegel", "date": "2007", "edition": "web page and spreadsheet calculator on glassproperties.com",
+      "url": "https://glassproperties.com/chemical_durability/",
+      "provides": "The ISO 719 grain test (2 g of 300–500 µm grains, 60 min in 50 ml water at 98 °C, titrated with 0.01 M HCl) and its five hydrolytic classes, and a statistical model of log acid consumption fitted to 561 glasses (R² 0.91, standard error 0.20 in log).",
+      "would": "A modern hydrolytic class for every batch, separating the durable glasses the Sheffield test cannot. The coefficients are only in GlassChemDurabilityCalc_2.xls, which neither the cloud proxy nor Firecrawl could fetch (2026-10-20).",
+      "reuse": "unknown", "license": "No terms stated on the site.",
+      "checked": "2026-10-20",
+      "usedBy": [
+        { "file": "src/components/Home.astro", "stage": "batch", "find": "glassproperties.com/chemical_durability/" }
+      ]
     },
     {
       "id": "schott-tie29", "kind": "datasheet", "short": "SCHOTT TIE-29",
