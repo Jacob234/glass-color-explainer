@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import StructureSim from '../components/islands/StructureSim.astro';
+import NetworkQn from '../components/islands/NetworkQn.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Base title="Structure Lab" description="A molecular-dynamics glass former: melt four hundred atoms, cool them slowly and they crystallize, quench them and they freeze into a glass.">
@@ -64,6 +65,55 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         crystal grows fastest. (This paragraph is the general account, not taken from a cited source here.)
       </p>
 
+      <h2 id="network">The real network, counted</h2>
+      <p>
+        The atoms above have no bonds to break. A silicate glass does: each silicon sits in a tetrahedron
+        of four oxygens, and in silica every one of those oxygens bridges to a second silicon. Chemists
+        name a silicon by how many bridges it keeps. Q⁴ has all four, Q³ three, down to Q⁰, a lone
+        SiO₄ ion. Each Na₂O or K₂O added brings one oxygen, which cuts one bridge into two
+        non-bridging oxygens, so the average count is fixed by the recipe: at x mol% alkali oxide there are
+        2x/(100 − x) cuts per silicon. What the recipe does not fix is how the cuts are shared out, and
+        that can be measured. The ²⁹Si nucleus resonates at a slightly different frequency for each Qⁿ,
+        and magic-angle-spinning NMR separates the peaks well enough to count them.
+      </p>
+      <p>
+        Two simple answers bracket the truth. If every bridge were equally likely to break, the shares would
+        follow a binomial law, and some silicons would lose two or three bridges almost at once. If each
+        silicon had to lose one bridge before any lost a second, the shares would change in straight lines:
+        all Q³ at the disilicate, M₂O·2SiO₂, and all Q² at the metasilicate, M₂O·SiO₂. The NMR points sit
+        close to the second, with the corners rounded.
+      </p>
+      <NetworkQn />
+      <p>
+        The rounding is what the statistical-mechanics model describes. Each new cut chooses a silicon
+        species with a probability proportional to how many of that species are left and to a Boltzmann
+        factor, exp(−H/RT<sub>f</sub>), where H is how much less favorable it is to cut that species than a
+        Q⁴. When the liquid is hot the Boltzmann factors flatten and the cuts drift toward the random pattern; as it cools the
+        preference sharpens toward the binary order. The structure stops changing at the fictive
+        temperature T<sub>f</sub>, roughly the glass transition, so a glass quenched faster keeps a hotter,
+        more random network. The model was proposed by John Mauro in 2013 and fitted to silicates by
+        Bødker and colleagues (2019); the curves here are reimplemented from their equations and their
+        Table 1 enthalpies, and each glass is frozen at its own Tg from the oxide bench's viscosity model.
+        Potash holds the order more strictly than soda: its fitted enthalpies are larger.
+      </p>
+      <p>
+        This is the bridge between the two halves of the site. On the
+        <a href={`${base}/#oxides`}>oxide bench</a> in stage 01, every slider moves the same count for a
+        real batch, after alumina and boron have taken their share of the modifier, and the viscosity model
+        beside it shows what fewer bridges do: the network rearranges at a lower temperature and the glass
+        melts, works and anneals cooler.
+      </p>
+      <p class="howto">
+        <strong>How this was computed.</strong> Binary glasses from 0 to 60 mol% alkali in steps of half a
+        percent, each frozen at its own 10¹² Pa·s temperature from the bench's viscosity model. Modifier is
+        added a hundredth of a non-bridging oxygen per silicon at a time, and each step is shared among
+        Q⁴…Q¹ by the weights above. The miss is the root mean square over every species of every measured
+        glass. Code: <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/src/scripts/qn.js" rel="noopener">qn.js</a>; enthalpies and NMR rows:
+        <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/src/data/qn.json" rel="noopener">qn.json</a>, read from the data files by
+        <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/tools/qn/extract_nmr.mjs" rel="noopener">tools/qn/extract_nmr.mjs</a>; the quoted
+        figures, including the 800 K check: <a href="https://github.com/Jacob234/glass-color-explainer/blob/main/tools/qn/validate.mjs" rel="noopener">tools/qn/validate.mjs</a>.
+      </p>
+
       <h2>Simulation is fast, the furnace is slow</h2>
       <p>
         Taken as argon, the slowest rate here is about 10¹¹ kelvin per second. A lehr cools glass at
@@ -102,6 +152,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <li>B. W. H. van Beest, G. J. Kramer and R. A. van Santen, Force fields for silicas and aluminophosphates based on ab initio calculations, <a href="https://doi.org/10.1103/PhysRevLett.64.1955" rel="noopener">Phys. Rev. Lett. 64, 1955 (1990)</a>: the BKS potential.</li>
           <li>P. R. ten Wolde, M. J. Ruiz-Montero and D. Frenkel, Numerical evidence for bcc ordering at the surface of a critical fcc nucleus, <a href="https://doi.org/10.1103/PhysRevLett.75.2714" rel="noopener">Phys. Rev. Lett. 75, 2714 (1995)</a>: the bond-order test for which atoms are crystalline.</li>
           <li>P. Y. Huang et al., Direct imaging of a two-dimensional silica glass on graphene, <a href="https://doi.org/10.1021/nl204423x" rel="noopener">Nano Lett. 12, 1081–1086 (2012)</a>; see the <a href="https://news.cornell.edu/node/279316" rel="noopener">Cornell summary</a>.</li>
+          <li>M. S. Bødker, S. S. Sørensen, J. C. Mauro and M. M. Smedskjaer, Predicting composition–structure relations in alkali borosilicate glasses using statistical mechanics, <a href="https://doi.org/10.3389/fmats.2019.00175" rel="noopener">Front. Mater. 6, 175 (2019)</a>, open access (CC BY): the model's equations and the silicate enthalpies of Table 1. Mauro's original proposal is cited there.</li>
+          <li>M. S. Bødker, C. J. Wilkinson, J. C. Mauro and M. M. Smedskjaer, StatMechGlass: Python based software for composition–structure prediction in oxide glasses using statistical mechanics, <a href="https://doi.org/10.1016/j.softx.2021.100913" rel="noopener">SoftwareX 17, 100913 (2022)</a>: mixing modifiers (eq. 3). The software is GPL and is not used here; its data files supplied the NMR table below.</li>
+          <li>H. Maekawa, T. Maekawa, K. Kawamura and T. Yokokawa, The structural groups of alkali silicate glasses determined from ²⁹Si MAS-NMR, <a href="https://doi.org/10.1016/0022-3093(91)90400-Z" rel="noopener">J. Non-Cryst. Solids 127, 53–64 (1991)</a>: the measured points, as tabulated in StatMechGlass's data files (some potassium points are from Schroeder and colleagues, 1973, per Bødker et al.).</li>
           <li>A. Rahman, Correlations in the motion of atoms in liquid argon, Phys. Rev. 136, A405 (1964): the first molecular dynamics with a Lennard-Jones potential. The argon scale (ε/k ≈ 120 K, σ ≈ 0.34 nm, τ ≈ 2.2 ps) is the textbook one, quoted for scale and not checked against this paper.</li>
         </ul>
       </section>

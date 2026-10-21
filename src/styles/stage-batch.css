@@ -9,3 +9,8 @@
 .oxides .slab-small { max-width: 16rem; margin-top: 1rem; }
 .oxides .plot .x { fill: none; stroke: var(--ink); stroke-width: 1.8; }
 .oxides .plot .x.faint { stroke: var(--ink-3); stroke-width: 1.2; }
+.oxides .net-intro { margin-top: 1.6rem; }
+.qn-key b { display: inline-block; width: 22px; height: 0; border-top: 1.4px solid var(--ink); }
+.qn-key b.k-rand { border-top: 1px dashed var(--ink-3); }
+.qn-key b.k-ring { width: 7px; height: 7px; border: 1.4px solid var(--ink); border-radius: 50%; }
+.qn-key b.k-bin { border-top: 1px dotted var(--ink-3); }

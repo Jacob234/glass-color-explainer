@@ -1,0 +1,46 @@
+---
+// The real network beside the toy: Qⁿ in soda– and potash–silica glass, three models and the NMR.
+// Model in scripts/qn.js (data/qn.json), drawing in scripts/qn-plot.js, island in scripts/islands/qn-lab.js.
+---
+<figure class="qn-lab">
+  <div class="qn-chips" role="group" aria-label="which alkali">
+    <button type="button" class="chip chip-plain" data-ox="Na2O" aria-pressed="true">soda, Na₂O</button>
+    <button type="button" class="chip chip-plain" data-ox="K2O" aria-pressed="false">potash, K₂O</button>
+  </div>
+  <div class="qn-models" role="group" aria-label="which model to draw">
+    <button type="button" class="chip chip-plain" data-m="sm" aria-pressed="true">statistical mechanics</button>
+    <button type="button" class="chip chip-plain" data-m="random" aria-pressed="false">random</button>
+    <button type="button" class="chip chip-plain" data-m="binary" aria-pressed="false">binary</button>
+  </div>
+  <svg class="plot" viewBox="0 0 640 340" role="img" aria-label="share of silicons with four, three, two, one or no bridging oxygens against mol% alkali oxide in an alkali silicate glass: a model's curves and measured NMR points"></svg>
+  <div class="qn-key mono" aria-hidden="true"><span><b></b>the model chosen</span><span><b class="k-ring"></b>²⁹Si NMR, Maekawa et al. 1991</span></div>
+  <p class="qn-read" aria-live="polite"></p>
+</figure>
+<script>
+  import { initQnLab } from '../../scripts/islands/qn-lab.js';
+  for (const el of document.querySelectorAll('.qn-lab')) initQnLab(el);
+</script>
+<style>
+  .qn-lab { margin: 1.2rem 0 1.6rem; }
+  .qn-chips, .qn-models { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.5rem; }
+  .qn-lab .chip { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.8rem; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; }
+  .qn-lab .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .qn-lab svg { display: block; width: 100%; height: auto; }
+  .qn-lab svg :global(.axis line) { stroke: var(--ink); stroke-width: 1; }
+  .qn-lab svg :global(text) { font-family: var(--mono); fill: var(--ink-2); font-size: 12px; }
+  .qn-lab svg :global(.lab) { fill: var(--ink); }
+  .qn-lab svg :global(.lab.faint) { fill: var(--ink-3); }
+  .qn-lab svg :global(.ln) { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+  .qn-lab svg :global(.ln.thin) { stroke-width: 1; }
+  .qn-lab svg :global(.ln.faint) { stroke: var(--ink-3); stroke-width: 1; }
+  .qn-lab svg :global(.ln.dash) { stroke-dasharray: 4 4; }
+  .qn-lab svg :global(.ring) { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+  .qn-key { display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; margin-top: 0.4rem; font-size: 0.64rem; color: var(--ink-2); }
+  .qn-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .qn-key b { display: inline-block; width: 22px; border-top: 1.8px solid var(--ink); }
+  .qn-key b.k-ring { width: 7px; height: 7px; border: 1.4px solid var(--ink); border-radius: 50%; }
+  .qn-read { margin: 0.6rem 0 0; font-size: 0.95rem; }
+  @media (max-width: 820px) {
+    .qn-lab svg :global(text) { font-size: 18px; }
+  }
+</style>

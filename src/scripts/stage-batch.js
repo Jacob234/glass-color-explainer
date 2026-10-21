@@ -6,6 +6,8 @@ import * as m from './measured.js';
 import { GLASSES, index, abbe, LINES } from './dispersion.js';
 import sheffield from '../data/durability.json' with { type: 'json' };
 import batchData from '../data/batch.json' with { type: 'json' };
+import * as qn from './qn.js';
+import * as qp from './qn-plot.js';
 
 const $ = (id) => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
@@ -167,6 +169,14 @@ export function batchStage({ colorOf, onLamp }) {
   const vGlass = svgEl('g'), aGlass = svgEl('g');
   vs.insertBefore(vGlass, live); as.insertBefore(aGlass, alive);
 
+  /* the network: Qⁿ against non-bridging oxygens per silicon, for this batch's modifiers at its own Tg */
+  const NX1 = 2.5, NF = qp.frame({ x0: 0, x1: NX1, ticks: [0, 0.5, 1, 1.5, 2, 2.5], fmt: (t) => t.toFixed(1), xlabel: 'non-bridging oxygens per silicon' });
+  const netLive = svgEl('g');
+  $('bNetSvg').replaceChildren(NF.g, netLive);
+  const baseNet = qn.batchNetwork(b.BASE.mol);
+  const randomRows = Array.from({ length: 51 }, (_, i) => ({ x: (i * NX1) / 50, Q: qn.random((i * NX1) / 50) }));
+  const randomLines = qp.curves(NF, randomRows, { cls: 'ln faint dash', label: false, species: [0, 1, 2, 3] });
+
   /* the slab */
   const slabSvg = $('bSlab'), face = slabSvg.querySelector('.face'), cast = slabSvg.querySelector('.cast'), edges = slabSvg.querySelectorAll('.edge');
 
@@ -240,6 +250,8 @@ export function batchStage({ colorOf, onLamp }) {
     );
     $('bDurRead').textContent = durText(du, mol);
 
+    renderNet(mol);
+
     const molSi = mol.SiO2, R2O = mol.Na2O + mol.K2O;
     const warn = molSi < 43 || molSi > 89 || mol.B2O3 > 17 || mol.Al2O3 > 10
       ? ' This batch is outside the glasses the viscosity model was fitted to, so its curve is a guess.'
@@ -261,6 +273,32 @@ export function batchStage({ colorOf, onLamp }) {
     if (bare && !du.atFloor) t += ' Nothing in it holds the soda; this is the glass lime is there to prevent.';
     if (!du.fitted && !du.atFloor) t += ' Its composition is outside the glasses the durability fit saw, so the number is a guess.';
     return t;
+  }
+  function renderNet(mol) {
+    const n = qn.batchNetwork(mol), pct = (v) => `${Math.round(v * 100)}%`;
+    const rows = qn.trajectory(NX1, n.mix, n.Tf);
+    const items = [...randomLines, ...qp.curves(NF, rows, { cls: 'ln', species: [0, 1, 2, 3] })];
+    const x = Math.min(NX1, n.q), far = Math.abs(n.q - baseNet.q) > 0.08;
+    if (far) items.push(...qp.rule(NF, baseNet.q, 'window', { faint: true, anchor: baseNet.q > n.q ? 'start' : 'end' }));
+    items.push(...qp.rule(NF, x, 'this batch', { anchor: far && baseNet.q > n.q ? 'end' : 'start' }));
+    n.Q.slice(0, 4).forEach((v, i) => { if (v > 0.005) items.push(svgEl('circle', { cx: NF.sx(x), cy: NF.sy(v), r: 3.2, class: 'dot' })); });
+    netLive.replaceChildren(...items);
+    const rows2 = [
+      ['Q⁴, four bridges', pct(n.Q[0]), n.Q[0]],
+      ['Q³, three', pct(n.Q[1]), n.Q[1]],
+      ['Q², two: chains', pct(n.Q[2]), n.Q[2]],
+      ['non-bridging O per Si', n.q.toFixed(2), n.q / 2.5],
+    ];
+    if (n.N4 != null) rows2.push(['boron as BO₄', pct(n.N4), n.N4]);
+    meters($('bNetMeters'), rows2);
+    const r = qn.random(n.q);
+    let t = n.q < 0.005
+      ? `No modifier is left over to break the silicate network: ${n.toAl > 0.25 ? `alumina takes ${n.toAl.toFixed(1)} mol% of it to balance its tetrahedra` : ''}${n.toAl > 0.25 && n.toB > 0.25 ? ' and ' : ''}${n.toB > 0.25 ? `boron takes ${n.toB.toFixed(1)} mol% to turn ${pct(n.N4)} of its triangles into tetrahedra` : ''}. Every silicon is Q⁴, as in silica.`
+      : `${pct(n.Q[0])} of the silicons keep all four bridges and ${pct(n.Q[1])} have three. If every bridge were equally likely to break, the same ${n.q.toFixed(2)} cuts per silicon would leave ${pct(r[0])} and ${pct(r[1])}, with ${pct(r[2] + r[3] + r[4])} at two or fewer; the model's enthalpies make a modifier prefer a silicon that is still whole, so the cuts spread out.`;
+    if (n.q >= 0.005 && (n.toAl > 0.25 || n.toB > 0.25)) t += ` Before that, ${[n.toAl > 0.25 && `alumina takes ${n.toAl.toFixed(1)} mol% of the modifier`, n.toB > 0.25 && `boron takes ${n.toB.toFixed(1)} mol% (${pct(n.N4)} of it four-coordinated)`].filter(Boolean).join(' and ')}, mending rather than breaking.`;
+    if (n.q >= 0.005 && n.assumed > 0.05) t += ` ${pct(n.assumed)} of the breaking modifier is lime, magnesia or lead oxide, which the model has no fitted values for; it is counted as soda.`;
+    t += far ? ` ${n.q < baseNet.q ? 'More bridges make a stiffer network' : 'Fewer bridges make a network that rearranges at lower temperature'}: this batch anneals at ${Math.round(n.Tf - 273.15)} °C against window glass's ${Math.round(baseNet.Tf - 273.15)} °C${n.q < baseNet.q && n.Tf < baseNet.Tf ? ', though here other oxides pull the other way' : n.q > baseNet.q && n.Tf > baseNet.Tf ? ', though here other oxides pull the other way' : ''}.` : ` This batch anneals at ${Math.round(n.Tf - 273.15)} °C, the temperature its network froze at.`;
+    $('bNetRead').textContent = t;
   }
   function measuredText(nearV, nearA) {
     if (sgState === 'loading' || sgState === 'idle') return 'Fetching measured melts from SciGlass…';
