@@ -36,7 +36,7 @@
       "title": "Simple Analytic Approximations to the CIE XYZ Color Matching Functions",
       "by": "Chris Wyman, Peter-Pike Sloan and Peter Shirley", "date": "2013", "edition": "JCGT 2(2), 1–11",
       "url": "https://jcgt.org/published/0002/02/01/",
-      "provides": "A sum of piecewise Gaussians that reproduces the CIE 1931 curves to about 1%, so the engine needs no table.",
+      "provides": "A sum of piecewise Gaussians that follows the CIE 1931 curves within 0.025 (peaks 1 to 1.8), so the engine needs no table. Checked against colour-science: its x̄ tail is too low beyond about 680 nm, half the tabulated value at 700 nm, which shifts colors under warm light and dull red glow.",
       "reuse": "open", "license": "Authors keep copyright; JCGT articles may be redistributed unmodified under CC BY-ND 4.0 and their code is under an open-source license. The fit's coefficients are copied into optics-core.js with this citation.",
       "checked": "2026-10-19",
       "usedBy": [{ "file": "src/scripts/optics-core.js", "find": "Wyman, Sloan & Shirley", "stage": "engine" }]
@@ -56,10 +56,10 @@
       "title": "Colour (colour-science)",
       "by": "Colour Developers", "date": "2025", "edition": "v0.4.7",
       "url": "https://github.com/colour-science/colour",
-      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json, and the CIE 1964 10° table, Stockman & Sharpe fundamentals and CIE 2015 functions behind observers.json.",
+      "provides": "A Python colour-science library whose copies of the CIE tables were used to build lamps.json, and the CIE 1964 10° table, Stockman & Sharpe fundamentals and CIE 2015 functions behind observers.json. It is also the test oracle for the color engine: npm test checks every colorant's color under five lamps against values it computed.",
       "reuse": "open", "license": "BSD 3-Clause.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }, { "file": "scripts/build_observers.py", "find": "colour-science", "stage": "eyes" }]
+      "usedBy": [{ "file": "src/data/lamps.json", "find": "colour-science", "stage": "lamps" }, { "file": "scripts/build_observers.py", "find": "colour-science", "stage": "eyes" }, { "file": "scripts/build_oracle.py", "find": "colour-science", "stage": "engine" }]
     },
     {
       "id": "taran-2009", "kind": "measurement", "short": "Taran et al. 2009",
