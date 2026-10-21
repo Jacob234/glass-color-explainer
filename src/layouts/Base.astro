@@ -1,9 +1,13 @@
 ---
 import '../styles/global.css';
 interface Props { title: string; description?: string; }
-const { title, description } = Astro.props;
+const SITE = 'How Glass Works';
+const TAGLINE = 'What glass is, how it flows, holds stress, bends light, resists water and takes color, computed at every stage of one piece of glass from batch to showroom.';
+const { title, description = TAGLINE } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const current = Astro.url.pathname;
+const fullTitle = title === 'Home' ? SITE : `${title} | ${SITE}`;
+const canonical = new URL(current.endsWith('/') ? current : `${current}/`, Astro.site).href;
 const navLinks = [
   { href: `${base}/#read`, label: 'read' },
   { href: `${base}/labs/`, label: 'labs' },
@@ -23,12 +27,19 @@ const labPages = ['light-lab', 'forming-lab', 'structure-lab', 'network-lab', 'm
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" />
-  <title>{title} | Why Glass Has Color</title>
-  {description && <meta name="description" content={description} />}
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:site_name" content={SITE} />
+  <meta property="og:title" content={title === 'Home' ? SITE : title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={title === 'Home' ? 'website' : 'article'} />
+  <meta property="og:url" content={canonical} />
+  <meta name="twitter:card" content="summary" />
 </head>
 <body>
   <nav class="site-nav wrap" aria-label="Site">
-    <a class="brand" href={`${base}/`}>Why glass has color</a>
+    <a class="brand" href={`${base}/`}>How glass works</a>
     {navLinks.map((l) => (
       <a href={l.href} aria-current={current === l.href || (l.label === 'labs' && labPages.some((p) => current.startsWith(`${base}/${p}/`))) ? 'page' : undefined}>{l.label}</a>
     ))}

@@ -7,6 +7,7 @@
 .hero h1 i, .stage h2 i { font-style: italic; }
 .hero-sub { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; margin-top: 1.6rem; align-items: end; }
 .hero-sub p { margin: 0; font-size: 1.15rem; max-width: 30rem; text-wrap: pretty; }
+.hero-sub p + p { margin-top: 0.8rem; }
 .hero-sub .mono { justify-self: end; text-align: right; }
 .table { position: relative; height: clamp(420px, 56vw, 600px); margin-top: 2rem; border-radius: 4px; overflow: hidden; touch-action: none;
   background: radial-gradient(120% 90% at 50% 45%, #fff 0%, #fbfbf9 55%, #eef0ec 100%);
@@ -228,6 +229,7 @@ svg.slab, .scene { display: block; width: 100%; height: auto; overflow: visible;
 .hist-card .more span { color: var(--ink-3); }
 
 /* ---- the long read ---- */
+.reading-note { max-width: 46rem; margin: 0 0 1rem; color: var(--ink-2); }
 .reading { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0 2rem; }
 .reading a { display: grid; align-content: start; gap: 0.25rem; padding: 1rem 0 1.2rem; border-bottom: 1px solid var(--rule); text-decoration: none; height: 100%; }
 .reading strong { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.1; }
