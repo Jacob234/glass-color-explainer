@@ -1,0 +1,48 @@
+---
+// The chapters index: the walk as an overview, one card per lesson. A card opens its chapter page,
+// or the lesson's place on the walk until it has one.
+import Base from '../../layouts/Base.astro';
+import { LESSONS, STRANDS, chapterHref } from '../../lib/lessons';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const strandLabel = Object.fromEntries(STRANDS.map((s) => [s.id, s.label]));
+---
+<Base title="Chapters" description="How Glass Works one lesson at a time: each stage of the walk from the material to the showroom, with what it claims and the physics it builds on.">
+  <main class="wrap chapters">
+    <p class="detail-type">Chapters</p>
+    <h1>One piece of glass, <i>a stage at a time</i></h1>
+    <p class="summary">
+      These are the stages of the <a href={`${base}/#glass`}>walk</a>, one card each, in studio order. Each card states the stage's claim
+      and the physics it belongs to. The <a href={`${base}/atlas/`}>atlas</a> lays the same lessons out by physics.
+      Two stages have their own chapter page so far; the rest open at their place on the walk.
+    </p>
+    <ol class="cards">
+      {LESSONS.map((l) => (
+        <li class:list={['card', { 'has-chapter': l.chapter }]}>
+          <a href={chapterHref(l)}>
+            <span class="mono">{l.num} · {l.name}</span>
+            <strong>{l.title}</strong>
+            <span class="claim">{l.claim}</span>
+            <span class="meta">
+              <span>{l.strands.map((s) => strandLabel[s]).join(' · ')}</span>
+              <span class="go">{l.chapter ? 'chapter →' : 'on the walk →'}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </main>
+</Base>
+<style>
+  .chapters { padding-top: 2rem; padding-bottom: 5rem; }
+  .chapters h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; margin: 0.4rem 0 0; text-wrap: balance; }
+  .summary { max-width: 46rem; margin-top: 1rem; }
+  .cards { list-style: none; padding: 0; margin: 2.2rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .card { background: var(--paper); min-width: 0; }
+  .card a { display: grid; grid-template-rows: auto auto 1fr auto; gap: 0.45rem; height: 100%; padding: 1rem 1.1rem 1.1rem; text-decoration: none; }
+  .card a:hover { background: var(--paper-2); }
+  .card strong { font-family: var(--display); font-weight: 500; font-size: 1.35rem; line-height: 1.15; text-wrap: balance; }
+  .claim { font-size: 0.92rem; color: var(--ink-2); }
+  .meta { display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .has-chapter .go { color: var(--ink); }
+  .has-chapter { box-shadow: inset 0 0 0 1.5px var(--ink); }
+</style>

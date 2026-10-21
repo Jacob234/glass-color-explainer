@@ -1,0 +1,78 @@
+---
+// A chapter: one lesson of the walk on its own page, with what it builds on, where to go further,
+// and its neighbors in walk order. The lesson component is the same one the home page renders.
+import Base from '../../layouts/Base.astro';
+import LampBar from '../../components/LampBar.astro';
+import WhatGlassIs from '../../components/WhatGlassIs.astro';
+import ColorRod from '../../components/ColorRod.astro';
+import { LESSONS, STEPS, STRANDS, chapterHref, walkHref, essayHref, labHref, type Lesson } from '../../lib/lessons';
+import '../../styles/home.css';
+
+const BODIES: Record<string, typeof WhatGlassIs> = { material: WhatGlassIs, 'color-rod': ColorRod };
+
+export function getStaticPaths() {
+  return LESSONS.filter((l) => l.chapter).map((lesson) => ({ params: { slug: lesson.chapter }, props: { lesson } }));
+}
+const { lesson } = Astro.props as { lesson: Lesson };
+const Body = BODIES[lesson.chapter!];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const i = LESSONS.indexOf(lesson);
+const prev = LESSONS[i - 1], next = LESSONS[i + 1];
+const step = STEPS.find((s) => s.id === lesson.step)!;
+const strands = lesson.strands.map((id) => STRANDS.find((s) => s.id === id)!);
+const plain = lesson.title;
+---
+<Base title={`${lesson.num} ${plain}`} description={lesson.claim}>
+  <main class="chapter">
+    <header class="wrap chapter-head">
+      <p class="crumbs mono"><a href={`${base}/chapters/`}>chapters</a> · {lesson.num} {lesson.name}</p>
+      <p class="tags">
+        <span class="mono">studio</span> <a href={`${base}/atlas/#step-${step.id}`}>{step.label}</a>
+        <span class="mono">physics</span> {strands.map((s) => <a href={`${base}/atlas/#strand-${s.id}`}>{s.label}</a>)}
+      </p>
+      <p class="chapter-note">
+        Every color here is computed from absorption spectra through the CIE 1931 observer, under the lamp at the foot of the screen.
+        The same lesson sits <a href={walkHref(lesson)}>on the walk</a> between its neighbors.
+      </p>
+    </header>
+
+    <Body />
+
+    <section class="wrap further">
+      {(lesson.essays.length > 0 || lesson.labs.length > 0) && (
+        <div>
+          <h2 class="mono">go further</h2>
+          <ul>
+            {lesson.essays.map(([slug, label]) => <li><a href={essayHref(slug)}>{label}</a> <span>essay</span></li>)}
+            {lesson.labs.map(([slug, label]) => <li><a href={labHref(slug)}>{label}</a> <span>lab</span></li>)}
+          </ul>
+        </div>
+      )}
+      <nav class="neighbors" aria-label="walk order">
+        {prev ? <a href={chapterHref(prev)}><span class="mono">← {prev.num} {prev.name}</span>{prev.title}</a> : <span />}
+        {next && <a class="next" href={chapterHref(next)}><span class="mono">{next.num} {next.name} →</span>{next.title}</a>}
+      </nav>
+    </section>
+  </main>
+  <LampBar />
+  <script>
+    import { initHome } from '../../scripts/home.js';
+    initHome();
+  </script>
+</Base>
+<style>
+  .chapter-head { padding-top: 2rem; }
+  .crumbs a { color: inherit; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; align-items: baseline; margin: 0.6rem 0 0; font-size: 0.9rem; }
+  .tags .mono:not(:first-child) { margin-left: 0.8rem; }
+  .chapter-note { max-width: 46rem; margin: 0.8rem 0 0; font-size: 0.88rem; color: var(--ink-2); }
+  .further { padding-top: 1rem; padding-bottom: 5rem; }
+  .further h2 { color: var(--ink); margin: 0; }
+  .further ul { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.35rem; }
+  .further li span { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); margin-left: 0.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .neighbors { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 2.4rem; border-top: 1px solid var(--ink); padding-top: 1rem; }
+  .neighbors a { display: grid; gap: 0.2rem; text-decoration: none; font-family: var(--display); font-size: 1.15rem; line-height: 1.25; min-width: 0; }
+  .neighbors a:hover { text-decoration: underline; text-decoration-color: var(--ink-3); }
+  .neighbors .next { text-align: right; }
+  @media (max-width: 560px) { .neighbors { grid-template-columns: 1fr; } .neighbors .next { text-align: left; } }
+</style>

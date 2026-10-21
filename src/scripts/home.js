@@ -1115,6 +1115,8 @@ function ndLamps() {
 const BASE = { '--paper': '#f3f4f1', '--paper-2': '#e9eae5', '--rule': '#d6d8d2', '--panel': '#fafaf8' };
 // When the paper goes nearly black (the black light), the page needs light ink and visible rules.
 const DARK = { '--rule': '#2d2838', '--paper-2': '#17131f', '--panel': '#110e18' };
+// The lamp carries from page to page (the walk and every chapter), remembered in this browser.
+const LAMP_KEY = 'lamp';
 let setLamp = () => {};
 function lampSwitch() {
   const bar = $('lamps'), spark = $('lampSpark'), root = document.documentElement;
@@ -1154,14 +1156,17 @@ function lampSwitch() {
     for (const [b, x] of buttons) b.setAttribute('aria-pressed', String(x === l));
     toggle.replaceChildren(h('i', { style: { '--c': lampColor(l.spd) } }), l.label);
     toggle.setAttribute('aria-label', `lamp: ${l.label}. Choose another`);
-    $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
-    $('lampNote').textContent = l.note;
+    if ($('lampName')) $('lampName').textContent = l.id === 'daylight' ? 'daylight' : `a ${l.label}`;
+    if ($('lampNote')) $('lampNote').textContent = l.note;
+    try { localStorage.setItem(LAMP_KEY, l.id); } catch { /* no storage: the lamp resets on the next page */ }
     sparkline();
     for (const fn of relight) fn();
   }
   addEventListener('resize', sparkline);
   setLamp = set;
-  set(lamp);
+  let saved = null;
+  try { saved = localStorage.getItem(LAMP_KEY); } catch { /* storage blocked */ }
+  set(LAMPS.find((l) => l.id === saved) ?? lamp);
 }
 
 /* ---------- ← the record: the history rail ---------- */
@@ -1319,6 +1324,24 @@ function fitBench() {
   };
 }
 
+// The walk carries every stage; a chapter page carries one. Each stage starts only if its section
+// is on the page, so the same instruments run in both views.
 export function initHome() {
-  lightTable(); glassStage({ colorOf, onLamp }); batch(); batchStage({ colorOf, onLamp }); redox(); fragilityStage(); ions(vessel()); heat(); strike(); lehr(); dichroic(); initDispersion({ getLamp: () => lamp, onLamp }); rack(); showroom(); ndLamps(); initEyes({ getLamp: () => lamp, onLamp }); historyRail(); lampSwitch();
+  const on = (id, start) => { if ($(id)) start(); };
+  on('table', lightTable);
+  glassStage({ colorOf, onLamp });
+  on('batch', () => { batch(); batchStage({ colorOf, onLamp }); });
+  on('melt', redox);
+  fragilityStage();
+  on('ions', () => ions(vessel()));
+  on('heat', heat);
+  on('strike', strike);
+  on('lehr', lehr);
+  on('light', dichroic);
+  on('prism', () => initDispersion({ getLamp: () => lamp, onLamp }));
+  on('rack', rack);
+  on('showroom', () => { showroom(); ndLamps(); });
+  on('eyes', () => initEyes({ getLamp: () => lamp, onLamp }));
+  on('history', historyRail);
+  lampSwitch();
 }

@@ -4,6 +4,7 @@
 // scripts/glass.js, data in data/viscosity.json.
 import vis from '../data/viscosity.json';
 import '../styles/stage-glass.css';
+import Recall from './Recall.astro';
 const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
 ---
 <section class="wrap stage" id="glass">
@@ -11,7 +12,7 @@ const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
   <div class="stage-body">
     <h2>Glass is a liquid that <i>stopped</i></h2>
     <div class="prose">
-      <p>Now the material itself. Cool most liquids and at one temperature their atoms drop into a repeating crystal. Cool a silicate melt and it only gets stiffer, smoothly, until it is too stiff to rearrange at all. What is left keeps the liquid's disorder and gains a solid's rigidity. Glass has no melting point, and everything a glassblower does depends on that slow stiffening.</p>
+      <p>Cool most liquids and at one temperature their atoms drop into a repeating crystal. Cool a silicate melt and it only gets stiffer, smoothly, until it is too stiff to rearrange at all. What is left keeps the liquid's disorder and gains a solid's rigidity. Glass has no melting point, and everything a glassblower does depends on that slow stiffening.</p>
     </div>
 
     <div class="mat" id="net">
@@ -85,5 +86,6 @@ const pt = Object.fromEntries(vis.points.map((p) => [p.id, p]));
       </div>
       <p class="more"><a href={vis.maxwell.source.url} rel="noopener">Zanotto, Do cathedral glasses flow? ↗</a> <a href="https://doi.org/10.1111/jace.15092" rel="noopener">Gulbiten, Mauro, Guo and Boratav, Viscous flow of medieval cathedral glass (2018) ↗</a> <a href="https://doi.org/10.1021/ja01349a006" rel="noopener">Zachariasen, The atomic arrangement in glass (1932) ↗</a> <a href="https://doi.org/10.1103/PhysRevLett.54.1392" rel="noopener">Wooten, Winer and Weaire, Computer generation of structural models of amorphous Si and Ge (1985) ↗</a></p>
     </div>
+    <Recall id="glass" />
   </div>
 </section>

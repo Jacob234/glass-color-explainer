@@ -1,0 +1,66 @@
+---
+// Stage 03, the color rod: one ion's bands, then the same glass blown into a bowl and pulled into
+// cane. A lesson: it renders on the walk (home page) and as its own chapter. The instruments are
+// ions() and vessel() in scripts/home.js.
+import Slab from './Slab.astro';
+import Needs from './Needs.astro';
+import Recall from './Recall.astro';
+import { byId, walkHref } from '../lib/lessons';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const page = (slug: string) => `${base}/concepts/${slug}/`;
+const walk = (id: string) => walkHref(byId[id]);
+---
+<section class="wrap stage" id="ions">
+  <div class="stage-rail"><div class="stage-num">03</div><span class="mono">the color rod</span></div>
+  <div class="stage-body">
+    <Needs id="ions" />
+    <h2>Each ion absorbs <i>its own</i> bands</h2>
+    <div class="prose">
+      <p>Transition-metal ions are the most common colorants. Their outer d-electrons can be lifted between energy levels by light of particular colors, and the surrounding glass sets the spacing. Cobalt takes the orange and red. Copper takes the red end. Chromium takes violet and red, which leaves a green window. Pick a rod to see which part of the spectrum it removes.</p>
+    </div>
+    <div class="chips" id="rods" role="group" aria-label="colorant"></div>
+    <div class="bench bench-tight">
+      <div>
+        <canvas class="strip" id="strip3" aria-label="spectrum of light in and light out"></canvas>
+        <div class="strip-key"><span>380 nm</span><span>top: light in · bottom: light out</span><span>780 nm</span></div>
+      </div>
+      <div class="controls">
+        <Slab id="slab3" class="slab-small" />
+        <div class="ctl"><label class="mono" for="conc">amount × thickness <output id="concOut"></output></label>
+          <input id="conc" type="range" min="-200" max="200" value="0" /><div class="ends"><span>a trace</span><span>heavy</span></div></div>
+      </div>
+    </div>
+    <p class="readout prose" id="ionRead"></p>
+    <p class="more"><a href={page('transition-metal-colorants')}>Read: transition metal colorants →</a> <a href={page('rare-earth-colorants')}>Rare-earth colorants →</a></p>
+
+    <div class="vessel" id="vessel">
+      <h3>Now <i>blow</i> it</h3>
+      <div class="prose">
+        <p>A rod's color is not the color of the finished piece. Melted onto a gather and blown out, the same glass becomes a wall that is thin at the rim and heavy at the foot, and every part of it is colored by its own thickness. This is the <a href={walk('batch')}>windowpane edge from the batch</a>, spread over a whole object.</p>
+        <p>The bowl is drawn in half section, the way a glass drawing shows it. On the left the near half is cut away: the cut wall is tinted by its thickness, and behind it you see the inside of the far wall. On the right is the bowl as you would see it held up to the light. It uses the rod and amount chosen above.</p>
+      </div>
+      <div class="bench bench-top">
+        <div class="lightbox"><canvas id="bowl" aria-label="a blown bowl in half section, colored by the glass each ray crosses"></canvas></div>
+        <div class="controls">
+          <div class="chips" id="build" role="group" aria-label="how the color is put on"></div>
+          <div class="ctl"><label class="mono" for="wall">wall thickness <output id="wallOut"></output></label>
+            <input id="wall" type="range" min="-100" max="100" value="0" /><div class="ends"><span>blown thin</span><span>heavy</span></div></div>
+          <dl class="meters" id="bowlMeters"></dl>
+          <p class="readout" id="bowlRead"></p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>Glassblowers get around this by casing. They put the color on as a thin skin of strong glass and blow clear glass inside it, so every part of the piece crosses about the same amount of color however unevenly the clear behind it was blown. Switch to cased and the foot stops going dark.</p>
+      </div>
+      <h4 class="mono">the same rule in a cane</h4>
+      <div class="bench bench-top">
+        <div class="lightbox"><canvas id="cane" aria-label="a cane cut end on, then seen from the side"></canvas>
+          <div class="strip-key"><span>slice, end on</span><span>cane, side on</span></div></div>
+        <p class="readout" id="caneRead"></p>
+      </div>
+      <p class="aside"><b>Cut to clear.</b> A cased skin can be ground through in the cold shop to the clear glass beneath, which is how overlay glass gets its windows: the color is only half a millimeter deep.</p>
+      <p class="aside"><b>Model.</b> The bowl is a solid of revolution 170 mm across and 100 mm tall. Its wall runs from 1.1 mm at the rim to about 6 mm at the base and sits on a 6 mm floor, all scaled by the slider; the 8 mm foot is a separate gather and stays fixed. On the right each point's color is Beer–Lambert through the glass a straight ray crosses there, front wall and back. On the left the cut wall is tinted by its thickness at right angles to the surface, and the floor and foot by the whole stack a ray straight up from the table would cross. Each rod is dosed so a 3 mm solid wall passes about 60% of daylight at amount ×1, since colorants differ in strength by an order of magnitude. The cased skin is 0.5 mm at six times that concentration, so face on it holds the same colorant as a 3 mm solid wall. The cane is 12 mm across with the same 0.5 mm skin, and the slice is 3 mm thick. Refraction at the curved surfaces, which bends real outlines, is ignored.</p>
+    </div>
+    <Recall id="ions" />
+  </div>
+</section>
