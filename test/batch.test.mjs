@@ -70,3 +70,22 @@ test('weight and mole percents round-trip, and silica takes up the balance', () 
   const m = b.fromWt({ Na2O: 15, CaO: 10 });
   near(b.toWt(m).SiO2, 75, 1e-9);
 });
+
+test('durability: the fit reproduces the Sheffield boiling-water tests it was fitted to', async () => {
+  const { default: sheffield } = await import('../src/data/durability.json', { with: { type: 'json' } });
+  const W = data.durability;
+  const miss = sheffield.glasses.map((g) => Math.abs(Math.log10(g.loss) - (W.grain[g.grain] ?? 0) - Math.log10(b.durability(g.mol).loss))).sort((p, q) => p - q);
+  assert.equal(miss.length, W.fit.glasses);
+  near(miss[Math.floor(miss.length / 2)], W.fit.medianLog, 0.01, 'median log miss');
+});
+
+test('durability: soda and silica alone dissolve, lime and alumina stop it, window glass sits on the floor', () => {
+  near(b.durability(b.toMol({ SiO2: 67.9, Na2O: 32.1 })).dissolved, 100, 10, 'water glass');
+  const swap = (k, x) => b.durability({ SiO2: 75, Na2O: 25 - x, [k]: x }).loss;
+  for (const k of ['CaO', 'Al2O3', 'PbO']) {
+    assert.ok(swap(k, 0) > 20, `${k}: no stabilizer, a fifth or more dissolves`);
+    assert.ok(swap(k, 5) < swap(k, 2) && swap(k, 2) < swap(k, 0), `${k} lowers the loss`);
+  }
+  assert.ok(swap('Al2O3', 3) < swap('CaO', 3), 'alumina cancels more soda than lime');
+  for (const p of b.PRESETS) assert.ok(b.durability(p.mol).atFloor, `${p.id} is durable`);
+});

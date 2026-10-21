@@ -19,7 +19,7 @@ npm run dev      # http://localhost:4321/glass-color-explainer/
 ```sh
 npm run build    # static build; unresolved slugs/anchors fail it
 npm run check    # data validators (map/optics/islands + catalog referential integrity)
-npm test         # fixture tests for both validators
+npm test         # unit tests, including the color engine against colour-science (test/oracle.test.mjs; regenerate with scripts/build_oracle.py)
 ```
 
 ## Architecture
