@@ -1,0 +1,9 @@
+---
+// The lamp the whole page is lit by. scripts/home.js fills it and carries the choice between pages.
+---
+<div class="lampbar" role="group" aria-label="lamp: the light the whole page is lit by">
+  <span class="mono">lamp</span>
+  <canvas id="lampSpark" aria-hidden="true"></canvas>
+  <button class="lamp lamp-toggle" id="lampToggle" type="button" aria-expanded="false" aria-controls="lamps"></button>
+  <div class="lamps" id="lamps"></div>
+</div>

@@ -1,0 +1,46 @@
+---
+// Explain it back: a lesson's recall prompts, each answer folded until you have tried it. The whole
+// set folds away too, and the page remembers that per lesson, so the scaffold costs a reader who
+// already knows the material one line.
+import { byId } from '../lib/lessons';
+interface Props { id: string; }
+const lesson = byId[Astro.props.id];
+const prompts = lesson.recall ?? [];
+---
+{prompts.length > 0 && (
+  <details class="recall" data-recall={lesson.id} open>
+    <summary><span class="mono">explain it back</span> <span class="recall-n">{prompts.length} questions. Answer each in your head, then open it.</span></summary>
+    <ol>
+      {prompts.map((p) => (
+        <li><details><summary>{p.q}</summary><p>{p.a}</p></details></li>
+      ))}
+    </ol>
+  </details>
+)}
+<script>
+  // Remember a folded set per lesson. Storage can be missing or throw; the page works without it.
+  const KEY = 'recall-folded';
+  const read = (): string[] => { try { return JSON.parse(localStorage.getItem(KEY) ?? '[]'); } catch { return []; } };
+  const folded = new Set(read());
+  for (const box of document.querySelectorAll<HTMLDetailsElement>('details[data-recall]')) {
+    const id = box.dataset.recall!;
+    if (folded.has(id)) box.open = false;
+    box.addEventListener('toggle', () => {
+      box.open ? folded.delete(id) : folded.add(id);
+      try { localStorage.setItem(KEY, JSON.stringify([...folded])); } catch { /* no storage: fold for this visit only */ }
+    });
+  }
+</script>
+<style>
+  .recall { margin-top: 2.4rem; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 0.8rem 0 0.9rem; max-width: 46rem; }
+  .recall > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: baseline; }
+  .recall > summary::-webkit-details-marker { display: none; }
+  .recall > summary .mono { color: var(--ink); }
+  .recall > summary .mono::before { content: '▸ '; }
+  .recall[open] > summary .mono::before { content: '▾ '; }
+  .recall-n { font-size: 0.85rem; color: var(--ink-2); }
+  .recall ol { margin: 0.8rem 0 0; padding-left: 1.4rem; }
+  .recall li { margin-top: 0.55rem; }
+  .recall li summary { cursor: pointer; font-family: var(--display); font-size: 1.08rem; line-height: 1.35; }
+  .recall li p { margin: 0.45rem 0 0.2rem; font-size: 0.95rem; color: var(--ink-2); }
+</style>

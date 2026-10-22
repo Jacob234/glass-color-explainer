@@ -1,0 +1,18 @@
+---
+// "Builds on" chips at the head of a lesson. Prerequisites order the reading; they never lock anything.
+import { byId, chapterHref } from '../lib/lessons';
+interface Props { id: string; }
+const lesson = byId[Astro.props.id];
+const needs = lesson.buildsOn.map((id) => byId[id]);
+---
+{needs.length > 0 && (
+  <p class="needs">
+    <span class="mono">builds on</span>
+    {needs.map((n) => <a href={chapterHref(n)}>{`${n.num} ${n.name}`}</a>)}
+  </p>
+)}
+<style>
+  .needs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 0.6rem; margin: 0 0 1rem; }
+  .needs a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; border: 1px solid var(--ink); padding: 0.1rem 0.5rem; text-decoration: none; }
+  .needs a:hover { background: var(--paper-2); }
+</style>

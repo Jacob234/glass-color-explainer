@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 const history = JSON.parse(read('../src/data/history.json'));
 const optics = JSON.parse(read('../src/data/optics.json'));
-const home = read('../src/components/Home.astro');
+// the home page and the stage components it renders (lessons like ColorRod live in their own files)
+const home = readdirSync(new URL('../src/components/', import.meta.url)).filter((f) => f.endsWith('.astro')).map((f) => read(`../src/components/${f}`)).join('\n');
 const colorants = new Set(optics.colorants.map((c) => c.id));
 
 test('history pins run oldest first with unique ids', () => {

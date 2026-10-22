@@ -1,0 +1,160 @@
+{
+  "_comment": "One entry per stage of the walk, in walk order. The walk (home page), the chapter pages, the chapters index and the atlas are all views of this list. `id` is the stage's anchor on the home page; `chapter` names its chapter page when it has one. `buildsOn` orders reading but never locks anything. `recall` holds explain-it-back prompts whose answers are in the lesson itself.",
+  "steps": [
+    { "id": "material", "label": "the material" },
+    { "id": "batch", "label": "batch" },
+    { "id": "melt", "label": "melt" },
+    { "id": "rod", "label": "color rod" },
+    { "id": "gloryhole", "label": "glory hole" },
+    { "id": "reheat", "label": "reheat" },
+    { "id": "lehr", "label": "lehr" },
+    { "id": "coldshop", "label": "cold shop" },
+    { "id": "rack", "label": "rack" },
+    { "id": "showroom", "label": "showroom" }
+  ],
+  "strands": [
+    { "id": "structure", "label": "structure", "blurb": "How the atoms are joined: the network, its breaks and what fills them." },
+    { "id": "flow", "label": "flow", "blurb": "Viscosity and the glass transition: how a melt stiffens and what that leaves behind." },
+    { "id": "stress", "label": "stress", "blurb": "Strain frozen in by cooling, and how polarized light shows it." },
+    { "id": "absorption", "label": "absorption", "blurb": "Light taken out by ions, particles and band gaps, compounding with path length." },
+    { "id": "emission", "label": "emission", "blurb": "Light given back: thermal glow and fluorescence." },
+    { "id": "surfaces", "label": "light at surfaces", "blurb": "Refraction, dispersion and interference: color with nothing absorbed." },
+    { "id": "seeing", "label": "seeing", "blurb": "A color is a spectrum through a lamp and an eye." },
+    { "id": "time", "label": "over time", "blurb": "What water and years do to a glass." }
+  ],
+  "lessons": [
+    {
+      "id": "glass", "num": "00", "name": "the material", "step": "material",
+      "title": "Glass is a liquid that stopped",
+      "claim": "A silicate melt stiffens smoothly instead of crystallizing. The network keeps the liquid's disorder, and one viscosity curve runs the studio.",
+      "strands": ["structure", "flow"],
+      "buildsOn": [],
+      "chapter": "material",
+      "labs": [["structure-lab", "Structure Lab"], ["network-lab", "Network lab"]],
+      "essays": [],
+      "recall": [
+        { "q": "Why does adding soda make a silica melt flow at a lower temperature?", "a": "Each Na₂O brings an extra oxygen that cuts a bridge between two tetrahedra into two non-bridging oxygens. With fewer bridges the network is looser, so it flows at lower temperature." },
+        { "q": "Lime and soda both break bridges. Why does lime make the glass last instead of dissolve?", "a": "A Ca²⁺ ion holds two non-bridging oxygens at once and moves far less readily than Na⁺, so the glass stops leaching in water. Soda–silica glass alone dissolves; it is sold as water glass." },
+        { "q": "Two pieces of the same batch were cooled at different rates. Which has the higher glass transition temperature, and why?", "a": "The one cooled faster. Tg is where the melt's relaxation time outgrows the time cooling allows, so faster cooling makes the structure freeze in sooner, at a higher temperature, looser and less dense." },
+        { "q": "Name the viscosity points from runniest to stiffest and what each is for.", "a": "Melting (bubbles rise out), working (holds a shape on the pipe), softening (a hanging fiber stretches under its own weight), annealing (stress relaxes in minutes), strain (stress takes hours; below it nothing moves on a human timescale)." },
+        { "q": "Do medieval windows flow? What is the evidence?", "a": "No. Extrapolated viscosity gives room-temperature relaxation times near 10³² years (Zanotto 1998), and Westminster Abbey glass would flow about a nanometer in a billion years (Gulbiten et al. 2018). The thick bottoms come from hand-flattened cylinder glass set heavy edge down." }
+      ]
+    },
+    {
+      "id": "batch", "num": "01", "name": "the batch", "step": "batch",
+      "title": "Clear glass is not clear",
+      "claim": "A trace of iron turns a pane's edge green, because absorption compounds with path length. The oxide bench shows how the recipe sets every property.",
+      "strands": ["absorption", "structure", "flow", "surfaces", "time"],
+      "buildsOn": ["glass"],
+      "labs": [["mixing-lab", "Mixing Lab"]],
+      "essays": [["color-in-glass", "Color in glass"]]
+    },
+    {
+      "id": "melt", "num": "02", "name": "the melt", "step": "melt",
+      "title": "The furnace air picks the color",
+      "claim": "Oxidizing or reducing air sets how much iron sits as Fe³⁺ or Fe²⁺, and the two ions absorb differently.",
+      "strands": ["absorption"],
+      "buildsOn": ["batch"],
+      "labs": [],
+      "essays": [["redox", "Redox in the furnace"]]
+    },
+    {
+      "id": "fragility", "num": "02′", "name": "the melt, long and short", "step": "melt",
+      "title": "Some glasses are long, some short",
+      "claim": "Fragility measures how steeply viscosity rises near Tg, and it sets how long a glass stays workable.",
+      "strands": ["flow"],
+      "buildsOn": ["glass"],
+      "labs": [["forming-lab", "Forming lab"]],
+      "essays": []
+    },
+    {
+      "id": "ions", "num": "03", "name": "the color rod", "step": "rod",
+      "title": "Each ion absorbs its own bands",
+      "claim": "Each transition-metal or rare-earth ion takes its own bands out of the spectrum, and a blown piece is colored by its own wall thickness.",
+      "strands": ["absorption"],
+      "buildsOn": ["batch"],
+      "chapter": "color-rod",
+      "labs": [["mixing-lab", "Mixing Lab"]],
+      "essays": [["transition-metal-colorants", "Transition-metal colorants"], ["rare-earth-colorants", "Rare-earth colorants"]],
+      "recall": [
+        { "q": "What in a cobalt ion absorbs the light, and what sets which colors it takes?", "a": "Its outer d-electrons, lifted between energy levels by light of particular energies. The surrounding glass sets the spacing of those levels, so the same ion absorbs differently in different hosts." },
+        { "q": "Chromium absorbs at both ends of the spectrum. Why is chrome glass green?", "a": "Cr⁶⁺ takes the violet edge and Cr³⁺ takes blue and orange-red, so what passes is the window between them, in the green." },
+        { "q": "A solid-color bowl is palest at the rim and darkest at the foot. Why, and how does casing fix it?", "a": "Each point is colored by the glass a ray crosses there (Beer–Lambert), and the rim is blown thinnest while the foot is heaviest. Casing puts the color in a thin skin of strong glass, so every part crosses about the same amount of color however the clear inside was blown." },
+        { "q": "Why does solid cane look darkest down its middle while cased cane looks darkest at its edges?", "a": "A ray through the middle of solid cane crosses the most glass. In cased cane the color is only in the skin: a ray down the middle crosses the skin twice, but a ray near the edge runs along the skin for a long way." },
+        { "q": "Neodymium glass is lilac in daylight. Predict what happens under a tri-phosphor tube, and why.", "a": "It turns blue-gray. Its absorption bands are narrow, and a tri-phosphor tube puts its light in a few narrow lines that the bands hit unevenly, so a different share of the lamp survives. The showroom stage shows it." }
+      ]
+    },
+    {
+      "id": "heat", "num": "04", "name": "the glory hole", "step": "gloryhole",
+      "title": "At heat, glass gives back what it takes",
+      "claim": "Hot glass glows with emissivity equal to its absorptance (Kirchhoff), so a colorant that absorbs a band also glows in it.",
+      "strands": ["emission", "absorption"],
+      "buildsOn": ["ions"],
+      "labs": [["forming-lab", "Forming lab"]],
+      "essays": []
+    },
+    {
+      "id": "strike", "num": "05", "name": "the reheat", "step": "reheat",
+      "title": "Some colors must be struck",
+      "claim": "Gold ruby and cadmium reds appear only after a reheat grows particles or crystals: plasmon absorption and band-gap edges.",
+      "strands": ["absorption"],
+      "buildsOn": ["ions"],
+      "labs": [],
+      "essays": [["colloidal-color", "Colloidal color"], ["selenium-ruby", "Selenium ruby"], ["silver-stain", "Silver stain"]]
+    },
+    {
+      "id": "lehr", "num": "06", "name": "the lehr", "step": "lehr",
+      "title": "Glass remembers how it cooled",
+      "claim": "Uneven cooling freezes in stress, which makes glass birefringent; crossed polarizers turn that into interference colors.",
+      "strands": ["stress", "flow", "surfaces"],
+      "buildsOn": ["glass"],
+      "labs": [],
+      "essays": []
+    },
+    {
+      "id": "light", "num": "07", "name": "the cold shop", "step": "coldshop",
+      "title": "Color with no colorant",
+      "claim": "Dichroic coatings reflect one band by thin-film interference and pass its complement; nothing is absorbed.",
+      "strands": ["surfaces"],
+      "buildsOn": [],
+      "labs": [["light-lab", "Light Lab"]],
+      "essays": [["color-in-glass", "Structure and scattering"]]
+    },
+    {
+      "id": "prism", "num": "07′", "name": "the cold shop, cut", "step": "coldshop",
+      "title": "Clear glass holds every color",
+      "claim": "Refractive index climbs toward the ultraviolet, so a cut glass splits white light; lead raises the dispersion, and crown and flint can cancel it.",
+      "strands": ["surfaces"],
+      "buildsOn": ["light"],
+      "labs": [["light-lab", "Light Lab"]],
+      "essays": []
+    },
+    {
+      "id": "rack", "num": "08", "name": "the rack", "step": "rack",
+      "title": "Every color on the shelf",
+      "claim": "Working backwards from a swatch to a melt has many answers, because three numbers cannot fix a spectrum.",
+      "strands": ["absorption", "seeing"],
+      "buildsOn": ["ions"],
+      "labs": [["mixing-lab", "Mixing Lab"]],
+      "essays": []
+    },
+    {
+      "id": "showroom", "num": "09", "name": "the showroom", "step": "showroom",
+      "title": "One glass gives light back",
+      "claim": "Uranium glass fluoresces green under ultraviolet, and neodymium glass changes color from lamp to lamp.",
+      "strands": ["emission", "seeing"],
+      "buildsOn": ["ions"],
+      "labs": [],
+      "essays": [["rare-earth-colorants", "Rare-earth colorants"]]
+    },
+    {
+      "id": "eyes", "num": "09′", "name": "the showroom, other eyes", "step": "showroom",
+      "title": "Color is a fact about an eye",
+      "claim": "Every color on the site is a spectrum through a lamp and an observer; change the observer and matches break.",
+      "strands": ["seeing"],
+      "buildsOn": ["showroom"],
+      "labs": [],
+      "essays": []
+    }
+  ]
+}
