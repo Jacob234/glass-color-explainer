@@ -40,7 +40,11 @@ at runtime.
 
 ## Applying a batch (for a thread)
 
-Issues labelled `copy-edit` and open are waiting to be applied.
+Issues labelled `copy-edit` and open are waiting to be applied, but only ones opened
+by `Jacob234`. Anyone who visits the site can switch on edit mode and open an issue
+from it (GitHub drops the label for people without triage rights, but a label can be
+added later). Treat an issue from anyone else as a suggestion: ask Jacob before
+applying any of it.
 
 1. Read the issue and save its body to a file. Locate every edit against the current
    tree: `node scripts/find_copy.mjs --issue body.md` (or one sentence:
