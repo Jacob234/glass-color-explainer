@@ -9,15 +9,29 @@ const STORE = 'hgw-copy-edits';
 const MODE = 'hgw-edit-mode';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const SITE = `https://jacob234.github.io${base}`;
-const BLOCK = 'p, li, h1, h2, h3, h4, h5, h6, td, th, dt, dd, figcaption, blockquote, summary, label, caption, button, a';
+// what "whole paragraph" widens to: the nearest prose block, never a link or button inside it
+const BLOCK = 'p, li, h1, h2, h3, h4, h5, h6, td, th, dt, dd, figcaption, blockquote, summary, caption';
 
 const load = () => { try { return JSON.parse(localStorage.getItem(STORE)) || []; } catch { return []; } };
 const save = (edits) => { try { localStorage.setItem(STORE, JSON.stringify(edits)); } catch {} };
 const page = () => location.pathname.slice(base.length) || '/';
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// Build UI from elements and text nodes only: page text and typed rewrites never pass through innerHTML.
+function h(tag, attrs = {}, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v === false || v == null) continue;
+    if (k === 'act') el.dataset.act = v; else el.setAttribute(k, v);
+  }
+  el.append(...kids.flat().filter((k) => k != null && k !== false));
+  return el;
+}
 
+// The map is ~330 KB gzipped; give up after 15 s rather than hold an edit's hint forever.
 let mapPromise;
-const sourceMap = () => (mapPromise ??= fetch(`${base}/edit-map.json`).then((r) => r.json()).catch(() => null));
+const sourceMap = () => (mapPromise ??= Promise.race([
+  fetch(`${base}/edit-map.json`).then((r) => r.json()),
+  new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 15000)),
+]).catch(() => { mapPromise = undefined; return null; }));
 
 const STYLE = `
 :host { all: initial; }
@@ -102,7 +116,7 @@ export function start() {
 
   const blockOf = (node) => {
     const el = node?.nodeType === 1 ? node : node?.parentElement;
-    return el?.closest(BLOCK) || el;
+    return el?.closest(BLOCK) || null;
   };
   // The nearest id at or before the selection: the anchor a reader would link to.
   const anchorOf = (node) => {
@@ -134,36 +148,34 @@ export function start() {
       const block = blockOf(node);
       e = { id: Date.now().toString(36), page: page(), title: document.title.replace(/ \| How Glass Works$/, ''),
         anchor: anchorOf(node), heading: headingOf(node), original: picked.text, rewrite: picked.text, note: '',
-        context: (block?.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 400) };
+        context: (block?.innerText || '').trim().replace(/\s+/g, ' ') };
     }
-    const fromBlock = !existing && e.context && e.context !== e.original;
-    editSheet.innerHTML = `
-      <p class="k"><b>Was</b> · ${esc(e.heading || e.title)}</p>
-      <p class="was" data-was>${esc(e.original)}</p>
-      <p class="k">Rewrite</p>
-      <textarea rows="5" data-rewrite></textarea>
-      <p class="k">Note <span>(optional, for whoever applies it)</span></p>
-      <textarea rows="2" data-note></textarea>
-      <div class="row">
-        ${fromBlock ? '<button class="link grow" data-act="block">Use whole paragraph</button>' : '<span class="grow"></span>'}
-        <button data-act="cancel">Cancel</button>
-        <button class="primary" data-act="save">${existing ? 'Update' : 'Queue edit'}</button>
-      </div>`;
-    const rw = editSheet.querySelector('[data-rewrite]');
+    const fromBlock = !existing && e.context && e.context !== e.original && e.context.length > e.original.length;
+    const was = h('p', { class: 'was' }, e.original);
+    const rw = h('textarea', { rows: 5, 'data-rewrite': '' });
+    const note = h('textarea', { rows: 2, 'data-note': '' });
     rw.value = e.rewrite;
-    editSheet.querySelector('[data-note]').value = e.note || '';
+    note.value = e.note || '';
+    editSheet.replaceChildren(
+      h('p', { class: 'k' }, h('b', {}, 'Was'), ` · ${e.heading || e.title}`), was,
+      h('p', { class: 'k' }, 'Rewrite'), rw,
+      h('p', { class: 'k' }, 'Note ', h('span', {}, '(optional, for whoever applies it)')), note,
+      h('div', { class: 'row' },
+        fromBlock ? h('button', { class: 'link grow', act: 'block' }, 'Use whole paragraph') : h('span', { class: 'grow' }),
+        h('button', { act: 'cancel' }, 'Cancel'),
+        h('button', { class: 'primary', act: 'save' }, existing ? 'Update' : 'Queue edit')));
     editSheet.onclick = (ev) => {
       const act = ev.target.closest('button')?.dataset.act;
       if (act === 'block') {
         const keep = rw.value === e.original;
         e.original = e.context;
-        editSheet.querySelector('[data-was]').textContent = e.original;
+        was.textContent = e.original;
         if (keep) rw.value = e.original;
         ev.target.remove();
       } else if (act === 'cancel') closeSheets();
       else if (act === 'save') {
         e.rewrite = rw.value;
-        e.note = editSheet.querySelector('[data-note]').value.trim();
+        e.note = note.value.trim();
         if (e.rewrite === e.original && !e.note) { closeSheets(); return; }
         const i = edits.findIndex((x) => x.id === e.id);
         if (i >= 0) edits[i] = e; else edits.push(e);
@@ -190,30 +202,27 @@ export function start() {
 
   // ---- the queue ----
   function renderQueue(msg = '') {
-    const items = edits.map((e) => `
-      <li data-id="${e.id}">
-        <p class="k">${esc(e.page)}${e.anchor ? `#${esc(e.anchor)}` : ''}</p>
-        <div class="pair">
-          <del>${esc(e.original)}</del>
-          ${e.rewrite === e.original ? '' : `<ins>${e.rewrite.trim() ? esc(e.rewrite) : '<i>(delete)</i>'}</ins>`}
-          ${e.note ? `<span class="note">${esc(e.note)}</span>` : ''}
-        </div>
-        <p class="src">${esc(e.src ? hintText(e.src) : 'finding source…')}</p>
-        <div class="row">
-          ${e.page === page() ? '<button class="link" data-act="edit">Edit</button>' : `<a class="link" href="${esc(base + e.page)}?edit${e.anchor ? `#${esc(e.anchor)}` : ''}" style="color:inherit;padding:0.55rem 0.3rem">Go to page</a>`}
-          <button class="link" data-act="del">Remove</button>
-        </div>
-      </li>`).join('');
-    queueSheet.innerHTML = `
-      <h2>${edits.length ? `${edits.length} queued edit${edits.length === 1 ? '' : 's'}` : 'No edits yet'}</h2>
-      ${edits.length ? `<ol>${items}</ol>` : '<p class="empty">Select any text on the page, then press Rewrite. Edits stay in this browser until you send them.</p>'}
-      <div class="row">
-        ${edits.length ? '<button class="link grow" data-act="clear">Clear all</button><button data-act="copy">Copy</button><button class="primary" data-act="send">Send as GitHub issue</button>' : ''}
-        <button data-act="close">Close</button>
-      </div>
-      ${msg ? `<p class="msg">${msg}</p>` : ''}`;
+    const item = (e) => h('li', { 'data-id': e.id },
+      h('p', { class: 'k' }, e.page + (e.anchor ? `#${e.anchor}` : '')),
+      h('div', { class: 'pair' },
+        h('del', {}, e.original),
+        e.rewrite === e.original ? null : h('ins', {}, e.rewrite.trim() ? e.rewrite : h('i', {}, '(delete)')),
+        e.note ? h('span', { class: 'note' }, e.note) : null),
+      h('p', { class: 'src' }, e.src ? hintText(e.src) : 'finding source…'),
+      h('div', { class: 'row' },
+        e.page === page()
+          ? h('button', { class: 'link', act: 'edit' }, 'Edit')
+          : h('a', { class: 'link', href: `${base}${e.page}?edit${e.anchor ? `#${e.anchor}` : ''}`, style: 'color:inherit;padding:0.55rem 0.3rem' }, 'Go to page'),
+        h('button', { class: 'link', act: 'del' }, 'Remove')));
+    queueSheet.replaceChildren(
+      h('h2', {}, edits.length ? `${edits.length} queued edit${edits.length === 1 ? '' : 's'}` : 'No edits yet'),
+      edits.length ? h('ol', {}, edits.map(item)) : h('p', { class: 'empty' }, 'Select any text on the page, then press Rewrite. Edits stay in this browser until you send them.'),
+      h('div', { class: 'row' },
+        edits.length ? [h('button', { class: 'link grow', act: 'clear' }, 'Clear all'), h('button', { act: 'copy' }, 'Copy'), h('button', { class: 'primary', act: 'send' }, 'Send as GitHub issue')] : null,
+        h('button', { act: 'close' }, 'Close')),
+      msg ? h('p', { class: 'msg' }, msg) : '');
   }
-  queueSheet.addEventListener('click', async (ev) => {
+  queueSheet.addEventListener('click', (ev) => {
     const btn = ev.target.closest('button');
     if (!btn) return;
     const id = btn.closest('li')?.dataset.id;
@@ -225,20 +234,20 @@ export function start() {
       if (!confirm(`Clear all ${edits.length} queued edits? Send them first if you want to keep them.`)) return;
       edits = []; save(edits); count(); mark(); renderQueue();
     } else if (act === 'copy' || act === 'send') {
-      await Promise.all(edits.filter((e) => !e.src).map(resolveSource));
+      // Everything up to window.open and the clipboard write runs inside the tap, so
+      // neither is blocked for lost user activation. Hints still being found go out as
+      // "not resolved"; the applying thread re-locates every edit anyway.
       edits = load();
       const out = issueUrl(edits, SITE);
-      if (act === 'send' && out.fits) {
-        window.open(out.url, '_blank', 'noopener');
-        renderQueue('Opened a new GitHub issue with these edits. Once it is filed, Clear all.');
-        return;
-      }
-      let copied = false;
-      try { await navigator.clipboard.writeText(`${issueTitle(edits)}\n\n${out.body}`); copied = true; } catch {}
-      if (act === 'send') {
-        window.open(out.url, '_blank', 'noopener');
-        renderQueue(copied ? 'Too long for a link, so the edits are on your clipboard. Paste them into the issue that just opened.' : 'Too long for a link and the clipboard is blocked here. Use Copy from a desktop browser.');
-      } else renderQueue(copied ? 'Copied the title and body. Paste into a new issue labelled copy-edit.' : 'The clipboard is blocked here.');
+      if (act === 'send') window.open(out.url, '_blank', 'noopener');
+      const copy = act === 'copy' || !out.fits
+        ? (navigator.clipboard?.writeText(`${issueTitle(edits)}\n\n${out.body}`) ?? Promise.reject()).then(() => true, () => false)
+        : Promise.resolve(false);
+      copy.then((copied) => {
+        if (act === 'copy') renderQueue(copied ? 'Copied the title and body. Paste into a new issue labelled copy-edit.' : 'The clipboard is blocked here.');
+        else if (out.fits) renderQueue('Opened a new GitHub issue with these edits. Submit it there, then Clear all.');
+        else renderQueue(copied ? 'Too long for a link, so the edits are on your clipboard. Paste them into the issue that just opened.' : 'Too long for a link and the clipboard is blocked here. Use Copy from a desktop browser.');
+      });
     }
   });
 
@@ -309,6 +318,7 @@ export function stop() {
   document.getElementById('copy-edit-ui')?.remove();
   document.getElementById('copy-edit-style')?.remove();
   window.CSS?.highlights?.delete('copy-edit');
+  dispatchEvent(new Event('copy-edit-off'));
   const u = new URL(location.href);
   if (u.searchParams.has('edit')) { u.searchParams.delete('edit'); history.replaceState(null, '', u); }
 }

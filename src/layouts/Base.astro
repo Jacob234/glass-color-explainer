@@ -64,10 +64,12 @@ const labPages = ['light-lab', 'forming-lab', 'structure-lab', 'network-lab', 'm
     try { on = localStorage.getItem(KEY) === '1'; } catch {}
     const ui = () => import('../scripts/edit-ui.js');
     if (on) ui().then((m) => m.start());
+    // Exit in the bar turns it off without a key press
+    addEventListener('copy-edit-off', () => { on = false; });
     addEventListener('keydown', (e) => {
       if (!(e.altKey && e.shiftKey && e.code === 'KeyE')) return;
       e.preventDefault();
-      on = !document.getElementById('copy-edit-ui');
+      on = !on;
       try { on ? localStorage.setItem(KEY, '1') : localStorage.removeItem(KEY); } catch {}
       ui().then((m) => (on ? m.start() : m.stop()));
     });

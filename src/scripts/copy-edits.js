@@ -6,6 +6,8 @@
 export const REPO = 'Jacob234/glass-color-explainer';
 export const LABEL = 'copy-edit';
 export const MARK = '<!-- copy-edits v1 -->';
+// precedes the one json block parseIssue reads, so a fence typed into a note can't be mistaken for it
+export const DATA = '<!-- copy-edits data -->';
 // GitHub refuses very long new-issue URLs; past this we copy the body instead
 export const URL_LIMIT = 7500;
 
@@ -93,7 +95,7 @@ export function lineAt(lines, index) {
 export function locate(map, original, max = 3) {
   const find = (needle) => {
     const hits = [];
-    if (needle.length < 6) return hits;
+    if (needle.length < 3) return hits;
     for (const f of map.files) {
       let at = f.text.indexOf(needle);
       while (at >= 0 && hits.length < max) {
@@ -117,7 +119,8 @@ export function locate(map, original, max = 3) {
 }
 
 export function hintText(src) {
-  if (!src || !src.hits?.length) return 'not found in src/ (probably written by a script at runtime; search for a phrase)';
+  if (!src) return 'not resolved yet (run scripts/find_copy.mjs)';
+  if (!src.hits?.length) return 'not found in src/ (probably written by a script at runtime; search for a phrase)';
   const at = src.hits.map((h) => `${h.file}:${h.line}`).join(', ');
   return (src.partial ? 'partial match near ' : '') + at + (src.hits.length > 1 ? ' (several matches)' : '');
 }
@@ -145,12 +148,14 @@ export function issueBody(edits, site) {
   });
   const data = edits.map(({ page, anchor, heading, original, rewrite, note, context, src }) =>
     ({ page, anchor, heading, original, rewrite, note, context, src: src?.hits ?? [], partial: !!src?.partial }));
-  parts.push('<details><summary>Edits as data</summary>', '', '```json', JSON.stringify(data, null, 1), '```', '', '</details>');
+  parts.push('<details><summary>Edits as data</summary>', '', DATA, '```json', JSON.stringify(data, null, 1), '```', '', '</details>');
   return parts.join('\n');
 }
 
 export function parseIssue(body) {
-  const m = /```json\n([\s\S]*?)\n```/.exec(body || '');
+  const text = String(body || '').replace(/\r\n/g, '\n');
+  const at = text.lastIndexOf(DATA);
+  const m = at < 0 ? null : /^\s*```json\n([\s\S]*?)\n```/.exec(text.slice(at + DATA.length));
   if (!m) throw new Error('no edits block in this issue');
   return JSON.parse(m[1]);
 }

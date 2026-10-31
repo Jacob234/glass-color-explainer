@@ -27,8 +27,8 @@ desktop, and sends the batch to GitHub as one issue for a thread to apply.
 
 Title `Copy edits: N edits on M pages (date)`, label `copy-edit`. The body starts with
 `<!-- copy-edits v1 -->`, then one readable section per edit (page link with anchor,
-source hint, was, rewrite, note) and a closing `json` block holding the same edits as
-data: `page`, `anchor`, `heading`, `original`, `rewrite`, `note`, `context` (the
+source hint, was, rewrite, note) and a closing `json` block, right after
+`<!-- copy-edits data -->`, holding the same edits as data: `page`, `anchor`, `heading`, `original`, `rewrite`, `note`, `context` (the
 paragraph around the selection), `src` (up to three `{file, line}` hits) and `partial`.
 
 The source hint comes from `/edit-map.json`, built from `src/` at build time
