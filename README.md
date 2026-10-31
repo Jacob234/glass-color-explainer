@@ -10,14 +10,14 @@ Lab pages open the instruments up: Light Lab (spectral ray tracing), Forming Lab
 (a gather on a blowpipe), Structure Lab (2D molecular dynamics), Network lab (3D
 silicate glass from LAMMPS runs) and Mixing Lab (colorants).
 
-**Live site:** https://jacob234.github.io/glass-color-explainer/
+**Live site:** https://howglassworks.fyi/
 (The repository and URL keep the original name, from when the site covered color only.)
 
 ## Development
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/glass-color-explainer/
+npm run dev      # http://localhost:4321/
 ```
 
 ## Quality gates
