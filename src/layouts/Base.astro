@@ -51,5 +51,28 @@ const labPages = ['light-lab', 'forming-lab', 'structure-lab', 'network-lab', 'm
     <div><p><b>How the colors are made.</b> Absorption curves for cobalt, chromium, manganese, iron, copper and silver are measured: iron and copper from bands fitted to soda-lime glass of known composition (Volotinen 2007), manganese from bands fitted to a published Mn³⁺ spectrum, and the others traced from stained-glass spectra (Meulebroeck et al. 2016). Cobalt, chromium and manganese get their strength from molar absorptivities measured in soda-lime glass (Thiemsorn et al. 2007); silver's strength is not measured. The rest are illustrative, drawn from the shape of published spectra. Each is converted to optical density, scaled by amount and thickness (Beer–Lambert), multiplied against the lamp's spectrum (CIE D65 daylight unless you change it), integrated with the CIE 1931 2° observer on a 5 nm grid, adapted toward D65 as far as the eye adapts to that lamp (fully in daylight, partly under candle, tungsten, LED and tube, not at all under a sodium lamp) and encoded as sRGB.</p></div>
     <div><p>Source and data on <a href="https://github.com/Jacob234/glass-color-explainer">GitHub</a>.</p></div>
   </footer>
+  <script>
+    // Edit mode (docs/copy-edits.md): ?edit turns it on and it stays on across pages
+    // until Exit or ?edit=0; Alt+Shift+E toggles it. Off, nothing else loads.
+    const KEY = 'hgw-edit-mode';
+    const q = new URLSearchParams(location.search).get('edit');
+    try {
+      if (q === '0' || q === 'off') localStorage.removeItem(KEY);
+      else if (q !== null) localStorage.setItem(KEY, '1');
+    } catch {}
+    let on = false;
+    try { on = localStorage.getItem(KEY) === '1'; } catch {}
+    const ui = () => import('../scripts/edit-ui.js');
+    if (on) ui().then((m) => m.start());
+    // Exit in the bar turns it off without a key press
+    addEventListener('copy-edit-off', () => { on = false; });
+    addEventListener('keydown', (e) => {
+      if (!(e.altKey && e.shiftKey && e.code === 'KeyE')) return;
+      e.preventDefault();
+      on = !on;
+      try { on ? localStorage.setItem(KEY, '1') : localStorage.removeItem(KEY); } catch {}
+      ui().then((m) => (on ? m.start() : m.stop()));
+    });
+  </script>
 </body>
 </html>
