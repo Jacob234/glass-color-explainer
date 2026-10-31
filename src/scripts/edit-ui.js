@@ -8,7 +8,7 @@ import { fold, foldChar, locate, hintText, issueUrl, issueTitle } from './copy-e
 const STORE = 'hgw-copy-edits';
 const MODE = 'hgw-edit-mode';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const SITE = `https://jacob234.github.io${base}`;
+const SITE = `${import.meta.env.SITE.replace(/\/$/, '')}${base}`;
 // what "whole paragraph" widens to: the nearest prose block, never a link or button inside it
 const BLOCK = 'p, li, h1, h2, h3, h4, h5, h6, td, th, dt, dd, figcaption, blockquote, summary, caption';
 

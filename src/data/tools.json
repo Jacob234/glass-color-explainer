@@ -342,7 +342,7 @@
       "status": "used",
       "by": "This site",
       "license": "This site's code",
-      "url": "https://jacob234.github.io/glass-color-explainer/structure-lab/",
+      "url": "https://howglassworks.fyi/structure-lab/",
       "what": "A two-dimensional molecular dynamics model in the browser.",
       "here": "Shows how cooling rate decides between a crystal and a glass."
     },
@@ -438,7 +438,7 @@
       "status": "used",
       "by": "This site",
       "license": "This site's code",
-      "url": "https://jacob234.github.io/glass-color-explainer/forming-lab/",
+      "url": "https://howglassworks.fyi/forming-lab/",
       "what": "A gather of hot glass on a blowpipe: viscous flow, sag and radiative cooling.",
       "here": "The Forming Lab."
     },
