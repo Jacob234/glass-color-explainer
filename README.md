@@ -55,3 +55,7 @@ validated by `scripts/check_catalog.mjs`.
 
 Curated rewrites of notes from a personal knowledge vault (glass-materials
 cluster, Phase 11). Drift from the originals is accepted by design.
+
+## License
+
+The site's text and diagrams are CC BY 4.0. The code is not yet licensed, and third-party data keep their own terms. See [LICENSE.md](LICENSE.md).
