@@ -37,3 +37,14 @@ test('E1: the instrument obeys A = εcd with ε = 175 at 595 nm', () => {
   assert.equal(cobaltAt(2, 3).color, cobaltAt(1, 6).color);
   assert.ok(Math.abs(thicknessMm(50) - 5) < 1e-9 && Math.abs(amountOf(50) - 1) < 1e-9);
 });
+
+test('the instrument opens on the worked example (5 mm, ~0.016 mol/L, ~4%)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const page = readFileSync(new URL('../src/pages/learn/[id].astro', import.meta.url), 'utf8');
+  const v = (id) => +page.match(new RegExp(`id="${id}"[^>]*value="(\\d+)"`))[1];
+  const mm = thicknessMm(v('lt')), amount = amountOf(v('lc'));
+  assert.ok(Math.abs(mm - 5) < 0.01, `default thickness ${mm}`);
+  assert.ok(Math.abs(molPerL(amount) - 0.016) < 0.001, `default ${molPerL(amount)} mol/L`);
+  const pass = 100 * 10 ** -cobaltAt(amount, mm).A595;
+  assert.ok(pass > 3.5 && pass < 4.5, `default passes ${pass}%`);
+});

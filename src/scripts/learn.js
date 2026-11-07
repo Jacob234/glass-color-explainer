@@ -13,6 +13,8 @@ const isPhone = () => matchMedia(PHONE).matches;
 // ---- panes ----
 function panes(root) {
   const stack = []; // open sheets on a phone, for the back gesture
+  let pending = 0; // history traversals sent and not yet answered by popstate
+  let skip = 0; // popstates that answer a bulk unwind, not a single close
   const setOpen = (blk, level, open) => {
     const pane = blk.querySelector(`.pane.${level}`);
     const btn = blk.querySelector(`[data-open="${level}"]`);
@@ -32,10 +34,15 @@ function panes(root) {
   };
   const close = (blk, level) => {
     const top = stack.at(-1);
-    if (top && top[0] === blk && top[1] === level) { history.back(); return; } // popstate closes it
+    if (top && top[0] === blk && top[1] === level) { // popstate closes it
+      if (!pending) { pending = 1; history.back(); } // a second close before popstate would leave the page
+      return;
+    }
     setOpen(blk, level, false);
   };
   addEventListener('popstate', () => {
+    pending = 0;
+    if (skip) { skip = 0; return; }
     const top = stack.pop();
     if (top) { setOpen(top[0], top[1], false); top[0].querySelector(`[data-open="${top[1]}"]`)?.focus(); }
   });
@@ -56,8 +63,10 @@ function panes(root) {
   // "open the numbers everywhere"
   const all = root.querySelector('[data-depth-all]');
   const applyAll = (on) => {
+    // Unwind any sheets opened one at a time, so Back never points at a pane the toggle changed.
+    if (stack.length) { skip = 1; pending = 1; history.go(-stack.length); stack.length = 0; }
     document.body.classList.toggle('depth-all', on);
-    for (const blk of root.querySelectorAll('.blk')) setOpen(blk, 'l2', on);
+    for (const blk of root.querySelectorAll('.blk')) { setOpen(blk, 'l3', false); setOpen(blk, 'l2', on); }
   };
   let saved = false;
   try { saved = localStorage.getItem(DEPTH_KEY) === '1'; } catch { /* storage blocked */ }
@@ -116,9 +125,8 @@ function instrument(root) {
     fig.querySelector('[data-out="c"]').textContent = `${(wt * amount).toFixed(3)} wt% CoO · ${mol.toFixed(3)} mol/L Co²⁺`;
     const pass = 100 * 10 ** -A595;
     const cd = mol * (mm / 10);
-    fig.querySelector('[data-read]').innerHTML =
-      `Passes <b>${pass >= 1 ? pass.toFixed(pass >= 10 ? 0 : 1) : pass.toPrecision(2)}%</b> of the orange light at 595 nm. ` +
-      `<span class="mono">A = ${A595.toFixed(2)} · c·d = ${cd.toPrecision(2)} mol/L·cm</span>`;
+    fig.querySelector('[data-pass]').textContent = `${pass >= 1 ? pass.toFixed(pass >= 10 ? 0 : 1) : pass.toPrecision(2)}%`;
+    fig.querySelector('[data-acd]').textContent = `A = ${A595.toFixed(2)} · c·d = ${cd.toPrecision(2)} mol/L·cm`;
     for (const svg of plots) plot(svg, T);
     for (const cap of root.querySelectorAll('[data-tplot-cap]')) cap.textContent = `transmission T(λ), 380–780 nm, ${mm < 10 ? mm.toFixed(1) : mm.toFixed(0)} mm of ${mol.toFixed(3)} mol/L Co²⁺; dashed line 595 nm`;
   };
