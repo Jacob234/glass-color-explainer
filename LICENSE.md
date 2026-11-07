@@ -13,7 +13,8 @@ You may copy, adapt and redistribute this content for any purpose, including
 commercially, if you give credit, link the license and say whether you changed it.
 Suggested credit:
 
-> From *How Glass Works*, https://howglassworks.fyi/, licensed CC BY 4.0.
+> From *How Glass Works*, https://howglassworks.fyi/, licensed CC BY 4.0
+> (https://creativecommons.org/licenses/by/4.0/).
 
 ## 2. Source code: not yet licensed
 
@@ -33,6 +34,6 @@ does not cover them. Each source and its terms are listed in `src/data/library.j
 | SciGlass extract | `public/data/sciglass/` | ODbL 1.0; the extract carries its own notice |
 | Refractive indices and metal optical constants | `src/data/glasses.json`, `src/data/metals.json` | CC0 1.0 (refractiveindex.info) |
 | Measured colorant spectra | `src/data/measured.json` | Mixed: curves traced from Meulebroeck et al. 2016 are CC BY 4.0; band fits to other articles are quoted with citation |
-| Model outputs from GlassPy (ViscNet, GlassNet) | `public/data/viscnet.json`, `public/data/glassnet.json` | Computed with GPL-3.0 software and weights; whether the outputs carry GPL terms is unresolved |
+| Model outputs from GlassPy (ViscNet, GlassNet) | `public/data/viscnet.json`, `public/data/glassnet.json` | Computed with GPL-3.0 software and weights; whether the outputs carry GPL terms is unresolved. Both files also hold `melts` records keyed to the SciGlass extract (compositions and measured values), which stay under ODbL 1.0, and the models were trained on SciGlass |
 | Coefficients, constants and values from journal articles | throughout `src/data/` | Quoted as facts with citation; the articles are not licensed for reuse |
 | Supplier color names and sampled swatches | `src/data/catalog/` | No license stated by the suppliers; names, links and sampled colors only |
