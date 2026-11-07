@@ -5,7 +5,7 @@ import { byId as lessonById, chapterHref, labHref, type Lesson } from './lessons
 
 export type Concept = {
   id: string; name: string; domain: string; requires: string[]; coverage: 'covered' | 'partial' | 'none';
-  taughtBy?: string[]; labs?: string[]; also?: string; threshold?: boolean;
+  taughtBy?: string[]; labs?: string[]; also?: string; alsoFile?: string; threshold?: boolean;
   sources: { write_from: string; adapt: string; link: string; data: string };
 };
 export const CONCEPTS = data.concepts as Concept[];

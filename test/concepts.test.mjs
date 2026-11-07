@@ -36,6 +36,11 @@ test('coverage matches where the site teaches it', () => {
   for (const c of graph.concepts) {
     for (const l of c.taughtBy ?? []) assert.ok(lessonIds.has(l), `${c.id}: unknown lesson ${l}`);
     for (const lab of c.labs ?? []) assert.ok(existsSync(new URL(`../src/pages/${lab}.astro`, import.meta.url)), `${c.id}: no lab page ${lab}`);
+    if (c.also) {
+      // Free text alone can't prove coverage: name the file that does the teaching.
+      assert.ok(c.alsoFile, `${c.id}: "also" needs an alsoFile`);
+      assert.ok(existsSync(new URL(`../${c.alsoFile}`, import.meta.url)), `${c.id}: no file ${c.alsoFile}`);
+    }
     const home = (c.taughtBy?.length ?? 0) + (c.labs?.length ?? 0) + (c.also ? 1 : 0);
     if (c.coverage === 'none') assert.equal(home, 0, `${c.id}: marked none but taught somewhere`);
     else assert.ok(home > 0, `${c.id}: marked ${c.coverage} but taught nowhere`);
