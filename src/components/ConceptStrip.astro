@@ -1,0 +1,30 @@
+---
+// The concepts a lesson teaches and the ones it needs first, from the concept graph. Each links to
+// its row in the atlas, which says where the site teaches it (or that it does not yet).
+import type { Lesson } from '../lib/lessons';
+import { conceptsOf, needsOf, atlasHref } from '../lib/concepts';
+interface Props { lesson: Lesson; }
+const { lesson } = Astro.props;
+const teaches = conceptsOf(lesson);
+const needs = needsOf(lesson);
+---
+{teaches.length > 0 && (
+  <details class="concept-strip">
+    <summary class="mono">concepts: teaches {teaches.length}{needs.length > 0 && ` · needs ${needs.length} first`}</summary>
+    <p><span class="mono">teaches</span> {teaches.map((c) => <a href={atlasHref(c)} title={c.name}>{c.name}</a>)}</p>
+    {needs.length > 0 && (
+      <p><span class="mono">needs first</span> {needs.map((c) => <a href={atlasHref(c)} class:list={{ missing: c.coverage === 'none' }} title={c.coverage === 'none' ? 'not on the site yet' : c.name}>{c.name}</a>)}</p>
+    )}
+  </details>
+)}
+<style>
+  .concept-strip { max-width: 46rem; margin: 0.8rem 0 0; }
+  .concept-strip summary { cursor: pointer; color: var(--ink-2); }
+  .concept-strip[open] summary { margin-bottom: 0.5rem; }
+  .concept-strip p + p { margin-top: 0.35rem; }
+  .concept-strip p { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.5rem; margin: 0; font-size: 0.85rem; }
+  .concept-strip .mono { min-width: 6.5rem; }
+  .concept-strip a { border: 1px solid var(--rule); padding: 0.05rem 0.45rem; text-decoration: none; }
+  .concept-strip a:hover { background: var(--paper-2); }
+  .concept-strip a.missing { border-style: dashed; color: var(--ink-3); }
+</style>

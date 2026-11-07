@@ -4,6 +4,7 @@
 // in walk order. Empty cells are what the site does not explain yet.
 import Base from '../layouts/Base.astro';
 import { LESSONS, STEPS, STRANDS, byId, chapterHref, type Lesson } from '../lib/lessons';
+import { CONCEPTS, DOMAINS, conceptById, lessonsOf, labHref } from '../lib/concepts';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const depthMemo: Record<string, number> = {};
@@ -11,6 +12,8 @@ const depth = (l: Lesson): number => (depthMemo[l.id] ??= l.buildsOn.length ? 1 
 const walkOrder = (l: Lesson) => LESSONS.indexOf(l);
 const foundationFirst = (a: Lesson, b: Lesson) => depth(a) - depth(b) || walkOrder(a) - walkOrder(b);
 const cell = (strand: string, step: string) => LESSONS.filter((l) => l.step === step && l.strands.includes(strand));
+const labLabel = Object.fromEntries(LESSONS.flatMap((l) => l.labs)) as Record<string, string>;
+const onSite = CONCEPTS.filter((c) => c.coverage !== 'none').length;
 const filled = STRANDS.reduce((n, s) => n + STEPS.filter((st) => cell(s.id, st.id).length).length, 0);
 ---
 <Base title="Atlas" description="How Glass Works by physics: every lesson placed by its physics strand and its studio step, so you can read all of absorption, or everything that happens in the lehr.">
@@ -73,6 +76,38 @@ const filled = STRANDS.reduce((n, s) => n + STEPS.filter((st) => cell(s.id, st.i
         </section>
       ))}
     </div>
+
+    <h2>By <i>concept</i></h2>
+    <p class="lede">
+      The whole subject as a graph of {CONCEPTS.length} concepts in {DOMAINS.length} domains. Each lists what you need first and
+      where the site teaches it; {onSite} are on the site in some form, and the rest are not written yet. The prerequisites and coverage are editorial judgments, not measurements. Concepts marked
+      <span class="mono">threshold</span> change how the rest is understood.
+    </p>
+    <div class="domains">
+      {DOMAINS.map((d) => (
+        <section id={`domain-${d.id}`}>
+          <h3>{d.id} · {d.label}</h3>
+          <p class="blurb">{d.blurb}</p>
+          <ol class="concepts">
+            {CONCEPTS.filter((c) => c.domain === d.id).map((c) => (
+              <li id={`concept-${c.id}`} class:list={['cg-row', c.coverage]}>
+                <span class="mono cid">{c.id}</span>
+                <span class="cname">{c.name}{c.threshold && <span class="mono thr"> threshold</span>}</span>
+                <span class="where">
+                  {lessonsOf(c).map((l) => <a href={chapterHref(l)} title={l.title}>{l.num}</a>)}
+                  {(c.labs ?? []).map((slug) => <a href={labHref(slug)}>{labLabel[slug] ?? slug}</a>)}
+                  {c.also && <span class="also">{c.also}</span>}
+                  {c.coverage === 'none' && <span class="also">not on the site yet</span>}
+                </span>
+                {c.requires.length > 0 && (
+                  <span class="req"><span class="mono">needs</span> {c.requires.map((id) => <a href={`#concept-${id}`} title={conceptById[id].name}>{id}</a>)}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
   </main>
 </Base>
 <style>
@@ -100,4 +135,21 @@ const filled = STRANDS.reduce((n, s) => n + STEPS.filter((st) => cell(s.id, st.i
   .lists li a { text-decoration: none; font-family: var(--display); font-size: 1.05rem; line-height: 1.25; }
   .lists li a:hover { text-decoration: underline; }
   .lists li .mono { margin-right: 0.3rem; }
+  .domains { display: grid; gap: 2rem; margin-top: 1.4rem; }
+  .domains section { border-top: 1px solid var(--ink); padding-top: 0.6rem; scroll-margin-top: 1rem; }
+  .domains h3 { font-family: var(--mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+  .concepts { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.15rem; }
+  .cg-row { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; gap: 0.1rem 0.8rem; align-items: baseline; padding: 0.35rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 1rem; }
+  .cg-row:target { background: var(--paper-2); }
+  .cid { color: var(--ink-3); }
+  .cname { font-family: var(--display); font-size: 1.02rem; line-height: 1.25; }
+  .cg-row.none .cname { color: var(--ink-3); }
+  .thr { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+  .where { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; justify-content: flex-end; font-size: 0.8rem; }
+  .where a { font-family: var(--mono); text-decoration: none; border: 1px solid var(--rule); padding: 0 0.3rem; }
+  .where a:hover { background: var(--paper-2); }
+  .also { color: var(--ink-3); font-size: 0.78rem; }
+  .req { grid-column: 2 / -1; font-size: 0.78rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 0.15rem 0.4rem; align-items: baseline; }
+  .req a { font-family: var(--mono); color: var(--ink-2); }
+  @media (max-width: 560px) { .cg-row { grid-template-columns: 2.2rem minmax(0, 1fr); } .where { grid-column: 2; justify-content: flex-start; } }
 </style>
