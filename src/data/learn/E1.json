@@ -1,0 +1,64 @@
+{
+  "_comment": "A concept page (side-pane prototype). Each block is one L1 paragraph with, optionally, its L2 (the numbers) and L3 (where it breaks) pinned to it. Strings may hold inline HTML; {base} is replaced with the site base. `instrument` places the page's interactive after that block.",
+  "id": "E1",
+  "title": "Thicker glass is darker by a share, not an amount",
+  "dek": "Beer–Lambert absorption: how path length and the amount of colorant set how much light a glass passes.",
+  "objectives": [
+    "Explain why doubling the thickness squares the transmission instead of halving it",
+    "Compute the transmission of a cobalt glass at one wavelength from its molar absorptivity, concentration and thickness",
+    "Predict how the color of a glass changes, not only darkens, as it gets thicker",
+    "Say when the law stops holding"
+  ],
+  "misconceptions": [
+    "Twice as thick lets half as much light through",
+    "A glass has one fixed color, whatever its thickness",
+    "Twice the colorant always gives twice the effect"
+  ],
+  "blocks": [
+    {
+      "id": "share",
+      "head": "Each layer takes the same share",
+      "l1": "<p>Think of a slab of colored glass as a stack of thin layers. Light of one color enters the first layer, and the layer absorbs a fixed share of it, say a fifth, and passes the rest. The second layer absorbs a fifth of what reaches <i>it</i>, which is less light than the first layer saw. So each layer passes 80% of what arrives: two layers pass 80% of 80%, which is 64%, and ten layers pass about 11%.</p><p>The light falls off by the same <i>factor</i> per millimeter, not by the same amount. Doubling the thickness squares the fraction that gets through. A glass that passes half the light at 5 mm passes a quarter at 10 mm, not none.</p>",
+      "l2": {
+        "head": "The law, and one worked number",
+        "html": "<p>Write the fraction that gets through as the transmission <i>T</i> = <i>I</i>/<i>I</i><sub>0</sub>. Because each layer multiplies <i>T</i> by the same factor, the logarithm of <i>T</i> falls in a straight line with thickness. Chemists use the base-10 version, the absorbance <i>A</i>:</p><p class=\"eq\"><i>T</i> = 10<sup>−<i>A</i></sup>, &nbsp; <i>A</i> = <i>ε</i> · <i>c</i> · <i>d</i></p><p><i>d</i> is the path length in cm, <i>c</i> the concentration of the absorbing ion in mol/L, and <i>ε</i>, the molar absorptivity, is how strongly one mole of that ion absorbs at that wavelength, in L mol<sup>−1</sup> cm<sup>−1</sup>. Absorbances add where transmissions multiply, which is why the site's color engine adds optical densities.</p><p><b>Worked number.</b> Thiemsorn et al. measured Co²⁺ in soda-lime glass at 595 nm (orange) and found <i>A</i>/<i>d</i> = 2.80 cm<sup>−1</sup> for 0.016 mol/L, so <i>ε</i> = 2.80 / 0.016 = 175 L mol<sup>−1</sup> cm<sup>−1</sup>. A 5 mm piece of that glass has <i>A</i> = 2.80 × 0.5 = 1.40 and passes 10<sup>−1.40</sup> ≈ 4% of the orange light. At 10 mm, <i>A</i> = 2.80 and it passes 0.16%. The instrument in section 1 opens on this glass, 5 mm at about 0.016 mol/L.</p><p class=\"src\">Source: <a href=\"{base}/library/#thiemsorn-2007\">Thiemsorn et al. 2007</a>, Table 4, sample Co3.</p>",
+        "l3": {
+          "head": "What the law assumes",
+          "html": "<p>The derivation above treats every layer as the same and every absorbing ion as acting alone. Four things in it are assumptions:</p><ul><li><b>One wavelength at a time.</b> <i>ε</i> depends strongly on wavelength, so the law holds for each wavelength separately, not for white light as a whole. Section 2 follows from this.</li><li><b>Light is only absorbed.</b> Particles big enough to scatter (metal colloids, opal glass, bubbles) remove light by sending it sideways, and that loss does not follow <i>εcd</i> with a fixed <i>ε</i>. The struck colors in <a href=\"{base}/#strike\">stage 05</a> are this case, computed there from Mie theory instead.</li><li><b>No surfaces.</b> Each glass–air surface reflects a few percent before any absorption happens: ((<i>n</i> − 1)/(<i>n</i> + 1))² = 4% at normal incidence for <i>n</i> = 1.5. Measured transmission includes both surfaces; <i>ε</i> must be fitted to the internal transmission, with reflection taken out.</li><li><b>The ions do not change.</b> <i>ε</i> is a constant only if the ion keeps the same charge and the same arrangement of oxygens around it. Section 3 is about when it does not.</li></ul>"
+        }
+      },
+      "instrument": true
+    },
+    {
+      "id": "color",
+      "head": "Why the color changes, not only the darkness",
+      "l1": "<p>A glass does not absorb every color by the same share. Cobalt takes out a large share of yellow, orange and red and almost none of the blue, so the blue survives a long path and the rest does not. A thin piece is pale blue because even the absorbed colors still partly get through. A thick piece keeps only what cobalt barely absorbs at all.</p><p>Cobalt also passes a little deep red, at the far end of what the eye sees. At short paths the strong blue hides it. At long paths the blue has dimmed enough that the red counts, and the swatch above leans toward violet. The same glass, thicker, is a different color.</p>",
+      "l2": {
+        "head": "The same law at every wavelength",
+        "html": "<p>Apply the law separately at each wavelength <i>λ</i>:</p><p class=\"eq\"><i>T</i>(<i>λ</i>) = 10<sup>−<i>ε</i>(<i>λ</i>) <i>c d</i></sup></p><p>The plot shows <i>T</i>(<i>λ</i>) for the thickness and amount set above. Raise the thickness and every point is raised to the same power, so the dips deepen and the spectrum's shape changes. The swatch is then computed by multiplying <i>T</i>(<i>λ</i>) by the lamp's spectrum and integrating against the CIE 1931 color-matching functions, as everywhere on the site.</p><figure class=\"tplot\" data-tplot><svg viewBox=\"0 0 420 200\" role=\"img\" aria-label=\"transmission against wavelength\"></svg><figcaption class=\"mono\" data-tplot-cap>transmission T(λ), 380–780 nm, at the settings above</figcaption></figure><p class=\"src\">Shape of ε(λ): cobalt-blue stained glass, <a href=\"{base}/library/#meulebroeck-2016\">Meulebroeck et al. 2016</a>; strength scaled to Thiemsorn's 175 L mol<sup>−1</sup> cm<sup>−1</sup> at 595 nm.</p>",
+        "l3": {
+          "head": "What the computed color leaves out",
+          "html": "<p>The curve's shape is traced from 19th-century stained-glass panes whose thickness was not reported, so only its shape is measured; its height comes from the single calibration point at 595 nm. Thiemsorn's five glasses give <i>ε</i> from 152.5 to 193.1 at that wavelength as the soda content rises, so the host glass moves the strength by about ±12%.</p><p>The violet lean at long paths depends on how much deep red the curve passes beyond 700 nm, where the eye is least sensitive and where the trace is least certain. It also depends on the eye and the lamp: the same spectrum under tungsten or for a different observer is a different color (<a href=\"{base}/#eyes\">stage 09′</a>).</p>"
+        }
+      }
+    },
+    {
+      "id": "trade",
+      "head": "Concentration and thickness trade one for one",
+      "l1": "<p>What matters is how many absorbing ions the light passes on its way through. Twice the cobalt in half the thickness meets the same number of ions and gives the same color. That is how a thin layer of strongly colored glass cased over clear glass can color a whole vessel: the light crosses the thin layer once, and the color is set by that layer's ions, not by the vessel's wall.</p>",
+      "l2": {
+        "head": "Only the product counts",
+        "html": "<p>In <i>A</i> = <i>ε c d</i>, concentration and thickness enter only as the product <i>c</i> · <i>d</i>: ions per unit area of the glass face. Halving <i>d</i> and doubling <i>c</i> leaves <i>A</i>, and so <i>T</i>(<i>λ</i>) and the color, unchanged. The readout above shows this product.</p><p>Glassmakers state colorant in weight percent of oxide. To use the law, convert to moles per liter: <i>c</i> = (wt% / 100) × <i>ρ</i> / <i>M</i>, with <i>ρ</i> the glass density in g/L and <i>M</i> the oxide's molar mass per absorbing ion.</p>",
+        "l3": {
+          "head": "When doubling the colorant does not double the effect",
+          "html": "<p>The trade holds only while <i>ε</i> stays constant as <i>c</i> changes. In glass it often does not:</p><ul><li><b>Redox.</b> Iron and copper split between two charge states, and the split depends on the furnace atmosphere and on how much of the element is present. Fe²⁺ and Fe³⁺ absorb differently, so adding iron changes the mix as well as the amount (<a href=\"{base}/#melt\">stage 02</a>).</li><li><b>Coordination.</b> Co²⁺ surrounded by four oxygens absorbs far more strongly than Co²⁺ surrounded by six, and the share of each depends on the glass's composition.</li><li><b>Pairs that make a new absorber.</b> Amber needs both iron and sulfur together; neither alone gives the color, so it scales with neither alone.</li><li><b>Particles.</b> Gold and silver colors depend on the size the particles grow to during reheating, not on how much metal is present (<a href=\"{base}/#strike\">stage 05</a>).</li></ul>"
+        }
+      }
+    }
+  ],
+  "recall": [
+    { "q": "A glass passes 50% of green light at 4 mm. What does it pass at 12 mm?", "a": "Twelve millimeters is three 4 mm layers, each passing half: 0.5 × 0.5 × 0.5 = 12.5%." },
+    { "q": "Why can a thick piece of cobalt glass look a different hue from a thin one?", "a": "Each wavelength falls off by its own factor. Colors cobalt absorbs strongly vanish first; at long paths only the weakly absorbed ones remain, including a little deep red, so the hue moves toward violet." },
+    { "q": "Name one reason doubling the colorant might not double the absorbance.", "a": "The absorbing species can change with amount: redox splits iron or copper between charge states, cobalt's coordination shifts, amber needs iron and sulfur together, and metal colloids depend on particle size." }
+  ]
+}
