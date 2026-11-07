@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import LampBar from '../../components/LampBar.astro';
 import WhatGlassIs from '../../components/WhatGlassIs.astro';
 import ColorRod from '../../components/ColorRod.astro';
+import ConceptStrip from '../../components/ConceptStrip.astro';
 import { LESSONS, STEPS, STRANDS, chapterHref, walkHref, essayHref, labHref, type Lesson } from '../../lib/lessons';
 import '../../styles/home.css';
 
@@ -30,6 +31,7 @@ const plain = lesson.title;
         <span class="mono">studio</span> <a href={`${base}/atlas/#step-${step.id}`}>{step.label}</a>
         <span class="mono">physics</span> {strands.map((s) => <a href={`${base}/atlas/#strand-${s.id}`}>{s.label}</a>)}
       </p>
+      <ConceptStrip lesson={lesson} />
       <p class="chapter-note">
         Every color here is computed from absorption spectra through the CIE 1931 observer, under the lamp at the foot of the screen.
         The same lesson sits <a href={walkHref(lesson)}>on the walk</a> between its neighbors.
