@@ -94,19 +94,28 @@ export function cobaltAt(amount, mm) {
   return { T, A595, color: spectrumColor(T, LAMP.daylight.spd, LAMP.daylight.adapt).css };
 }
 
+const SVGNS = 'http://www.w3.org/2000/svg';
+const el = (name, attrs, text) => {
+  const n = document.createElementNS(SVGNS, name);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, String(v));
+  if (text) n.textContent = text;
+  return n;
+};
 function plot(svg, T) {
   const W = 420, H = 200, x = (i) => 30 + (i / (GRID.length - 1)) * (W - 40), y = (t) => 14 + (1 - t) * (H - 50);
-  const strip = GRID.map((_, i) => `<rect x="${x(i).toFixed(1)}" y="${H - 28}" width="${(W - 40) / (GRID.length - 1) + 0.6}" height="8" fill="${css(SPECTRAL[i].map(encode))}"/>`).join('');
-  const line = T.map((t, i) => `${x(i).toFixed(1)},${y(t).toFixed(1)}`).join(' ');
-  svg.innerHTML = `
-    <line x1="30" x2="${W - 10}" y1="${y(0)}" y2="${y(0)}" stroke="#d6d8d2"/><line x1="30" x2="${W - 10}" y1="${y(1)}" y2="${y(1)}" stroke="#d6d8d2"/>
-    <text x="4" y="${y(1) + 4}" font-size="10" font-family="IBM Plex Mono" fill="#5d605b">1</text>
-    <text x="4" y="${y(0) + 4}" font-size="10" font-family="IBM Plex Mono" fill="#5d605b">0</text>
-    ${strip}
-    <text x="30" y="${H - 6}" font-size="10" font-family="IBM Plex Mono" fill="#5d605b">380 nm</text>
-    <text x="${W - 10}" y="${H - 6}" text-anchor="end" font-size="10" font-family="IBM Plex Mono" fill="#5d605b">780 nm</text>
-    <line x1="${x(I595)}" x2="${x(I595)}" y1="${y(1)}" y2="${y(0)}" stroke="#8d908a" stroke-dasharray="3 3"/>
-    <polyline points="${line}" fill="none" stroke="#141414" stroke-width="1.6"/>`;
+  const label = { 'font-size': 10, 'font-family': 'IBM Plex Mono', fill: '#5d605b' };
+  const nodes = [
+    el('line', { x1: 30, x2: W - 10, y1: y(0), y2: y(0), stroke: '#d6d8d2' }),
+    el('line', { x1: 30, x2: W - 10, y1: y(1), y2: y(1), stroke: '#d6d8d2' }),
+    el('text', { x: 4, y: y(1) + 4, ...label }, '1'),
+    el('text', { x: 4, y: y(0) + 4, ...label }, '0'),
+    ...GRID.map((_, i) => el('rect', { x: x(i).toFixed(1), y: H - 28, width: (W - 40) / (GRID.length - 1) + 0.6, height: 8, fill: css(SPECTRAL[i].map(encode)) })),
+    el('text', { x: 30, y: H - 6, ...label }, '380 nm'),
+    el('text', { x: W - 10, y: H - 6, 'text-anchor': 'end', ...label }, '780 nm'),
+    el('line', { x1: x(I595), x2: x(I595), y1: y(1), y2: y(0), stroke: '#8d908a', 'stroke-dasharray': '3 3' }),
+    el('polyline', { points: T.map((t, i) => `${x(i).toFixed(1)},${y(t).toFixed(1)}`).join(' '), fill: 'none', stroke: '#141414', 'stroke-width': 1.6 }),
+  ];
+  svg.replaceChildren(...nodes);
 }
 
 function instrument(root) {
