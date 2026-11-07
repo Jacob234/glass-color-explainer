@@ -1,0 +1,173 @@
+---
+// A concept page with depth in side panes. The main column (level 1) is complete on its own. Each
+// paragraph block can open its level 2 (the numbers) beside it, and level 2 can open level 3 (where
+// the model breaks) beside that. Wide screens show the levels side by side; phones open them as
+// sheets you swipe or tap back from. Content: src/data/learn/<id>.json.
+import Base from '../../layouts/Base.astro';
+import { conceptById, atlasHref, lessonsOf, chapterHref, CONCEPTS } from '../../lib/concepts';
+
+const pages = import.meta.glob('../../data/learn/*.json', { eager: true }) as Record<string, { default: any }>;
+export function getStaticPaths() {
+  const found = import.meta.glob('../../data/learn/*.json', { eager: true }) as Record<string, { default: any }>;
+  return Object.values(found).map((m) => ({ params: { id: m.default.id } }));
+}
+const { id } = Astro.params as { id: string };
+const page = Object.values(pages).find((m) => m.default.id === id)!.default;
+const concept = conceptById[id];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const fill = (html: string) => html.replaceAll('{base}', base);
+const needs = concept.requires.map((r) => conceptById[r]);
+const leadsTo = CONCEPTS.filter((c) => c.requires.includes(id));
+const lessons = lessonsOf(concept);
+---
+<Base title={page.title} description={page.dek}>
+  <main class="learn" data-learn={id}>
+    <header class="learn-head">
+      <p class="crumbs mono"><a href={`${base}/atlas/#domain-${concept.domain}`}>atlas</a> · concept {id}</p>
+      <h1>{page.title}</h1>
+      <p class="dek">{page.dek}</p>
+      <p class="chips">
+        {needs.length > 0 && <span class="mono">needs first</span>}
+        {needs.map((c) => <a href={atlasHref(c)} class:list={{ missing: c.coverage === 'none' }}>{c.name}</a>)}
+        {lessons.length > 0 && <span class="mono">on the walk</span>}
+        {lessons.map((l) => <a href={chapterHref(l)}>{l.num} {l.name}</a>)}
+      </p>
+      <details class="aims">
+        <summary class="mono">what this page should let you do</summary>
+        <ul>{page.objectives.map((o: string) => <li>{o}</li>)}</ul>
+        <p class="mono">common wrong ideas it corrects</p>
+        <ul class="wrong">{page.misconceptions.map((o: string) => <li>{o}</li>)}</ul>
+      </details>
+      <div class="levels" role="group" aria-label="depth">
+        <span class="mono">depth</span>
+        <span class="lv lv1">1 · the idea</span>
+        <span class="lv lv2">2 · the numbers</span>
+        <span class="lv lv3">3 · where it breaks</span>
+        <label class="all"><input type="checkbox" data-depth-all /> open the numbers everywhere</label>
+      </div>
+    </header>
+
+    {page.blocks.map((b: any, i: number) => (
+      <section class="blk" id={b.id} data-blk={b.id}>
+        <div class="l1">
+          <h2><span class="mono">{i + 1}</span> {b.head}</h2>
+          <Fragment set:html={fill(b.l1)} />
+          {b.l2 && <button class="more" type="button" data-open="l2" aria-expanded="false" aria-controls={`${b.id}-l2`}>the numbers <span aria-hidden="true">→</span></button>}
+          {b.instrument && (
+            <figure class="instrument" data-instrument>
+              <div class="swatch" data-swatch><span class="mono" data-swatch-label></span></div>
+              <div class="ctls">
+                <label class="mono" for="lt">thickness <output data-out="t"></output></label>
+                <input id="lt" type="range" min="0" max="100" value="50" data-t />
+                <label class="mono" for="lc">cobalt <output data-out="c"></output></label>
+                <input id="lc" type="range" min="0" max="100" value="73" data-c />
+                <p class="read" data-read aria-live="polite">Passes <b data-pass></b> of the orange light at 595 nm. <span class="mono" data-acd></span></p>
+              </div>
+            </figure>
+          )}
+        </div>
+        {b.l2 && (
+          <aside class="pane l2" id={`${b.id}-l2`} hidden aria-label={`${b.head}: the numbers`}>
+            <header><span class="mono">2 · the numbers</span><button type="button" class="close" data-close="l2" aria-label="close the numbers">×</button></header>
+            <h3>{b.l2.head}</h3>
+            <Fragment set:html={fill(b.l2.html)} />
+            {b.l2.l3 && <button class="more" type="button" data-open="l3" aria-expanded="false" aria-controls={`${b.id}-l3`}>where it breaks <span aria-hidden="true">→</span></button>}
+          </aside>
+        )}
+        {b.l2?.l3 && (
+          <aside class="pane l3" id={`${b.id}-l3`} hidden aria-label={`${b.head}: where it breaks`}>
+            <header><span class="mono">3 · where it breaks</span><button type="button" class="close" data-close="l3" aria-label="close where it breaks">×</button></header>
+            <h3>{b.l2.l3.head}</h3>
+            <Fragment set:html={fill(b.l2.l3.html)} />
+          </aside>
+        )}
+      </section>
+    ))}
+
+    <section class="recall-sec">
+      <h2>Explain it back</h2>
+      {page.recall.map((r: any) => (
+        <details class="rq"><summary>{r.q}</summary><p>{r.a}</p></details>
+      ))}
+      {leadsTo.length > 0 && (
+        <p class="chips"><span class="mono">this leads to</span>{leadsTo.map((c) => <a href={atlasHref(c)} class:list={{ missing: c.coverage === 'none' }}>{c.name}</a>)}</p>
+      )}
+    </section>
+  </main>
+  <script>
+    import { initLearn } from '../../scripts/learn.js';
+    initLearn();
+  </script>
+</Base>
+<style>
+  .learn { --l1: 36rem; padding: 2rem var(--gut-r) 5rem max(var(--gut), calc((100vw - 72rem) / 2 + var(--gut))); }
+  .learn-head { max-width: var(--l1); }
+  .crumbs a { color: inherit; }
+  .learn h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.08; margin: 0.5rem 0 0; text-wrap: balance; }
+  .dek { font-size: 1.08rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.3rem 0.5rem; align-items: baseline; margin: 1rem 0 0; font-size: 0.85rem; }
+  .chips .mono:not(:first-child) { margin-left: 0.6rem; }
+  .chips a { border: 1px solid var(--rule); padding: 0.05rem 0.45rem; text-decoration: none; }
+  .chips a.missing { border-style: dashed; color: var(--ink-3); }
+  .aims { margin-top: 1rem; font-size: 0.92rem; }
+  .aims summary { cursor: pointer; }
+  .aims ul { margin: 0.5rem 0 0.8rem; padding-left: 1.2rem; }
+  .aims .wrong li { color: var(--ink-2); text-decoration: line-through; text-decoration-color: var(--ink-3); }
+  .levels { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--rule); font-size: 0.85rem; }
+  .lv { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .lv2 { color: var(--ink-2); } .lv3 { color: var(--ink-3); }
+  .all { display: inline-flex; gap: 0.4rem; align-items: center; margin-left: auto; color: var(--ink-2); }
+
+  .blk { display: grid; grid-template-columns: minmax(0, var(--l1)) minmax(0, 1fr) minmax(0, 1fr); column-gap: 2.4rem; align-items: start; margin-top: 2.6rem; border-top: 1px solid var(--ink); padding-top: 1.2rem; scroll-margin-top: 1rem; }
+  .l1 { grid-column: 1; }
+  .l1 h2 { font-family: var(--display); font-weight: 500; font-size: 1.7rem; line-height: 1.15; margin: 0 0 0.6rem; }
+  .l1 h2 .mono { vertical-align: 0.35em; margin-right: 0.3rem; }
+  .l1 :global(p) { margin: 0 0 0.9rem; }
+  .more { display: inline-flex; gap: 0.4rem; align-items: baseline; border: 1px solid var(--ink); background: none; padding: 0.15rem 0.6rem; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+  .more:hover, .more[aria-expanded="true"] { background: var(--ink); color: var(--paper); }
+  .pane { font-size: 0.92rem; line-height: 1.55; padding: 0 0 0 1.2rem; border-left: 1px solid var(--ink); min-width: 0; }
+  .pane.l2 { grid-column: 2; } .pane.l3 { grid-column: 3; border-left-style: dashed; }
+  .pane header { display: flex; justify-content: space-between; align-items: center; }
+  .pane h3 { font-family: var(--display); font-weight: 500; font-size: 1.3rem; line-height: 1.2; margin: 0.4rem 0 0.6rem; }
+  .pane :global(p) { margin: 0 0 0.8rem; }
+  .pane :global(ul) { padding-left: 1.1rem; margin: 0 0 0.8rem; }
+  .pane :global(li) { margin-bottom: 0.4rem; }
+  .pane :global(.eq) { font-size: 1.1rem; text-align: center; margin: 0.8rem 0; }
+  .pane :global(.src) { font-size: 0.8rem; color: var(--ink-2); }
+  .close { border: none; background: none; font-size: 1.4rem; line-height: 1; cursor: pointer; color: var(--ink-2); padding: 0.2rem 0.4rem; }
+  .pane :global(.tplot svg) { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--rule); }
+  .pane :global(.tplot) { margin: 0.6rem 0 0.8rem; }
+  .pane :global(figcaption) { margin-top: 0.3rem; }
+
+  .instrument { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1rem; margin: 1.2rem 0 0; padding: 1rem; border: 1px solid var(--rule); background: var(--panel); }
+  .swatch { aspect-ratio: 1; border: 1px solid var(--rule); display: flex; align-items: flex-end; padding: 0.4rem; }
+  .swatch .mono { background: rgba(243, 244, 241, 0.85); padding: 0 0.3rem; font-size: 0.62rem; }
+  .ctls { display: grid; gap: 0.3rem; align-content: start; }
+  .ctls input { width: 100%; margin: 0 0 0.4rem; }
+  .read { font-size: 0.88rem; margin: 0; }
+
+  .recall-sec { max-width: var(--l1); margin-top: 3.4rem; border-top: 1px solid var(--ink); padding-top: 1rem; }
+  .recall-sec h2 { font-family: var(--display); font-weight: 500; font-size: 1.7rem; margin: 0 0 0.6rem; }
+  .rq { border-bottom: 1px solid var(--rule); padding: 0.5rem 0; }
+  .rq summary { cursor: pointer; }
+  .rq p { margin: 0.4rem 0 0; color: var(--ink-2); }
+
+  /* medium: one pane column; level 3 takes level 2's place */
+  @media (max-width: 1180px) {
+    .blk { grid-template-columns: minmax(0, var(--l1)) minmax(0, 1fr); }
+    .pane.l3 { grid-column: 2; }
+    .blk.l3-open .pane.l2 { display: none; }
+  }
+  /* phone: panes are sheets over the page */
+  @media (max-width: 860px) {
+    .blk { display: block; }
+    .pane { position: fixed; inset: 0; z-index: 30; overflow-y: auto; background: var(--paper); border: none; padding: 1rem var(--gut-r) 3rem var(--gut); font-size: 1rem; }
+    .pane.l3 { z-index: 31; }
+    .pane header { position: sticky; top: -1rem; background: var(--paper); padding: 0.6rem 0; border-bottom: 1px solid var(--ink); margin: -1rem 0 0.4rem; }
+    .blk.l3-open .pane.l2 { display: block; }
+    :global(.depth-all) .pane.l2 { position: static; inset: auto; z-index: auto; padding: 0.8rem 0 0 0.9rem; border-left: 1px solid var(--ink); margin-top: 0.8rem; }
+    :global(.depth-all) .pane.l2 header { position: static; margin: 0; }
+    .instrument { grid-template-columns: 6.5rem minmax(0, 1fr); }
+    .all { margin-left: 0; }
+  }
+</style>

@@ -4,7 +4,7 @@
 // in walk order. Empty cells are what the site does not explain yet.
 import Base from '../layouts/Base.astro';
 import { LESSONS, STEPS, STRANDS, byId, chapterHref, type Lesson } from '../lib/lessons';
-import { CONCEPTS, DOMAINS, conceptById, lessonsOf, labHref } from '../lib/concepts';
+import { CONCEPTS, DOMAINS, conceptById, lessonsOf, labHref, hasPage, pageHref } from '../lib/concepts';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const depthMemo: Record<string, number> = {};
@@ -92,10 +92,11 @@ const filled = STRANDS.reduce((n, s) => n + STEPS.filter((st) => cell(s.id, st.i
             {CONCEPTS.filter((c) => c.domain === d.id).map((c) => (
               <li id={`concept-${c.id}`} class:list={['cg-row', c.coverage]}>
                 <span class="mono cid">{c.id}</span>
-                <span class="cname">{c.name}{c.threshold && <span class="mono thr"> threshold</span>}</span>
+                <span class="cname">{hasPage(c) ? <a href={pageHref(c)}>{c.name}</a> : c.name}{c.threshold && <span class="mono thr"> threshold</span>}</span>
                 <span class="where">
                   {lessonsOf(c).map((l) => <a href={chapterHref(l)} title={l.title}>{l.num}</a>)}
                   {(c.labs ?? []).map((slug) => <a href={labHref(slug)}>{labLabel[slug] ?? slug}</a>)}
+                  {hasPage(c) && <a href={pageHref(c)} class="pg">page</a>}
                   {c.also && <span class="also">{c.also}</span>}
                   {c.coverage === 'none' && <span class="also">not on the site yet</span>}
                 </span>

@@ -19,6 +19,7 @@
     "structurelab": "structure lab",
     "networklab": "network lab",
     "concepts": "concept pages",
+    "learn": "concept pages with depth panes",
     "eyes": "09′ showroom, other eyes"
   },
   "sources": [
@@ -545,7 +546,7 @@
       "provides": "Measured 300–1500 nm transmission of 85 panes of two stained-glass panels, plotted as absorbance in arbitrary units (each curve normalized 0..1; no thickness given): cobalt blues (Fig. 2), chromium greens with Cr³⁺ and Cr⁶⁺ (Fig. 3), iron yellows (Fig. 4), copper-ruby flashes (Fig. 5) and silver stain (Fig. 8). The page traces B1 (cobalt), G1 (chromium) and SY2 (silver) from the figures for their shapes.",
       "reuse": "open", "license": "CC BY 4.0. The traced curves in measured.json are an adaptation, credited there and here.",
       "checked": "2026-10-19",
-      "usedBy": [{ "file": "src/data/measured.json", "find": "meulebroeck-2016", "stage": "ions" }]
+      "usedBy": [{ "file": "src/data/measured.json", "find": "meulebroeck-2016", "stage": "ions" }, { "file": "src/data/learn/E1.json", "find": "library/#meulebroeck-2016", "stage": "learn" }]
     },
     {
       "id": "thiemsorn-2007", "kind": "measurement", "short": "Thiemsorn et al. 2007",
@@ -555,7 +556,7 @@
       "provides": "Molar absorptivities at the band maximum for Mn³⁺ (480 nm, 112.5–134.2 L mol⁻¹ cm⁻¹), Co²⁺ (595 nm, 152.5–193.1), Cr³⁺ (655 nm, 20.5–22.3), Cu²⁺ and Ni²⁺ in soda-lime-silica glasses of known composition with 10–16 mol% Na₂O (Table 4), and their absorption spectra in A/d (Figs. 4–8). The page uses the middle-basicity values to put the traced cobalt and chromium curves in absolute units, and fits two bands to the Mn³⁺ spectrum of Fig. 4 for manganese.",
       "reuse": "cite", "license": "Journal article; no reuse license stated. The page copies five numbers from Table 4 and stores two fitted bands, not the figure.",
       "checked": "2026-10-20",
-      "usedBy": [{ "file": "src/data/measured.json", "find": "thiemsorn-2007", "stage": "ions" }],
+      "usedBy": [{ "file": "src/data/measured.json", "find": "thiemsorn-2007", "stage": "ions" }, { "file": "src/data/learn/E1.json", "find": "library/#thiemsorn-2007", "stage": "learn" }],
       "caution": "The Mn³⁺ and Cu²⁺ concentrations were themselves estimated from older literature absorptivities (Paul & Douglas), so those two ε values are not independent measurements. Mn³⁺ band widths were read off the published figure by this site, not reported by the authors."
     },
     {

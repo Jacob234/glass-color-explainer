@@ -13,7 +13,11 @@ export const DOMAINS = data.domains;
 export const conceptById = Object.fromEntries(CONCEPTS.map((c) => [c.id, c])) as Record<string, Concept>;
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-export const atlasHref = (c: Concept) => `${base}/atlas/#concept-${c.id}`;
+const pageIds = new Set(Object.keys(import.meta.glob('../data/learn/*.json')).map((p) => p.split('/').pop()!.replace('.json', '')));
+/** A concept with its own page links there; the rest link to their row in the atlas. */
+export const hasPage = (c: Concept) => pageIds.has(c.id);
+export const pageHref = (c: Concept) => `${base}/learn/${c.id}/`;
+export const atlasHref = (c: Concept) => (hasPage(c) ? pageHref(c) : `${base}/atlas/#concept-${c.id}`);
 /** The concepts a walk lesson teaches, in graph order. */
 export const conceptsOf = (l: Lesson) => CONCEPTS.filter((c) => c.taughtBy?.includes(l.id));
 /** Prerequisites of a lesson's concepts that the lesson itself does not teach. */
